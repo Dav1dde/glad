@@ -19,6 +19,7 @@ class Generator(object):
                 "Invalid extension", ValueError)
 
         self.generate_loader(api, version)
+        self.generate_types(api, version, spec.types)
 
         f = [value for key, value in spec.features[api].items() if key < version]
         enums, functions = merge(f, profile)
@@ -31,6 +32,9 @@ class Generator(object):
 
 
     def generate_loader(self, api, version):
+        raise NotImplementedError
+
+    def generate_types(self, api, version, types):
         raise NotImplementedError
 
     def generate_enums(self, api, version, enums):

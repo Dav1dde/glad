@@ -6,6 +6,9 @@ class DGenerator(Generator):
     def generate_loader(self, api, version):
         raise NotImplementedError
 
+    def generate_types(self, api, version, types):
+        raise NotImplementedError
+
     def generate_enums(self, api, version, enums):
         raise NotImplementedError
 
