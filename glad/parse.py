@@ -177,15 +177,23 @@ class Extension(object):
 
         self.require = []
         for required in chain.from_iterable(element.findall('require')):
-            if required.tag == 'type':
-                continue
+            if required.tag == 'type': continue
 
             data = { 'enum' : spec.enums, 'command' : spec.commands }[required.tag]
             try:
                 self.require.append(data[required.attrib['name']])
             except KeyError:
-                # TODO
-                pass
+                pass # TODO
+
+        self.remove = []
+        for removed in chain.from_iterable(element.findall('remove')):
+            if removed.tag == 'type': continue
+
+            data = { 'enum' : spec.enums, 'command' : spec.commands }[required.tag]
+            try:
+                self.remove.append(data[removed.attrib['name']])
+            except KeyError:
+                pass # TODO
 
     def __str__(self):
         return self.name
