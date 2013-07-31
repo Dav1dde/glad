@@ -159,8 +159,7 @@ class Command(object):
         return hash(self.proto.name)
 
     def __str__(self):
-        return '{self.proto!s}({args})'.format(self=self,
-                args=', '.join(str(p) for p in self.params))
+        return '{self.proto.name}'.format(self=self)
     __repr__ = __str__
 
 
@@ -181,23 +180,21 @@ class Param(object):
 
 
     def __str__(self):
-        s = self.type
-        s = 'const({})'.format(s) if self.is_const else s
-        s = '{}*'.format(s) if self.is_pointer else s
-        return '{} {}'.format(s, self.name)
+        return '{0!r} {1}'.format(self.type, self.name)
 
 
 class OGLType(object):
     def __init__(self, element):
-        self.type = (element.text.strip().strip('const').strip().split(None, 1)[0]
+        text = ''.join(element.itertext())
+        self.type = (text.strip().strip('const').strip().split(None, 1)[0]
                 if element.find('ptype') is None else element.find('ptype').text)
-        self.is_pointer = False if element.text is None else '*' in element.text
-        self.is_const = False if element.text is None else 'const' in element.text
+        self.is_pointer = False if text is None else '*' in text
+        self.is_const = False if text is None else 'const' in text
 
     def to_d(self):
         s = 'const({})'.format(self.type) if self.is_const else self.type
         s = '{}*'.format(s) if self.is_pointer else s
-        return s
+        return s.replace('struct ', '')
     to_volt = to_d
 
     def to_c(self):
@@ -223,15 +220,17 @@ class Extension(object):
             except KeyError:
                 pass # TODO
 
-        self.remove = []
-        for removed in chain.from_iterable(element.findall('remove')):
-            if removed.tag == 'type': continue
+    @property
+    def enums(self):
+        for r in self.require:
+            if isinstance(r, Enum):
+                yield r
 
-            data = { 'enum' : spec.enums, 'command' : spec.commands }[required.tag]
-            try:
-                self.remove.append(data[removed.attrib['name']])
-            except KeyError:
-                pass # TODO
+    @property
+    def functions(self):
+        for r in self.require:
+            if isinstance(r, Command):
+                yield r
 
     def __hash__(self):
         return hash(self.name)
@@ -244,6 +243,16 @@ class Extension(object):
 class Feature(Extension):
     def __init__(self, element, spec):
         Extension.__init__(self, element, spec)
+
+        self.remove = []
+        for removed in chain.from_iterable(element.findall('remove')):
+            if removed.tag == 'type': continue
+
+            data = { 'enum' : spec.enums, 'command' : spec.commands }[removed.tag]
+            try:
+                self.remove.append(data[removed.attrib['name']])
+            except KeyError:
+                pass # TODO
 
         self.number = tuple(map(int, element.attrib['number'].split('.')))
         self.api = element.attrib['api']

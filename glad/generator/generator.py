@@ -21,32 +21,28 @@ class Generator(object):
         enforce(all(ext in spec.extensions[api] for ext in extensions),
                 "Invalid extension", ValueError)
 
-        self.generate_loader(api, version)
         self.generate_types(api, version, spec.types)
 
-        f = [value for key, value in spec.features[api].items() if key < version]
+        f = [value for key, value in spec.features[api].items() if key <= version]
         enums, functions = merge(f, profile)
+        self.generate_features(api, version, profile, f)
 
-        self.generate_enums(api, version, enums)
-        self.generate_functions(api, version, functions)
+        extensions = [spec.extensions[api][ext] for ext in extensions]
+        self.generate_extensions(api, version, extensions, enums, functions)
 
-        self.generate_extensions(api, version,
-            [spec.extensions[api][ext] for ext in extensions])
+        self.generate_loader(api, version, functions, extensions)
 
 
-    def generate_loader(self, api, version):
+    def generate_loader(self, api, version, features, extensions):
         raise NotImplementedError
 
     def generate_types(self, api, version, types):
         raise NotImplementedError
 
-    def generate_enums(self, api, version, enums):
+    def generate_features(self, api, version, profile, features):
         raise NotImplementedError
 
-    def generate_functions(self, api, version, functions):
-        raise NotImplementedError
-
-    def generate_extensions(self, api, version, extensions):
+    def generate_extensions(self, api, version, extensions, enums, functions):
         raise NotImplementedError
 
 
@@ -57,8 +53,8 @@ def merge(features, profile):
     functions = set()
 
     for feature in features:
-        enums |= set(r for r in feature.require if isinstance(r, Enum))
-        functions |= set(r for r in feature.require if isinstance(r, Command))
+        enums |= set(feature.enums)
+        functions |= set(feature.functions)
 
     if profile == 'core':
         for feature in features:

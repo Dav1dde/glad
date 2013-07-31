@@ -3,17 +3,14 @@ import os.path
 
 
 class VoltGenerator(Generator):
-    def generate_loader(self, api, version):
+    def generate_loader(self, api, version, features, extensions):
         raise NotImplementedError
 
     def generate_types(self, api, version, types):
         raise NotImplementedError
 
-    def generate_enums(self, api, version, enums):
+    def generate_features(self, api, version, profile, features):
         raise NotImplementedError
 
-    def generate_functions(self, api, version, functions):
-        raise NotImplementedError
-
-    def generate_extensions(self, api, version, extensions):
+    def generate_extensions(self, api, version, extensions, enums, functions):
         raise NotImplementedError
