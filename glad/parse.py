@@ -167,9 +167,7 @@ class Command(object):
 class Proto(object):
     def __init__(self, element):
         self.name = element.find('name').text
-
-        self.ret = (element.find('ptype').text if element.text is None else
-                        element.text.strip())
+        self.ret = OGLType(element)
 
     def __str__(self):
         return '{self.ret} {self.name}'.format(self=self)
@@ -178,17 +176,37 @@ class Proto(object):
 class Param(object):
     def __init__(self, element, spec):
         self.group = element.get('group')
-        self.type = (element.text.split(None, 1)[0] if element.find('ptype')
-                     is None else element.find('ptype').text)
+        self.type = OGLType(element)
         self.name = element.find('name').text
-        self.is_pointer = False if element.text is None else '*' in element.text
-        self.is_const = False if element.text is None else 'const' in element.text
+
 
     def __str__(self):
         s = self.type
         s = 'const({})'.format(s) if self.is_const else s
         s = '{}*'.format(s) if self.is_pointer else s
         return '{} {}'.format(s, self.name)
+
+
+class OGLType(object):
+    def __init__(self, element):
+        self.type = (element.text.strip().strip('const').strip().split(None, 1)[0]
+                if element.find('ptype') is None else element.find('ptype').text)
+        self.is_pointer = False if element.text is None else '*' in element.text
+        self.is_const = False if element.text is None else 'const' in element.text
+
+    def to_d(self):
+        s = 'const({})'.format(self.type) if self.is_const else self.type
+        s = '{}*'.format(s) if self.is_pointer else s
+        return s
+    to_volt = to_d
+
+    def to_c(self):
+        s = 'const {}'.format(self.type) if self.is_const else self.type
+        s = '{}*'.format(s) if self.is_pointer else s
+        return s
+
+    __str__ = to_d
+    __repr__ = __str__
 
 
 class Extension(object):

@@ -1,4 +1,4 @@
-import glad.generator
+from glad.generator import Generator
 import os.path
 
 
