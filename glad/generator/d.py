@@ -12,5 +12,5 @@ class DGenerator(Generator):
     def generate_functions(self, api, version, functions):
         raise NotImplementedError
 
-    def generate_extension(self, api, version, ext):
+    def generate_extensions(self, api, version, extensions):
         raise NotImplementedError

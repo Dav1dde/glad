@@ -26,8 +26,8 @@ class Generator(object):
         self.generate_enums(api, version, enums)
         self.generate_functions(api, version, functions)
 
-        for ext in extensions:
-            self.generate_extension(api, version, spec.extensions[api][ext])
+        self.generate_extensions(api, version,
+            [spec.extensions[api][ext] for ext in extensions])
 
 
     def generate_loader(self, api, version):
@@ -39,7 +39,7 @@ class Generator(object):
     def generate_functions(self, api, version, functions):
         raise NotImplementedError
 
-    def generate_extension(self, api, version, ext):
+    def generate_extensions(self, api, version, extensions):
         raise NotImplementedError
 
 
