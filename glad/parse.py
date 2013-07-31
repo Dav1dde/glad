@@ -142,9 +142,12 @@ class Enum(object):
         self.vendor = vendor
         self.comment = comment
 
-    @classmethod
-    def from_xml(cls, element):
-        return cls(element.attrib['name'], element.attrib['value'])
+    def __hash__(self):
+        return hash(self.name)
+
+    def __str__(self):
+        return self.name
+    __repr__ = __str__
 
 
 class Command(object):
@@ -152,23 +155,40 @@ class Command(object):
         self.proto = Proto(element.find('proto'))
         self.params = [Param(ele, spec) for ele in element.iter('param')]
 
+    def __hash__(self):
+        return hash(self.proto.name)
+
+    def __str__(self):
+        return '{self.proto!s}({args})'.format(self=self,
+                args=', '.join(str(p) for p in self.params))
+    __repr__ = __str__
+
 
 class Proto(object):
     def __init__(self, element):
         self.name = element.find('name').text
 
         self.ret = (element.find('ptype').text if element.text is None else
-                        element.text.split(None, 1)[0])
+                        element.text.strip())
+
+    def __str__(self):
+        return '{self.ret} {self.name}'.format(self=self)
 
 
 class Param(object):
     def __init__(self, element, spec):
         self.group = element.get('group')
-        self.type = (element.find('ptype').text if element.text is None else
-                        element.text.split(None, 1)[0])
+        self.type = (element.text.split(None, 1)[0] if element.find('ptype')
+                     is None else element.find('ptype').text)
         self.name = element.find('name').text
         self.is_pointer = False if element.text is None else '*' in element.text
         self.is_const = False if element.text is None else 'const' in element.text
+
+    def __str__(self):
+        s = self.type
+        s = 'const({})'.format(s) if self.is_const else s
+        s = '{}*'.format(s) if self.is_pointer else s
+        return '{} {}'.format(s, self.name)
 
 
 class Extension(object):
@@ -195,9 +215,13 @@ class Extension(object):
             except KeyError:
                 pass # TODO
 
+    def __hash__(self):
+        return hash(self.name)
+
     def __str__(self):
         return self.name
     __repr__ = __str__
+
 
 class Feature(Extension):
     def __init__(self, element, spec):
