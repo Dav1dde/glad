@@ -21,7 +21,7 @@ class OpenGLSpec(object):
         self._enums = None
         self._commands = None
         self._features = None
-
+        self._extensions = None
 
     @classmethod
     def from_url(cls, url):
@@ -97,12 +97,25 @@ class OpenGLSpec(object):
         if not self._features is None:
             return self._features
 
-        self._features = defaultdict(list)
+        self._features = defaultdict(lambda: defaultdict(list))
         for element in self.root.iter('feature'):
-            self._features[element.attrib['api']].append(Feature(element, self))
+            self._features[element.attrib['api']][element.attrib['name']] \
+                .append(Feature(element, self))
 
         return self._features
 
+    @property
+    def extensions(self):
+        if not self._extensions is None:
+            return self._extensions
+
+        self._extensions = defaultdict(lambda: defaultdict(list))
+        for element in self.root.find('extensions'):
+            for api in element.attrib['supported'].split('|'):
+                self._extensions[api][element.attrib['name']] \
+                    .append(Extension(element, self))
+
+        return self._extensions
 
 
 class Type(object):
@@ -158,11 +171,10 @@ class Param(object):
         self.is_pointer = False if element.text is None else '*' in element.text
         self.is_const = False if element.text is None else 'const' in element.text
 
-class Feature(object):
+
+class Extension(object):
     def __init__(self, element, spec):
         self.name = element.attrib['name']
-        self.number = tuple(map(int, element.attrib['number'].split('.')))
-        self.api = element.attrib['api']
 
         self.require = []
         for required in chain.from_iterable(element.findall('require')):
@@ -170,10 +182,24 @@ class Feature(object):
                 continue
 
             data = { 'enum' : spec.enums, 'command' : spec.commands }[required.tag]
-            self.require.append(data[required.attrib['name']])
+            try:
+                self.require.append(data[required.attrib['name']])
+            except KeyError:
+                # TODO
+                pass
+
+    def __str__(self):
+        return self.name
+    __repr__ = __str__
+
+class Feature(Extension):
+    def __init__(self, element, spec):
+        Extension.__init__(self, element, spec)
+
+        self.number = tuple(map(int, element.attrib['number'].split('.')))
+        self.api = element.attrib['api']
 
     def __str__(self):
         return '{self.name}@{self.number!r}'.format(self=self)
 
     __repr__ = __str__
-
