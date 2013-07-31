@@ -97,10 +97,9 @@ class OpenGLSpec(object):
         if not self._features is None:
             return self._features
 
-        self._features = defaultdict(lambda: defaultdict(list))
+        self._features = defaultdict(dict)
         for element in self.root.iter('feature'):
-            self._features[element.attrib['api']][element.attrib['name']] \
-                .append(Feature(element, self))
+            self._features[element.attrib['api']][element.attrib['name']] = Feature(element, self)
 
         return self._features
 
@@ -109,11 +108,10 @@ class OpenGLSpec(object):
         if not self._extensions is None:
             return self._extensions
 
-        self._extensions = defaultdict(lambda: defaultdict(list))
+        self._extensions = defaultdict(dict)
         for element in self.root.find('extensions'):
             for api in element.attrib['supported'].split('|'):
-                self._extensions[api][element.attrib['name']] \
-                    .append(Extension(element, self))
+                self._extensions[api][element.attrib['name']] = Extension(element, self)
 
         return self._extensions
 
