@@ -6,7 +6,7 @@ except ImportError:
 from contextlib import closing
 from urllib2 import urlopen
 from itertools import chain
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 
 
 
@@ -97,9 +97,10 @@ class OpenGLSpec(object):
         if not self._features is None:
             return self._features
 
-        self._features = defaultdict(dict)
+        self._features = defaultdict(OrderedDict)
         for element in self.root.iter('feature'):
-            self._features[element.attrib['api']][element.attrib['name']] = Feature(element, self)
+            num = tuple(map(int, element.attrib['number'].split('.')))
+            self._features[element.attrib['api']][num] = Feature(element, self)
 
         return self._features
 
