@@ -2,13 +2,15 @@ import glad.generator
 import os.path
 
 
-
 class DGenerator(Generator):
     def generate_loader(self, api, version):
-        pass
+        raise NotImplementedError
 
-    def generate_feature(self, api, version, feature, profile):
-        pass
+    def generate_enums(self, api, version, enums):
+        raise NotImplementedError
+
+    def generate_functions(self, api, version, functions):
+        raise NotImplementedError
 
     def generate_extension(self, api, version, ext):
-        pass
+        raise NotImplementedError
