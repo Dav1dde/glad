@@ -172,3 +172,8 @@ class Feature(object):
             data = { 'enum' : spec.enums, 'command' : spec.commands }[required.tag]
             self.require.append(data[required.attrib['name']])
 
+    def __str__(self):
+        return '{self.name}@{self.number!r}'.format(self=self)
+
+    __repr__ = __str__
+
