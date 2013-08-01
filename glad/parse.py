@@ -188,18 +188,23 @@ class OGLType(object):
         text = ''.join(element.itertext())
         self.type = (text.strip().strip('const').strip().split(None, 1)[0]
                 if element.find('ptype') is None else element.find('ptype').text)
-        self.is_pointer = False if text is None else '*' in text
+        self.is_pointer = 0 if text is None else text.count('*')
         self.is_const = False if text is None else 'const' in text
 
     def to_d(self):
-        s = 'const({})'.format(self.type) if self.is_const else self.type
-        s = '{}*'.format(s) if self.is_pointer else s
+
+        if self.is_pointer > 1 and self.is_const:
+            s = 'const({}*)'.format(self.type)
+            s += '*'*(self.is_pointer-1)
+        else:
+            s = 'const({})'.format(self.type) if self.is_const else self.type
+            s += '*'*self.is_pointer
         return s.replace('struct ', '')
     to_volt = to_d
 
     def to_c(self):
         s = 'const {}'.format(self.type) if self.is_const else self.type
-        s = '{}*'.format(s) if self.is_pointer else s
+        s += '*'*self.is_pointer
         return s
 
     __str__ = to_d
