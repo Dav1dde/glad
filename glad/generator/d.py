@@ -102,9 +102,8 @@ void gladTerminate() {
     }
 }
 
-void* gladGetProcAddress(string name) {
+void* gladGetProcAddress(const(char)* namez) {
     if(libGL is null) return null;
-    const(char)* namez = toStringz(name);
     void* result;
 
     version(Windows) {
@@ -125,55 +124,80 @@ void* gladGetProcAddress(string name) {
 
     return result;
 }
+
+private extern(C) char* strstr(const(char)*, const(char)*);
+private extern(C) int strcmp(const(char)*, const(char)*);
+private bool has_ext(GLVersion glv, const(char)* extensions, const(char)* ext) {
+    if(glv.major < 3) {
+        return extensions !is null && ext !is null && strstr(extensions, ext) !is null;
+    } else {
+        int num;
+        glGetIntegerv(GL_NUM_EXTENSIONS, &num);
+
+        for(int i=0; i < num; i++) {
+            if(strcmp(cast(const(char)*)glGetStringi(GL_EXTENSIONS, i), ext) == 0) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 '''
 
 
 class DGenerator(Generator):
+    MODULE = 'glad'
+    LOADER = 'loader'
+    GL = 'gl'
+    ENUMS = 'glenums'
+    EXT = 'glext'
+    FUNCS = 'glfuncs'
+    TYPES = 'gltypes'
+    FILE_EXTENSION = '.d'
+    API = GLAD_FUNCS
+
     def __init__(self, *args, **kwargs):
         Generator.__init__(self, *args, **kwargs)
 
         self.loaderfuncs = dict()
 
+
     def generate_loader(self, api, version, features, extensions):
-        path = os.path.join(self.path, 'glad', 'loader.d')
+        path = os.path.join(self.path,self.MODULE, self.LOADER + self.FILE_EXTENSION)
         makefiledir(path)
 
         with open(path, 'w') as f:
-            f.write('module glad.loader;\n\n\n')
+            self.write_module(f, self.LOADER)
 
-            f.write('private import std.conv;\n')
-            f.write('private import std.string;\n')
-            f.write('private import std.algorithm;\n')
+            self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES])
+            f.write('\n\n')
 
-            f.write('private import glad.glfuncs;\n')
-            f.write('private import glad.glext;\n')
-            f.write('private import glad.glenums;\n')
-            f.write('private import glad.gltypes;\n\n\n')
+            f.write('struct GLVersion { int major; int minor; }\n')
 
-
-            f.write('struct GLVersion { static int major; static int minor; }\n')
-
-            f.write('bool gladLoadGL() {\n')
+            f.write('GLVersion gladLoadGL() {\n')
             f.write('\treturn gladLoadGL(&gladGetProcAddress);\n')
             f.write('}\n')
 
-            f.write(GLAD_FUNCS)
+            f.write(self.API)
 
-            f.write('bool gladLoadGL(void* function(string name) load) {\n')
-            f.write('\tglGetString = cast(typeof(glGetString))load("glGetString");\n')
-            f.write('\tglGetIntegerv = cast(typeof(glGetIntegerv))load("glGetIntegerv");\n')
-            f.write('\tif(glGetString is null || glGetIntegerv is null) return false;\n\n')
-            f.write('\tfind_core();\n')
+            f.write('GLVersion gladLoadGL(void* function(const(char)* name) load) {\n')
+            f.write('\tglGetString = cast(typeof(glGetString))load("glGetString\\0".ptr);\n')
+            f.write('\tglGetStringi = cast(typeof(glGetStringi))load("glGetStringi\\0".ptr);\n')
+            f.write('\tglGetIntegerv = cast(typeof(glGetIntegerv))load("glGetIntegerv\\0".ptr);\n')
+            f.write('\tif(glGetString is null || glGetIntegerv is null) return GLVersion(0, 0);\n\n')
+            f.write('\tGLVersion glv = find_core();\n')
             for feature in features:
                 f.write('\tload_gl_{}(load);\n'.format(feature.name))
-            f.write('\n\tfind_extensions();\n')
+            f.write('\n\tfind_extensions(glv);\n')
             for ext in extensions:
                 f.write('\tload_gl_{}(load);\n'.format(ext.name))
-            f.write('\n\treturn true;\n}\n\n')
+            f.write('\n\treturn glv;\n}\n\n')
 
             f.write('private:\n\n')
 
-            f.write('void find_core() {\n')
+            f.write('GLVersion find_core() {\n')
             f.write('\tint major;\n')
             f.write('\tint minor;\n')
             f.write('\tglGetIntegerv(GL_MAJOR_VERSION, &major);\n')
@@ -181,33 +205,28 @@ class DGenerator(Generator):
             for feature in features:
                 f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
                     ' major > {num[0]};\n'.format(feature.name, num=feature.number))
-            f.write('\tGLVersion.major = major;\n\tGLVersion.minor = minor;\n')
+            f.write('\treturn GLVersion(major, minor);\n')
             f.write('}\n\n')
 
 
-            f.write('void find_extensions() {\n')
-            f.write('\tstring extensions = to!string(glGetString(GL_EXTENSIONS));\n\n')
+            f.write('void find_extensions(GLVersion glv) {\n')
+            f.write('\tconst(char)* extensions = cast(const(char)*)glGetString(GL_EXTENSIONS);\n\n')
             for ext in extensions:
-                f.write('\t{0} = canFind(extensions, "{0}");\n'.format(ext.name))
+                f.write('\t{0} = has_ext(glv, extensions, "{0}\\0".ptr);\n'.format(ext.name))
             f.write('}\n\n')
 
             for name, loaderfunc in self.loaderfuncs.items():
                 f.write(loaderfunc)
 
-        path = os.path.join(self.path, 'glad', 'gl.d')
+        path = os.path.join(self.path,self.MODULE, self.GL + self.FILE_EXTENSION)
         makefiledir(path)
 
         with open(path, 'w') as f:
-            f.write('module glad.gl;\n\n\n')
-
-            f.write('public import glad.glenums;\n')
-            f.write('public import glad.glext;\n')
-            f.write('public import glad.glfuncs;\n')
-            f.write('public import glad.gltypes;\n')
-
+            self.write_module(f, self.GL)
+            self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES], False)
 
     def generate_types(self, api, version, types):
-        path = os.path.join(self.path, 'glad', 'gltypes.d')
+        path = os.path.join(self.path,self.MODULE, self.TYPES + self.FILE_EXTENSION)
         makefiledir(path)
 
         with open(path, 'w') as f:
@@ -216,8 +235,9 @@ class DGenerator(Generator):
             for ogl, d in TYPES.items():
                 f.write('alias {} = {};\n'.format(ogl, d))
 
-            f.write('struct __GLsync;\nalias GLsync = __GLsync*;\n\n')
-            f.write('struct _cl_context;\nstruct _cl_event;\n\n')
+            # TODO opaque struct
+            f.write('struct __GLsync {}\nalias GLsync = __GLsync*;\n\n')
+            f.write('struct _cl_context {}\nstruct _cl_event;\n\n')
             f.write('extern(System) alias GLDEBUGPROC = void function(GLenum, GLenum, '
                     'GLuint, GLenum, GLsizei, in GLchar*, GLvoid*);\n')
             f.write('alias GLDEBUGPROCARB = GLDEBUGPROC;\n')
@@ -226,19 +246,19 @@ class DGenerator(Generator):
                     'GLenum, GLsizei, in GLchar*, GLvoid*);\n\n')
 
     def generate_features(self, api, version, profile, features):
-        fpath = os.path.join(self.path, 'glad', 'glfuncs.d')
+        fpath = os.path.join(self.path,self.MODULE, self.FUNCS + self.FILE_EXTENSION)
         makefiledir(fpath)
-        epath = os.path.join(self.path, 'glad', 'glenums.d')
+        epath = os.path.join(self.path,self.MODULE, self.ENUMS + self.FILE_EXTENSION)
         makefiledir(epath)
 
         removed = set()
         if profile == 'core':
             removed = set(chain.from_iterable(feature.remove for feature in features))
         with open(fpath, 'w') as f, open(epath, 'w') as e:
-            f.write('module glad.glfuncs;\n\n\n')
-            f.write('private import glad.gltypes;\n\n')
+            self.write_module(f, self.FUNCS)
+            self.write_imports(f, [self.TYPES])
 
-            e.write('module glad.glenums;\n\n\n')
+            self.write_module(e, self.ENUMS)
             # SpecialNumbers
             e.write('enum : ubyte {\n\tGL_FALSE = 0,\n\tGL_TRUE = 1\n}\n\n')
             e.write('enum uint GL_NO_ERROR = 0;\n')
@@ -260,7 +280,7 @@ class DGenerator(Generator):
                     if not func in removed:
                         if func in written:
                             f.write('// ')
-                        write_d_func(f, func)
+                        self.write_d_func(f, func)
                         written.add(func)
 
                 for enum in feature.enums:
@@ -274,12 +294,12 @@ class DGenerator(Generator):
                 f.write('\n\n')
 
                 io = StringIO()
-                io.write('void load_gl_{}(void* function(string name) load) {{\n'
+                io.write('void load_gl_{}(void* function(const(char)* name) load) {{\n'
                          .format(feature.name))
                 io.write('\tif(!{}) return;\n'.format(feature.name))
                 for func in feature.functions:
                     if not func in removed:
-                        io.write('\t{name} = cast(typeof({name}))load("{name}");\n'
+                        io.write('\t{name} = cast(typeof({name}))load("{name}\\0".ptr);\n'
                             .format(name=func.proto.name))
                 io.write('\treturn;\n}\n\n')
                 self.loaderfuncs[feature.name] = io.getvalue()
@@ -288,15 +308,12 @@ class DGenerator(Generator):
             e.write('}\n')
 
     def generate_extensions(self, api, version, extensions, enums, functions):
-        path = os.path.join(self.path, 'glad', 'glext.d')
+        path = os.path.join(self.path,self.MODULE, self.EXT + self.FILE_EXTENSION)
         makefiledir(path)
 
         with open(path, 'w') as f:
-            f.write('module glad.glext;\n\n\n')
-
-            f.write('private import glad.gltypes;\n')
-            f.write('private import glad.glenums;\n')
-            f.write('private import glad.glfuncs;\n\n')
+            self.write_module(f, self.EXT)
+            self.write_imports(f, [self.TYPES, self.ENUMS, self.FUNCS])
 
             written = set(enum.name for enum in enums) | \
                       set(function.proto.name for function in functions)
@@ -312,16 +329,16 @@ class DGenerator(Generator):
                 for func in ext.functions:
                     if func.proto.name in written:
                         f.write('// ')
-                    write_d_func(f, func)
+                    self.write_d_func(f, func)
                     written.add(func.proto.name)
 
                 io = StringIO()
-                io.write('bool load_gl_{}(void* function(string name) load) {{\n'
+                io.write('bool load_gl_{}(void* function(const(char)* name) load) {{\n'
                     .format(ext.name))
                 io.write('\tif(!{0}) return {0};\n\n'.format(ext.name))
                 for func in ext.functions:
                     # even if they were in written we need to load it
-                    io.write('\t{name} = cast(typeof({name}))load("{name}");\n'
+                    io.write('\t{name} = cast(typeof({name}))load("{name}\\0".ptr);\n'
                         .format(name=func.proto.name))
                 io.write('\treturn {};\n'.format(ext.name))
                 io.write('}\n')
@@ -329,13 +346,22 @@ class DGenerator(Generator):
                 io.write('\n\n')
                 self.loaderfuncs[ext.name] = io.getvalue()
 
+    def write_imports(self, fobj, modules, private=True):
+        for mod in modules:
+            if private:
+                fobj.write('private ')
+            else:
+                fobj.write('public ')
 
-def write_d_func(f, func):
-    f.write('extern(System) alias fp_{} = {} function('
-            .format(func.proto.name, func.proto.ret.to_d()))
-    f.write(', '.join(param.type.to_d() for param in func.params))
-    f.write(') nothrow; __gshared fp_{0} {0};\n'.format(func.proto.name))
+            fobj.write('import {}.{};\n'.format(self.MODULE, mod))
 
-def d_func_ptr(func):
-    return '{} function({})'.format(func.proto.ret.to_d(),
-        ', '.join(param.type.to_d() for param in func.params))
+    def write_module(self, fobj, name):
+        fobj.write('module {}.{};\n\n\n'.format(self.MODULE, name))
+
+
+    def write_d_func(self, fobj, func):
+        fobj.write('extern(System) alias fp_{} = {} function('
+                .format(func.proto.name, func.proto.ret.to_d()))
+        fobj.write(', '.join(param.type.to_d() for param in func.params))
+        fobj.write(') nothrow; __gshared fp_{0} {0};\n'.format(func.proto.name))
+

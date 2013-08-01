@@ -1,5 +1,5 @@
 import glad.parse
-from glad.generator import DGenerator
+from glad.generator import VoltGenerator, DGenerator
 import os.path
 
 def main():
