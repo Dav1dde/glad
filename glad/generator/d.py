@@ -67,7 +67,8 @@ bool gladInit() {
     version(Windows) {
         libGL = LoadLibraryA("opengl32.dll\\0".ptr);
         if(libGL !is null) {
-            wglGetProcAddress = GetProcAddress(libGL, "wglGetProcAddress\\0".ptr);
+            wglGetProcAddress = cast(typeof(wglGetProcAddress))GetProcAddress(
+                libGL, "wglGetProcAddress\\0".ptr);
             return true;
         }
 
