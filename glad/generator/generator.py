@@ -30,7 +30,7 @@ class Generator(object):
         extensions = [spec.extensions[api][ext] for ext in extensions]
         self.generate_extensions(api, version, extensions, enums, functions)
 
-        self.generate_loader(api, version, functions, extensions)
+        self.generate_loader(api, version, f, extensions)
 
 
     def generate_loader(self, api, version, features, extensions):

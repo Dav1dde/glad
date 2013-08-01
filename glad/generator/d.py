@@ -39,12 +39,108 @@ TYPES = {
     'GLvdpauSurfaceNV' : 'ptrdiff_t'
 }
 
+GLAD_FUNCS = '''
+version(Windows) {
+    private import std.c.windows.windows;
+} else {
+    private {
+        enum RTLD_NOW = 0x00010;
+        enum RTLD_GLOBAL = 0x00100;
+        extern(C) {
+            void* dlopen(const(char)* file, int mode);
+            int dlclose(void* handle);
+            void* dlsym(void* handle, const(char)* name);
+            char* dlerror();
+        }
+    }
+}
+
+version(Windows) {
+    private __gshared HMODULE libGL;
+    extern(System) private __gshared void* function(const(char)*) wglGetProcAddress;
+} else {
+    private __gshared void* libGL;
+    extern(System) private __gshared void* function(const(char)*) glXGetProcAddress;
+}
+
+bool gladInit() {
+    version(Windows) {
+        libGL = LoadLibraryA("opengl32.dll\\0".ptr);
+        if(libGL !is null) {
+            wglGetProcAddress = GetProcAddress(libGL, "wglGetProcAddress\\0".ptr);
+            return true;
+        }
+
+        return false;
+    } else {
+        version(OSX) {
+            enum NAMES = [
+                "../Frameworks/OpenGL.framework/OpenGL\\0".ptr,
+                "/Library/Frameworks/OpenGL.framework/OpenGL\\0".ptr,
+                "/System/Library/Frameworks/OpenGL.framework/OpenGL\\0".ptr
+            ];
+        } else {
+            enum NAMES = ["libGL.so.1\\0".ptr, "libGL.so\\0".ptr];
+        }
+
+        foreach(name; NAMES) {
+            libGL = dlopen(name, RTLD_NOW | RTLD_GLOBAL);
+            if(libGL !is null) {
+                glXGetProcAddress = cast(typeof(glXGetProcAddress))dlsym(libGL,
+                    "glXGetProcAddressARB\\0".ptr);
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+void gladTerminate() {
+    version(Windows) {
+        if(libGL !is null) {
+            FreeLibrary(libGL);
+            libGL = null;
+        }
+    } else {
+        if(libGL !is null) {
+            dlclose(libGL);
+            libGL = null;
+        }
+    }
+}
+
+void* gladGetProcAddress(string name) {
+    if(libGL is null) return null;
+    const(char)* namez = toStringz(name);
+    void* result;
+
+    version(Windows) {
+        if(wglGetProcAddress is null) return null;
+
+        result = wglGetProcAddress(namez);
+        if(result is null) {
+            result = GetProcAddress(libGL, namez);
+        }
+    } else {
+        if(glXGetProcAddress is null) return null;
+
+        result = glXGetProcAddress(namez);
+        if(result is null) {
+            result = dlsym(libGL, namez);
+        }
+    }
+
+    return result;
+}
+'''
+
 
 class DGenerator(Generator):
     def __init__(self, *args, **kwargs):
         Generator.__init__(self, *args, **kwargs)
 
-        self.loaderfuncs = list()
+        self.loaderfuncs = dict()
 
     def generate_loader(self, api, version, features, extensions):
         path = os.path.join(self.path, 'glad', 'loader.d')
@@ -54,18 +150,54 @@ class DGenerator(Generator):
             f.write('module glad.loader;\n\n\n')
 
             f.write('private import std.conv;\n')
+            f.write('private import std.string;\n')
             f.write('private import std.algorithm;\n')
 
             f.write('private import glad.glfuncs;\n')
-            f.write('private import glad.glext;\n\n\n')
+            f.write('private import glad.glext;\n')
+            f.write('private import glad.glenums;\n')
+            f.write('private import glad.gltypes;\n\n\n')
 
-            f.write('private void find_extensions(string extensions) {\n')
-            #f.write('\tstring extensions = to!string(glGetString(GL_EXTENSIONS));\n\n')
+
+            f.write('struct GLVersion { static uint major; static uint minor; }\n')
+
+            f.write('bool gladLoadGL() {\n')
+            f.write('\treturn gladLoadGL(&gladGetProcAddress);\n')
+            f.write('}\n')
+
+            f.write('bool gladLoadGL(void* function(string name) load) {\n')
+            f.write('\tglGetString = cast(typeof(glGetString))load("glGetString");\n')
+            f.write('\tif(glGetString is null) return false;\n\n')
+            f.write('\tfind_core();\n')
+            for feature in features:
+                f.write('\tload_gl_{}(load);\n'.format(feature.name))
+            f.write('\n\tfind_extensions();\n')
+            for ext in extensions:
+                f.write('\tload_gl_{}(load);\n'.format(ext.name))
+            f.write('\n\treturn true;\n}\n\n')
+
+            f.write(GLAD_FUNCS)
+
+            f.write('private:\n\n')
+
+            f.write('void find_core() {\n')
+            f.write('\tstring ver = to!string(glGetString(GL_VERSION));\n')
+            f.write('\tuint major = to!uint(ver[0..1]);\n')
+            f.write('\tuint minor = to!uint(ver[2..3]);\n\n')
+            for feature in features:
+                f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
+                    ' major > {num[0]};\n'.format(feature.name, num=feature.number))
+            f.write('\tGLVersion.major = major;\n\tGLVersion.minor = minor;\n')
+            f.write('}\n\n')
+
+
+            f.write('void find_extensions() {\n')
+            f.write('\tstring extensions = to!string(glGetString(GL_EXTENSIONS));\n\n')
             for ext in extensions:
                 f.write('\t{0} = canFind(extensions, "{0}");\n'.format(ext.name))
             f.write('}\n\n')
 
-            for loaderfunc in self.loaderfuncs:
+            for name, loaderfunc in self.loaderfuncs.items():
                 f.write(loaderfunc)
 
 
@@ -109,21 +241,41 @@ class DGenerator(Generator):
             e.write('enum ulong GL_TIMEOUT_IGNORED_APPLE = 0xFFFFFFFFFFFFFFFF;\n\n')
             e.write('enum : uint {\n')
 
+            written = set()
             for feature in features:
                 feature.profile = 'profile'
 
                 f.write('// {}\n'.format(feature.name))
+                f.write('bool {};\n'.format(feature.name))
                 for func in feature.functions:
                     if not func in removed:
+                        if func in written:
+                            f.write('// ')
                         write_d_func(f, func)
+                        written.add(func)
 
                 for enum in feature.enums:
                     if enum.group == 'SpecialNumbers' or enum in removed:
                         continue
+                    if enum in written:
+                        f.write('// ')
                     e.write('\t{} = {},\n'.format(enum.name, enum.value))
+                    written.add(enum)
 
                 f.write('\n\n')
                 e.write('\n\n')
+
+                io = StringIO()
+                io.write('void load_gl_{}(void* function(string name) load) {{\n'
+                         .format(feature.name))
+                io.write('\tif(!{}) return;\n'.format(feature.name))
+                for func in feature.functions:
+                    if not func in removed:
+                        io.write('\t{name} = cast(typeof({name}))load("{name}");\n'
+                            .format(name=func.proto.name))
+                io.write('\treturn;\n}\n\n')
+                self.loaderfuncs[feature.name] = io.getvalue()
+
 
             e.write('}\n')
 
@@ -156,7 +308,7 @@ class DGenerator(Generator):
                     written.add(func.proto.name)
 
                 io = StringIO()
-                io.write('bool loadGL_{}(void* function(string name) load) {{\n'
+                io.write('bool load_gl_{}(void* function(string name) load) {{\n'
                     .format(ext.name))
                 io.write('\tif(!{0}) return {0};\n\n'.format(ext.name))
                 for func in ext.functions:
@@ -167,11 +319,11 @@ class DGenerator(Generator):
                 io.write('}\n')
 
                 io.write('\n\n')
-                self.loaderfuncs.append(io.getvalue())
+                self.loaderfuncs[ext.name] = io.getvalue()
 
 
 def write_d_func(f, func):
-    f.write('{} function('.format(func.proto.ret.to_d()))
+    f.write('extern(System) __gshared {} function('.format(func.proto.ret.to_d()))
     f.write(', '.join(param.type.to_d() for param in func.params))
     f.write(') {};\n'.format(func.proto.name))
 
