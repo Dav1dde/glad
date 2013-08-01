@@ -241,6 +241,10 @@ class DGenerator(Generator):
             e.write('module glad.glenums;\n\n\n')
             # SpecialNumbers
             e.write('enum : ubyte {\n\tGL_FALSE = 0,\n\tGL_TRUE = 1\n}\n\n')
+            e.write('enum uint GL_NO_ERROR = 0;\n')
+            e.write('enum uint GL_NONE = 0;\n')
+            e.write('enum uint GL_ZERO = 0;\n')
+            e.write('enum uint ONE = 1;\n')
             e.write('enum uint GL_INVALID_INDEX = 0xFFFFFFFF;\n')
             e.write('enum ulong GL_TIMEOUT_IGNORED = 0xFFFFFFFFFFFFFFFF;\n')
             e.write('enum ulong GL_TIMEOUT_IGNORED_APPLE = 0xFFFFFFFFFFFFFFFF;\n\n')
