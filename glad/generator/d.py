@@ -1,7 +1,6 @@
 from glad.generator import Generator
 from glad.generator.util import makefiledir
 from itertools import chain
-from StringIO import StringIO
 import os.path
 
 TYPES = {
@@ -144,6 +143,10 @@ private bool has_ext(GLVersion glv, const(char)* extensions, const(char)* ext) {
     return false;
 }
 
+GLVersion gladLoadGL() {
+    return gladLoadGL(&gladGetProcAddress);
+}
+
 '''
 
 
@@ -158,15 +161,21 @@ class DGenerator(Generator):
     FILE_EXTENSION = '.d'
     API = GLAD_FUNCS
 
+    LOAD_GL_NAME = 'gladLoadGL'
+
     def __init__(self, *args, **kwargs):
         Generator.__init__(self, *args, **kwargs)
 
         self.loaderfuncs = dict()
 
 
-    def generate_loader(self, api, version, features, extensions):
+    def generate_loader(self, api, version, profile, features, extensions):
         path = os.path.join(self.path,self.MODULE, self.LOADER + self.FILE_EXTENSION)
         makefiledir(path)
+
+        removed = set()
+        if profile == 'core':
+            removed = set(chain.from_iterable(feature.remove for feature in features))
 
         with open(path, 'w') as f:
             self.write_module(f, self.LOADER)
@@ -176,13 +185,9 @@ class DGenerator(Generator):
 
             f.write('struct GLVersion { int major; int minor; }\n')
 
-            f.write('GLVersion gladLoadGL() {\n')
-            f.write('\treturn gladLoadGL(&gladGetProcAddress);\n')
-            f.write('}\n')
-
             f.write(self.API)
 
-            f.write('GLVersion gladLoadGL(void* function(const(char)* name) load) {\n')
+            f.write('GLVersion {}(void* function(const(char)* name) load) {{\n'.format(self.LOAD_GL_NAME))
             f.write('\tglGetString = cast(typeof(glGetString))load("glGetString\\0".ptr);\n')
             f.write('\tglGetStringi = cast(typeof(glGetStringi))load("glGetStringi\\0".ptr);\n')
             f.write('\tglGetIntegerv = cast(typeof(glGetIntegerv))load("glGetIntegerv\\0".ptr);\n')
@@ -192,6 +197,8 @@ class DGenerator(Generator):
                 f.write('\tload_gl_{}(load);\n'.format(feature.name))
             f.write('\n\tfind_extensions(glv);\n')
             for ext in extensions:
+                if len(list(ext.functions)) == 0:
+                    continue
                 f.write('\tload_gl_{}(load);\n'.format(ext.name))
             f.write('\n\treturn glv;\n}\n\n')
 
@@ -215,9 +222,36 @@ class DGenerator(Generator):
                 f.write('\t{0} = has_ext(glv, extensions, "{0}\\0".ptr);\n'.format(ext.name))
             f.write('}\n\n')
 
-            for name, loaderfunc in self.loaderfuncs.items():
-                f.write(loaderfunc)
 
+            for feature in features:
+                f.write('void load_gl_{}(void* function(const(char)* name) load) {{\n'
+                         .format(feature.name))
+                f.write('\tif(!{}) return;\n'.format(feature.name))
+                for func in feature.functions:
+                    if not func in removed:
+                        f.write('\t{name} = cast(typeof({name}))load("{name}\\0".ptr);\n'
+                            .format(name=func.proto.name))
+                f.write('\treturn;\n}\n\n')
+
+            for ext in extensions:
+                if len(list(ext.functions)) == 0:
+                    continue
+
+                f.write('bool load_gl_{}(void* function(const(char)* name) load) {{\n'
+                    .format(ext.name))
+                f.write('\tif(!{0}) return {0};\n\n'.format(ext.name))
+                for func in ext.functions:
+                    # even if they were in written we need to load it
+                    f.write('\t{name} = cast(typeof({name}))load("{name}\\0".ptr);\n'
+                        .format(name=func.proto.name))
+                f.write('\treturn {};\n'.format(ext.name))
+                f.write('}\n')
+
+                f.write('\n\n')
+
+        self.write_gl()
+
+    def write_gl(self):
         path = os.path.join(self.path,self.MODULE, self.GL + self.FILE_EXTENSION)
         makefiledir(path)
 
@@ -230,14 +264,14 @@ class DGenerator(Generator):
         makefiledir(path)
 
         with open(path, 'w') as f:
-            f.write('module glad.gltypes;\n\n\n')
+            self.write_module(f, self.TYPES)
 
             for ogl, d in TYPES.items():
                 f.write('alias {} = {};\n'.format(ogl, d))
 
             # TODO opaque struct
             f.write('struct __GLsync {}\nalias GLsync = __GLsync*;\n\n')
-            f.write('struct _cl_context {}\nstruct _cl_event;\n\n')
+            f.write('struct _cl_context {}\nstruct _cl_event {}\n\n')
             f.write('extern(System) alias GLDEBUGPROC = void function(GLenum, GLenum, '
                     'GLuint, GLenum, GLsizei, in GLchar*, GLvoid*);\n')
             f.write('alias GLDEBUGPROCARB = GLDEBUGPROC;\n')
@@ -254,58 +288,50 @@ class DGenerator(Generator):
         removed = set()
         if profile == 'core':
             removed = set(chain.from_iterable(feature.remove for feature in features))
+
+
         with open(fpath, 'w') as f, open(epath, 'w') as e:
             self.write_module(f, self.FUNCS)
             self.write_imports(f, [self.TYPES])
 
             self.write_module(e, self.ENUMS)
             # SpecialNumbers
-            e.write('enum : ubyte {\n\tGL_FALSE = 0,\n\tGL_TRUE = 1\n}\n\n')
-            e.write('enum uint GL_NO_ERROR = 0;\n')
-            e.write('enum uint GL_NONE = 0;\n')
-            e.write('enum uint GL_ZERO = 0;\n')
-            e.write('enum uint ONE = 1;\n')
-            e.write('enum uint GL_INVALID_INDEX = 0xFFFFFFFF;\n')
-            e.write('enum ulong GL_TIMEOUT_IGNORED = 0xFFFFFFFFFFFFFFFF;\n')
-            e.write('enum ulong GL_TIMEOUT_IGNORED_APPLE = 0xFFFFFFFFFFFFFFFF;\n\n')
-            e.write('enum : uint {\n')
+            self.write_enum(e, 'GL_FALSE', '0', 'ubyte')
+            self.write_enum(e, 'GL_TRUE', '1', 'ubyte')
+            self.write_enum(e, 'GL_NO_ERROR', '0')
+            self.write_enum(e, 'GL_NONE', '0')
+            self.write_enum(e, 'GL_ZERO', '0')
+            self.write_enum(e, 'GL_ONE', '1')
+            self.write_enum(e, 'GL_INVALID_INDEX', '0xFFFFFFFF')
+            self.write_enum(e, 'GL_TIMEOUT_IGNORED', '0xFFFFFFFFFFFFFFFF', 'ulong')
+            self.write_enum(e, 'GL_TIMEOUT_IGNORED_APPLE', '0xFFFFFFFFFFFFFFFF', 'ulong')
 
-            written = set()
             for feature in features:
-                feature.profile = 'profile'
+                self.write_boolean(f, feature.name)
 
-                f.write('// {}\n'.format(feature.name))
-                f.write('bool {};\n'.format(feature.name))
+            write = set()
+            written = set()
+            self.write_extern(f)
+            for feature in features:
                 for func in feature.functions:
                     if not func in removed:
-                        if func in written:
-                            f.write('// ')
-                        self.write_d_func(f, func)
+                        if not func in written:
+                            self.write_func_prototype(f, func)
+                            write.add(func)
                         written.add(func)
 
                 for enum in feature.enums:
                     if enum.group == 'SpecialNumbers' or enum in removed:
                         continue
-                    if enum in written:
-                        e.write('// ')
-                    e.write('\t{} = {},\n'.format(enum.name, enum.value))
+                    if not enum in written:
+                        self.write_enum(e, enum.name, enum.value)
                     written.add(enum)
+            self.write_extern_end(f)
 
-                f.write('\n\n')
-
-                io = StringIO()
-                io.write('void load_gl_{}(void* function(const(char)* name) load) {{\n'
-                         .format(feature.name))
-                io.write('\tif(!{}) return;\n'.format(feature.name))
-                for func in feature.functions:
-                    if not func in removed:
-                        io.write('\t{name} = cast(typeof({name}))load("{name}\\0".ptr);\n'
-                            .format(name=func.proto.name))
-                io.write('\treturn;\n}\n\n')
-                self.loaderfuncs[feature.name] = io.getvalue()
-
-
-            e.write('}\n')
+            self.write_shared(f)
+            for func in write:
+                self.write_func(f, func)
+            self.write_shared_end(f)
 
     def generate_extensions(self, api, version, extensions, enums, functions):
         path = os.path.join(self.path,self.MODULE, self.EXT + self.FILE_EXTENSION)
@@ -317,34 +343,32 @@ class DGenerator(Generator):
 
             written = set(enum.name for enum in enums) | \
                       set(function.proto.name for function in functions)
+            write = set()
+
             for ext in extensions:
-                f.write('// {}\n'.format(ext.name))
-                f.write('bool {};\n'.format(ext.name))
-
+                self.write_boolean(f, ext.name)
                 for enum in ext.enums:
-                    if enum.name in written:
-                        f.write('// ')
-                    f.write('enum uint {} = {};\n'.format(enum.name, enum.value))
+                    if not enum.name in written:
+                        self.write_enum(f, enum.name, enum.value)
                     written.add(enum.name)
+
+                f.write('\n')
+
+            self.write_extern(f)
+            for ext in extensions:
                 for func in ext.functions:
-                    if func.proto.name in written:
-                        f.write('// ')
-                    self.write_d_func(f, func)
+                    if not func.proto.name in written:
+                        self.write_func_prototype(f, func)
+                        write.add(func)
                     written.add(func.proto.name)
+            self.write_extern_end(f)
 
-                io = StringIO()
-                io.write('bool load_gl_{}(void* function(const(char)* name) load) {{\n'
-                    .format(ext.name))
-                io.write('\tif(!{0}) return {0};\n\n'.format(ext.name))
-                for func in ext.functions:
-                    # even if they were in written we need to load it
-                    io.write('\t{name} = cast(typeof({name}))load("{name}\\0".ptr);\n'
-                        .format(name=func.proto.name))
-                io.write('\treturn {};\n'.format(ext.name))
-                io.write('}\n')
+            self.write_shared(f)
+            for func in write:
+                self.write_func(f, func)
 
-                io.write('\n\n')
-                self.loaderfuncs[ext.name] = io.getvalue()
+            self.write_shared_end(f)
+
 
     def write_imports(self, fobj, modules, private=True):
         for mod in modules:
@@ -358,10 +382,30 @@ class DGenerator(Generator):
     def write_module(self, fobj, name):
         fobj.write('module {}.{};\n\n\n'.format(self.MODULE, name))
 
+    def write_extern(self, fobj):
+        fobj.write('extern(System) {\n')
 
-    def write_d_func(self, fobj, func):
-        fobj.write('extern(System) alias fp_{} = {} function('
+    def write_extern_end(self, fobj):
+        fobj.write('}\n')
+
+    def write_shared(self, fobj):
+        fobj.write('__gshared {\n')
+
+    def write_shared_end(self, fobj):
+        fobj.write('}\n')
+
+    def write_func(self, fobj, func):
+        fobj.write('fp_{0} {0};\n'.format(func.proto.name))
+
+    def write_func_prototype(self, fobj, func):
+        fobj.write('alias fp_{} = {} function('
                 .format(func.proto.name, func.proto.ret.to_d()))
         fobj.write(', '.join(param.type.to_d() for param in func.params))
-        fobj.write(') nothrow; __gshared fp_{0} {0};\n'.format(func.proto.name))
+        fobj.write(') nothrow;\n')
+
+    def write_boolean(self, fobj, name):
+        fobj.write('bool {};\n'.format(name))
+
+    def write_enum(self, fobj, name, value, type='uint'):
+        fobj.write('enum {} {} = {};\n'.format(type, name, value))
 

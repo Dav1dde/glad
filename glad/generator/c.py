@@ -3,7 +3,7 @@ import os.path
 
 
 class CGenerator(Generator):
-    def generate_loader(self, api, version, features, extensions):
+    def generate_loader(self, api, version, profile, features, extensions):
         raise NotImplementedError
 
     def generate_types(self, api, version, types):

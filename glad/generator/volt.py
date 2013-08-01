@@ -3,17 +3,44 @@ import os.path
 
 
 class VoltGenerator(DGenerator):
-    MODULE = 'glad'
+    MODULE = 'gl'
     LOADER = 'loader'
-    GL = 'gl'
-    ENUMS = 'glenums'
-    EXT = 'glext'
-    FUNCS = 'glfuncs'
-    TYPES = 'gltypes'
+    GL = 'package'
+    ENUMS = 'enums'
+    EXT = 'ext'
+    FUNCS = 'funcs'
+    TYPES = 'types'
     FILE_EXTENSION = '.volt'
+    API = ''
 
-    def write_d_func(self, f, func):
-        f.write('extern(system) alias fp_{} = {} function('
-                .format(func.proto.name, func.proto.ret.to_d()))
-        f.write(', '.join(param.type.to_d() for param in func.params))
-        f.write(') nothrow; global fp_{0} {0};\n'.format(func.proto.name))
+    LOAD_GL_NAME = 'loadGL'
+
+    def write_module(self, fobj, name):
+        if name == 'package':
+            fobj.write('module {};\n\n'.format(self.MODULE))
+        else:
+            DGenerator.write_module(self, fobj, name)
+
+    def write_extern(self, fobj):
+        fobj.write('extern(System) @loadDynamic:\n')
+
+    def write_extern_end(self, fobj):
+        pass
+
+    def write_shared(self, fobj):
+        pass
+
+    def write_shared_end(self, fobj):
+        pass
+
+    def write_func(self, fobj, func):
+        pass
+
+    def write_func_prototype(self, fobj, func):
+        fobj.write('{} {}('
+                .format(func.proto.ret.to_volt(), func.proto.name))
+        fobj.write(', '.join(param.type.to_volt() for param in func.params))
+        fobj.write(');\n')
+
+    def write_boolean(self, fobj, name):
+        fobj.write('global bool {};\n'.format(name))

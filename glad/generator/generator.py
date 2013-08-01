@@ -30,10 +30,10 @@ class Generator(object):
         extensions = [spec.extensions[api][ext] for ext in extensions]
         self.generate_extensions(api, version, extensions, enums, functions)
 
-        self.generate_loader(api, version, f, extensions)
+        self.generate_loader(api, version, profile, f, extensions)
 
 
-    def generate_loader(self, api, version, features, extensions):
+    def generate_loader(self, api, version, profile, features, extensions):
         raise NotImplementedError
 
     def generate_types(self, api, version, types):
