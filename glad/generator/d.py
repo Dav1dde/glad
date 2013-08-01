@@ -60,7 +60,7 @@ bool gladInit() {
         if(libGL !is null) {
             wglGetProcAddress = cast(typeof(wglGetProcAddress))GetProcAddress(
                 libGL, "wglGetProcAddress\\0".ptr);
-            return true;
+            return wglGetProcAddress !is null;
         }
 
         return false;
@@ -80,7 +80,7 @@ bool gladInit() {
             if(libGL !is null) {
                 glXGetProcAddress = cast(typeof(glXGetProcAddress))dlsym(libGL,
                     "glXGetProcAddressARB\\0".ptr);
-                return true;
+                return glXGetProcAddress !is null;
             }
         }
 
