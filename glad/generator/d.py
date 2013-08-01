@@ -258,7 +258,7 @@ class DGenerator(Generator):
                     if enum.group == 'SpecialNumbers' or enum in removed:
                         continue
                     if enum in written:
-                        f.write('// ')
+                        e.write('// ')
                     e.write('\t{} = {},\n'.format(enum.name, enum.value))
                     written.add(enum)
 
