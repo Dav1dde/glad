@@ -124,6 +124,13 @@ void* gladGetProcAddress(const(char)* namez) {
     return result;
 }
 
+GLVersion gladLoadGL() {
+    return gladLoadGL(&gladGetProcAddress);
+}
+
+'''
+
+HAS_EXT = '''
 private extern(C) char* strstr(const(char)*, const(char)*);
 private extern(C) int strcmp(const(char)*, const(char)*);
 private bool has_ext(GLVersion glv, const(char)* extensions, const(char)* ext) {
@@ -133,7 +140,7 @@ private bool has_ext(GLVersion glv, const(char)* extensions, const(char)* ext) {
         int num;
         glGetIntegerv(GL_NUM_EXTENSIONS, &num);
 
-        for(int i=0; i < num; i++) {
+        for(uint i=0; i < cast(uint)num; i++) {
             if(strcmp(cast(const(char)*)glGetStringi(GL_EXTENSIONS, i), ext) == 0) {
                 return true;
             }
@@ -142,11 +149,6 @@ private bool has_ext(GLVersion glv, const(char)* extensions, const(char)* ext) {
 
     return false;
 }
-
-GLVersion gladLoadGL() {
-    return gladLoadGL(&gladGetProcAddress);
-}
-
 '''
 
 
@@ -160,6 +162,8 @@ class DGenerator(Generator):
     TYPES = 'gltypes'
     FILE_EXTENSION = '.d'
     API = GLAD_FUNCS
+    EXTCHECK = HAS_EXT
+
 
     LOAD_GL_NAME = 'gladLoadGL'
 
@@ -186,12 +190,13 @@ class DGenerator(Generator):
             f.write('struct GLVersion { int major; int minor; }\n')
 
             f.write(self.API)
+            f.write(self.EXTCHECK)
 
             f.write('GLVersion {}(void* function(const(char)* name) load) {{\n'.format(self.LOAD_GL_NAME))
             f.write('\tglGetString = cast(typeof(glGetString))load("glGetString\\0".ptr);\n')
             f.write('\tglGetStringi = cast(typeof(glGetStringi))load("glGetStringi\\0".ptr);\n')
             f.write('\tglGetIntegerv = cast(typeof(glGetIntegerv))load("glGetIntegerv\\0".ptr);\n')
-            f.write('\tif(glGetString is null || glGetIntegerv is null) return GLVersion(0, 0);\n\n')
+            f.write('\tif(glGetString is null || glGetIntegerv is null) { GLVersion glv; return glv; }\n\n')
             f.write('\tGLVersion glv = find_core();\n')
             for feature in features:
                 f.write('\tload_gl_{}(load);\n'.format(feature.name))
@@ -212,7 +217,7 @@ class DGenerator(Generator):
             for feature in features:
                 f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
                     ' major > {num[0]};\n'.format(feature.name, num=feature.number))
-            f.write('\treturn GLVersion(major, minor);\n')
+            f.write('\tGLVersion glv; glv.major = major; glv.minor = minor; return glv;\n')
             f.write('}\n\n')
 
 

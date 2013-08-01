@@ -44,3 +44,18 @@ class VoltGenerator(DGenerator):
 
     def write_boolean(self, fobj, name):
         fobj.write('global bool {};\n'.format(name))
+
+    def write_enum(self, fobj, name, value, type='uint'):
+        if value.startswith('0x') and type.startswith('u'):
+            value += 'U'
+        if len(value) > 12 and type.startswith('u'):
+            value += 'L'
+
+        try:
+            v = int(value)
+            if v < 0:
+                type = 'int'
+        except ValueError:
+            pass
+
+        fobj.write('enum {} {} = {};\n'.format(type, name, value))
