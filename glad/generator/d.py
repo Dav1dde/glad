@@ -7,7 +7,7 @@ import os.path
 TYPES = {
     'GLenum' : 'uint',
     'GLvoid' : 'void',
-    'GLboolean' : 'bool',
+    'GLboolean' : 'ubyte',
     'GLbitfield' : 'uint',
     'GLchar' : 'char',
     'GLbyte' : 'byte',
