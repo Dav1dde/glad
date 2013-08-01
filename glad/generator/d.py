@@ -331,9 +331,10 @@ class DGenerator(Generator):
 
 
 def write_d_func(f, func):
-    f.write('extern(System) __gshared {} function('.format(func.proto.ret.to_d()))
+    f.write('extern(System) alias fp_{} = {} function('
+            .format(func.proto.name, func.proto.ret.to_d()))
     f.write(', '.join(param.type.to_d() for param in func.params))
-    f.write(') {};\n'.format(func.proto.name))
+    f.write(') nothrow; __gshared fp_{0} {0};\n'.format(func.proto.name))
 
 def d_func_ptr(func):
     return '{} function({})'.format(func.proto.ret.to_d(),
