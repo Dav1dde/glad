@@ -43,16 +43,7 @@ GLAD_FUNCS = '''
 version(Windows) {
     private import std.c.windows.windows;
 } else {
-    private {
-        enum RTLD_NOW = 0x00010;
-        enum RTLD_GLOBAL = 0x00100;
-        extern(C) {
-            void* dlopen(const(char)* file, int mode);
-            int dlclose(void* handle);
-            void* dlsym(void* handle, const(char)* name);
-            char* dlerror();
-        }
-    }
+    private import core.sys.posix.dlfcn;
 }
 
 version(Windows) {
@@ -160,7 +151,7 @@ class DGenerator(Generator):
             f.write('private import glad.gltypes;\n\n\n')
 
 
-            f.write('struct GLVersion { static uint major; static uint minor; }\n')
+            f.write('struct GLVersion { static int major; static int minor; }\n')
 
             f.write('bool gladLoadGL() {\n')
             f.write('\treturn gladLoadGL(&gladGetProcAddress);\n')
@@ -168,7 +159,8 @@ class DGenerator(Generator):
 
             f.write('bool gladLoadGL(void* function(string name) load) {\n')
             f.write('\tglGetString = cast(typeof(glGetString))load("glGetString");\n')
-            f.write('\tif(glGetString is null) return false;\n\n')
+            f.write('\tglGetIntegerv = cast(typeof(glGetIntegerv))load("glGetIntegerv");\n')
+            f.write('\tif(glGetString is null || glGetIntegerv is null) return false;\n\n')
             f.write('\tfind_core();\n')
             for feature in features:
                 f.write('\tload_gl_{}(load);\n'.format(feature.name))
@@ -182,9 +174,10 @@ class DGenerator(Generator):
             f.write('private:\n\n')
 
             f.write('void find_core() {\n')
-            f.write('\tstring ver = to!string(glGetString(GL_VERSION));\n')
-            f.write('\tuint major = to!uint(ver[0..1]);\n')
-            f.write('\tuint minor = to!uint(ver[2..3]);\n\n')
+            f.write('\tint major;\n')
+            f.write('\tint minor;\n')
+            f.write('\tglGetIntegerv(GL_MAJOR_VERSION, &major);\n')
+            f.write('\tglGetIntegerv(GL_MINOR_VERSION, &minor);\n')
             for feature in features:
                 f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
                     ' major > {num[0]};\n'.format(feature.name, num=feature.number))
