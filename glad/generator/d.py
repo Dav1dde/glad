@@ -223,7 +223,7 @@ class DGenerator(Generator):
     def generate_features(self, api, version, profile, features):
         fpath = os.path.join(self.path, 'glad', 'glfuncs.d')
         makefiledir(fpath)
-        epath = os.path.join(self.path, 'glad', 'glext.d')
+        epath = os.path.join(self.path, 'glad', 'glenums.d')
         makefiledir(epath)
 
         removed = set()
@@ -263,7 +263,6 @@ class DGenerator(Generator):
                     written.add(enum)
 
                 f.write('\n\n')
-                e.write('\n\n')
 
                 io = StringIO()
                 io.write('void load_gl_{}(void* function(string name) load) {{\n'
