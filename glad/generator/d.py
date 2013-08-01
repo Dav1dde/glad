@@ -157,6 +157,8 @@ class DGenerator(Generator):
             f.write('\treturn gladLoadGL(&gladGetProcAddress);\n')
             f.write('}\n')
 
+            f.write(GLAD_FUNCS)
+
             f.write('bool gladLoadGL(void* function(string name) load) {\n')
             f.write('\tglGetString = cast(typeof(glGetString))load("glGetString");\n')
             f.write('\tglGetIntegerv = cast(typeof(glGetIntegerv))load("glGetIntegerv");\n')
@@ -168,8 +170,6 @@ class DGenerator(Generator):
             for ext in extensions:
                 f.write('\tload_gl_{}(load);\n'.format(ext.name))
             f.write('\n\treturn true;\n}\n\n')
-
-            f.write(GLAD_FUNCS)
 
             f.write('private:\n\n')
 
@@ -193,6 +193,17 @@ class DGenerator(Generator):
 
             for name, loaderfunc in self.loaderfuncs.items():
                 f.write(loaderfunc)
+
+        path = os.path.join(self.path, 'glad', 'gl.d')
+        makefiledir(path)
+
+        with open(path, 'w') as f:
+            f.write('module glad.gl;\n\n\n')
+
+            f.write('public import glad.glenums;\n')
+            f.write('public import glad.glext;\n')
+            f.write('public import glad.glfuncs;\n')
+            f.write('public import glad.gltypes;\n')
 
 
     def generate_types(self, api, version, types):
