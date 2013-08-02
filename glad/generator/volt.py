@@ -3,7 +3,7 @@ import os.path
 
 
 class VoltGenerator(DGenerator):
-    MODULE = 'gl'
+    MODULE = 'amp.gl'
     LOADER = 'loader'
     GL = 'package'
     ENUMS = 'enums'

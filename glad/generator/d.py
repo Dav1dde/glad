@@ -174,8 +174,7 @@ class DGenerator(Generator):
 
 
     def generate_loader(self, api, version, profile, features, extensions):
-        path = os.path.join(self.path,self.MODULE, self.LOADER + self.FILE_EXTENSION)
-        makefiledir(path)
+        path = self.make_path(self.LOADER)
 
         removed = set()
         if profile == 'core':
@@ -257,16 +256,14 @@ class DGenerator(Generator):
         self.write_gl()
 
     def write_gl(self):
-        path = os.path.join(self.path,self.MODULE, self.GL + self.FILE_EXTENSION)
-        makefiledir(path)
+        path = self.make_path(self.GL)
 
         with open(path, 'w') as f:
             self.write_module(f, self.GL)
             self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES], False)
 
     def generate_types(self, api, version, types):
-        path = os.path.join(self.path,self.MODULE, self.TYPES + self.FILE_EXTENSION)
-        makefiledir(path)
+        path = self.make_path(self.TYPES)
 
         with open(path, 'w') as f:
             self.write_module(f, self.TYPES)
@@ -286,10 +283,8 @@ class DGenerator(Generator):
                     'GLenum, GLsizei, in GLchar*, GLvoid*)', 'system')
 
     def generate_features(self, api, version, profile, features):
-        fpath = os.path.join(self.path,self.MODULE, self.FUNCS + self.FILE_EXTENSION)
-        makefiledir(fpath)
-        epath = os.path.join(self.path,self.MODULE, self.ENUMS + self.FILE_EXTENSION)
-        makefiledir(epath)
+        fpath = self.make_path(self.FUNCS)
+        epath = self.make_path(self.ENUMS)
 
         removed = set()
         if profile == 'core':
@@ -340,8 +335,7 @@ class DGenerator(Generator):
             self.write_shared_end(f)
 
     def generate_extensions(self, api, version, extensions, enums, functions):
-        path = os.path.join(self.path,self.MODULE, self.EXT + self.FILE_EXTENSION)
-        makefiledir(path)
+        path = self.make_path(self.EXT)
 
         with open(path, 'w') as f:
             self.write_module(f, self.EXT)
@@ -374,6 +368,13 @@ class DGenerator(Generator):
                 self.write_func(f, func)
 
             self.write_shared_end(f)
+
+
+    def make_path(self, name):
+        path = os.path.join(self.path, self.MODULE.split('.')[-1],
+                            name + self.FILE_EXTENSION)
+        makefiledir(path)
+        return path
 
 
     def write_imports(self, fobj, modules, private=True):
