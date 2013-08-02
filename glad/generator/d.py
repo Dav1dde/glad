@@ -272,17 +272,18 @@ class DGenerator(Generator):
             self.write_module(f, self.TYPES)
 
             for ogl, d in TYPES.items():
-                f.write('alias {} = {};\n'.format(ogl, d))
+                self.write_alias(f, ogl, d)
 
-            # TODO opaque struct
-            f.write('struct __GLsync {}\nalias GLsync = __GLsync*;\n\n')
-            f.write('struct _cl_context {}\nstruct _cl_event {}\n\n')
-            f.write('extern(System) alias GLDEBUGPROC = void function(GLenum, GLenum, '
-                    'GLuint, GLenum, GLsizei, in GLchar*, GLvoid*);\n')
-            f.write('alias GLDEBUGPROCARB = GLDEBUGPROC;\n')
-            f.write('alias GLDEBUGPROCKHR = GLDEBUGPROC;\n')
-            f.write('extern(System) alias GLDEBUGPROCAMD = void function(GLuint, GLenum, '
-                    'GLenum, GLsizei, in GLchar*, GLvoid*);\n\n')
+            self.write_opaque_struct(f, '__GLsync')
+            self.write_alias(f, 'GLsync', '__GLsync*')
+            self.write_opaque_struct(f, '_cl_context')
+            self.write_opaque_struct(f, '_cl_event')
+            self.write_alias(f, 'GLDEBUGPROC', 'void function(GLenum, GLenum, '
+                    'GLuint, GLenum, GLsizei, in GLchar*, GLvoid*)', 'system')
+            self.write_alias(f, 'GLDEBUGPROCARB', 'GLDEBUGPROC')
+            self.write_alias(f, 'GLDEBUGPROCKHR', 'GLDEBUGPROC')
+            self.write_alias(f, 'GLDEBUGPROCAMD', 'void function(GLuint, GLenum, '
+                    'GLenum, GLsizei, in GLchar*, GLvoid*)', 'system')
 
     def generate_features(self, api, version, profile, features):
         fpath = os.path.join(self.path,self.MODULE, self.FUNCS + self.FILE_EXTENSION)
@@ -413,4 +414,12 @@ class DGenerator(Generator):
 
     def write_enum(self, fobj, name, value, type='uint'):
         fobj.write('enum {} {} = {};\n'.format(type, name, value))
+
+    def write_opaque_struct(self, fobj, name):
+        fobj.write('struct {};\n'.format(name))
+
+    def write_alias(self, fobj, newn, decl, extern=''):
+        if extern == 'system':
+            fobj.write('extern(System) ')
+        fobj.write('alias {} = {};\n'.format(newn, decl))
 

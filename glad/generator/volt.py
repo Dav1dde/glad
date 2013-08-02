@@ -59,3 +59,7 @@ class VoltGenerator(DGenerator):
             pass
 
         fobj.write('enum {} {} = {};\n'.format(type, name, value))
+
+    def write_opaque_struct(self, fobj, name):
+        fobj.write('struct {} {{}}\n'.format(name))
+
