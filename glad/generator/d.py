@@ -275,12 +275,14 @@ class DGenerator(Generator):
             self.write_alias(f, 'GLsync', '__GLsync*')
             self.write_opaque_struct(f, '_cl_context')
             self.write_opaque_struct(f, '_cl_event')
+            self.write_extern(f)
             self.write_alias(f, 'GLDEBUGPROC', 'void function(GLenum, GLenum, '
-                    'GLuint, GLenum, GLsizei, in GLchar*, GLvoid*)', 'system')
+                    'GLuint, GLenum, GLsizei, in GLchar*, GLvoid*)')
             self.write_alias(f, 'GLDEBUGPROCARB', 'GLDEBUGPROC')
             self.write_alias(f, 'GLDEBUGPROCKHR', 'GLDEBUGPROC')
             self.write_alias(f, 'GLDEBUGPROCAMD', 'void function(GLuint, GLenum, '
-                    'GLenum, GLsizei, in GLchar*, GLvoid*)', 'system')
+                    'GLenum, GLsizei, in GLchar*, GLvoid*)')
+            self.write_extern_end(f)
 
     def generate_features(self, api, version, profile, features):
         fpath = self.make_path(self.FUNCS)
@@ -321,20 +323,20 @@ class DGenerator(Generator):
 
             write = set()
             written = set()
-            self.write_extern(f)
+            self.write_prototype_pre(f)
             for feature in features:
                 for func in feature.functions:
                     if not func in removed:
                         if not func in written:
-                            self.write_func_prototype(f, func)
+                            self.write_function_prototype(f, func)
                             write.add(func)
                         written.add(func)
-            self.write_extern_end(f)
+            self.write_prototype_post(f)
 
-            self.write_shared(f)
+            self.write_function_pre(f)
             for func in write:
-                self.write_func(f, func)
-            self.write_shared_end(f)
+                self.write_function(f, func)
+            self.write_function_post(f)
 
     def generate_extensions(self, api, version, extensions, enums, functions):
         path = self.make_path(self.EXT)
@@ -343,10 +345,9 @@ class DGenerator(Generator):
             self.write_module(f, self.EXT)
             self.write_imports(f, [self.TYPES, self.ENUMS, self.FUNCS])
 
+            write = set()
             written = set(enum.name for enum in enums) | \
                       set(function.proto.name for function in functions)
-            write = set()
-
             for ext in extensions:
                 self.write_boolean(f, ext.name)
                 for enum in ext.enums:
@@ -356,20 +357,19 @@ class DGenerator(Generator):
 
                 f.write('\n')
 
-            self.write_extern(f)
+            self.write_prototype_pre(f)
             for ext in extensions:
                 for func in ext.functions:
                     if not func.proto.name in written:
-                        self.write_func_prototype(f, func)
+                        self.write_function_prototype(f, func)
                         write.add(func)
                     written.add(func.proto.name)
-            self.write_extern_end(f)
+            self.write_prototype_post(f)
 
-            self.write_shared(f)
+            self.write_function_pre(f)
             for func in write:
-                self.write_func(f, func)
-
-            self.write_shared_end(f)
+                self.write_function(f, func)
+            self.write_function_post(f)
 
 
     def make_path(self, name):
@@ -391,6 +391,18 @@ class DGenerator(Generator):
     def write_module(self, fobj, name):
         fobj.write('module {}.{};\n\n\n'.format(self.MODULE, name))
 
+    def write_prototype_pre(self, fobj):
+        self.write_extern(fobj)
+
+    def write_prototype_post(self, fobj):
+        self.write_extern_end(fobj)
+
+    def write_function_pre(self, fobj):
+        self.write_shared(fobj)
+
+    def write_function_post(self, fobj):
+        self.write_shared_end(fobj)
+
     def write_extern(self, fobj):
         fobj.write('extern(System) {\n')
 
@@ -403,10 +415,10 @@ class DGenerator(Generator):
     def write_shared_end(self, fobj):
         fobj.write('}\n')
 
-    def write_func(self, fobj, func):
+    def write_function(self, fobj, func):
         fobj.write('fp_{0} {0};\n'.format(func.proto.name))
 
-    def write_func_prototype(self, fobj, func):
+    def write_function_prototype(self, fobj, func):
         fobj.write('alias fp_{} = {} function('
                 .format(func.proto.name, func.proto.ret.to_d()))
         fobj.write(', '.join(param.type.to_d() for param in func.params))
@@ -421,8 +433,6 @@ class DGenerator(Generator):
     def write_opaque_struct(self, fobj, name):
         fobj.write('struct {};\n'.format(name))
 
-    def write_alias(self, fobj, newn, decl, extern=''):
-        if extern == 'system':
-            fobj.write('extern(System) ')
+    def write_alias(self, fobj, newn, decl):
         fobj.write('alias {} = {};\n'.format(newn, decl))
 

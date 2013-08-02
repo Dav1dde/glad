@@ -21,17 +21,23 @@ class VoltGenerator(DGenerator):
         else:
             DGenerator.write_module(self, fobj, name)
 
-    def write_extern(self, fobj):
-        fobj.write('extern(System) @loadDynamic:\n')
+    def write_prototype_pre(self, fobj):
+        fobj.write('extern(System) @loadDynamic {\n')
 
-    def write_extern_end(self, fobj):
+    def write_prototype_post(self, fobj):
+        fobj.write('}\n')
+
+    def write_function_pre(self, fobj):
+        pass
+
+    def write_function_post(self, fobj):
         pass
 
     def write_shared(self, fobj):
-        pass
+        fobj.write('global {\n')
 
     def write_shared_end(self, fobj):
-        pass
+        fobj.write('}\n')
 
     def write_func(self, fobj, func):
         pass
