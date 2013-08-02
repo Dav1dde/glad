@@ -290,11 +290,7 @@ class DGenerator(Generator):
         if profile == 'core':
             removed = set(chain.from_iterable(feature.remove for feature in features))
 
-
-        with open(fpath, 'w') as f, open(epath, 'w') as e:
-            self.write_module(f, self.FUNCS)
-            self.write_imports(f, [self.TYPES])
-
+        with open(epath, 'w') as e:
             self.write_module(e, self.ENUMS)
             # SpecialNumbers
             self.write_enum(e, 'GL_FALSE', '0', 'ubyte')
@@ -306,6 +302,19 @@ class DGenerator(Generator):
             self.write_enum(e, 'GL_INVALID_INDEX', '0xFFFFFFFF')
             self.write_enum(e, 'GL_TIMEOUT_IGNORED', '0xFFFFFFFFFFFFFFFF', 'ulong')
             self.write_enum(e, 'GL_TIMEOUT_IGNORED_APPLE', '0xFFFFFFFFFFFFFFFF', 'ulong')
+
+            written = set()
+            for feature in features:
+                for enum in feature.enums:
+                    if enum.group == 'SpecialNumbers' or enum in removed:
+                        continue
+                    if not enum in written:
+                        self.write_enum(e, enum.name, enum.value)
+                    written.add(enum)
+
+        with open(fpath, 'w') as f:
+            self.write_module(f, self.FUNCS)
+            self.write_imports(f, [self.TYPES])
 
             for feature in features:
                 self.write_boolean(f, feature.name)
@@ -320,13 +329,6 @@ class DGenerator(Generator):
                             self.write_func_prototype(f, func)
                             write.add(func)
                         written.add(func)
-
-                for enum in feature.enums:
-                    if enum.group == 'SpecialNumbers' or enum in removed:
-                        continue
-                    if not enum in written:
-                        self.write_enum(e, enum.name, enum.value)
-                    written.add(enum)
             self.write_extern_end(f)
 
             self.write_shared(f)
