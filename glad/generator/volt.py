@@ -39,10 +39,10 @@ class VoltGenerator(DGenerator):
     def write_shared_end(self, fobj):
         fobj.write('}\n')
 
-    def write_func(self, fobj, func):
+    def write_function(self, fobj, func):
         pass
 
-    def write_func_prototype(self, fobj, func):
+    def write_function_prototype(self, fobj, func):
         fobj.write('{} {}('
                 .format(func.proto.ret.to_volt(), func.proto.name))
         fobj.write(', '.join(param.type.to_volt() for param in func.params))
