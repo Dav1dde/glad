@@ -153,12 +153,8 @@ private bool has_ext(GLVersion glv, const(char)* extensions, const(char)* ext) {
 
 
 class BaseDGenerator(Generator):
-    def generate_loader(self, api, version, profile, features, extensions):
+    def generate_loader(self, api, version, features, extensions):
         path = self.make_path(self.LOADER)
-
-        removed = set()
-        if profile == 'core':
-            removed = set(chain.from_iterable(feature.remove for feature in features))
 
         with open(path, 'w') as f:
             self.write_module(f, self.LOADER)
@@ -212,9 +208,8 @@ class BaseDGenerator(Generator):
                          .format(feature.name))
                 f.write('\tif(!{}) return;\n'.format(feature.name))
                 for func in feature.functions:
-                    if not func in removed:
-                        f.write('\t{name} = cast(typeof({name}))load("{name}\\0".ptr);\n'
-                            .format(name=func.proto.name))
+                    f.write('\t{name} = cast(typeof({name}))load("{name}\\0".ptr);\n'
+                        .format(name=func.proto.name))
                 f.write('\treturn;\n}\n\n')
 
             for ext in extensions:
@@ -264,13 +259,9 @@ class BaseDGenerator(Generator):
                     'GLenum, GLsizei, in GLchar*, GLvoid*)')
             self.write_extern_end(f)
 
-    def generate_features(self, api, version, profile, features):
+    def generate_features(self, api, version, features):
         fpath = self.make_path(self.FUNCS)
         epath = self.make_path(self.ENUMS)
-
-        removed = set()
-        if profile == 'core':
-            removed = set(chain.from_iterable(feature.remove for feature in features))
 
         with open(epath, 'w') as e:
             self.write_module(e, self.ENUMS)
@@ -288,7 +279,7 @@ class BaseDGenerator(Generator):
             written = set()
             for feature in features:
                 for enum in feature.enums:
-                    if enum.group == 'SpecialNumbers' or enum in removed:
+                    if enum.group == 'SpecialNumbers':
                         continue
                     if not enum in written:
                         self.write_enum(e, enum.name, enum.value)
@@ -306,11 +297,10 @@ class BaseDGenerator(Generator):
             self.write_prototype_pre(f)
             for feature in features:
                 for func in feature.functions:
-                    if not func in removed:
-                        if not func in written:
-                            self.write_function_prototype(f, func)
-                            write.add(func)
-                        written.add(func)
+                    if not func in written:
+                        self.write_function_prototype(f, func)
+                        write.add(func)
+                    written.add(func)
             self.write_prototype_post(f)
 
             self.write_function_pre(f)

@@ -11,7 +11,9 @@ def main():
 
     #gen = VoltGenerator(os.path.join('.', 'amp'))
     gen = DGenerator(os.path.join('.', 'build'))
-    gen.generate(spec, 'gl', (4, 3), 'compatability')
+
+    spec.profile = 'compatability'
+    gen.generate(spec, 'gl', (4, 3))
 
 
 if __name__ == '__main__':

@@ -23,6 +23,9 @@ class OpenGLSpec(object):
         self._features = None
         self._extensions = None
 
+        self._profile = 'compatability'
+        self._remove = set()
+
     @classmethod
     def from_url(cls, url):
         raw = ''
@@ -42,6 +45,23 @@ class OpenGLSpec(object):
     @classmethod
     def from_file(cls, path):
         return cls(etree.parse(path).getroot())
+
+    @property
+    def profile(self):
+        return self._profile
+
+    @profile.setter
+    def profile(self, value):
+        if not value in ('core', 'compatability'):
+            raise ValueError('profile must either be core or compatability')
+
+        self._profile = value
+
+    @property
+    def removed(self):
+        if self._profile == 'core':
+            return frozenset(self._remove)
+        return frozenset()
 
     @property
     def comment(self):
@@ -248,14 +268,14 @@ class Extension(object):
 class Feature(Extension):
     def __init__(self, element, spec):
         Extension.__init__(self, element, spec)
+        self.spec = spec
 
-        self.remove = []
         for removed in chain.from_iterable(element.findall('remove')):
             if removed.tag == 'type': continue
 
             data = { 'enum' : spec.enums, 'command' : spec.commands }[removed.tag]
             try:
-                self.remove.append(data[removed.attrib['name']])
+                spec._remove.add(data[removed.attrib['name']])
             except KeyError:
                 pass # TODO
 
@@ -264,5 +284,16 @@ class Feature(Extension):
 
     def __str__(self):
         return '{self.name}@{self.number!r}'.format(self=self)
+
+    @property
+    def enums(self):
+        for enum in super(Feature, self).enums:
+            if not enum in self.spec.removed:
+                yield enum
+    @property
+    def functions(self):
+        for func in super(Feature, self).functions:
+            if not func in self.spec.removed:
+                yield func
 
     __repr__ = __str__
