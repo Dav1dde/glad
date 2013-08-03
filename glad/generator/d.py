@@ -433,6 +433,7 @@ class DGenerator(BaseDGenerator):
         fobj.write('module {}.{};\n\n\n'.format(self.MODULE, name))
 
     def write_prototype_pre(self, fobj):
+        fobj.write('nothrow ')
         self.write_extern(fobj)
 
     def write_prototype_post(self, fobj):
@@ -463,7 +464,7 @@ class DGenerator(BaseDGenerator):
         fobj.write('alias fp_{} = {} function('
                 .format(func.proto.name, func.proto.ret.to_d()))
         fobj.write(', '.join(param.type.to_d() for param in func.params))
-        fobj.write(') nothrow;\n')
+        fobj.write(');\n')
 
     def write_boolean(self, fobj, name):
         fobj.write('bool {};\n'.format(name))
