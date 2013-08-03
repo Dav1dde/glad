@@ -1,5 +1,5 @@
 import glad.parse
-from glad.generator import VoltGenerator, DGenerator
+from glad.generator import VoltGenerator, DGenerator, CGenerator
 import os.path
 
 def main():
@@ -11,6 +11,7 @@ def main():
 
     #gen = VoltGenerator(os.path.join('.', 'amp'))
     gen = DGenerator(os.path.join('.', 'build'))
+    #gen = CGenerator(os.path.join('.', 'GL'))
 
     spec.profile = 'compatability'
     gen.generate(spec, 'gl', (4, 3))
