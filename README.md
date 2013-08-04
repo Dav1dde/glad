@@ -8,6 +8,8 @@ If you're looking only for a loader:
  * D loader: https://github.com/Dav1dde/glad/tree/d
  * Volt loader: https://github.com/Dav1dde/glad/tree/volt
 
+For small examples take a look in `example/`.
+
 
 ## Usage ##
 
@@ -65,6 +67,8 @@ extension/version evaluates to true:
     if(GL_EXT_gpu_shader4) { /* GL_EXT_gpu_shader4 is supported */ }
     if(GL_VERSION_3_0) { /* We support at least OpenGL version 3 */ }
 
+On non-Windows platforms `glad` requires `libdl`, make sure to link with it (`-ldl` for gcc)!
+
 
 #### D ####
 
@@ -82,3 +86,6 @@ extension/version evaluates to true:
     writefln("OpenGL Version %d.%d loaded", glv.major, glv.minor);
     if(GL_EXT_gpu_shader4) { /* GL_EXT_gpu_shader4 is supported */ }
     if(GL_VERSION_3_0) { /* We support at least OpenGL version 3 */ }
+
+
+On non-Windows platforms `glad` requires `libdl`, make sure to link with it (`L-ldl` for dmd)!
