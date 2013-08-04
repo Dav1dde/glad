@@ -1,8 +1,8 @@
-from glad.generator.d import BaseDGenerator
+from glad.generator.d import DGenerator
 import os.path
 
 
-class VoltGenerator(BaseDGenerator):
+class VoltGenerator(DGenerator):
     MODULE = 'amp.gl'
     LOADER = 'loader'
     GL = 'package'
