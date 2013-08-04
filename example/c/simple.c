@@ -7,6 +7,8 @@
 #include <GL/glut.h>
 #endif
 
+// This file is a modified version of gl3w's test.c
+
 // gcc -I. test.c GL/glad.c -ldl -lglut -Wall -Werror
 
 static int width = 600, height = 600;

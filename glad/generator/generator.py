@@ -34,7 +34,8 @@ class Generator(object):
         enforce(all(ext in spec.extensions[api] for ext in extensions),
                 "Invalid extension", ValueError)
 
-        self.generate_types(api, version, spec.types)
+        types = [t for t in spec.types if t.api == api]
+        self.generate_types(api, version, types)
 
         f = [value for key, value in spec.features[api].items() if key <= version]
         enums, functions = merge(f)

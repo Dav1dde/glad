@@ -70,7 +70,8 @@ class OpenGLSpec(object):
     @property
     def types(self):
         if self._types is None:
-            self._types = [Type(element) for element in self.root.iter('types')]
+            self._types = [Type(element) for element in
+                           self.root.find('types').iter('type')]
         return self._types
 
     @property
@@ -140,6 +141,7 @@ class OpenGLSpec(object):
 class Type(object):
     def __init__(self, element):
         self.raw = ''.join(element.itertext())
+        self.api = element.get('api', 'gl')
 
     @property
     def is_preprocessor(self):

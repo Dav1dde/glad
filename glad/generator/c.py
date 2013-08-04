@@ -227,6 +227,7 @@ class CGenerator(Generator):
 
             for type in types:
                 f.write(type.raw.lstrip().replace('        ', ''))
+                f.write('\n')
 
     def generate_features(self, api, version, features):
         path = make_path(self.path, 'glad.c')
