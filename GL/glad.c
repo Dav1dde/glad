@@ -17,16 +17,17 @@ int gladInit(void) {
                 libGL, "wglGetProcAddress");
         return gladwglGetProcAddress != NULL;
     }
+#else
 #if defined(__APPLE__) || defined(__APPLE_CC__)
     const char *NAMES[] = {
         "../Frameworks/OpenGL.framework/OpenGL",
         "/Library/Frameworks/OpenGL.framework/OpenGL",
         "/System/Library/Frameworks/OpenGL.framework/OpenGL"
     };
-    #define NAMELENGTH = 3
+    #define NAMELENGTH 3
 #else
     const char *NAMES[] = {"libGL.so.1", "libGL.so"};
-    #define NAMELENGTH = 2
+    #define NAMELENGTH 2
 #endif
     int index = 0;
     for(index = 0; index < NAMELENGTH; index++) {
@@ -8006,7 +8007,7 @@ GLVersion gladLoadGLLoader(LOADER load) {
 	glGetString = (fp_glGetString)load("glGetString");
 	glGetStringi = (fp_glGetStringi)load("glGetStringi");
 	glGetIntegerv = (fp_glGetIntegerv)load("glGetIntegerv");
-	if(glGetString == NULL || glGetStringi == NULL ||glGetIntegerv == NULL) { GLVersion glv; return glv; }
+	if(glGetString == NULL || glGetStringi == NULL ||glGetIntegerv == NULL) { GLVersion glv = {0, 0}; return glv; }
 
 	GLVersion glv = find_core();
 	load_gl_GL_VERSION_1_0(load);
