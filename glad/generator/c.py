@@ -25,9 +25,10 @@ int gladInit(void) {
     const char *NAMES[] = {
         "../Frameworks/OpenGL.framework/OpenGL",
         "/Library/Frameworks/OpenGL.framework/OpenGL",
-        "/System/Library/Frameworks/OpenGL.framework/OpenGL"
+        "/System/Library/Frameworks/OpenGL.framework/OpenGL",
+        "/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL"
     };
-    #define NAMELENGTH 3
+    #define NAMELENGTH 4
 #else
     const char *NAMES[] = {"libGL.so.1", "libGL.so"};
     #define NAMELENGTH 2
