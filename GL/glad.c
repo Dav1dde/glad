@@ -1,79 +1,94 @@
 #include <string.h>
 #include <GL/glad.h>
-
 #ifdef _WIN32
 #include <windows.h>
 static HMODULE libGL;
-#else
-#include <dlfcn.h>
-static void* libGL;
-#endif
 
 int gladInit(void) {
-#ifdef _WIN32
     libGL = LoadLibraryA("opengl32.dll");
     if(libGL != NULL) {
         gladwglGetProcAddress = (WGLGETPROCADDRESS)GetProcAddress(
                 libGL, "wglGetProcAddress");
         return gladwglGetProcAddress != NULL;
     }
-#else
-#if defined(__APPLE__) || defined(__APPLE_CC__)
-    const char *NAMES[] = {
-        "../Frameworks/OpenGL.framework/OpenGL",
-        "/Library/Frameworks/OpenGL.framework/OpenGL",
-        "/System/Library/Frameworks/OpenGL.framework/OpenGL"
-    };
-    #define NAMELENGTH 3
-#else
-    const char *NAMES[] = {"libGL.so.1", "libGL.so"};
-    #define NAMELENGTH 2
-#endif
-    int index = 0;
-    for(index = 0; index < NAMELENGTH; index++) {
-        libGL = dlopen(NAMES[index], RTLD_NOW | RTLD_GLOBAL);
-        if(libGL != NULL) {
-            gladglXGetProcAddress = (GLXGETPROCADDRESS)dlsym(libGL,
-                "glXGetProcAddressARB");
-            return gladglXGetProcAddress != NULL;
-        }
-    }
-#endif
+
     return 0;
 }
 
-void gladTerminate() {
-#ifdef _WIN32
+void gladTerminate(void) {
     if(libGL != NULL) {
         FreeLibrary(libGL);
         libGL = NULL;
     }
+}
+
+
+void* gladGetProcAddress(const char *namez) {
+    if(libGL == NULL) return NULL;
+    void* result = NULL;
+
+    result = gladwglGetProcAddress(namez);
+    if(result == NULL) {
+        result = GetProcAddress(libGL, namez);
+    }
+
+    return result;
+}
 #else
+#include <dlfcn.h>
+static void* libGL;
+
+int gladInit(void) {
+#ifdef __APPLE__
+    static const char *NAMES[] = {
+        "../Frameworks/OpenGL.framework/OpenGL",
+        "/Library/Frameworks/OpenGL.framework/OpenGL",
+        "/System/Library/Frameworks/OpenGL.framework/OpenGL",
+        "/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL"
+    };
+#else
+    static const char *NAMES[] = {"libGL.so.1", "libGL.so"};
+#endif
+
+    int index = 0;
+    for(index = 0; index < (sizeof(NAMES) / sizeof(NAMES[0])); index++) {
+        libGL = dlopen(NAMES[index], RTLD_NOW | RTLD_GLOBAL);
+
+        if(libGL != NULL) {
+#ifdef __APPLE__
+        return 1;
+#else
+            gladglXGetProcAddress = (GLXGETPROCADDRESS)dlsym(libGL,
+                "glXGetProcAddressARB");
+            return gladglXGetProcAddress != NULL;
+#endif
+        }
+    }
+
+    return 0;
+}
+
+void gladTerminate() {
     if(libGL != NULL) {
         dlclose(libGL);
         libGL = NULL;
     }
-#endif
 }
 
 void* gladGetProcAddress(const char *namez) {
     if(libGL == NULL) return NULL;
     void* result = NULL;
 
-#if _WIN32
-    result = gladwglGetProcAddress(namez);
-    if(result == NULL) {
-        result = GetProcAddress(libGL, namez);
-    }
-#else
+#ifndef __APPLE__
     result = gladglXGetProcAddress(namez);
+#endif
     if(result == NULL) {
         result = dlsym(libGL, namez);
     }
-#endif
 
     return result;
 }
+#endif
 
 GLVersion gladLoadGL(void) {
     return gladLoadGLLoader(&gladGetProcAddress);
@@ -7979,10 +7994,13 @@ static void find_extensions(GLVersion glv) {
 }
 
 static GLVersion find_core(void) {
-	int major;
-	int minor;
-	glGetIntegerv(GL_MAJOR_VERSION, &major);
-	glGetIntegerv(GL_MINOR_VERSION, &minor);
+	int major = 0;
+	int minor = 0;
+	const char* v = (const char*)glGetString(GL_VERSION);
+	if(v != NULL) {
+		major = v[0] - '0';
+		minor = v[2] - '0';
+	}
 	GL_VERSION_1_0 = (major == 1 && minor >= 0) || major > 1;
 	GL_VERSION_1_1 = (major == 1 && minor >= 1) || major > 1;
 	GL_VERSION_1_2 = (major == 1 && minor >= 2) || major > 1;
@@ -8005,9 +8023,7 @@ static GLVersion find_core(void) {
 
 GLVersion gladLoadGLLoader(LOADER load) {
 	glGetString = (fp_glGetString)load("glGetString");
-	glGetStringi = (fp_glGetStringi)load("glGetStringi");
-	glGetIntegerv = (fp_glGetIntegerv)load("glGetIntegerv");
-	if(glGetString == NULL || glGetStringi == NULL ||glGetIntegerv == NULL) { GLVersion glv = {0, 0}; return glv; }
+	if(glGetString == NULL) { GLVersion glv = {0, 0}; return glv; }
 
 	GLVersion glv = find_core();
 	load_gl_GL_VERSION_1_0(load);

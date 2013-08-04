@@ -29,12 +29,13 @@ GLVersion gladLoadGLLoader(LOADER);
 typedef void* (*WGLGETPROCADDRESS)(const char*);
 WGLGETPROCADDRESS gladwglGetProcAddress;
 #else
+#ifndef __APPLE__
 typedef void* (*GLXGETPROCADDRESS)(const char*);
 GLXGETPROCADDRESS gladglXGetProcAddress;
 #endif
+#endif
 
 #include <stddef.h>
-#include <KHR/khrplatform.h>
 #ifndef GLEXT_64_TYPES_DEFINED
 /* This code block is duplicated in glxext.h, so must be protected */
 #define GLEXT_64_TYPES_DEFINED
@@ -72,7 +73,6 @@ typedef unsigned __int64 uint64_t;
 #include <inttypes.h>
 #endif
 #endif
-    
 typedef unsigned int GLenum;
 typedef unsigned char GLboolean;
 typedef unsigned int GLbitfield;
@@ -114,36 +114,10 @@ struct _cl_event;
 typedef void ( *GLDEBUGPROC)(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const void *userParam);
 typedef void ( *GLDEBUGPROCARB)(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const void *userParam);
 typedef void ( *GLDEBUGPROCKHR)(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const void *userParam);
-    
-typedef khronos_int32_t GLclampx;
-    
-typedef khronos_int8_t GLbyte;
-typedef khronos_uint8_t GLubyte;
-typedef khronos_float_t GLfloat;
-typedef khronos_float_t GLclampf;
-typedef khronos_int32_t GLfixed;
-typedef khronos_int64_t GLint64;
-typedef khronos_uint64_t GLuint64;
-typedef khronos_intptr_t GLintptr;
-typedef khronos_ssize_t GLsizeiptr;
-    
-typedef khronos_int8_t GLbyte;
-typedef khronos_uint8_t GLubyte;
-typedef khronos_float_t GLfloat;
-typedef khronos_float_t GLclampf;
-typedef khronos_int32_t GLfixed;
-typedef khronos_int64_t GLint64;
-typedef khronos_uint64_t GLuint64;
-typedef khronos_int64_t GLint64EXT;
-typedef khronos_uint64_t GLuint64EXT;
-typedef khronos_intptr_t GLintptr;
-typedef khronos_ssize_t GLsizeiptr;
-    
-    
 typedef void ( *GLDEBUGPROCAMD)(GLuint id,GLenum category,GLenum severity,GLsizei length,const GLchar *message,void *userParam);
 typedef unsigned short GLhalfNV;
 typedef GLintptr GLvdpauSurfaceNV;
-    #define GL_DEPTH_BUFFER_BIT 0x00000100
+#define GL_DEPTH_BUFFER_BIT 0x00000100
 #define GL_STENCIL_BUFFER_BIT 0x00000400
 #define GL_COLOR_BUFFER_BIT 0x00004000
 #define GL_FALSE 0
