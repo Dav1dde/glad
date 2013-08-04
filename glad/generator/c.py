@@ -20,16 +20,17 @@ int gladInit(void) {
                 libGL, "wglGetProcAddress");
         return gladwglGetProcAddress != NULL;
     }
+#else
 #if defined(__APPLE__) || defined(__APPLE_CC__)
     const char *NAMES[] = {
         "../Frameworks/OpenGL.framework/OpenGL",
         "/Library/Frameworks/OpenGL.framework/OpenGL",
         "/System/Library/Frameworks/OpenGL.framework/OpenGL"
     };
-    #define NAMELENGTH = 3
+    #define NAMELENGTH 3
 #else
     const char *NAMES[] = {"libGL.so.1", "libGL.so"};
-    #define NAMELENGTH = 2
+    #define NAMELENGTH 2
 #endif
     int index = 0;
     for(index = 0; index < NAMELENGTH; index++) {
@@ -200,7 +201,7 @@ class CGenerator(Generator):
             f.write('\tglGetStringi = (fp_glGetStringi)load("glGetStringi");\n')
             f.write('\tglGetIntegerv = (fp_glGetIntegerv)load("glGetIntegerv");\n')
             f.write('\tif(glGetString == NULL || glGetStringi == NULL ||'
-                    'glGetIntegerv == NULL) { GLVersion glv; return glv; }\n\n')
+                    'glGetIntegerv == NULL) { GLVersion glv = {0, 0}; return glv; }\n\n')
             f.write('\tGLVersion glv = find_core();\n')
             for feature in features:
                 f.write('\tload_gl_{}(load);\n'.format(feature.name))
