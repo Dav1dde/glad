@@ -1,3 +1,38 @@
+
+#ifndef __glad_h_
+
+
+#ifdef __gl_h_
+#error OpenGL header already included, remove this include, glad already provides it
+#endif
+
+#define __glad_h_
+#define __gl_h_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct _GLVersion {
+    int major;
+    int minor;
+} GLVersion;
+
+typedef void* (* LOADER)(const char *name);
+
+int gladInit(void);
+void* gladGetProcAddress(const char *namez);
+GLVersion gladLoadGL(void);
+GLVersion gladLoadGLLoader(LOADER);
+
+#ifdef _WIN32
+typedef void* (*WGLGETPROCADDRESS)(const char*);
+WGLGETPROCADDRESS wglGetProcAddress = NULL;
+#else
+typedef void* (*GLXGETPROCADDRESS)(const char*);
+GLXGETPROCADDRESS glXGetProcAddress = NULL;
+#endif
+
 #include <stddef.h>
 #include <KHR/khrplatform.h>
 #ifndef GLEXT_64_TYPES_DEFINED
@@ -108,28 +143,7 @@ typedef khronos_ssize_t GLsizeiptr;
 typedef void ( *GLDEBUGPROCAMD)(GLuint id,GLenum category,GLenum severity,GLsizei length,const GLchar *message,void *userParam);
 typedef unsigned short GLhalfNV;
 typedef GLintptr GLvdpauSurfaceNV;
-    
-typedef struct _GLVersion {
-    int major;
-    int minor;
-} GLVersion;
-
-typedef void* (* LOADER)(const char *name);
-
-int gladInit(void);
-void* gladGetProcAddress(const char *namez);
-GLVersion gladLoadGL(void);
-GLVersion gladLoadGLLoader(LOADER);
-
-#ifdef _WIN32
-typedef void* (*WGLGETPROCADDRESS)(const char*);
-WGLGETPROCADDRESS wglGetProcAddress = NULL;
-#else
-typedef void* (*GLXGETPROCADDRESS)(const char*);
-GLXGETPROCADDRESS glXGetProcAddress = NULL;
-#endif
-
-#define GL_DEPTH_BUFFER_BIT 0x00000100
+    #define GL_DEPTH_BUFFER_BIT 0x00000100
 #define GL_STENCIL_BUFFER_BIT 0x00000400
 #define GL_COLOR_BUFFER_BIT 0x00004000
 #define GL_FALSE 0
@@ -13065,3 +13079,9 @@ extern fp_glDrawRangeElementsEXT gladglDrawRangeElementsEXT;
 int GL_SGIX_blend_alpha_minmax;
 #define GL_ALPHA_MIN_SGIX 0x8320
 #define GL_ALPHA_MAX_SGIX 0x8321
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
