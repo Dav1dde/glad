@@ -77,9 +77,13 @@ bool gladInit() {
         foreach(name; NAMES) {
             libGL = dlopen(name, RTLD_NOW | RTLD_GLOBAL);
             if(libGL !is null) {
-                glXGetProcAddress = cast(typeof(glXGetProcAddress))dlsym(libGL,
-                    "glXGetProcAddressARB\\0".ptr);
-                return glXGetProcAddress !is null;
+                version(OSX) {
+                    return true;
+                } else {
+                    glXGetProcAddress = cast(typeof(glXGetProcAddress))dlsym(libGL,
+                        "glXGetProcAddressARB\\0".ptr);
+                    return glXGetProcAddress !is null;
+                }
             }
         }
 
@@ -115,7 +119,9 @@ void* gladGetProcAddress(const(char)* namez) {
     } else {
         if(glXGetProcAddress is null) return null;
 
-        result = glXGetProcAddress(namez);
+        version(OSX) {} else {
+            result = glXGetProcAddress(namez);
+        }
         if(result is null) {
             result = dlsym(libGL, namez);
         }
@@ -169,9 +175,7 @@ class BaseDGenerator(Generator):
 
             f.write('GLVersion {}(void* function(const(char)* name) load) {{\n'.format(self.LOAD_GL_NAME))
             f.write('\tglGetString = cast(typeof(glGetString))load("glGetString\\0".ptr);\n')
-            f.write('\tglGetStringi = cast(typeof(glGetStringi))load("glGetStringi\\0".ptr);\n')
-            f.write('\tglGetIntegerv = cast(typeof(glGetIntegerv))load("glGetIntegerv\\0".ptr);\n')
-            f.write('\tif(glGetString is null || glGetIntegerv is null) { GLVersion glv; return glv; }\n\n')
+            f.write('\tif(glGetString is null) { GLVersion glv; return glv; }\n\n')
             f.write('\tGLVersion glv = find_core();\n')
             for feature in features:
                 f.write('\tload_gl_{}(load);\n'.format(feature.name))
@@ -187,8 +191,9 @@ class BaseDGenerator(Generator):
             f.write('GLVersion find_core() {\n')
             f.write('\tint major;\n')
             f.write('\tint minor;\n')
-            f.write('\tglGetIntegerv(GL_MAJOR_VERSION, &major);\n')
-            f.write('\tglGetIntegerv(GL_MINOR_VERSION, &minor);\n')
+            f.write('\tconst(char)* v = cast(const(char)*)glGetString(GL_VERSION);\n')
+            f.write('\tmajor = v[0] - \'0\';\n')
+            f.write('\tminor = v[2] - \'0\';\n')
             for feature in features:
                 f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
                     ' major > {num[0]};\n'.format(feature.name, num=feature.number))

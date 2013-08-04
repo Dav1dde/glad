@@ -3,81 +3,95 @@ from glad.generator.util import makefiledir
 import os.path
 
 GLAD_FUNCS = '''
-
 #ifdef _WIN32
 #include <windows.h>
 static HMODULE libGL;
-#else
-#include <dlfcn.h>
-static void* libGL;
-#endif
 
 int gladInit(void) {
-#ifdef _WIN32
     libGL = LoadLibraryA("opengl32.dll");
     if(libGL != NULL) {
         gladwglGetProcAddress = (WGLGETPROCADDRESS)GetProcAddress(
                 libGL, "wglGetProcAddress");
         return gladwglGetProcAddress != NULL;
     }
+
+    return 0;
+}
+
+void gladTerminate(void) {
+    if(libGL != NULL) {
+        FreeLibrary(libGL);
+        libGL = NULL;
+    }
+}
+
+
+void* gladGetProcAddress(const char *namez) {
+    if(libGL == NULL) return NULL;
+    void* result = NULL;
+
+    result = gladwglGetProcAddress(namez);
+    if(result == NULL) {
+        result = GetProcAddress(libGL, namez);
+    }
+
+    return result;
+}
 #else
-#if defined(__APPLE__) || defined(__APPLE_CC__)
-    const char *NAMES[] = {
+#include <dlfcn.h>
+static void* libGL;
+
+int gladInit(void) {
+#ifdef __APPLE__
+    static const char *NAMES[] = {
         "../Frameworks/OpenGL.framework/OpenGL",
         "/Library/Frameworks/OpenGL.framework/OpenGL",
         "/System/Library/Frameworks/OpenGL.framework/OpenGL",
         "/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL"
     };
-    #define NAMELENGTH 4
 #else
-    const char *NAMES[] = {"libGL.so.1", "libGL.so"};
-    #define NAMELENGTH 2
+    static const char *NAMES[] = {"libGL.so.1", "libGL.so"};
 #endif
+
     int index = 0;
-    for(index = 0; index < NAMELENGTH; index++) {
+    for(index = 0; index < (sizeof(NAMES) / sizeof(NAMES[0])); index++) {
         libGL = dlopen(NAMES[index], RTLD_NOW | RTLD_GLOBAL);
+
         if(libGL != NULL) {
+#ifdef __APPLE__
+        return 1;
+#else
             gladglXGetProcAddress = (GLXGETPROCADDRESS)dlsym(libGL,
                 "glXGetProcAddressARB");
             return gladglXGetProcAddress != NULL;
+#endif
         }
     }
-#endif
+
     return 0;
 }
 
 void gladTerminate() {
-#ifdef _WIN32
-    if(libGL != NULL) {
-        FreeLibrary(libGL);
-        libGL = NULL;
-    }
-#else
     if(libGL != NULL) {
         dlclose(libGL);
         libGL = NULL;
     }
-#endif
 }
 
 void* gladGetProcAddress(const char *namez) {
     if(libGL == NULL) return NULL;
     void* result = NULL;
 
-#if _WIN32
-    result = gladwglGetProcAddress(namez);
-    if(result == NULL) {
-        result = GetProcAddress(libGL, namez);
-    }
-#else
+#ifndef __APPLE__
     result = gladglXGetProcAddress(namez);
+#endif
     if(result == NULL) {
         result = dlsym(libGL, namez);
     }
-#endif
 
     return result;
 }
+#endif
 
 GLVersion gladLoadGL(void) {
     return gladLoadGLLoader(&gladGetProcAddress);
@@ -136,8 +150,10 @@ GLVersion gladLoadGLLoader(LOADER);
 typedef void* (*WGLGETPROCADDRESS)(const char*);
 WGLGETPROCADDRESS gladwglGetProcAddress;
 #else
+#ifndef __APPLE__
 typedef void* (*GLXGETPROCADDRESS)(const char*);
 GLXGETPROCADDRESS gladglXGetProcAddress;
+#endif
 #endif
 
 '''
@@ -187,10 +203,15 @@ class CGenerator(Generator):
             f.write('}\n\n')
 
             f.write('static GLVersion find_core(void) {\n')
-            f.write('\tint major;\n')
-            f.write('\tint minor;\n')
-            f.write('\tglGetIntegerv(GL_MAJOR_VERSION, &major);\n')
-            f.write('\tglGetIntegerv(GL_MINOR_VERSION, &minor);\n')
+
+
+            f.write('\tint major = 0;\n')
+            f.write('\tint minor = 0;\n')
+            f.write('\tconst char* v = (const char*)glGetString(GL_VERSION);\n')
+            f.write('\tif(v != NULL) {\n')
+            f.write('\t\tmajor = v[0] - \'0\';\n')
+            f.write('\t\tminor = v[2] - \'0\';\n')
+            f.write('\t}\n')
             for feature in features:
                 f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
                     ' major > {num[0]};\n'.format(feature.name, num=feature.number))
@@ -199,11 +220,9 @@ class CGenerator(Generator):
 
             f.write('GLVersion gladLoadGLLoader(LOADER load) {\n')
             f.write('\tglGetString = (fp_glGetString)load("glGetString");\n')
-            f.write('\tglGetStringi = (fp_glGetStringi)load("glGetStringi");\n')
-            f.write('\tglGetIntegerv = (fp_glGetIntegerv)load("glGetIntegerv");\n')
-            f.write('\tif(glGetString == NULL || glGetStringi == NULL ||'
-                    'glGetIntegerv == NULL) { GLVersion glv = {0, 0}; return glv; }\n\n')
+            f.write('\tif(glGetString == NULL) { GLVersion glv = {0, 0}; return glv; }\n\n')
             f.write('\tGLVersion glv = find_core();\n')
+
             for feature in features:
                 f.write('\tload_gl_{}(load);\n'.format(feature.name))
             f.write('\n\tfind_extensions(glv);\n')
