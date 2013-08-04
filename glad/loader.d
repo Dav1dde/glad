@@ -47,9 +47,13 @@ bool gladInit() {
         foreach(name; NAMES) {
             libGL = dlopen(name, RTLD_NOW | RTLD_GLOBAL);
             if(libGL !is null) {
-                glXGetProcAddress = cast(typeof(glXGetProcAddress))dlsym(libGL,
-                    "glXGetProcAddressARB\0".ptr);
-                return glXGetProcAddress !is null;
+                version(OSX) {
+                    return true;
+                } else {
+                    glXGetProcAddress = cast(typeof(glXGetProcAddress))dlsym(libGL,
+                        "glXGetProcAddressARB\0".ptr);
+                    return glXGetProcAddress !is null;
+                }
             }
         }
 
@@ -85,7 +89,9 @@ void* gladGetProcAddress(const(char)* namez) {
     } else {
         if(glXGetProcAddress is null) return null;
 
-        result = glXGetProcAddress(namez);
+        version(OSX) {} else {
+            result = glXGetProcAddress(namez);
+        }
         if(result is null) {
             result = dlsym(libGL, namez);
         }
@@ -119,9 +125,7 @@ private bool has_ext(GLVersion glv, const(char)* extensions, const(char)* ext) {
 }
 GLVersion gladLoadGL(void* function(const(char)* name) load) {
 	glGetString = cast(typeof(glGetString))load("glGetString\0".ptr);
-	glGetStringi = cast(typeof(glGetStringi))load("glGetStringi\0".ptr);
-	glGetIntegerv = cast(typeof(glGetIntegerv))load("glGetIntegerv\0".ptr);
-	if(glGetString is null || glGetIntegerv is null) { GLVersion glv; return glv; }
+	if(glGetString is null) { GLVersion glv; return glv; }
 
 	GLVersion glv = find_core();
 	load_gl_GL_VERSION_1_0(load);
@@ -393,8 +397,9 @@ private:
 GLVersion find_core() {
 	int major;
 	int minor;
-	glGetIntegerv(GL_MAJOR_VERSION, &major);
-	glGetIntegerv(GL_MINOR_VERSION, &minor);
+	const(char)* v = cast(const(char)*)glGetString(GL_VERSION);
+	major = v[0] - '0';
+	minor = v[2] - '0';
 	GL_VERSION_1_0 = (major == 1 && minor >= 0) || major > 1;
 	GL_VERSION_1_1 = (major == 1 && minor >= 1) || major > 1;
 	GL_VERSION_1_2 = (major == 1 && minor >= 2) || major > 1;
