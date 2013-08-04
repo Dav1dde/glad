@@ -3,7 +3,6 @@ from glad.generator.util import makefiledir
 import os.path
 
 GLAD_FUNCS = '''
-#include <string.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -82,7 +81,7 @@ GLVersion gladLoadGL(void) {
     return gladLoadGLLoader(&gladGetProcAddress);
 }
 
-int has_ext(GLVersion glv, const char *extensions, const char *ext) {
+static int has_ext(GLVersion glv, const char *extensions, const char *ext) {
     if(glv.major < 3) {
         return extensions != NULL && ext != NULL && strstr(extensions, ext) != NULL;
     } else {
@@ -105,6 +104,20 @@ int has_ext(GLVersion glv, const char *extensions, const char *ext) {
 '''
 
 GLAD_HEADER = '''
+#ifndef __glad_h_
+
+
+#ifdef __gl_h_
+#error OpenGL header already included, remove this include, glad already provides it
+#endif
+
+#define __glad_h_
+#define __gl_h_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct _GLVersion {
     int major;
     int minor;
@@ -127,6 +140,14 @@ GLXGETPROCADDRESS glXGetProcAddress = NULL;
 
 '''
 
+GLAD_HEADER_END = '''
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+'''
+
 class CGenerator(Generator):
     def generate_loader(self, api, version, features, extensions):
         path = make_path(self.path, 'glad.c')
@@ -145,7 +166,7 @@ class CGenerator(Generator):
                 if len(list(ext.functions)) == 0:
                     continue
 
-                f.write('int load_gl_{}(LOADER load) {{\n'
+                f.write('static int load_gl_{}(LOADER load) {{\n'
                     .format(ext.name))
                 f.write('\tif(!{0}) return {0};\n\n'.format(ext.name))
                 for func in ext.functions:
@@ -191,14 +212,20 @@ class CGenerator(Generator):
             f.write('\n\treturn glv;\n}\n\n')
 
 
+        hpath = make_path(self.path, 'glad.h')
+
+        with open(hpath, 'a') as f:
+            f.write(GLAD_HEADER_END)
+
+
     def generate_types(self, api, version, types):
         hpath = make_path(self.path, 'glad.h')
 
         with open(hpath, 'w') as f:
+            f.write(GLAD_HEADER)
+
             for type in types:
                 f.write(type.raw.lstrip().replace('        ', ''))
-
-            f.write(GLAD_HEADER)
 
     def generate_features(self, api, version, features):
         path = make_path(self.path, 'glad.c')
@@ -223,7 +250,7 @@ class CGenerator(Generator):
                     written.add(func)
 
         with open(path, 'w') as f:
-            f.write('#include <GL/glad.h>')
+            f.write('#include <string.h>\n#include <GL/glad.h>')
             f.write(GLAD_FUNCS)
 
             for func in write:
