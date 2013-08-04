@@ -6,7 +6,7 @@ If you're looking only for a loader:
 
  * C loader: https://github.com/Dav1dde/glad/tree/c
  * D loader: https://github.com/Dav1dde/glad/tree/d
- * Volt loader: https://github.com/Dav1dde/glad/tree/volt
+ * Volt bindings: https://github.com/Dav1dde/glad/tree/volt
 
 For small examples take a look in `example/`.
 
