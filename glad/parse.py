@@ -142,6 +142,7 @@ class Type(object):
     def __init__(self, element):
         self.raw = ''.join(element.itertext())
         self.api = element.get('api', 'gl')
+        self.name = element.get('name')
 
     @property
     def is_preprocessor(self):

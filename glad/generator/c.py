@@ -226,6 +226,9 @@ class CGenerator(Generator):
             f.write(GLAD_HEADER)
 
             for type in types:
+                if api == 'gl' and 'khrplatform' in type.raw:
+                    continue
+
                 f.write(type.raw.lstrip().replace('        ', ''))
                 f.write('\n')
 
