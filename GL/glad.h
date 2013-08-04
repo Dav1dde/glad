@@ -27,10 +27,10 @@ GLVersion gladLoadGLLoader(LOADER);
 
 #ifdef _WIN32
 typedef void* (*WGLGETPROCADDRESS)(const char*);
-WGLGETPROCADDRESS wglGetProcAddress = NULL;
+WGLGETPROCADDRESS gladwglGetProcAddress;
 #else
 typedef void* (*GLXGETPROCADDRESS)(const char*);
-GLXGETPROCADDRESS glXGetProcAddress = NULL;
+GLXGETPROCADDRESS gladglXGetProcAddress;
 #endif
 
 #include <stddef.h>

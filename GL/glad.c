@@ -13,9 +13,9 @@ int gladInit(void) {
 #ifdef _WIN32
     libGL = LoadLibraryA("opengl32.dll");
     if(libGL != NULL) {
-        wglGetProcAddress = (WGLGETPROCADDRESS)GetProcAddress(
+        gladwglGetProcAddress = (WGLGETPROCADDRESS)GetProcAddress(
                 libGL, "wglGetProcAddress");
-        return wglGetProcAddress != NULL;
+        return gladwglGetProcAddress != NULL;
     }
 #if defined(__APPLE__) || defined(__APPLE_CC__)
     const char *NAMES[] = {
@@ -32,9 +32,9 @@ int gladInit(void) {
     for(index = 0; index < NAMELENGTH; index++) {
         libGL = dlopen(NAMES[index], RTLD_NOW | RTLD_GLOBAL);
         if(libGL != NULL) {
-            glXGetProcAddress = (GLXGETPROCADDRESS)dlsym(libGL,
+            gladglXGetProcAddress = (GLXGETPROCADDRESS)dlsym(libGL,
                 "glXGetProcAddressARB");
-            return glXGetProcAddress != NULL;
+            return gladglXGetProcAddress != NULL;
         }
     }
 #endif
@@ -60,12 +60,12 @@ void* gladGetProcAddress(const char *namez) {
     void* result = NULL;
 
 #if _WIN32
-    result = wglGetProcAddress(namez);
+    result = gladwglGetProcAddress(namez);
     if(result == NULL) {
         result = GetProcAddress(libGL, namez);
     }
 #else
-    result = glXGetProcAddress(namez);
+    result = gladglXGetProcAddress(namez);
     if(result == NULL) {
         result = dlsym(libGL, namez);
     }
