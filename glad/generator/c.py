@@ -145,6 +145,7 @@ int gladInit(void);
 void* gladGetProcAddress(const char *namez);
 GLVersion gladLoadGL(void);
 GLVersion gladLoadGLLoader(LOADER);
+void gladTerminate(void);
 
 #ifdef _WIN32
 typedef void* (*WGLGETPROCADDRESS)(const char*);
