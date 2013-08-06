@@ -5,22 +5,12 @@ from glad.generator.util import enforce
 
 
 class Generator(object):
-    MODULE = None
-    LOADER = None
-    GL = None
-    ENUMS = None
-    EXT = None
-    FUNCS = None
-    TYPES = None
-    FILE_EXTENSION = None
-    API = None
-    EXTCHECK = None
-    TYPE_DICT = None
-
-    LOAD_GL_NAME = None
-
-    def __init__(self, path):
+    def __init__(self, path, loader):
         self.path = os.path.abspath(path)
+
+        self.loader = loader
+        if self.loader is None:
+            self.loader = NullLoader
 
     def generate(self, spec, api, version=None, extensions=None):
         enforce(api in spec.features, "Unknown API", ValueError)

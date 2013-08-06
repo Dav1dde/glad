@@ -2,170 +2,6 @@ from glad.generator import Generator
 from glad.generator.util import makefiledir
 import os.path
 
-GLAD_FUNCS = '''
-#ifdef _WIN32
-#include <windows.h>
-static HMODULE libGL;
-
-int gladInit(void) {
-    libGL = LoadLibraryA("opengl32.dll");
-    if(libGL != NULL) {
-        gladwglGetProcAddress = (WGLGETPROCADDRESS)GetProcAddress(
-                libGL, "wglGetProcAddress");
-        return gladwglGetProcAddress != NULL;
-    }
-
-    return 0;
-}
-
-void gladTerminate(void) {
-    if(libGL != NULL) {
-        FreeLibrary(libGL);
-        libGL = NULL;
-    }
-}
-
-
-void* gladGetProcAddress(const char *namez) {
-    if(libGL == NULL) return NULL;
-    void* result = NULL;
-
-    result = gladwglGetProcAddress(namez);
-    if(result == NULL) {
-        result = GetProcAddress(libGL, namez);
-    }
-
-    return result;
-}
-#else
-#include <dlfcn.h>
-static void* libGL;
-
-int gladInit(void) {
-#ifdef __APPLE__
-    static const char *NAMES[] = {
-        "../Frameworks/OpenGL.framework/OpenGL",
-        "/Library/Frameworks/OpenGL.framework/OpenGL",
-        "/System/Library/Frameworks/OpenGL.framework/OpenGL",
-        "/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL"
-    };
-#else
-    static const char *NAMES[] = {"libGL.so.1", "libGL.so"};
-#endif
-
-    int index = 0;
-    for(index = 0; index < (sizeof(NAMES) / sizeof(NAMES[0])); index++) {
-        libGL = dlopen(NAMES[index], RTLD_NOW | RTLD_GLOBAL);
-
-        if(libGL != NULL) {
-#ifdef __APPLE__
-        return 1;
-#else
-            gladglXGetProcAddress = (GLXGETPROCADDRESS)dlsym(libGL,
-                "glXGetProcAddressARB");
-            return gladglXGetProcAddress != NULL;
-#endif
-        }
-    }
-
-    return 0;
-}
-
-void gladTerminate() {
-    if(libGL != NULL) {
-        dlclose(libGL);
-        libGL = NULL;
-    }
-}
-
-void* gladGetProcAddress(const char *namez) {
-    if(libGL == NULL) return NULL;
-    void* result = NULL;
-
-#ifndef __APPLE__
-    result = gladglXGetProcAddress(namez);
-#endif
-    if(result == NULL) {
-        result = dlsym(libGL, namez);
-    }
-
-    return result;
-}
-#endif
-
-GLVersion gladLoadGL(void) {
-    return gladLoadGLLoader(&gladGetProcAddress);
-}
-
-static int has_ext(GLVersion glv, const char *extensions, const char *ext) {
-    if(glv.major < 3) {
-        return extensions != NULL && ext != NULL && strstr(extensions, ext) != NULL;
-    } else {
-        int num;
-        glGetIntegerv(GL_NUM_EXTENSIONS, &num);
-
-        unsigned int index;
-        for(index = 0; index < num; index++) {
-            const char *e = (const char*)glGetStringi(GL_EXTENSIONS, index);
-            if(strcmp(e, ext) == 0) {
-                return 1;
-            }
-        }
-    }
-
-    return 0;
-}
-
-
-'''
-
-GLAD_HEADER = '''
-#ifndef __glad_h_
-
-
-#ifdef __gl_h_
-#error OpenGL header already included, remove this include, glad already provides it
-#endif
-
-#define __glad_h_
-#define __gl_h_
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-typedef struct _GLVersion {
-    int major;
-    int minor;
-} GLVersion;
-
-typedef void* (* LOADER)(const char *name);
-
-int gladInit(void);
-void* gladGetProcAddress(const char *namez);
-GLVersion gladLoadGL(void);
-GLVersion gladLoadGLLoader(LOADER);
-void gladTerminate(void);
-
-#ifdef _WIN32
-typedef void* (*WGLGETPROCADDRESS)(const char*);
-WGLGETPROCADDRESS gladwglGetProcAddress;
-#else
-#ifndef __APPLE__
-typedef void* (*GLXGETPROCADDRESS)(const char*);
-GLXGETPROCADDRESS gladglXGetProcAddress;
-#endif
-#endif
-
-'''
-
-GLAD_HEADER_END = '''
-#ifdef __cplusplus
-}
-#endif
-
-#endif
-'''
 
 class CGenerator(Generator):
     def generate_loader(self, api, version, features, extensions):
@@ -237,14 +73,14 @@ class CGenerator(Generator):
         hpath = make_path(self.path, 'glad.h')
 
         with open(hpath, 'a') as f:
-            f.write(GLAD_HEADER_END)
+            self.loader.write_header_end(f)
 
 
     def generate_types(self, api, version, types):
         hpath = make_path(self.path, 'glad.h')
 
         with open(hpath, 'w') as f:
-            f.write(GLAD_HEADER)
+            self.loader.write_header(f)
 
             for type in types:
                 if api == 'gl' and 'khrplatform' in type.raw:
@@ -277,7 +113,7 @@ class CGenerator(Generator):
 
         with open(path, 'w') as f:
             f.write('#include <string.h>\n#include <GL/glad.h>')
-            f.write(GLAD_FUNCS)
+            self.loader.write(f)
 
             for func in write:
                 self.write_function(f, func)

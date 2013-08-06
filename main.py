@@ -4,6 +4,7 @@ the languages C, D and Volt.'''
 
 import glad.parse
 from glad.generator import VoltGenerator, DGenerator, CGenerator
+from glad.loader import NullLoader, get_loader
 
 def main():
     import os.path
@@ -68,6 +69,7 @@ def main():
     parser.add_argument('--spec', dest='spec', default=None, type=spec_file,
                         help='Path to gl.xml, if none specified, '
                         'downloaded from khronos.org')
+    parser.add_argument('--no-loader', dest='no_loader', action='store_true')
 
     ns = parser.parse_args()
 
@@ -75,10 +77,15 @@ def main():
     if spec is None:
         spec = glad.parse.OpenGLSpec.from_opengl()
 
+
+    loader = get_loader(ns.generator, ns.api)
+    if ns.no_loader:
+        loader = NullLoader
+
     Generator = {'c' : CGenerator,
                  'd' : DGenerator,
                  'volt' : VoltGenerator}[ns.generator]
-    generator = Generator(ns.out)
+    generator = Generator(ns.out, loader)
 
     spec.profile = ns.profile
     generator.generate(spec, ns.api, ns.version, ns.extensions)
