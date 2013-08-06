@@ -2,6 +2,7 @@ from glad.parse import Enum, Command
 import os.path
 
 from glad.generator.util import enforce
+from glad.loader import NullLoader
 
 
 class Generator(object):
