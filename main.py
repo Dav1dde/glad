@@ -3,7 +3,7 @@ OpenGL loader made for your needs. glad currently supports
 the languages C, D and Volt.'''
 
 import glad.parse
-from glad.generator import VoltGenerator, DGenerator, CGenerator
+from glad.generator import get_generator
 from glad.loader import NullLoader, get_loader
 
 def main():
@@ -82,9 +82,7 @@ def main():
     if ns.no_loader:
         loader = NullLoader
 
-    Generator = {'c' : CGenerator,
-                 'd' : DGenerator,
-                 'volt' : VoltGenerator}[ns.generator]
+    Generator = get_generator(ns.generator)
     generator = Generator(ns.out, loader)
 
     spec.profile = ns.profile
