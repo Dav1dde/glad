@@ -9,7 +9,7 @@
 
 // This file is a modified version of gl3w's test.c
 
-// gcc -I. test.c GL/glad.c -ldl -lglut -Wall -Werror
+// gcc -I. simple.c GL/glad.c -ldl -lglut -Wall -Werror
 
 static int width = 600, height = 600;
 
@@ -47,11 +47,20 @@ int main(int argc, char **argv)
     }
 
     GLVersion glv = gladLoadGL();
+    // gladLoadGLLoader(&glutGetProcAddress);
     printf("OpenGL %d.%d\n", glv.major, glv.minor);
+    if (glv.major < 2) {
+        printf("You don't support OpenGL >= 2!");
+        return -1;
+    }
 
     printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION),
            glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     glutMainLoop();
+
+    // once gladTerminate is called gladGetProcAddress will return NULL
+    gladTerminate();
+
     return 0;
 }
