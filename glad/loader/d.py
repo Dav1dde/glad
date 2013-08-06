@@ -15,23 +15,23 @@ version(Windows) {
 
 bool gladInit() {
     version(Windows) {
-        libGL = LoadLibraryA("opengl32.dll\\0".ptr);
+        libGL = LoadLibraryA("opengl32.dll");
         if(libGL !is null) {
             wglGetProcAddress = cast(typeof(wglGetProcAddress))GetProcAddress(
-                libGL, "wglGetProcAddress\\0".ptr);
+                libGL, "wglGetProcAddress");
             return wglGetProcAddress !is null;
         }
 
         return false;
     } else {
         version(OSX) {
-            enum NAMES = [
-                "../Frameworks/OpenGL.framework/OpenGL\\0".ptr,
-                "/Library/Frameworks/OpenGL.framework/OpenGL\\0".ptr,
-                "/System/Library/Frameworks/OpenGL.framework/OpenGL\\0".ptr
+            enum const(char)*[] NAMES = [
+                "../Frameworks/OpenGL.framework/OpenGL",
+                "/Library/Frameworks/OpenGL.framework/OpenGL",
+                "/System/Library/Frameworks/OpenGL.framework/OpenGL"
             ];
         } else {
-            enum NAMES = ["libGL.so.1\\0".ptr, "libGL.so\\0".ptr];
+            enum const(char)*[] NAMES = ["libGL.so.1", "libGL.so"];
         }
 
         foreach(name; NAMES) {
@@ -41,7 +41,7 @@ bool gladInit() {
                     return true;
                 } else {
                     glXGetProcAddress = cast(typeof(glXGetProcAddress))dlsym(libGL,
-                        "glXGetProcAddressARB\\0".ptr);
+                        "glXGetProcAddressARB");
                     return glXGetProcAddress !is null;
                 }
             }
