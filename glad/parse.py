@@ -23,7 +23,7 @@ class OpenGLSpec(object):
         self._features = None
         self._extensions = None
 
-        self._profile = 'compatability'
+        self._profile = 'compatibility'
         self._remove = set()
 
     @classmethod
@@ -52,8 +52,8 @@ class OpenGLSpec(object):
 
     @profile.setter
     def profile(self, value):
-        if not value in ('core', 'compatability'):
-            raise ValueError('profile must either be core or compatability')
+        if not value in ('core', 'compatibility'):
+            raise ValueError('profile must either be core or compatibility')
 
         self._profile = value
 

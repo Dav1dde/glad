@@ -41,7 +41,7 @@ def main():
             return value
 
         try:
-            v = map(int, value.split('.'))
+            v = tuple(map(int, value.split('.')))
             if len(v) == 2:
                 return v
         except:
@@ -52,9 +52,9 @@ def main():
     description = __doc__
     parser = ArgumentParser(description=description)
 
-    parser.add_argument('--profile', dest='profile', choices=['core', 'compatability'],
-                        default='compatability',
-                        help='OpenGL profile (defaults to compatability)')
+    parser.add_argument('--profile', dest='profile', choices=['core', 'compatibility'],
+                        default='compatibility',
+                        help='OpenGL profile (defaults to compatibility)')
     parser.add_argument('--out-path', dest='out', required=True,
                         help='Output path for loader')
     parser.add_argument('--api', dest='api', choices=['gl', 'gles1', 'gles2'],
