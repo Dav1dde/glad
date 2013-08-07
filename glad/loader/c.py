@@ -116,31 +116,9 @@ static int has_ext(GLVersion glv, const char *extensions, const char *ext) {
 '''
 
 _OPENGL_HEADER = '''
-#ifndef __glad_h_
-
-
-#ifdef __gl_h_
-#error OpenGL header already included, remove this include, glad already provides it
-#endif
-
-#define __glad_h_
-#define __gl_h_
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-typedef struct _GLVersion {
-    int major;
-    int minor;
-} GLVersion;
-
-typedef void* (* LOADER)(const char *name);
-
 int gladInit(void);
 void* gladGetProcAddress(const char *namez);
 GLVersion gladLoadGL(void);
-GLVersion gladLoadGLLoader(LOADER);
 void gladTerminate(void);
 
 #ifdef _WIN32
@@ -152,22 +130,12 @@ typedef void* (*GLXGETPROCADDRESS)(const char*);
 GLXGETPROCADDRESS gladglXGetProcAddress;
 #endif
 #endif
-
-'''
-
-_OPENGL_HEADER_END = '''
-#ifdef __cplusplus
-}
-#endif
-
-#endif
 '''
 
 
 class OpenGLCLoader(object):
     LOADER = _OPENGL_LOADER
     HEADER = _OPENGL_HEADER
-    HEADER_END = _OPENGL_HEADER_END
 
     @staticmethod
     def write(fobj):
@@ -176,9 +144,4 @@ class OpenGLCLoader(object):
     @staticmethod
     def write_header(fobj):
         fobj.write(OpenGLCLoader.HEADER)
-
-    @staticmethod
-    def write_header_end(fobj):
-        fobj.write(OpenGLCLoader.HEADER_END)
-
 

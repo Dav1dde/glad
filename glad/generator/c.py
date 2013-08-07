@@ -3,6 +3,39 @@ from glad.generator.util import makefiledir
 import os.path
 
 
+_HEADER = '''
+#ifndef __glad_h_
+
+
+#ifdef __gl_h_
+#error OpenGL header already included, remove this include, glad already provides it
+#endif
+
+#define __glad_h_
+#define __gl_h_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct _GLVersion {
+    int major;
+    int minor;
+} GLVersion;
+
+typedef void* (* LOADER)(const char *name);
+GLVersion gladLoadGLLoader(LOADER);
+'''
+
+_HEADER_END = '''
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+'''
+
+
 class CGenerator(Generator):
     def generate_loader(self, api, version, features, extensions):
         path = make_path(self.path, 'glad.c')
@@ -73,13 +106,14 @@ class CGenerator(Generator):
         hpath = make_path(self.path, 'glad.h')
 
         with open(hpath, 'a') as f:
-            self.loader.write_header_end(f)
+            f.write(_HEADER_END)
 
 
     def generate_types(self, api, version, types):
         hpath = make_path(self.path, 'glad.h')
 
         with open(hpath, 'w') as f:
+            f.write(_HEADER)
             self.loader.write_header(f)
 
             for type in types:
