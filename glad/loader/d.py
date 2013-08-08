@@ -98,6 +98,7 @@ GLVersion gladLoadGL() {
 '''
 
 _OPENGL_HAS_EXT = '''
+struct GLVersion { int major; int minor; }
 private extern(C) char* strstr(const(char)*, const(char)*);
 private extern(C) int strcmp(const(char)*, const(char)*);
 private bool has_ext(GLVersion glv, const(char)* extensions, const(char)* ext) {

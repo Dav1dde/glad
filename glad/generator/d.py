@@ -61,9 +61,6 @@ class BaseDGenerator(Generator):
 
         self.write_module(f, self.LOADER)
         self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES])
-        f.write('\n\n')
-
-        f.write('struct GLVersion { int major; int minor; }\n')
 
         self.loader.write(f)
         self.loader.write_has_ext(f)
@@ -194,21 +191,7 @@ class BaseDGenerator(Generator):
         for feature in features:
             self.write_boolean(f, feature.name)
 
-        write = set()
-        written = set()
-        self.write_prototype_pre(f)
-        for feature in features:
-            for func in feature.functions:
-                if not func in written:
-                    self.write_function_prototype(f, func)
-                    write.add(func)
-                written.add(func)
-        self.write_prototype_post(f)
-
-        self.write_function_pre(f)
-        for func in write:
-            self.write_function(f, func)
-        self.write_function_post(f)
+        self.write_functions(f, set(), set(), features)
 
     def generate_extensions(self, api, version, extensions, enums, functions):
         f = self._f_exts
@@ -226,8 +209,9 @@ class BaseDGenerator(Generator):
                     self.write_enum(f, enum.name, enum.value)
                 written.add(enum.name)
 
-            f.write('\n')
+        self.write_functions(f, write, written, extensions)
 
+    def write_functions(self, f, write, written, extensions):
         self.write_prototype_pre(f)
         for ext in extensions:
             for func in ext.functions:
