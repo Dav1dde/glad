@@ -9,21 +9,21 @@
 #define __glad_h_
 #define __gl_h_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-typedef struct _GLVersion {
+struct {
     int major;
     int minor;
 } GLVersion;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef void* (* LOADER)(const char *name);
+void gladLoadGLLoader(LOADER);
 
 int gladInit(void);
 void* gladGetProcAddress(const char *namez);
-GLVersion gladLoadGL(void);
-GLVersion gladLoadGLLoader(LOADER);
+void gladLoadGL(void);
 void gladTerminate(void);
 
 #ifdef _WIN32
@@ -35,7 +35,6 @@ typedef void* (*GLXGETPROCADDRESS)(const char*);
 GLXGETPROCADDRESS gladglXGetProcAddress;
 #endif
 #endif
-
 #include <stddef.h>
 #ifndef GLEXT_64_TYPES_DEFINED
 /* This code block is duplicated in glxext.h, so must be protected */
