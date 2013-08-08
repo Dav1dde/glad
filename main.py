@@ -2,7 +2,7 @@
 OpenGL loader made for your needs. glad currently supports
 the languages C, D and Volt.'''
 
-import glad.parse
+from glad.gl import OpenGLSpec
 from glad.generator import get_generator
 from glad.loader import NullLoader, get_loader
 
@@ -16,7 +16,7 @@ def main():
         if os.path.exists(path):
             msg = 'Invalid OpenGL spec file'
             try:
-                return glad.parse.OpenGLSpec.from_file(path)
+                return OpenGLSpec.from_file(path)
             except:
                 pass
 
@@ -75,7 +75,7 @@ def main():
 
     spec = ns.spec
     if spec is None:
-        spec = glad.parse.OpenGLSpec.from_opengl()
+        spec = OpenGLSpec.from_svn()
 
 
     loader = get_loader(ns.generator, ns.api)

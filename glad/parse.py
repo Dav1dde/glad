@@ -10,8 +10,8 @@ from collections import defaultdict, OrderedDict
 
 
 
-class OpenGLSpec(object):
-    URL = 'https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/gl.xml'
+class Spec(object):
+    URL = None
 
     def __init__(self, root):
         self.root = root
@@ -23,9 +23,6 @@ class OpenGLSpec(object):
         self._features = None
         self._extensions = None
 
-        self._profile = 'compatibility'
-        self._remove = set()
-
     @classmethod
     def from_url(cls, url):
         raw = ''
@@ -35,7 +32,7 @@ class OpenGLSpec(object):
         return cls(etree.fromstring(raw))
 
     @classmethod
-    def from_opengl(cls):
+    def from_svn(cls):
         return cls.from_url(cls.URL)
 
     @classmethod
@@ -45,23 +42,6 @@ class OpenGLSpec(object):
     @classmethod
     def from_file(cls, path):
         return cls(etree.parse(path).getroot())
-
-    @property
-    def profile(self):
-        return self._profile
-
-    @profile.setter
-    def profile(self, value):
-        if not value in ('core', 'compatibility'):
-            raise ValueError('profile must either be core or compatibility')
-
-        self._profile = value
-
-    @property
-    def removed(self):
-        if self._profile == 'core':
-            return frozenset(self._remove)
-        return frozenset()
 
     @property
     def comment(self):
@@ -273,10 +253,12 @@ class Feature(Extension):
         Extension.__init__(self, element, spec)
         self.spec = spec
 
+        # not every spec has a ._remove member, but there shouldn't be a remove
+        # tag without that member, if there is, blame me!
         for removed in chain.from_iterable(element.findall('remove')):
             if removed.tag == 'type': continue
 
-            data = { 'enum' : spec.enums, 'command' : spec.commands }[removed.tag]
+            data = {'enum' : spec.enums, 'command' : spec.commands}[removed.tag]
             try:
                 spec._remove.add(data[removed.attrib['name']])
             except KeyError:
