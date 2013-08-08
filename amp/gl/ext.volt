@@ -13,48 +13,37 @@ enum uint GL_PIXEL_TILE_GRID_WIDTH_SGIX = 0x8142U;
 enum uint GL_PIXEL_TILE_GRID_HEIGHT_SGIX = 0x8143U;
 enum uint GL_PIXEL_TILE_GRID_DEPTH_SGIX = 0x8144U;
 enum uint GL_PIXEL_TILE_CACHE_SIZE_SGIX = 0x8145U;
-
 global bool GL_NV_point_sprite;
 enum uint GL_POINT_SPRITE_NV = 0x8861U;
 enum uint GL_COORD_REPLACE_NV = 0x8862U;
 enum uint GL_POINT_SPRITE_R_MODE_NV = 0x8863U;
-
 global bool GL_APPLE_element_array;
 enum uint GL_ELEMENT_ARRAY_APPLE = 0x8A0CU;
 enum uint GL_ELEMENT_ARRAY_TYPE_APPLE = 0x8A0DU;
 enum uint GL_ELEMENT_ARRAY_POINTER_APPLE = 0x8A0EU;
-
 global bool GL_AMD_multi_draw_indirect;
-
 global bool GL_EXT_blend_subtract;
 enum uint GL_FUNC_SUBTRACT_EXT = 0x800AU;
 enum uint GL_FUNC_REVERSE_SUBTRACT_EXT = 0x800BU;
-
 global bool GL_SGIX_tag_sample_buffer;
-
 global bool GL_IBM_texture_mirrored_repeat;
 enum uint GL_MIRRORED_REPEAT_IBM = 0x8370U;
-
 global bool GL_APPLE_transform_hint;
 enum uint GL_TRANSFORM_HINT_APPLE = 0x85B1U;
-
 global bool GL_ATI_separate_stencil;
 enum uint GL_STENCIL_BACK_FUNC_ATI = 0x8800U;
 enum uint GL_STENCIL_BACK_FAIL_ATI = 0x8801U;
 enum uint GL_STENCIL_BACK_PASS_DEPTH_FAIL_ATI = 0x8802U;
 enum uint GL_STENCIL_BACK_PASS_DEPTH_PASS_ATI = 0x8803U;
-
 global bool GL_NV_vertex_program2_option;
 enum uint GL_MAX_PROGRAM_EXEC_INSTRUCTIONS_NV = 0x88F4U;
 enum uint GL_MAX_PROGRAM_CALL_DEPTH_NV = 0x88F5U;
-
 global bool GL_EXT_texture_buffer_object;
 enum uint GL_TEXTURE_BUFFER_EXT = 0x8C2AU;
 enum uint GL_MAX_TEXTURE_BUFFER_SIZE_EXT = 0x8C2BU;
 enum uint GL_TEXTURE_BINDING_BUFFER_EXT = 0x8C2CU;
 enum uint GL_TEXTURE_BUFFER_DATA_STORE_BINDING_EXT = 0x8C2DU;
 enum uint GL_TEXTURE_BUFFER_FORMAT_EXT = 0x8C2EU;
-
 global bool GL_ARB_vertex_blend;
 enum uint GL_MAX_VERTEX_UNITS_ARB = 0x86A4U;
 enum uint GL_ACTIVE_VERTEX_UNITS_ARB = 0x86A5U;
@@ -98,19 +87,13 @@ enum uint GL_MODELVIEW28_ARB = 0x873CU;
 enum uint GL_MODELVIEW29_ARB = 0x873DU;
 enum uint GL_MODELVIEW30_ARB = 0x873EU;
 enum uint GL_MODELVIEW31_ARB = 0x873FU;
-
 global bool GL_NV_vertex_program2;
-
 global bool GL_ARB_program_interface_query;
-
 global bool GL_EXT_misc_attribute;
-
 global bool GL_NV_multisample_coverage;
 enum uint GL_SAMPLES_ARB = 0x80A9U;
 enum uint GL_COLOR_SAMPLES_NV = 0x8E20U;
-
 global bool GL_ARB_shading_language_packing;
-
 global bool GL_EXT_texture_cube_map;
 enum uint GL_NORMAL_MAP_EXT = 0x8511U;
 enum uint GL_REFLECTION_MAP_EXT = 0x8512U;
@@ -124,14 +107,11 @@ enum uint GL_TEXTURE_CUBE_MAP_POSITIVE_Z_EXT = 0x8519U;
 enum uint GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_EXT = 0x851AU;
 enum uint GL_PROXY_TEXTURE_CUBE_MAP_EXT = 0x851BU;
 enum uint GL_MAX_CUBE_MAP_TEXTURE_SIZE_EXT = 0x851CU;
-
 global bool GL_ARB_texture_stencil8;
-
 global bool GL_EXT_index_func;
 enum uint GL_INDEX_TEST_EXT = 0x81B5U;
 enum uint GL_INDEX_TEST_FUNC_EXT = 0x81B6U;
 enum uint GL_INDEX_TEST_REF_EXT = 0x81B7U;
-
 global bool GL_OES_compressed_paletted_texture;
 enum uint GL_PALETTE4_RGB8_OES = 0x8B90U;
 enum uint GL_PALETTE4_RGBA8_OES = 0x8B91U;
@@ -143,33 +123,24 @@ enum uint GL_PALETTE8_RGBA8_OES = 0x8B96U;
 enum uint GL_PALETTE8_R5_G6_B5_OES = 0x8B97U;
 enum uint GL_PALETTE8_RGBA4_OES = 0x8B98U;
 enum uint GL_PALETTE8_RGB5_A1_OES = 0x8B99U;
-
 global bool GL_NV_depth_clamp;
 enum uint GL_DEPTH_CLAMP_NV = 0x864FU;
-
 global bool GL_NV_shader_buffer_load;
 enum uint GL_BUFFER_GPU_ADDRESS_NV = 0x8F1DU;
 enum uint GL_GPU_ADDRESS_NV = 0x8F34U;
 enum uint GL_MAX_SHADER_BUFFER_ADDRESS_NV = 0x8F35U;
-
 global bool GL_EXT_color_subtable;
-
 global bool GL_SUNX_constant_data;
 enum uint GL_UNPACK_CONSTANT_DATA_SUNX = 0x81D5U;
 enum uint GL_TEXTURE_CONSTANT_DATA_SUNX = 0x81D6U;
-
 global bool GL_EXT_multi_draw_arrays;
-
 global bool GL_ARB_shader_atomic_counters;
-
 global bool GL_ARB_arrays_of_arrays;
-
 global bool GL_NV_conditional_render;
 enum uint GL_QUERY_WAIT_NV = 0x8E13U;
 enum uint GL_QUERY_NO_WAIT_NV = 0x8E14U;
 enum uint GL_QUERY_BY_REGION_WAIT_NV = 0x8E15U;
 enum uint GL_QUERY_BY_REGION_NO_WAIT_NV = 0x8E16U;
-
 global bool GL_EXT_texture_env_combine;
 enum uint GL_COMBINE_EXT = 0x8570U;
 enum uint GL_COMBINE_RGB_EXT = 0x8571U;
@@ -192,31 +163,24 @@ enum uint GL_OPERAND2_RGB_EXT = 0x8592U;
 enum uint GL_OPERAND0_ALPHA_EXT = 0x8598U;
 enum uint GL_OPERAND1_ALPHA_EXT = 0x8599U;
 enum uint GL_OPERAND2_ALPHA_EXT = 0x859AU;
-
 global bool GL_NV_fog_distance;
 enum uint GL_FOG_DISTANCE_MODE_NV = 0x855AU;
 enum uint GL_EYE_RADIAL_NV = 0x855BU;
 enum uint GL_EYE_PLANE_ABSOLUTE_NV = 0x855CU;
-
 global bool GL_SGIX_async_histogram;
 enum uint GL_ASYNC_HISTOGRAM_SGIX = 0x832CU;
 enum uint GL_MAX_ASYNC_HISTOGRAM_SGIX = 0x832DU;
-
 global bool GL_MESA_resize_buffers;
-
 global bool GL_NV_light_max_exponent;
 enum uint GL_MAX_SHININESS_NV = 0x8504U;
 enum uint GL_MAX_SPOT_EXPONENT_NV = 0x8505U;
-
 global bool GL_NV_texture_env_combine4;
 enum uint GL_COMBINE4_NV = 0x8503U;
 enum uint GL_SOURCE3_RGB_NV = 0x8583U;
 enum uint GL_SOURCE3_ALPHA_NV = 0x858BU;
 enum uint GL_OPERAND3_RGB_NV = 0x8593U;
 enum uint GL_OPERAND3_ALPHA_NV = 0x859BU;
-
 global bool GL_ARB_texture_view;
-
 global bool GL_ARB_texture_env_combine;
 enum uint GL_COMBINE_ARB = 0x8570U;
 enum uint GL_COMBINE_RGB_ARB = 0x8571U;
@@ -240,9 +204,7 @@ enum uint GL_SUBTRACT_ARB = 0x84E7U;
 enum uint GL_CONSTANT_ARB = 0x8576U;
 enum uint GL_PRIMARY_COLOR_ARB = 0x8577U;
 enum uint GL_PREVIOUS_ARB = 0x8578U;
-
 global bool GL_ARB_map_buffer_range;
-
 global bool GL_EXT_convolution;
 enum uint GL_CONVOLUTION_1D_EXT = 0x8010U;
 enum uint GL_CONVOLUTION_2D_EXT = 0x8011U;
@@ -264,15 +226,12 @@ enum uint GL_POST_CONVOLUTION_RED_BIAS_EXT = 0x8020U;
 enum uint GL_POST_CONVOLUTION_GREEN_BIAS_EXT = 0x8021U;
 enum uint GL_POST_CONVOLUTION_BLUE_BIAS_EXT = 0x8022U;
 enum uint GL_POST_CONVOLUTION_ALPHA_BIAS_EXT = 0x8023U;
-
 global bool GL_NV_compute_program5;
 enum uint GL_COMPUTE_PROGRAM_NV = 0x90FBU;
 enum uint GL_COMPUTE_PROGRAM_PARAMETER_BUFFER_NV = 0x90FCU;
-
 global bool GL_NV_vertex_attrib_integer_64bit;
 enum uint GL_INT64_NV = 0x140EU;
 enum uint GL_UNSIGNED_INT64_NV = 0x140FU;
-
 global bool GL_EXT_paletted_texture;
 enum uint GL_COLOR_INDEX1_EXT = 0x80E2U;
 enum uint GL_COLOR_INDEX2_EXT = 0x80E3U;
@@ -281,14 +240,12 @@ enum uint GL_COLOR_INDEX8_EXT = 0x80E5U;
 enum uint GL_COLOR_INDEX12_EXT = 0x80E6U;
 enum uint GL_COLOR_INDEX16_EXT = 0x80E7U;
 enum uint GL_TEXTURE_INDEX_SIZE_EXT = 0x80EDU;
-
 global bool GL_ARB_texture_buffer_object;
 enum uint GL_TEXTURE_BUFFER_ARB = 0x8C2AU;
 enum uint GL_MAX_TEXTURE_BUFFER_SIZE_ARB = 0x8C2BU;
 enum uint GL_TEXTURE_BINDING_BUFFER_ARB = 0x8C2CU;
 enum uint GL_TEXTURE_BUFFER_DATA_STORE_BINDING_ARB = 0x8C2DU;
 enum uint GL_TEXTURE_BUFFER_FORMAT_ARB = 0x8C2EU;
-
 global bool GL_ATI_pn_triangles;
 enum uint GL_PN_TRIANGLES_ATI = 0x87F0U;
 enum uint GL_MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI = 0x87F1U;
@@ -299,16 +256,13 @@ enum uint GL_PN_TRIANGLES_POINT_MODE_LINEAR_ATI = 0x87F5U;
 enum uint GL_PN_TRIANGLES_POINT_MODE_CUBIC_ATI = 0x87F6U;
 enum uint GL_PN_TRIANGLES_NORMAL_MODE_LINEAR_ATI = 0x87F7U;
 enum uint GL_PN_TRIANGLES_NORMAL_MODE_QUADRATIC_ATI = 0x87F8U;
-
 global bool GL_SGIX_resample;
 enum uint GL_PACK_RESAMPLE_SGIX = 0x842CU;
 enum uint GL_UNPACK_RESAMPLE_SGIX = 0x842DU;
 enum uint GL_RESAMPLE_REPLICATE_SGIX = 0x842EU;
 enum uint GL_RESAMPLE_ZERO_FILL_SGIX = 0x842FU;
 enum uint GL_RESAMPLE_DECIMATE_SGIX = 0x8430U;
-
 global bool GL_SGIX_flush_raster;
-
 global bool GL_EXT_light_texture;
 enum uint GL_FRAGMENT_MATERIAL_EXT = 0x8349U;
 enum uint GL_FRAGMENT_NORMAL_EXT = 0x834AU;
@@ -320,51 +274,39 @@ enum uint GL_TEXTURE_LIGHT_EXT = 0x8350U;
 enum uint GL_TEXTURE_MATERIAL_FACE_EXT = 0x8351U;
 enum uint GL_TEXTURE_MATERIAL_PARAMETER_EXT = 0x8352U;
 enum uint GL_FRAGMENT_DEPTH_EXT = 0x8452U;
-
 global bool GL_ARB_point_sprite;
 enum uint GL_POINT_SPRITE_ARB = 0x8861U;
 enum uint GL_COORD_REPLACE_ARB = 0x8862U;
-
 global bool GL_ARB_half_float_pixel;
 enum uint GL_HALF_FLOAT_ARB = 0x140BU;
-
 global bool GL_NV_tessellation_program5;
 enum uint GL_MAX_PROGRAM_PATCH_ATTRIBS_NV = 0x86D8U;
 enum uint GL_TESS_CONTROL_PROGRAM_NV = 0x891EU;
 enum uint GL_TESS_EVALUATION_PROGRAM_NV = 0x891FU;
 enum uint GL_TESS_CONTROL_PROGRAM_PARAMETER_BUFFER_NV = 0x8C74U;
 enum uint GL_TESS_EVALUATION_PROGRAM_PARAMETER_BUFFER_NV = 0x8C75U;
-
 global bool GL_REND_screen_coordinates;
 enum uint GL_SCREEN_COORDINATES_REND = 0x8490U;
 enum uint GL_INVERTED_SCREEN_W_REND = 0x8491U;
-
 global bool GL_EXT_shared_texture_palette;
 enum uint GL_SHARED_TEXTURE_PALETTE_EXT = 0x81FBU;
-
 global bool GL_EXT_packed_float;
 enum uint GL_R11F_G11F_B10F_EXT = 0x8C3AU;
 enum uint GL_UNSIGNED_INT_10F_11F_11F_REV_EXT = 0x8C3BU;
 enum uint GL_RGBA_SIGNED_COMPONENTS_EXT = 0x8C3CU;
-
 global bool GL_OML_subsample;
 enum uint GL_FORMAT_SUBSAMPLE_24_24_OML = 0x8982U;
 enum uint GL_FORMAT_SUBSAMPLE_244_244_OML = 0x8983U;
-
 global bool GL_SGIX_vertex_preclip;
 enum uint GL_VERTEX_PRECLIP_SGIX = 0x83EEU;
 enum uint GL_VERTEX_PRECLIP_HINT_SGIX = 0x83EFU;
-
 global bool GL_SGIX_texture_scale_bias;
 enum uint GL_POST_TEXTURE_FILTER_BIAS_SGIX = 0x8179U;
 enum uint GL_POST_TEXTURE_FILTER_SCALE_SGIX = 0x817AU;
 enum uint GL_POST_TEXTURE_FILTER_BIAS_RANGE_SGIX = 0x817BU;
 enum uint GL_POST_TEXTURE_FILTER_SCALE_RANGE_SGIX = 0x817CU;
-
 global bool GL_AMD_draw_buffers_blend;
-
 global bool GL_MESA_window_pos;
-
 global bool GL_EXT_texture_array;
 enum uint GL_TEXTURE_1D_ARRAY_EXT = 0x8C18U;
 enum uint GL_PROXY_TEXTURE_1D_ARRAY_EXT = 0x8C19U;
@@ -375,38 +317,27 @@ enum uint GL_TEXTURE_BINDING_2D_ARRAY_EXT = 0x8C1DU;
 enum uint GL_MAX_ARRAY_TEXTURE_LAYERS_EXT = 0x88FFU;
 enum uint GL_COMPARE_REF_DEPTH_TO_TEXTURE_EXT = 0x884EU;
 enum uint GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER_EXT = 0x8CD4U;
-
 global bool GL_NV_texture_barrier;
-
 global bool GL_ARB_texture_query_levels;
-
 global bool GL_NV_texgen_emboss;
 enum uint GL_EMBOSS_LIGHT_NV = 0x855DU;
 enum uint GL_EMBOSS_CONSTANT_NV = 0x855EU;
 enum uint GL_EMBOSS_MAP_NV = 0x855FU;
-
 global bool GL_EXT_texture_swizzle;
 enum uint GL_TEXTURE_SWIZZLE_R_EXT = 0x8E42U;
 enum uint GL_TEXTURE_SWIZZLE_G_EXT = 0x8E43U;
 enum uint GL_TEXTURE_SWIZZLE_B_EXT = 0x8E44U;
 enum uint GL_TEXTURE_SWIZZLE_A_EXT = 0x8E45U;
 enum uint GL_TEXTURE_SWIZZLE_RGBA_EXT = 0x8E46U;
-
 global bool GL_ARB_texture_rg;
-
 global bool GL_ARB_vertex_type_2_10_10_10_rev;
-
 global bool GL_ARB_fragment_shader;
 enum uint GL_FRAGMENT_SHADER_ARB = 0x8B30U;
 enum uint GL_MAX_FRAGMENT_UNIFORM_COMPONENTS_ARB = 0x8B49U;
 enum uint GL_FRAGMENT_SHADER_DERIVATIVE_HINT_ARB = 0x8B8BU;
-
 global bool GL_3DFX_tbuffer;
-
 global bool GL_GREMEDY_frame_terminator;
-
 global bool GL_ARB_blend_func_extended;
-
 global bool GL_EXT_separate_shader_objects;
 enum uint GL_ACTIVE_PROGRAM_EXT = 0x8B8DU;
 enum uint GL_VERTEX_SHADER_BIT_EXT = 0x00000001U;
@@ -414,11 +345,9 @@ enum uint GL_FRAGMENT_SHADER_BIT_EXT = 0x00000002U;
 enum uint GL_ALL_SHADER_BITS_EXT = 0xFFFFFFFFU;
 enum uint GL_PROGRAM_SEPARABLE_EXT = 0x8258U;
 enum uint GL_PROGRAM_PIPELINE_BINDING_EXT = 0x825AU;
-
 global bool GL_NV_texture_multisample;
 enum uint GL_TEXTURE_COVERAGE_SAMPLES_NV = 0x9045U;
 enum uint GL_TEXTURE_COLOR_SAMPLES_NV = 0x9046U;
-
 global bool GL_ARB_shader_objects;
 enum uint GL_PROGRAM_OBJECT_ARB = 0x8B40U;
 enum uint GL_SHADER_OBJECT_ARB = 0x8B48U;
@@ -454,9 +383,7 @@ enum uint GL_OBJECT_ATTACHED_OBJECTS_ARB = 0x8B85U;
 enum uint GL_OBJECT_ACTIVE_UNIFORMS_ARB = 0x8B86U;
 enum uint GL_OBJECT_ACTIVE_UNIFORM_MAX_LENGTH_ARB = 0x8B87U;
 enum uint GL_OBJECT_SHADER_SOURCE_LENGTH_ARB = 0x8B88U;
-
 global bool GL_ARB_framebuffer_object;
-
 global bool GL_ATI_envmap_bumpmap;
 enum uint GL_BUMP_ROT_MATRIX_ATI = 0x8775U;
 enum uint GL_BUMP_ROT_MATRIX_SIZE_ATI = 0x8776U;
@@ -466,31 +393,23 @@ enum uint GL_DUDV_ATI = 0x8779U;
 enum uint GL_DU8DV8_ATI = 0x877AU;
 enum uint GL_BUMP_ENVMAP_ATI = 0x877BU;
 enum uint GL_BUMP_TARGET_ATI = 0x877CU;
-
 global bool GL_ARB_robust_buffer_access_behavior;
-
 global bool GL_ARB_shader_stencil_export;
-
 global bool GL_NV_texture_rectangle;
 enum uint GL_TEXTURE_RECTANGLE_NV = 0x84F5U;
 enum uint GL_TEXTURE_BINDING_RECTANGLE_NV = 0x84F6U;
 enum uint GL_PROXY_TEXTURE_RECTANGLE_NV = 0x84F7U;
 enum uint GL_MAX_RECTANGLE_TEXTURE_SIZE_NV = 0x84F8U;
-
 global bool GL_ARB_enhanced_layouts;
-
 global bool GL_ARB_texture_rectangle;
 enum uint GL_TEXTURE_RECTANGLE_ARB = 0x84F5U;
 enum uint GL_TEXTURE_BINDING_RECTANGLE_ARB = 0x84F6U;
 enum uint GL_PROXY_TEXTURE_RECTANGLE_ARB = 0x84F7U;
 enum uint GL_MAX_RECTANGLE_TEXTURE_SIZE_ARB = 0x84F8U;
-
 global bool GL_SGI_texture_color_table;
 enum uint GL_TEXTURE_COLOR_TABLE_SGI = 0x80BCU;
 enum uint GL_PROXY_TEXTURE_COLOR_TABLE_SGI = 0x80BDU;
-
 global bool GL_ATI_map_object_buffer;
-
 global bool GL_ARB_robustness;
 enum uint GL_CONTEXT_FLAG_ROBUST_ACCESS_BIT_ARB = 0x00000004U;
 enum uint GL_LOSE_CONTEXT_ON_RESET_ARB = 0x8252U;
@@ -499,7 +418,6 @@ enum uint GL_INNOCENT_CONTEXT_RESET_ARB = 0x8254U;
 enum uint GL_UNKNOWN_CONTEXT_RESET_ARB = 0x8255U;
 enum uint GL_RESET_NOTIFICATION_STRATEGY_ARB = 0x8256U;
 enum uint GL_NO_RESET_NOTIFICATION_ARB = 0x8261U;
-
 global bool GL_NV_pixel_data_range;
 enum uint GL_WRITE_PIXEL_DATA_RANGE_NV = 0x8878U;
 enum uint GL_READ_PIXEL_DATA_RANGE_NV = 0x8879U;
@@ -507,20 +425,16 @@ enum uint GL_WRITE_PIXEL_DATA_RANGE_LENGTH_NV = 0x887AU;
 enum uint GL_READ_PIXEL_DATA_RANGE_LENGTH_NV = 0x887BU;
 enum uint GL_WRITE_PIXEL_DATA_RANGE_POINTER_NV = 0x887CU;
 enum uint GL_READ_PIXEL_DATA_RANGE_POINTER_NV = 0x887DU;
-
 global bool GL_EXT_framebuffer_blit;
 enum uint GL_READ_FRAMEBUFFER_EXT = 0x8CA8U;
 enum uint GL_DRAW_FRAMEBUFFER_EXT = 0x8CA9U;
 enum uint GL_DRAW_FRAMEBUFFER_BINDING_EXT = 0x8CA6U;
 enum uint GL_READ_FRAMEBUFFER_BINDING_EXT = 0x8CAAU;
-
 global bool GL_ARB_gpu_shader_fp64;
-
 global bool GL_SGIX_depth_texture;
 enum uint GL_DEPTH_COMPONENT16_SGIX = 0x81A5U;
 enum uint GL_DEPTH_COMPONENT24_SGIX = 0x81A6U;
 enum uint GL_DEPTH_COMPONENT32_SGIX = 0x81A7U;
-
 global bool GL_EXT_vertex_weighting;
 enum uint GL_MODELVIEW0_STACK_DEPTH_EXT = 0x0BA3U;
 enum uint GL_MODELVIEW1_STACK_DEPTH_EXT = 0x8502U;
@@ -535,29 +449,21 @@ enum uint GL_VERTEX_WEIGHT_ARRAY_SIZE_EXT = 0x850DU;
 enum uint GL_VERTEX_WEIGHT_ARRAY_TYPE_EXT = 0x850EU;
 enum uint GL_VERTEX_WEIGHT_ARRAY_STRIDE_EXT = 0x850FU;
 enum uint GL_VERTEX_WEIGHT_ARRAY_POINTER_EXT = 0x8510U;
-
 global bool GL_GREMEDY_string_marker;
-
 global bool GL_ARB_texture_compression_bptc;
 enum uint GL_COMPRESSED_RGBA_BPTC_UNORM_ARB = 0x8E8CU;
 enum uint GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ARB = 0x8E8DU;
 enum uint GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT_ARB = 0x8E8EU;
 enum uint GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ARB = 0x8E8FU;
-
 global bool GL_EXT_subtexture;
-
 global bool GL_EXT_pixel_transform_color_table;
-
 global bool GL_EXT_texture_compression_rgtc;
 enum uint GL_COMPRESSED_RED_RGTC1_EXT = 0x8DBBU;
 enum uint GL_COMPRESSED_SIGNED_RED_RGTC1_EXT = 0x8DBCU;
 enum uint GL_COMPRESSED_RED_GREEN_RGTC2_EXT = 0x8DBDU;
 enum uint GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT = 0x8DBEU;
-
 global bool GL_SGIX_depth_pass_instrument;
-
 global bool GL_ARB_shader_precision;
-
 global bool GL_NV_evaluators;
 enum uint GL_EVAL_2D_NV = 0x86C0U;
 enum uint GL_EVAL_TRIANGULAR_2D_NV = 0x86C1U;
@@ -583,11 +489,9 @@ enum uint GL_EVAL_VERTEX_ATTRIB14_NV = 0x86D4U;
 enum uint GL_EVAL_VERTEX_ATTRIB15_NV = 0x86D5U;
 enum uint GL_MAX_MAP_TESSELLATION_NV = 0x86D6U;
 enum uint GL_MAX_RATIONAL_EVAL_ORDER_NV = 0x86D7U;
-
 global bool GL_SGIS_texture_filter4;
 enum uint GL_FILTER4_SGIS = 0x8146U;
 enum uint GL_TEXTURE_FILTER4_SIZE_SGIS = 0x8147U;
-
 global bool GL_AMD_performance_monitor;
 enum uint GL_COUNTER_TYPE_AMD = 0x8BC0U;
 enum uint GL_COUNTER_RANGE_AMD = 0x8BC1U;
@@ -596,15 +500,11 @@ enum uint GL_PERCENTAGE_AMD = 0x8BC3U;
 enum uint GL_PERFMON_RESULT_AVAILABLE_AMD = 0x8BC4U;
 enum uint GL_PERFMON_RESULT_SIZE_AMD = 0x8BC5U;
 enum uint GL_PERFMON_RESULT_AMD = 0x8BC6U;
-
 global bool GL_NV_geometry_shader4;
-
 global bool GL_EXT_stencil_clear_tag;
 enum uint GL_STENCIL_TAG_BITS_EXT = 0x88F2U;
 enum uint GL_STENCIL_CLEAR_TAG_VALUE_EXT = 0x88F3U;
-
 global bool GL_NV_vertex_program1_1;
-
 global bool GL_NV_present_video;
 enum uint GL_FRAME_NV = 0x8E26U;
 enum uint GL_FIELDS_NV = 0x8E27U;
@@ -612,31 +512,22 @@ enum uint GL_CURRENT_TIME_NV = 0x8E28U;
 enum uint GL_NUM_FILL_STREAMS_NV = 0x8E29U;
 enum uint GL_PRESENT_TIME_NV = 0x8E2AU;
 enum uint GL_PRESENT_DURATION_NV = 0x8E2BU;
-
 global bool GL_ARB_texture_compression_rgtc;
-
 global bool GL_HP_convolution_border_modes;
 enum uint GL_IGNORE_BORDER_HP = 0x8150U;
 enum uint GL_CONSTANT_BORDER_HP = 0x8151U;
 enum uint GL_REPLICATE_BORDER_HP = 0x8153U;
 enum uint GL_CONVOLUTION_BORDER_COLOR_HP = 0x8154U;
-
 global bool GL_EXT_gpu_program_parameters;
-
 global bool GL_SGIX_list_priority;
 enum uint GL_LIST_PRIORITY_SGIX = 0x8182U;
-
 global bool GL_ARB_stencil_texturing;
-
 global bool GL_SGIX_fog_offset;
 enum uint GL_FOG_OFFSET_SGIX = 0x8198U;
 enum uint GL_FOG_OFFSET_VALUE_SGIX = 0x8199U;
-
 global bool GL_ARB_draw_elements_base_vertex;
-
 global bool GL_INGR_interlace_read;
 enum uint GL_INTERLACE_READ_INGR = 0x8568U;
-
 global bool GL_NV_transform_feedback;
 enum uint GL_BACK_PRIMARY_COLOR_NV = 0x8C77U;
 enum uint GL_BACK_SECONDARY_COLOR_NV = 0x8C78U;
@@ -669,7 +560,6 @@ enum int GL_SKIP_COMPONENTS4_NV = -3;
 enum int GL_SKIP_COMPONENTS3_NV = -4;
 enum int GL_SKIP_COMPONENTS2_NV = -5;
 enum int GL_SKIP_COMPONENTS1_NV = -6;
-
 global bool GL_NV_fragment_program;
 enum uint GL_MAX_FRAGMENT_PROGRAM_LOCAL_PARAMETERS_NV = 0x8868U;
 enum uint GL_FRAGMENT_PROGRAM_NV = 0x8870U;
@@ -677,26 +567,20 @@ enum uint GL_MAX_TEXTURE_COORDS_NV = 0x8871U;
 enum uint GL_MAX_TEXTURE_IMAGE_UNITS_NV = 0x8872U;
 enum uint GL_FRAGMENT_PROGRAM_BINDING_NV = 0x8873U;
 enum uint GL_PROGRAM_ERROR_STRING_NV = 0x8874U;
-
 global bool GL_AMD_stencil_operation_extended;
 enum uint GL_SET_AMD = 0x874AU;
 enum uint GL_REPLACE_VALUE_AMD = 0x874BU;
 enum uint GL_STENCIL_OP_VALUE_AMD = 0x874CU;
 enum uint GL_STENCIL_BACK_OP_VALUE_AMD = 0x874DU;
-
 global bool GL_ARB_seamless_cubemap_per_texture;
-
 global bool GL_ARB_instanced_arrays;
 enum uint GL_VERTEX_ATTRIB_ARRAY_DIVISOR_ARB = 0x88FEU;
-
 global bool GL_EXT_polygon_offset;
 enum uint GL_POLYGON_OFFSET_EXT = 0x8037U;
 enum uint GL_POLYGON_OFFSET_FACTOR_EXT = 0x8038U;
 enum uint GL_POLYGON_OFFSET_BIAS_EXT = 0x8039U;
-
 global bool GL_NV_vertex_array_range2;
 enum uint GL_VERTEX_ARRAY_RANGE_WITHOUT_FLUSH_NV = 0x8533U;
-
 global bool GL_AMD_sparse_texture;
 enum uint GL_VIRTUAL_PAGE_SIZE_X_AMD = 0x9195U;
 enum uint GL_VIRTUAL_PAGE_SIZE_Y_AMD = 0x9196U;
@@ -707,58 +591,43 @@ enum uint GL_MAX_SPARSE_ARRAY_TEXTURE_LAYERS = 0x919AU;
 enum uint GL_MIN_SPARSE_LEVEL_AMD = 0x919BU;
 enum uint GL_MIN_LOD_WARNING_AMD = 0x919CU;
 enum uint GL_TEXTURE_STORAGE_SPARSE_BIT_AMD = 0x00000001U;
-
 global bool GL_NV_fence;
 enum uint GL_ALL_COMPLETED_NV = 0x84F2U;
 enum uint GL_FENCE_STATUS_NV = 0x84F3U;
 enum uint GL_FENCE_CONDITION_NV = 0x84F4U;
-
 global bool GL_ARB_texture_buffer_range;
-
 global bool GL_SUN_mesh_array;
 enum uint GL_QUAD_MESH_SUN = 0x8614U;
 enum uint GL_TRIANGLE_MESH_SUN = 0x8615U;
-
 global bool GL_ARB_vertex_attrib_binding;
-
 global bool GL_ARB_framebuffer_no_attachments;
-
 global bool GL_ARB_cl_event;
 enum uint GL_SYNC_CL_EVENT_ARB = 0x8240U;
 enum uint GL_SYNC_CL_EVENT_COMPLETE_ARB = 0x8241U;
-
 global bool GL_NV_packed_depth_stencil;
 enum uint GL_DEPTH_STENCIL_NV = 0x84F9U;
 enum uint GL_UNSIGNED_INT_24_8_NV = 0x84FAU;
-
 global bool GL_OES_single_precision;
-
 global bool GL_NV_primitive_restart;
 enum uint GL_PRIMITIVE_RESTART_NV = 0x8558U;
 enum uint GL_PRIMITIVE_RESTART_INDEX_NV = 0x8559U;
-
 global bool GL_SUN_global_alpha;
 enum uint GL_GLOBAL_ALPHA_SUN = 0x81D9U;
 enum uint GL_GLOBAL_ALPHA_FACTOR_SUN = 0x81DAU;
-
 global bool GL_EXT_texture_object;
 enum uint GL_TEXTURE_PRIORITY_EXT = 0x8066U;
 enum uint GL_TEXTURE_RESIDENT_EXT = 0x8067U;
 enum uint GL_TEXTURE_1D_BINDING_EXT = 0x8068U;
 enum uint GL_TEXTURE_2D_BINDING_EXT = 0x8069U;
 enum uint GL_TEXTURE_3D_BINDING_EXT = 0x806AU;
-
 global bool GL_AMD_name_gen_delete;
 enum uint GL_DATA_BUFFER_AMD = 0x9151U;
 enum uint GL_PERFORMANCE_MONITOR_AMD = 0x9152U;
 enum uint GL_QUERY_OBJECT_AMD = 0x9153U;
 enum uint GL_VERTEX_ARRAY_OBJECT_AMD = 0x9154U;
 enum uint GL_SAMPLER_OBJECT_AMD = 0x9155U;
-
 global bool GL_NV_texture_compression_vtc;
-
 global bool GL_SGIX_ycrcb_subsample;
-
 global bool GL_NV_texture_shader3;
 enum uint GL_OFFSET_PROJECTIVE_TEXTURE_2D_NV = 0x8850U;
 enum uint GL_OFFSET_PROJECTIVE_TEXTURE_2D_SCALE_NV = 0x8851U;
@@ -777,10 +646,8 @@ enum uint GL_DOT_PRODUCT_AFFINE_DEPTH_REPLACE_NV = 0x885DU;
 enum uint GL_HILO8_NV = 0x885EU;
 enum uint GL_SIGNED_HILO8_NV = 0x885FU;
 enum uint GL_FORCE_BLUE_TO_ONE_NV = 0x8860U;
-
 global bool GL_NV_texture_shader2;
 enum uint GL_DOT_PRODUCT_TEXTURE_3D_NV = 0x86EFU;
-
 global bool GL_EXT_texture;
 enum uint GL_ALPHA4_EXT = 0x803BU;
 enum uint GL_ALPHA8_EXT = 0x803CU;
@@ -825,11 +692,8 @@ enum uint GL_REPLACE_EXT = 0x8062U;
 enum uint GL_PROXY_TEXTURE_1D_EXT = 0x8063U;
 enum uint GL_PROXY_TEXTURE_2D_EXT = 0x8064U;
 enum uint GL_TEXTURE_TOO_LARGE_EXT = 0x8065U;
-
 global bool GL_ARB_buffer_storage;
-
 global bool GL_AMD_shader_atomic_counter_ops;
-
 global bool GL_APPLE_vertex_program_evaluators;
 enum uint GL_VERTEX_ATTRIB_MAP1_APPLE = 0x8A00U;
 enum uint GL_VERTEX_ATTRIB_MAP2_APPLE = 0x8A01U;
@@ -841,16 +705,11 @@ enum uint GL_VERTEX_ATTRIB_MAP2_SIZE_APPLE = 0x8A06U;
 enum uint GL_VERTEX_ATTRIB_MAP2_COEFF_APPLE = 0x8A07U;
 enum uint GL_VERTEX_ATTRIB_MAP2_ORDER_APPLE = 0x8A08U;
 enum uint GL_VERTEX_ATTRIB_MAP2_DOMAIN_APPLE = 0x8A09U;
-
 global bool GL_ARB_multi_bind;
-
 global bool GL_ARB_explicit_uniform_location;
-
 global bool GL_ARB_depth_buffer_float;
-
 global bool GL_SGIX_shadow_ambient;
 enum uint GL_SHADOW_AMBIENT_SGIX = 0x80BFU;
-
 global bool GL_ARB_texture_cube_map;
 enum uint GL_NORMAL_MAP_ARB = 0x8511U;
 enum uint GL_REFLECTION_MAP_ARB = 0x8512U;
@@ -864,9 +723,7 @@ enum uint GL_TEXTURE_CUBE_MAP_POSITIVE_Z_ARB = 0x8519U;
 enum uint GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_ARB = 0x851AU;
 enum uint GL_PROXY_TEXTURE_CUBE_MAP_ARB = 0x851BU;
 enum uint GL_MAX_CUBE_MAP_TEXTURE_SIZE_ARB = 0x851CU;
-
 global bool GL_AMD_vertex_shader_viewport_index;
-
 global bool GL_NV_vertex_buffer_unified_memory;
 enum uint GL_VERTEX_ATTRIB_ARRAY_UNIFIED_NV = 0x8F1EU;
 enum uint GL_ELEMENT_ARRAY_UNIFIED_NV = 0x8F1FU;
@@ -893,18 +750,14 @@ enum uint GL_ELEMENT_ARRAY_LENGTH_NV = 0x8F33U;
 enum uint GL_DRAW_INDIRECT_UNIFIED_NV = 0x8F40U;
 enum uint GL_DRAW_INDIRECT_ADDRESS_NV = 0x8F41U;
 enum uint GL_DRAW_INDIRECT_LENGTH_NV = 0x8F42U;
-
 global bool GL_EXT_texture_env_dot3;
 enum uint GL_DOT3_RGB_EXT = 0x8740U;
 enum uint GL_DOT3_RGBA_EXT = 0x8741U;
-
 global bool GL_ATI_texture_env_combine3;
 enum uint GL_MODULATE_ADD_ATI = 0x8744U;
 enum uint GL_MODULATE_SIGNED_ADD_ATI = 0x8745U;
 enum uint GL_MODULATE_SUBTRACT_ATI = 0x8746U;
-
 global bool GL_ARB_map_buffer_alignment;
-
 global bool GL_NV_blend_equation_advanced;
 enum uint GL_BLEND_ADVANCED_COHERENT_NV = 0x9285U;
 enum uint GL_BLEND_OVERLAP_NV = 0x9281U;
@@ -952,13 +805,11 @@ enum uint GL_SRC_OUT_NV = 0x928CU;
 enum uint GL_SRC_OVER_NV = 0x9288U;
 enum uint GL_UNCORRELATED_NV = 0x9282U;
 enum uint GL_VIVIDLIGHT_NV = 0x92A6U;
-
 global bool GL_SGIS_sharpen_texture;
 enum uint GL_LINEAR_SHARPEN_SGIS = 0x80ADU;
 enum uint GL_LINEAR_SHARPEN_ALPHA_SGIS = 0x80AEU;
 enum uint GL_LINEAR_SHARPEN_COLOR_SGIS = 0x80AFU;
 enum uint GL_SHARPEN_TEXTURE_FUNC_POINTS_SGIS = 0x80B0U;
-
 global bool GL_ARB_vertex_program;
 enum uint GL_COLOR_SUM_ARB = 0x8458U;
 enum uint GL_VERTEX_PROGRAM_ARB = 0x8620U;
@@ -1039,17 +890,13 @@ enum uint GL_MATRIX28_ARB = 0x88DCU;
 enum uint GL_MATRIX29_ARB = 0x88DDU;
 enum uint GL_MATRIX30_ARB = 0x88DEU;
 enum uint GL_MATRIX31_ARB = 0x88DFU;
-
 global bool GL_ARB_texture_rgb10_a2ui;
-
 global bool GL_OML_interlace;
 enum uint GL_INTERLACE_OML = 0x8980U;
 enum uint GL_INTERLACE_READ_OML = 0x8981U;
-
 global bool GL_ATI_pixel_format_float;
 enum uint GL_RGBA_FLOAT_MODE_ATI = 0x8820U;
 enum uint GL_COLOR_CLEAR_UNCLAMPED_VALUE_ATI = 0x8835U;
-
 global bool GL_ARB_vertex_buffer_object;
 enum uint GL_BUFFER_SIZE_ARB = 0x8764U;
 enum uint GL_BUFFER_USAGE_ARB = 0x8765U;
@@ -1082,19 +929,15 @@ enum uint GL_STATIC_COPY_ARB = 0x88E6U;
 enum uint GL_DYNAMIC_DRAW_ARB = 0x88E8U;
 enum uint GL_DYNAMIC_READ_ARB = 0x88E9U;
 enum uint GL_DYNAMIC_COPY_ARB = 0x88EAU;
-
 global bool GL_EXT_shadow_funcs;
-
 global bool GL_ATI_text_fragment_shader;
 enum uint GL_TEXT_FRAGMENT_SHADER_ATI = 0x8200U;
-
 global bool GL_NV_vertex_array_range;
 enum uint GL_VERTEX_ARRAY_RANGE_NV = 0x851DU;
 enum uint GL_VERTEX_ARRAY_RANGE_LENGTH_NV = 0x851EU;
 enum uint GL_VERTEX_ARRAY_RANGE_VALID_NV = 0x851FU;
 enum uint GL_MAX_VERTEX_ARRAY_RANGE_ELEMENT_NV = 0x8520U;
 enum uint GL_VERTEX_ARRAY_RANGE_POINTER_NV = 0x8521U;
-
 global bool GL_SGIX_fragment_lighting;
 enum uint GL_FRAGMENT_LIGHTING_SGIX = 0x8400U;
 enum uint GL_FRAGMENT_COLOR_MATERIAL_SGIX = 0x8401U;
@@ -1116,23 +959,17 @@ enum uint GL_FRAGMENT_LIGHT4_SGIX = 0x8410U;
 enum uint GL_FRAGMENT_LIGHT5_SGIX = 0x8411U;
 enum uint GL_FRAGMENT_LIGHT6_SGIX = 0x8412U;
 enum uint GL_FRAGMENT_LIGHT7_SGIX = 0x8413U;
-
 global bool GL_NV_texture_expand_normal;
 enum uint GL_TEXTURE_UNSIGNED_REMAP_MODE_NV = 0x888FU;
-
 global bool GL_NV_framebuffer_multisample_coverage;
 enum uint GL_RENDERBUFFER_COVERAGE_SAMPLES_NV = 0x8CABU;
 enum uint GL_RENDERBUFFER_COLOR_SAMPLES_NV = 0x8E10U;
 enum uint GL_MAX_MULTISAMPLE_COVERAGE_MODES_NV = 0x8E11U;
 enum uint GL_MULTISAMPLE_COVERAGE_MODES_NV = 0x8E12U;
-
 global bool GL_EXT_timer_query;
 enum uint GL_TIME_ELAPSED_EXT = 0x88BFU;
-
 global bool GL_EXT_vertex_array_bgra;
-
 global bool GL_NV_bindless_texture;
-
 global bool GL_KHR_debug;
 enum uint GL_DEBUG_OUTPUT_SYNCHRONOUS_KHR = 0x8242U;
 enum uint GL_DEBUG_NEXT_LOGGED_MESSAGE_LENGTH_KHR = 0x8243U;
@@ -1172,12 +1009,9 @@ enum uint GL_DEBUG_OUTPUT_KHR = 0x92E0U;
 enum uint GL_CONTEXT_FLAG_DEBUG_BIT_KHR = 0x00000002U;
 enum uint GL_STACK_OVERFLOW_KHR = 0x0503U;
 enum uint GL_STACK_UNDERFLOW_KHR = 0x0504U;
-
 global bool GL_SGIS_texture_border_clamp;
 enum uint GL_CLAMP_TO_BORDER_SGIS = 0x812DU;
-
 global bool GL_ATI_vertex_attrib_array_object;
-
 global bool GL_SGIX_clipmap;
 enum uint GL_LINEAR_CLIPMAP_LINEAR_SGIX = 0x8170U;
 enum uint GL_TEXTURE_CLIPMAP_CENTER_SGIX = 0x8171U;
@@ -1191,7 +1025,6 @@ enum uint GL_MAX_CLIPMAP_VIRTUAL_DEPTH_SGIX = 0x8178U;
 enum uint GL_NEAREST_CLIPMAP_NEAREST_SGIX = 0x844DU;
 enum uint GL_NEAREST_CLIPMAP_LINEAR_SGIX = 0x844EU;
 enum uint GL_LINEAR_CLIPMAP_NEAREST_SGIX = 0x844FU;
-
 global bool GL_EXT_geometry_shader4;
 enum uint GL_GEOMETRY_SHADER_EXT = 0x8DD9U;
 enum uint GL_GEOMETRY_VERTICES_OUT_EXT = 0x8DDAU;
@@ -1212,12 +1045,10 @@ enum uint GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS_EXT = 0x8DA8U;
 enum uint GL_FRAMEBUFFER_INCOMPLETE_LAYER_COUNT_EXT = 0x8DA9U;
 enum uint GL_FRAMEBUFFER_ATTACHMENT_LAYERED_EXT = 0x8DA7U;
 enum uint GL_PROGRAM_POINT_SIZE_EXT = 0x8642U;
-
 global bool GL_MESA_ycbcr_texture;
 enum uint GL_UNSIGNED_SHORT_8_8_MESA = 0x85BAU;
 enum uint GL_UNSIGNED_SHORT_8_8_REV_MESA = 0x85BBU;
 enum uint GL_YCBCR_MESA = 0x8757U;
-
 global bool GL_MESAX_texture_stack;
 enum uint GL_TEXTURE_1D_STACK_MESAX = 0x8759U;
 enum uint GL_TEXTURE_2D_STACK_MESAX = 0x875AU;
@@ -1225,9 +1056,7 @@ enum uint GL_PROXY_TEXTURE_1D_STACK_MESAX = 0x875BU;
 enum uint GL_PROXY_TEXTURE_2D_STACK_MESAX = 0x875CU;
 enum uint GL_TEXTURE_1D_STACK_BINDING_MESAX = 0x875DU;
 enum uint GL_TEXTURE_2D_STACK_BINDING_MESAX = 0x875EU;
-
 global bool GL_AMD_seamless_cubemap_per_texture;
-
 global bool GL_EXT_bindable_uniform;
 enum uint GL_MAX_VERTEX_BINDABLE_UNIFORMS_EXT = 0x8DE2U;
 enum uint GL_MAX_FRAGMENT_BINDABLE_UNIFORMS_EXT = 0x8DE3U;
@@ -1235,29 +1064,22 @@ enum uint GL_MAX_GEOMETRY_BINDABLE_UNIFORMS_EXT = 0x8DE4U;
 enum uint GL_MAX_BINDABLE_UNIFORM_SIZE_EXT = 0x8DEDU;
 enum uint GL_UNIFORM_BUFFER_EXT = 0x8DEEU;
 enum uint GL_UNIFORM_BUFFER_BINDING_EXT = 0x8DEFU;
-
 global bool GL_ARB_fragment_program_shadow;
-
 global bool GL_ATI_element_array;
 enum uint GL_ELEMENT_ARRAY_ATI = 0x8768U;
 enum uint GL_ELEMENT_ARRAY_TYPE_ATI = 0x8769U;
 enum uint GL_ELEMENT_ARRAY_POINTER_ATI = 0x876AU;
-
 global bool GL_AMD_texture_texture4;
-
 global bool GL_SGIX_reference_plane;
 enum uint GL_REFERENCE_PLANE_SGIX = 0x817DU;
 enum uint GL_REFERENCE_PLANE_EQUATION_SGIX = 0x817EU;
-
 global bool GL_EXT_stencil_two_side;
 enum uint GL_STENCIL_TEST_TWO_SIDE_EXT = 0x8910U;
 enum uint GL_ACTIVE_STENCIL_FACE_EXT = 0x8911U;
-
 global bool GL_SGIX_texture_lod_bias;
 enum uint GL_TEXTURE_LOD_BIAS_S_SGIX = 0x818EU;
 enum uint GL_TEXTURE_LOD_BIAS_T_SGIX = 0x818FU;
 enum uint GL_TEXTURE_LOD_BIAS_R_SGIX = 0x8190U;
-
 global bool GL_NV_explicit_multisample;
 enum uint GL_SAMPLE_POSITION_NV = 0x8E50U;
 enum uint GL_SAMPLE_MASK_NV = 0x8E51U;
@@ -1269,31 +1091,24 @@ enum uint GL_SAMPLER_RENDERBUFFER_NV = 0x8E56U;
 enum uint GL_INT_SAMPLER_RENDERBUFFER_NV = 0x8E57U;
 enum uint GL_UNSIGNED_INT_SAMPLER_RENDERBUFFER_NV = 0x8E58U;
 enum uint GL_MAX_SAMPLE_MASK_WORDS_NV = 0x8E59U;
-
 global bool GL_IBM_static_data;
 enum uint GL_ALL_STATIC_DATA_IBM = 103060;
 enum uint GL_STATIC_VERTEX_ARRAY_IBM = 103061;
-
 global bool GL_EXT_clip_volume_hint;
 enum uint GL_CLIP_VOLUME_CLIPPING_HINT_EXT = 0x80F0U;
-
 global bool GL_EXT_texture_perturb_normal;
 enum uint GL_PERTURB_EXT = 0x85AEU;
 enum uint GL_TEXTURE_NORMAL_EXT = 0x85AFU;
-
 global bool GL_NV_fragment_program2;
 enum uint GL_MAX_PROGRAM_IF_DEPTH_NV = 0x88F6U;
 enum uint GL_MAX_PROGRAM_LOOP_DEPTH_NV = 0x88F7U;
 enum uint GL_MAX_PROGRAM_LOOP_COUNT_NV = 0x88F8U;
-
 global bool GL_NV_fragment_program4;
-
 global bool GL_EXT_point_parameters;
 enum uint GL_POINT_SIZE_MIN_EXT = 0x8126U;
 enum uint GL_POINT_SIZE_MAX_EXT = 0x8127U;
 enum uint GL_POINT_FADE_THRESHOLD_SIZE_EXT = 0x8128U;
 enum uint GL_DISTANCE_ATTENUATION_EXT = 0x8129U;
-
 global bool GL_PGI_misc_hints;
 enum uint GL_PREFER_DOUBLEBUFFER_HINT_PGI = 0x1A1F8U;
 enum uint GL_CONSERVE_MEMORY_HINT_PGI = 0x1A1FDU;
@@ -1315,18 +1130,14 @@ enum uint GL_CLIP_NEAR_HINT_PGI = 0x1A220U;
 enum uint GL_CLIP_FAR_HINT_PGI = 0x1A221U;
 enum uint GL_WIDE_LINE_HINT_PGI = 0x1A222U;
 enum uint GL_BACK_NORMALS_HINT_PGI = 0x1A223U;
-
 global bool GL_SGIX_subsample;
 enum uint GL_PACK_SUBSAMPLE_RATE_SGIX = 0x85A0U;
 enum uint GL_UNPACK_SUBSAMPLE_RATE_SGIX = 0x85A1U;
 enum uint GL_PIXEL_SUBSAMPLE_4444_SGIX = 0x85A2U;
 enum uint GL_PIXEL_SUBSAMPLE_2424_SGIX = 0x85A3U;
 enum uint GL_PIXEL_SUBSAMPLE_4242_SGIX = 0x85A4U;
-
 global bool GL_AMD_shader_stencil_export;
-
 global bool GL_ARB_shader_texture_lod;
-
 global bool GL_ARB_vertex_shader;
 enum uint GL_VERTEX_SHADER_ARB = 0x8B31U;
 enum uint GL_MAX_VERTEX_UNIFORM_COMPONENTS_ARB = 0x8B4AU;
@@ -1335,9 +1146,7 @@ enum uint GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB = 0x8B4CU;
 enum uint GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS_ARB = 0x8B4DU;
 enum uint GL_OBJECT_ACTIVE_ATTRIBUTES_ARB = 0x8B89U;
 enum uint GL_OBJECT_ACTIVE_ATTRIBUTE_MAX_LENGTH_ARB = 0x8B8AU;
-
 global bool GL_ARB_depth_clamp;
-
 global bool GL_SGIS_texture_select;
 enum uint GL_DUAL_ALPHA4_SGIS = 0x8110U;
 enum uint GL_DUAL_ALPHA8_SGIS = 0x8111U;
@@ -1361,7 +1170,6 @@ enum uint GL_QUAD_INTENSITY4_SGIS = 0x8122U;
 enum uint GL_QUAD_INTENSITY8_SGIS = 0x8123U;
 enum uint GL_DUAL_TEXTURE_SELECT_SGIS = 0x8124U;
 enum uint GL_QUAD_TEXTURE_SELECT_SGIS = 0x8125U;
-
 global bool GL_NV_texture_shader;
 enum uint GL_OFFSET_TEXTURE_RECTANGLE_NV = 0x864CU;
 enum uint GL_OFFSET_TEXTURE_RECTANGLE_SCALE_NV = 0x864DU;
@@ -1436,20 +1244,14 @@ enum uint GL_TEXTURE_LO_SIZE_NV = 0x871CU;
 enum uint GL_TEXTURE_DS_SIZE_NV = 0x871DU;
 enum uint GL_TEXTURE_DT_SIZE_NV = 0x871EU;
 enum uint GL_TEXTURE_MAG_SIZE_NV = 0x871FU;
-
 global bool GL_ARB_tessellation_shader;
-
 global bool GL_EXT_draw_buffers2;
-
 global bool GL_ARB_vertex_attrib_64bit;
-
 global bool GL_WIN_specular_fog;
 enum uint GL_FOG_SPECULAR_TEXTURE_WIN = 0x80ECU;
-
 global bool GL_AMD_interleaved_elements;
 enum uint GL_VERTEX_ELEMENT_SWIZZLE_AMD = 0x91A4U;
 enum uint GL_VERTEX_ID_SWIZZLE_AMD = 0x91A5U;
-
 global bool GL_ARB_fragment_program;
 enum uint GL_FRAGMENT_PROGRAM_ARB = 0x8804U;
 enum uint GL_PROGRAM_ALU_INSTRUCTIONS_ARB = 0x8805U;
@@ -1466,7 +1268,6 @@ enum uint GL_MAX_PROGRAM_NATIVE_TEX_INSTRUCTIONS_ARB = 0x880FU;
 enum uint GL_MAX_PROGRAM_NATIVE_TEX_INDIRECTIONS_ARB = 0x8810U;
 enum uint GL_MAX_TEXTURE_COORDS_ARB = 0x8871U;
 enum uint GL_MAX_TEXTURE_IMAGE_UNITS_ARB = 0x8872U;
-
 global bool GL_OML_resample;
 enum uint GL_PACK_RESAMPLE_OML = 0x8984U;
 enum uint GL_UNPACK_RESAMPLE_OML = 0x8985U;
@@ -1474,63 +1275,47 @@ enum uint GL_RESAMPLE_REPLICATE_OML = 0x8986U;
 enum uint GL_RESAMPLE_ZERO_FILL_OML = 0x8987U;
 enum uint GL_RESAMPLE_AVERAGE_OML = 0x8988U;
 enum uint GL_RESAMPLE_DECIMATE_OML = 0x8989U;
-
 global bool GL_APPLE_ycbcr_422;
 enum uint GL_YCBCR_422_APPLE = 0x85B9U;
 enum uint GL_UNSIGNED_SHORT_8_8_APPLE = 0x85BAU;
 enum uint GL_UNSIGNED_SHORT_8_8_REV_APPLE = 0x85BBU;
-
 global bool GL_SGIX_texture_add_env;
 enum uint GL_TEXTURE_ENV_BIAS_SGIX = 0x80BEU;
-
 global bool GL_ARB_shadow_ambient;
 enum uint GL_TEXTURE_COMPARE_FAIL_VALUE_ARB = 0x80BFU;
-
 global bool GL_ARB_texture_storage;
-
 global bool GL_EXT_pixel_buffer_object;
 enum uint GL_PIXEL_PACK_BUFFER_EXT = 0x88EBU;
 enum uint GL_PIXEL_UNPACK_BUFFER_EXT = 0x88ECU;
 enum uint GL_PIXEL_PACK_BUFFER_BINDING_EXT = 0x88EDU;
 enum uint GL_PIXEL_UNPACK_BUFFER_BINDING_EXT = 0x88EFU;
-
 global bool GL_ARB_copy_image;
-
 global bool GL_SGIS_pixel_texture;
 enum uint GL_PIXEL_TEXTURE_SGIS = 0x8353U;
 enum uint GL_PIXEL_FRAGMENT_RGB_SOURCE_SGIS = 0x8354U;
 enum uint GL_PIXEL_FRAGMENT_ALPHA_SOURCE_SGIS = 0x8355U;
 enum uint GL_PIXEL_GROUP_COLOR_SGIS = 0x8356U;
-
 global bool GL_SGIS_generate_mipmap;
 enum uint GL_GENERATE_MIPMAP_SGIS = 0x8191U;
 enum uint GL_GENERATE_MIPMAP_HINT_SGIS = 0x8192U;
-
 global bool GL_SGIX_instruments;
 enum uint GL_INSTRUMENT_BUFFER_POINTER_SGIX = 0x8180U;
 enum uint GL_INSTRUMENT_MEASUREMENTS_SGIX = 0x8181U;
-
 global bool GL_HP_texture_lighting;
 enum uint GL_TEXTURE_LIGHTING_MODE_HP = 0x8167U;
 enum uint GL_TEXTURE_POST_SPECULAR_HP = 0x8168U;
 enum uint GL_TEXTURE_PRE_SPECULAR_HP = 0x8169U;
-
 global bool GL_ARB_shader_storage_buffer_object;
-
 global bool GL_EXT_blend_minmax;
 enum uint GL_MIN_EXT = 0x8007U;
 enum uint GL_MAX_EXT = 0x8008U;
 enum uint GL_FUNC_ADD_EXT = 0x8006U;
 enum uint GL_BLEND_EQUATION_EXT = 0x8009U;
-
 global bool GL_MESA_pack_invert;
 enum uint GL_PACK_INVERT_MESA = 0x8758U;
-
 global bool GL_ARB_base_instance;
-
 global bool GL_SGIX_convolution_accuracy;
 enum uint GL_CONVOLUTION_HINT_SGIX = 0x8316U;
-
 global bool GL_PGI_vertex_hints;
 enum uint GL_VERTEX_DATA_HINT_PGI = 0x1A22AU;
 enum uint GL_VERTEX_CONSISTENT_HINT_PGI = 0x1A22BU;
@@ -1554,7 +1339,6 @@ enum uint GL_TEXCOORD3_BIT_PGI = 0x40000000U;
 enum uint GL_TEXCOORD4_BIT_PGI = 0x80000000U;
 enum uint GL_VERTEX23_BIT_PGI = 0x00000004U;
 enum uint GL_VERTEX4_BIT_PGI = 0x00000008U;
-
 global bool GL_EXT_texture_integer;
 enum uint GL_RGBA32UI_EXT = 0x8D70U;
 enum uint GL_RGB32UI_EXT = 0x8D71U;
@@ -1603,9 +1387,7 @@ enum uint GL_BGRA_INTEGER_EXT = 0x8D9BU;
 enum uint GL_LUMINANCE_INTEGER_EXT = 0x8D9CU;
 enum uint GL_LUMINANCE_ALPHA_INTEGER_EXT = 0x8D9DU;
 enum uint GL_RGBA_INTEGER_MODE_EXT = 0x8D9EU;
-
 global bool GL_ARB_texture_multisample;
-
 global bool GL_S3_s3tc;
 enum uint GL_RGB_S3TC = 0x83A0U;
 enum uint GL_RGB4_S3TC = 0x83A1U;
@@ -1613,9 +1395,7 @@ enum uint GL_RGBA_S3TC = 0x83A2U;
 enum uint GL_RGBA4_S3TC = 0x83A3U;
 enum uint GL_RGBA_DXT5_S3TC = 0x83A4U;
 enum uint GL_RGBA4_DXT5_S3TC = 0x83A5U;
-
 global bool GL_ARB_query_buffer_object;
-
 global bool GL_AMD_vertex_shader_tessellator;
 enum uint GL_SAMPLER_BUFFER_AMD = 0x9001U;
 enum uint GL_INT_SAMPLER_BUFFER_AMD = 0x9002U;
@@ -1624,23 +1404,18 @@ enum uint GL_TESSELLATION_MODE_AMD = 0x9004U;
 enum uint GL_TESSELLATION_FACTOR_AMD = 0x9005U;
 enum uint GL_DISCRETE_AMD = 0x9006U;
 enum uint GL_CONTINUOUS_AMD = 0x9007U;
-
 global bool GL_ARB_invalidate_subdata;
-
 global bool GL_EXT_index_material;
 enum uint GL_INDEX_MATERIAL_EXT = 0x81B8U;
 enum uint GL_INDEX_MATERIAL_PARAMETER_EXT = 0x81B9U;
 enum uint GL_INDEX_MATERIAL_FACE_EXT = 0x81BAU;
-
 global bool GL_NV_blend_equation_advanced_coherent;
-
 global bool GL_INTEL_parallel_arrays;
 enum uint GL_PARALLEL_ARRAYS_INTEL = 0x83F4U;
 enum uint GL_VERTEX_ARRAY_PARALLEL_POINTERS_INTEL = 0x83F5U;
 enum uint GL_NORMAL_ARRAY_PARALLEL_POINTERS_INTEL = 0x83F6U;
 enum uint GL_COLOR_ARRAY_PARALLEL_POINTERS_INTEL = 0x83F7U;
 enum uint GL_TEXTURE_COORD_ARRAY_PARALLEL_POINTERS_INTEL = 0x83F8U;
-
 global bool GL_ATI_draw_buffers;
 enum uint GL_MAX_DRAW_BUFFERS_ATI = 0x8824U;
 enum uint GL_DRAW_BUFFER0_ATI = 0x8825U;
@@ -1659,60 +1434,45 @@ enum uint GL_DRAW_BUFFER12_ATI = 0x8831U;
 enum uint GL_DRAW_BUFFER13_ATI = 0x8832U;
 enum uint GL_DRAW_BUFFER14_ATI = 0x8833U;
 enum uint GL_DRAW_BUFFER15_ATI = 0x8834U;
-
 global bool GL_EXT_cmyka;
 enum uint GL_CMYK_EXT = 0x800CU;
 enum uint GL_CMYKA_EXT = 0x800DU;
 enum uint GL_PACK_CMYK_HINT_EXT = 0x800EU;
 enum uint GL_UNPACK_CMYK_HINT_EXT = 0x800FU;
-
 global bool GL_SGIX_pixel_texture;
 enum uint GL_PIXEL_TEX_GEN_SGIX = 0x8139U;
 enum uint GL_PIXEL_TEX_GEN_MODE_SGIX = 0x832BU;
-
 global bool GL_APPLE_specular_vector;
 enum uint GL_LIGHT_MODEL_SPECULAR_VECTOR_APPLE = 0x85B0U;
-
 global bool GL_ARB_compatibility;
-
 global bool GL_ARB_timer_query;
-
 global bool GL_SGIX_interlace;
 enum uint GL_INTERLACE_SGIX = 0x8094U;
-
 global bool GL_NV_parameter_buffer_object;
 enum uint GL_MAX_PROGRAM_PARAMETER_BUFFER_BINDINGS_NV = 0x8DA0U;
 enum uint GL_MAX_PROGRAM_PARAMETER_BUFFER_SIZE_NV = 0x8DA1U;
 enum uint GL_VERTEX_PROGRAM_PARAMETER_BUFFER_NV = 0x8DA2U;
 enum uint GL_GEOMETRY_PROGRAM_PARAMETER_BUFFER_NV = 0x8DA3U;
 enum uint GL_FRAGMENT_PROGRAM_PARAMETER_BUFFER_NV = 0x8DA4U;
-
 global bool GL_AMD_shader_trinary_minmax;
-
 global bool GL_EXT_rescale_normal;
 enum uint GL_RESCALE_NORMAL_EXT = 0x803AU;
-
 global bool GL_ARB_pixel_buffer_object;
 enum uint GL_PIXEL_PACK_BUFFER_ARB = 0x88EBU;
 enum uint GL_PIXEL_UNPACK_BUFFER_ARB = 0x88ECU;
 enum uint GL_PIXEL_PACK_BUFFER_BINDING_ARB = 0x88EDU;
 enum uint GL_PIXEL_UNPACK_BUFFER_BINDING_ARB = 0x88EFU;
-
 global bool GL_ARB_uniform_buffer_object;
 enum uint GL_MAX_GEOMETRY_UNIFORM_BLOCKS = 0x8A2CU;
 enum uint GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS = 0x8A32U;
 enum uint GL_UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER = 0x8A45U;
-
 global bool GL_ARB_vertex_type_10f_11f_11f_rev;
-
 global bool GL_ARB_texture_swizzle;
-
 global bool GL_NV_transform_feedback2;
 enum uint GL_TRANSFORM_FEEDBACK_NV = 0x8E22U;
 enum uint GL_TRANSFORM_FEEDBACK_BUFFER_PAUSED_NV = 0x8E23U;
 enum uint GL_TRANSFORM_FEEDBACK_BUFFER_ACTIVE_NV = 0x8E24U;
 enum uint GL_TRANSFORM_FEEDBACK_BINDING_NV = 0x8E25U;
-
 global bool GL_SGIX_async_pixel;
 enum uint GL_ASYNC_TEX_IMAGE_SGIX = 0x835CU;
 enum uint GL_ASYNC_DRAW_PIXELS_SGIX = 0x835DU;
@@ -1720,22 +1480,17 @@ enum uint GL_ASYNC_READ_PIXELS_SGIX = 0x835EU;
 enum uint GL_MAX_ASYNC_TEX_IMAGE_SGIX = 0x835FU;
 enum uint GL_MAX_ASYNC_DRAW_PIXELS_SGIX = 0x8360U;
 enum uint GL_MAX_ASYNC_READ_PIXELS_SGIX = 0x8361U;
-
 global bool GL_NV_fragment_program_option;
-
 global bool GL_ARB_explicit_attrib_location;
-
 global bool GL_EXT_blend_color;
 enum uint GL_CONSTANT_COLOR_EXT = 0x8001U;
 enum uint GL_ONE_MINUS_CONSTANT_COLOR_EXT = 0x8002U;
 enum uint GL_CONSTANT_ALPHA_EXT = 0x8003U;
 enum uint GL_ONE_MINUS_CONSTANT_ALPHA_EXT = 0x8004U;
 enum uint GL_BLEND_COLOR_EXT = 0x8005U;
-
 global bool GL_EXT_stencil_wrap;
 enum uint GL_INCR_WRAP_EXT = 0x8507U;
 enum uint GL_DECR_WRAP_EXT = 0x8508U;
-
 global bool GL_EXT_index_array_formats;
 enum uint GL_IUI_V2F_EXT = 0x81ADU;
 enum uint GL_IUI_V3F_EXT = 0x81AEU;
@@ -1745,7 +1500,6 @@ enum uint GL_T2F_IUI_V2F_EXT = 0x81B1U;
 enum uint GL_T2F_IUI_V3F_EXT = 0x81B2U;
 enum uint GL_T2F_IUI_N3F_V2F_EXT = 0x81B3U;
 enum uint GL_T2F_IUI_N3F_V3F_EXT = 0x81B4U;
-
 global bool GL_EXT_histogram;
 enum uint GL_HISTOGRAM_EXT = 0x8024U;
 enum uint GL_PROXY_HISTOGRAM_EXT = 0x8025U;
@@ -1761,21 +1515,17 @@ enum uint GL_MINMAX_EXT = 0x802EU;
 enum uint GL_MINMAX_FORMAT_EXT = 0x802FU;
 enum uint GL_MINMAX_SINK_EXT = 0x8030U;
 enum uint GL_TABLE_TOO_LARGE_EXT = 0x8031U;
-
 global bool GL_SGIS_point_parameters;
 enum uint GL_POINT_SIZE_MIN_SGIS = 0x8126U;
 enum uint GL_POINT_SIZE_MAX_SGIS = 0x8127U;
 enum uint GL_POINT_FADE_THRESHOLD_SIZE_SGIS = 0x8128U;
 enum uint GL_DISTANCE_ATTENUATION_SGIS = 0x8129U;
-
 global bool GL_EXT_direct_state_access;
 enum uint GL_PROGRAM_MATRIX_EXT = 0x8E2DU;
 enum uint GL_TRANSPOSE_PROGRAM_MATRIX_EXT = 0x8E2EU;
 enum uint GL_PROGRAM_MATRIX_STACK_DEPTH_EXT = 0x8E2FU;
-
 global bool GL_AMD_sample_positions;
 enum uint GL_SUBSAMPLE_DISTANCE_AMD = 0x883FU;
-
 global bool GL_NV_vertex_program;
 enum uint GL_VERTEX_PROGRAM_NV = 0x8620U;
 enum uint GL_VERTEX_STATE_PROGRAM_NV = 0x8621U;
@@ -1860,9 +1610,7 @@ enum uint GL_MAP2_VERTEX_ATTRIB12_4_NV = 0x867CU;
 enum uint GL_MAP2_VERTEX_ATTRIB13_4_NV = 0x867DU;
 enum uint GL_MAP2_VERTEX_ATTRIB14_4_NV = 0x867EU;
 enum uint GL_MAP2_VERTEX_ATTRIB15_4_NV = 0x867FU;
-
 global bool GL_NVX_conditional_render;
-
 global bool GL_EXT_vertex_shader;
 enum uint GL_VERTEX_SHADER_EXT = 0x8780U;
 enum uint GL_VERTEX_SHADER_BINDING_EXT = 0x8781U;
@@ -1974,27 +1722,21 @@ enum uint GL_INVARIANT_VALUE_EXT = 0x87EAU;
 enum uint GL_INVARIANT_DATATYPE_EXT = 0x87EBU;
 enum uint GL_LOCAL_CONSTANT_VALUE_EXT = 0x87ECU;
 enum uint GL_LOCAL_CONSTANT_DATATYPE_EXT = 0x87EDU;
-
 global bool GL_EXT_blend_func_separate;
 enum uint GL_BLEND_DST_RGB_EXT = 0x80C8U;
 enum uint GL_BLEND_SRC_RGB_EXT = 0x80C9U;
 enum uint GL_BLEND_DST_ALPHA_EXT = 0x80CAU;
 enum uint GL_BLEND_SRC_ALPHA_EXT = 0x80CBU;
-
 global bool GL_APPLE_fence;
 enum uint GL_DRAW_PIXELS_APPLE = 0x8A0AU;
 enum uint GL_FENCE_APPLE = 0x8A0BU;
-
 global bool GL_OES_byte_coordinates;
-
 global bool GL_ARB_transpose_matrix;
 enum uint GL_TRANSPOSE_MODELVIEW_MATRIX_ARB = 0x84E3U;
 enum uint GL_TRANSPOSE_PROJECTION_MATRIX_ARB = 0x84E4U;
 enum uint GL_TRANSPOSE_TEXTURE_MATRIX_ARB = 0x84E5U;
 enum uint GL_TRANSPOSE_COLOR_MATRIX_ARB = 0x84E6U;
-
 global bool GL_ARB_provoking_vertex;
-
 global bool GL_EXT_fog_coord;
 enum uint GL_FOG_COORDINATE_SOURCE_EXT = 0x8450U;
 enum uint GL_FOG_COORDINATE_EXT = 0x8451U;
@@ -2003,7 +1745,6 @@ enum uint GL_FOG_COORDINATE_ARRAY_TYPE_EXT = 0x8454U;
 enum uint GL_FOG_COORDINATE_ARRAY_STRIDE_EXT = 0x8455U;
 enum uint GL_FOG_COORDINATE_ARRAY_POINTER_EXT = 0x8456U;
 enum uint GL_FOG_COORDINATE_ARRAY_EXT = 0x8457U;
-
 global bool GL_EXT_vertex_array;
 enum uint GL_VERTEX_ARRAY_EXT = 0x8074U;
 enum uint GL_NORMAL_ARRAY_EXT = 0x8075U;
@@ -2037,39 +1778,28 @@ enum uint GL_COLOR_ARRAY_POINTER_EXT = 0x8090U;
 enum uint GL_INDEX_ARRAY_POINTER_EXT = 0x8091U;
 enum uint GL_TEXTURE_COORD_ARRAY_POINTER_EXT = 0x8092U;
 enum uint GL_EDGE_FLAG_ARRAY_POINTER_EXT = 0x8093U;
-
 global bool GL_ARB_half_float_vertex;
-
 global bool GL_EXT_blend_equation_separate;
 enum uint GL_BLEND_EQUATION_RGB_EXT = 0x8009U;
 enum uint GL_BLEND_EQUATION_ALPHA_EXT = 0x883DU;
-
 global bool GL_ARB_multi_draw_indirect;
-
 global bool GL_NV_copy_image;
-
 global bool GL_ARB_fragment_layer_viewport;
-
 global bool GL_ARB_transform_feedback2;
 enum uint GL_TRANSFORM_FEEDBACK_PAUSED = 0x8E23U;
 enum uint GL_TRANSFORM_FEEDBACK_ACTIVE = 0x8E24U;
-
 global bool GL_ARB_transform_feedback3;
-
 global bool GL_SGIX_ycrcba;
 enum uint GL_YCRCB_SGIX = 0x8318U;
 enum uint GL_YCRCBA_SGIX = 0x8319U;
-
 global bool GL_EXT_bgra;
 enum uint GL_BGR_EXT = 0x80E0U;
 enum uint GL_BGRA_EXT = 0x80E1U;
-
 global bool GL_EXT_texture_compression_s3tc;
 enum uint GL_COMPRESSED_RGB_S3TC_DXT1_EXT = 0x83F0U;
 enum uint GL_COMPRESSED_RGBA_S3TC_DXT1_EXT = 0x83F1U;
 enum uint GL_COMPRESSED_RGBA_S3TC_DXT3_EXT = 0x83F2U;
 enum uint GL_COMPRESSED_RGBA_S3TC_DXT5_EXT = 0x83F3U;
-
 global bool GL_EXT_pixel_transform;
 enum uint GL_PIXEL_TRANSFORM_2D_EXT = 0x8330U;
 enum uint GL_PIXEL_MAG_FILTER_EXT = 0x8331U;
@@ -2080,9 +1810,7 @@ enum uint GL_AVERAGE_EXT = 0x8335U;
 enum uint GL_PIXEL_TRANSFORM_2D_STACK_DEPTH_EXT = 0x8336U;
 enum uint GL_MAX_PIXEL_TRANSFORM_2D_STACK_DEPTH_EXT = 0x8337U;
 enum uint GL_PIXEL_TRANSFORM_2D_MATRIX_EXT = 0x8338U;
-
 global bool GL_ARB_conservative_depth;
-
 global bool GL_ATI_fragment_shader;
 enum uint GL_FRAGMENT_SHADER_ATI = 0x8920U;
 enum uint GL_REG_0_ATI = 0x8921U;
@@ -2188,9 +1916,7 @@ enum uint GL_SATURATE_BIT_ATI = 0x00000040U;
 enum uint GL_COMP_BIT_ATI = 0x00000002U;
 enum uint GL_NEGATE_BIT_ATI = 0x00000004U;
 enum uint GL_BIAS_BIT_ATI = 0x00000008U;
-
 global bool GL_ARB_vertex_array_object;
-
 global bool GL_SUN_triangle_list;
 enum uint GL_RESTART_SUN = 0x0001U;
 enum uint GL_REPLACE_MIDDLE_SUN = 0x0002U;
@@ -2209,23 +1935,18 @@ enum uint GL_R1UI_C4F_N3F_V3F_SUN = 0x85C8U;
 enum uint GL_R1UI_T2F_V3F_SUN = 0x85C9U;
 enum uint GL_R1UI_T2F_N3F_V3F_SUN = 0x85CAU;
 enum uint GL_R1UI_T2F_C4F_N3F_V3F_SUN = 0x85CBU;
-
 global bool GL_EXT_texture_env_add;
-
 global bool GL_EXT_packed_depth_stencil;
 enum uint GL_DEPTH_STENCIL_EXT = 0x84F9U;
 enum uint GL_UNSIGNED_INT_24_8_EXT = 0x84FAU;
 enum uint GL_DEPTH24_STENCIL8_EXT = 0x88F0U;
 enum uint GL_TEXTURE_STENCIL_SIZE_EXT = 0x88F1U;
-
 global bool GL_EXT_texture_mirror_clamp;
 enum uint GL_MIRROR_CLAMP_EXT = 0x8742U;
 enum uint GL_MIRROR_CLAMP_TO_EDGE_EXT = 0x8743U;
 enum uint GL_MIRROR_CLAMP_TO_BORDER_EXT = 0x8912U;
-
 global bool GL_NV_multisample_filter_hint;
 enum uint GL_MULTISAMPLE_FILTER_HINT_NV = 0x8534U;
-
 global bool GL_APPLE_float_pixels;
 enum uint GL_HALF_APPLE = 0x140BU;
 enum uint GL_RGBA_FLOAT32_APPLE = 0x8814U;
@@ -2241,25 +1962,18 @@ enum uint GL_INTENSITY_FLOAT16_APPLE = 0x881DU;
 enum uint GL_LUMINANCE_FLOAT16_APPLE = 0x881EU;
 enum uint GL_LUMINANCE_ALPHA_FLOAT16_APPLE = 0x881FU;
 enum uint GL_COLOR_FLOAT_APPLE = 0x8A0FU;
-
 global bool GL_ARB_transform_feedback_instanced;
-
 global bool GL_SGIX_async;
 enum uint GL_ASYNC_MARKER_SGIX = 0x8329U;
-
 global bool GL_EXT_texture_compression_latc;
 enum uint GL_COMPRESSED_LUMINANCE_LATC1_EXT = 0x8C70U;
 enum uint GL_COMPRESSED_SIGNED_LUMINANCE_LATC1_EXT = 0x8C71U;
 enum uint GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT = 0x8C72U;
 enum uint GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2_EXT = 0x8C73U;
-
 global bool GL_NV_shader_atomic_float;
-
 global bool GL_ARB_shading_language_100;
 enum uint GL_SHADING_LANGUAGE_VERSION_ARB = 0x8B8CU;
-
 global bool GL_ARB_texture_mirror_clamp_to_edge;
-
 global bool GL_NV_gpu_shader5;
 enum uint GL_INT8_NV = 0x8FE0U;
 enum uint GL_INT8_VEC2_NV = 0x8FE1U;
@@ -2287,16 +2001,12 @@ enum uint GL_FLOAT16_NV = 0x8FF8U;
 enum uint GL_FLOAT16_VEC2_NV = 0x8FF9U;
 enum uint GL_FLOAT16_VEC3_NV = 0x8FFAU;
 enum uint GL_FLOAT16_VEC4_NV = 0x8FFBU;
-
 global bool GL_ARB_ES2_compatibility;
-
 global bool GL_ARB_indirect_parameters;
 enum uint GL_PARAMETER_BUFFER_ARB = 0x80EEU;
 enum uint GL_PARAMETER_BUFFER_BINDING_ARB = 0x80EFU;
-
 global bool GL_NV_half_float;
 enum uint GL_HALF_FLOAT_NV = 0x140BU;
-
 global bool GL_EXT_coordinate_frame;
 enum uint GL_TANGENT_ARRAY_EXT = 0x8439U;
 enum uint GL_BINORMAL_ARRAY_EXT = 0x843AU;
@@ -2312,51 +2022,39 @@ enum uint GL_MAP1_TANGENT_EXT = 0x8444U;
 enum uint GL_MAP2_TANGENT_EXT = 0x8445U;
 enum uint GL_MAP1_BINORMAL_EXT = 0x8446U;
 enum uint GL_MAP2_BINORMAL_EXT = 0x8447U;
-
 global bool GL_ATI_texture_mirror_once;
 enum uint GL_MIRROR_CLAMP_ATI = 0x8742U;
 enum uint GL_MIRROR_CLAMP_TO_EDGE_ATI = 0x8743U;
-
 global bool GL_IBM_rasterpos_clip;
 enum uint GL_RASTER_POSITION_UNCLIPPED_IBM = 0x19262U;
-
 global bool GL_SGIX_shadow;
 enum uint GL_TEXTURE_COMPARE_SGIX = 0x819AU;
 enum uint GL_TEXTURE_COMPARE_OPERATOR_SGIX = 0x819BU;
 enum uint GL_TEXTURE_LEQUAL_R_SGIX = 0x819CU;
 enum uint GL_TEXTURE_GEQUAL_R_SGIX = 0x819DU;
-
 global bool GL_NV_deep_texture3D;
 enum uint GL_MAX_DEEP_3D_TEXTURE_WIDTH_HEIGHT_NV = 0x90D0U;
 enum uint GL_MAX_DEEP_3D_TEXTURE_DEPTH_NV = 0x90D1U;
-
 global bool GL_ARB_shader_draw_parameters;
-
 global bool GL_SGIX_calligraphic_fragment;
 enum uint GL_CALLIGRAPHIC_FRAGMENT_SGIX = 0x8183U;
-
 global bool GL_ARB_shader_bit_encoding;
-
 global bool GL_EXT_compiled_vertex_array;
 enum uint GL_ARRAY_ELEMENT_LOCK_FIRST_EXT = 0x81A8U;
 enum uint GL_ARRAY_ELEMENT_LOCK_COUNT_EXT = 0x81A9U;
-
 global bool GL_NV_depth_buffer_float;
 enum uint GL_DEPTH_COMPONENT32F_NV = 0x8DABU;
 enum uint GL_DEPTH32F_STENCIL8_NV = 0x8DACU;
 enum uint GL_FLOAT_32_UNSIGNED_INT_24_8_REV_NV = 0x8DADU;
 enum uint GL_DEPTH_BUFFER_FLOAT_MODE_NV = 0x8DAFU;
-
 global bool GL_NV_occlusion_query;
 enum uint GL_PIXEL_COUNTER_BITS_NV = 0x8864U;
 enum uint GL_CURRENT_OCCLUSION_QUERY_ID_NV = 0x8865U;
 enum uint GL_PIXEL_COUNT_NV = 0x8866U;
 enum uint GL_PIXEL_COUNT_AVAILABLE_NV = 0x8867U;
-
 global bool GL_APPLE_flush_buffer_range;
 enum uint GL_BUFFER_SERIALIZED_MODIFY_APPLE = 0x8A12U;
 enum uint GL_BUFFER_FLUSHING_UNMAP_APPLE = 0x8A13U;
-
 global bool GL_ARB_imaging;
 enum uint GL_BLEND_COLOR = 0x8005U;
 enum uint GL_BLEND_EQUATION = 0x8009U;
@@ -2424,33 +2122,24 @@ enum uint GL_COLOR_TABLE_INTENSITY_SIZE = 0x80DFU;
 enum uint GL_CONSTANT_BORDER = 0x8151U;
 enum uint GL_REPLICATE_BORDER = 0x8153U;
 enum uint GL_CONVOLUTION_BORDER_COLOR = 0x8154U;
-
 global bool GL_ARB_draw_buffers_blend;
-
 global bool GL_NV_blend_square;
-
 global bool GL_AMD_blend_minmax_factor;
 enum uint GL_FACTOR_MIN_AMD = 0x901CU;
 enum uint GL_FACTOR_MAX_AMD = 0x901DU;
-
 global bool GL_EXT_texture_sRGB_decode;
 enum uint GL_TEXTURE_SRGB_DECODE_EXT = 0x8A48U;
 enum uint GL_DECODE_EXT = 0x8A49U;
 enum uint GL_SKIP_DECODE_EXT = 0x8A4AU;
-
 global bool GL_ARB_shading_language_420pack;
-
 global bool GL_ATI_meminfo;
 enum uint GL_VBO_FREE_MEMORY_ATI = 0x87FBU;
 enum uint GL_TEXTURE_FREE_MEMORY_ATI = 0x87FCU;
 enum uint GL_RENDERBUFFER_FREE_MEMORY_ATI = 0x87FDU;
-
 global bool GL_EXT_abgr;
 enum uint GL_ABGR_EXT = 0x8000U;
-
 global bool GL_AMD_pinned_memory;
 enum uint GL_EXTERNAL_VIRTUAL_MEMORY_BUFFER_AMD = 0x9160U;
-
 global bool GL_EXT_texture_snorm;
 enum uint GL_ALPHA_SNORM = 0x9010U;
 enum uint GL_LUMINANCE_SNORM = 0x9011U;
@@ -2468,14 +2157,11 @@ enum uint GL_RED_SNORM = 0x8F90U;
 enum uint GL_RG_SNORM = 0x8F91U;
 enum uint GL_RGB_SNORM = 0x8F92U;
 enum uint GL_RGBA_SNORM = 0x8F93U;
-
 global bool GL_SGIX_texture_coordinate_clamp;
 enum uint GL_TEXTURE_MAX_CLAMP_S_SGIX = 0x8369U;
 enum uint GL_TEXTURE_MAX_CLAMP_T_SGIX = 0x836AU;
 enum uint GL_TEXTURE_MAX_CLAMP_R_SGIX = 0x836BU;
-
 global bool GL_ARB_clear_buffer_object;
-
 global bool GL_ARB_multisample;
 enum uint GL_MULTISAMPLE_ARB = 0x809DU;
 enum uint GL_SAMPLE_ALPHA_TO_COVERAGE_ARB = 0x809EU;
@@ -2485,33 +2171,25 @@ enum uint GL_SAMPLE_BUFFERS_ARB = 0x80A8U;
 enum uint GL_SAMPLE_COVERAGE_VALUE_ARB = 0x80AAU;
 enum uint GL_SAMPLE_COVERAGE_INVERT_ARB = 0x80ABU;
 enum uint GL_MULTISAMPLE_BIT_ARB = 0x20000000U;
-
 global bool GL_ARB_sample_shading;
 enum uint GL_SAMPLE_SHADING_ARB = 0x8C36U;
 enum uint GL_MIN_SAMPLE_SHADING_VALUE_ARB = 0x8C37U;
-
 global bool GL_INTEL_map_texture;
 enum uint GL_TEXTURE_MEMORY_LAYOUT_INTEL = 0x83FFU;
 enum uint GL_LAYOUT_DEFAULT_INTEL = 0;
 enum uint GL_LAYOUT_LINEAR_INTEL = 1;
 enum uint GL_LAYOUT_LINEAR_CPU_CACHED_INTEL = 2;
-
 global bool GL_ARB_texture_env_crossbar;
-
 global bool GL_EXT_422_pixels;
 enum uint GL_422_EXT = 0x80CCU;
 enum uint GL_422_REV_EXT = 0x80CDU;
 enum uint GL_422_AVERAGE_EXT = 0x80CEU;
 enum uint GL_422_REV_AVERAGE_EXT = 0x80CFU;
-
 global bool GL_ARB_compute_shader;
 enum uint GL_COMPUTE_SHADER_BIT = 0x00000020U;
-
 global bool GL_EXT_blend_logic_op;
-
 global bool GL_IBM_cull_vertex;
 enum uint GL_CULL_VERTEX_IBM = 103050;
-
 global bool GL_IBM_vertex_array_lists;
 enum uint GL_VERTEX_ARRAY_LIST_IBM = 103070;
 enum uint GL_NORMAL_ARRAY_LIST_IBM = 103071;
@@ -2529,29 +2207,22 @@ enum uint GL_TEXTURE_COORD_ARRAY_LIST_STRIDE_IBM = 103084;
 enum uint GL_EDGE_FLAG_ARRAY_LIST_STRIDE_IBM = 103085;
 enum uint GL_FOG_COORDINATE_ARRAY_LIST_STRIDE_IBM = 103086;
 enum uint GL_SECONDARY_COLOR_ARRAY_LIST_STRIDE_IBM = 103087;
-
 global bool GL_ARB_color_buffer_float;
 enum uint GL_RGBA_FLOAT_MODE_ARB = 0x8820U;
 enum uint GL_CLAMP_VERTEX_COLOR_ARB = 0x891AU;
 enum uint GL_CLAMP_FRAGMENT_COLOR_ARB = 0x891BU;
 enum uint GL_CLAMP_READ_COLOR_ARB = 0x891CU;
 enum uint GL_FIXED_ONLY_ARB = 0x891DU;
-
 global bool GL_ARB_bindless_texture;
 enum uint GL_UNSIGNED_INT64_ARB = 0x140FU;
-
 global bool GL_ARB_window_pos;
-
 global bool GL_ARB_internalformat_query;
-
 global bool GL_ARB_shadow;
 enum uint GL_TEXTURE_COMPARE_MODE_ARB = 0x884CU;
 enum uint GL_TEXTURE_COMPARE_FUNC_ARB = 0x884DU;
 enum uint GL_COMPARE_R_TO_TEXTURE_ARB = 0x884EU;
-
 global bool GL_ARB_texture_mirrored_repeat;
 enum uint GL_MIRRORED_REPEAT_ARB = 0x8370U;
-
 global bool GL_EXT_shader_image_load_store;
 enum uint GL_MAX_IMAGE_UNITS_EXT = 0x8F38U;
 enum uint GL_MAX_COMBINED_IMAGE_UNITS_AND_FRAGMENT_OUTPUTS_EXT = 0x8F39U;
@@ -2608,36 +2279,25 @@ enum uint GL_FRAMEBUFFER_BARRIER_BIT_EXT = 0x00000400U;
 enum uint GL_TRANSFORM_FEEDBACK_BARRIER_BIT_EXT = 0x00000800U;
 enum uint GL_ATOMIC_COUNTER_BARRIER_BIT_EXT = 0x00001000U;
 enum uint GL_ALL_BARRIER_BITS_EXT = 0xFFFFFFFFU;
-
 global bool GL_EXT_copy_texture;
-
 global bool GL_NV_register_combiners2;
 enum uint GL_PER_STAGE_CONSTANTS_NV = 0x8535U;
-
 global bool GL_SGIX_ir_instrument1;
 enum uint GL_IR_INSTRUMENT1_SGIX = 0x817FU;
-
 global bool GL_NV_draw_texture;
-
 global bool GL_EXT_texture_shared_exponent;
 enum uint GL_RGB9_E5_EXT = 0x8C3DU;
 enum uint GL_UNSIGNED_INT_5_9_9_9_REV_EXT = 0x8C3EU;
 enum uint GL_TEXTURE_SHARED_SIZE_EXT = 0x8C3FU;
-
 global bool GL_EXT_draw_instanced;
-
 global bool GL_NV_copy_depth_to_color;
 enum uint GL_DEPTH_STENCIL_TO_RGBA_NV = 0x886EU;
 enum uint GL_DEPTH_STENCIL_TO_BGRA_NV = 0x886FU;
-
 global bool GL_ARB_viewport_array;
-
 global bool GL_ARB_separate_shader_objects;
-
 global bool GL_EXT_depth_bounds_test;
 enum uint GL_DEPTH_BOUNDS_TEST_EXT = 0x8890U;
 enum uint GL_DEPTH_BOUNDS_EXT = 0x8891U;
-
 global bool GL_HP_image_transform;
 enum uint GL_IMAGE_SCALE_X_HP = 0x8155U;
 enum uint GL_IMAGE_SCALE_Y_HP = 0x8156U;
@@ -2654,9 +2314,7 @@ enum uint GL_AVERAGE_HP = 0x8160U;
 enum uint GL_IMAGE_TRANSFORM_2D_HP = 0x8161U;
 enum uint GL_POST_IMAGE_TRANSFORM_COLOR_TABLE_HP = 0x8162U;
 enum uint GL_PROXY_POST_IMAGE_TRANSFORM_COLOR_TABLE_HP = 0x8163U;
-
 global bool GL_ARB_texture_env_add;
-
 global bool GL_NV_video_capture;
 enum uint GL_VIDEO_BUFFER_NV = 0x9020U;
 enum uint GL_VIDEO_BUFFER_BINDING_NV = 0x9021U;
@@ -2687,9 +2345,7 @@ enum uint GL_VIDEO_CAPTURE_FRAME_HEIGHT_NV = 0x9039U;
 enum uint GL_VIDEO_CAPTURE_FIELD_UPPER_HEIGHT_NV = 0x903AU;
 enum uint GL_VIDEO_CAPTURE_FIELD_LOWER_HEIGHT_NV = 0x903BU;
 enum uint GL_VIDEO_CAPTURE_SURFACE_ORIGIN_NV = 0x903CU;
-
 global bool GL_ARB_sampler_objects;
-
 global bool GL_ARB_matrix_palette;
 enum uint GL_MATRIX_PALETTE_ARB = 0x8840U;
 enum uint GL_MAX_MATRIX_PALETTE_STACK_DEPTH_ARB = 0x8841U;
@@ -2701,17 +2357,14 @@ enum uint GL_MATRIX_INDEX_ARRAY_SIZE_ARB = 0x8846U;
 enum uint GL_MATRIX_INDEX_ARRAY_TYPE_ARB = 0x8847U;
 enum uint GL_MATRIX_INDEX_ARRAY_STRIDE_ARB = 0x8848U;
 enum uint GL_MATRIX_INDEX_ARRAY_POINTER_ARB = 0x8849U;
-
 global bool GL_SGIS_texture_color_mask;
 enum uint GL_TEXTURE_COLOR_WRITEMASK_SGIS = 0x81EFU;
-
 global bool GL_EXT_packed_pixels;
 enum uint GL_UNSIGNED_BYTE_3_3_2_EXT = 0x8032U;
 enum uint GL_UNSIGNED_SHORT_4_4_4_4_EXT = 0x8033U;
 enum uint GL_UNSIGNED_SHORT_5_5_5_1_EXT = 0x8034U;
 enum uint GL_UNSIGNED_INT_8_8_8_8_EXT = 0x8035U;
 enum uint GL_UNSIGNED_INT_10_10_10_2_EXT = 0x8036U;
-
 global bool GL_ARB_texture_compression;
 enum uint GL_COMPRESSED_ALPHA_ARB = 0x84E9U;
 enum uint GL_COMPRESSED_LUMINANCE_ARB = 0x84EAU;
@@ -2724,18 +2377,13 @@ enum uint GL_TEXTURE_COMPRESSED_IMAGE_SIZE_ARB = 0x86A0U;
 enum uint GL_TEXTURE_COMPRESSED_ARB = 0x86A1U;
 enum uint GL_NUM_COMPRESSED_TEXTURE_FORMATS_ARB = 0x86A2U;
 enum uint GL_COMPRESSED_TEXTURE_FORMATS_ARB = 0x86A3U;
-
 global bool GL_APPLE_aux_depth_stencil;
 enum uint GL_AUX_DEPTH_STENCIL_APPLE = 0x8A14U;
-
 global bool GL_ARB_shader_subroutine;
-
 global bool GL_EXT_framebuffer_sRGB;
 enum uint GL_FRAMEBUFFER_SRGB_EXT = 0x8DB9U;
 enum uint GL_FRAMEBUFFER_SRGB_CAPABLE_EXT = 0x8DBAU;
-
 global bool GL_ARB_texture_storage_multisample;
-
 global bool GL_EXT_vertex_attrib_64bit;
 enum uint GL_DOUBLE_VEC2_EXT = 0x8FFCU;
 enum uint GL_DOUBLE_VEC3_EXT = 0x8FFDU;
@@ -2749,19 +2397,15 @@ enum uint GL_DOUBLE_MAT3x2_EXT = 0x8F4BU;
 enum uint GL_DOUBLE_MAT3x4_EXT = 0x8F4CU;
 enum uint GL_DOUBLE_MAT4x2_EXT = 0x8F4DU;
 enum uint GL_DOUBLE_MAT4x3_EXT = 0x8F4EU;
-
 global bool GL_ARB_depth_texture;
 enum uint GL_DEPTH_COMPONENT16_ARB = 0x81A5U;
 enum uint GL_DEPTH_COMPONENT24_ARB = 0x81A6U;
 enum uint GL_DEPTH_COMPONENT32_ARB = 0x81A7U;
 enum uint GL_TEXTURE_DEPTH_SIZE_ARB = 0x884AU;
 enum uint GL_DEPTH_TEXTURE_MODE_ARB = 0x884BU;
-
 global bool GL_NV_shader_buffer_store;
 enum uint GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV = 0x00000010U;
-
 global bool GL_OES_query_matrix;
-
 global bool GL_APPLE_texture_range;
 enum uint GL_TEXTURE_RANGE_LENGTH_APPLE = 0x85B7U;
 enum uint GL_TEXTURE_RANGE_POINTER_APPLE = 0x85B8U;
@@ -2769,19 +2413,13 @@ enum uint GL_TEXTURE_STORAGE_HINT_APPLE = 0x85BCU;
 enum uint GL_STORAGE_PRIVATE_APPLE = 0x85BDU;
 enum uint GL_STORAGE_CACHED_APPLE = 0x85BEU;
 enum uint GL_STORAGE_SHARED_APPLE = 0x85BFU;
-
 global bool GL_NV_shader_storage_buffer_object;
-
 global bool GL_ARB_texture_query_lod;
-
 global bool GL_ARB_copy_buffer;
 enum uint GL_COPY_READ_BUFFER_BINDING = 0x8F36U;
 enum uint GL_COPY_WRITE_BUFFER_BINDING = 0x8F37U;
-
 global bool GL_ARB_shader_image_size;
-
 global bool GL_NV_shader_atomic_counters;
-
 global bool GL_APPLE_object_purgeable;
 enum uint GL_BUFFER_OBJECT_APPLE = 0x85B3U;
 enum uint GL_RELEASED_APPLE = 0x8A19U;
@@ -2789,14 +2427,12 @@ enum uint GL_VOLATILE_APPLE = 0x8A1AU;
 enum uint GL_RETAINED_APPLE = 0x8A1BU;
 enum uint GL_UNDEFINED_APPLE = 0x8A1CU;
 enum uint GL_PURGEABLE_APPLE = 0x8A1DU;
-
 global bool GL_ARB_occlusion_query;
 enum uint GL_QUERY_COUNTER_BITS_ARB = 0x8864U;
 enum uint GL_CURRENT_QUERY_ARB = 0x8865U;
 enum uint GL_QUERY_RESULT_ARB = 0x8866U;
 enum uint GL_QUERY_RESULT_AVAILABLE_ARB = 0x8867U;
 enum uint GL_SAMPLES_PASSED_ARB = 0x8914U;
-
 global bool GL_INGR_color_clamp;
 enum uint GL_RED_MIN_CLAMP_INGR = 0x8560U;
 enum uint GL_GREEN_MIN_CLAMP_INGR = 0x8561U;
@@ -2806,7 +2442,6 @@ enum uint GL_RED_MAX_CLAMP_INGR = 0x8564U;
 enum uint GL_GREEN_MAX_CLAMP_INGR = 0x8565U;
 enum uint GL_BLUE_MAX_CLAMP_INGR = 0x8566U;
 enum uint GL_ALPHA_MAX_CLAMP_INGR = 0x8567U;
-
 global bool GL_SGI_color_table;
 enum uint GL_COLOR_TABLE_SGI = 0x80D0U;
 enum uint GL_POST_CONVOLUTION_COLOR_TABLE_SGI = 0x80D1U;
@@ -2824,9 +2459,7 @@ enum uint GL_COLOR_TABLE_BLUE_SIZE_SGI = 0x80DCU;
 enum uint GL_COLOR_TABLE_ALPHA_SIZE_SGI = 0x80DDU;
 enum uint GL_COLOR_TABLE_LUMINANCE_SIZE_SGI = 0x80DEU;
 enum uint GL_COLOR_TABLE_INTENSITY_SIZE_SGI = 0x80DFU;
-
 global bool GL_NV_gpu_program5_mem_extended;
-
 global bool GL_ARB_texture_cube_map_array;
 enum uint GL_TEXTURE_CUBE_MAP_ARRAY_ARB = 0x9009U;
 enum uint GL_TEXTURE_BINDING_CUBE_MAP_ARRAY_ARB = 0x900AU;
@@ -2835,10 +2468,8 @@ enum uint GL_SAMPLER_CUBE_MAP_ARRAY_ARB = 0x900CU;
 enum uint GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW_ARB = 0x900DU;
 enum uint GL_INT_SAMPLER_CUBE_MAP_ARRAY_ARB = 0x900EU;
 enum uint GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY_ARB = 0x900FU;
-
 global bool GL_SGIX_scalebias_hint;
 enum uint GL_SCALEBIAS_HINT_SGIX = 0x8322U;
-
 global bool GL_EXT_gpu_shader4;
 enum uint GL_VERTEX_ATTRIB_ARRAY_INTEGER_EXT = 0x88FDU;
 enum uint GL_SAMPLER_1D_ARRAY_EXT = 0x8DC0U;
@@ -2868,16 +2499,13 @@ enum uint GL_UNSIGNED_INT_SAMPLER_2D_ARRAY_EXT = 0x8DD7U;
 enum uint GL_UNSIGNED_INT_SAMPLER_BUFFER_EXT = 0x8DD8U;
 enum uint GL_MIN_PROGRAM_TEXEL_OFFSET_EXT = 0x8904U;
 enum uint GL_MAX_PROGRAM_TEXEL_OFFSET_EXT = 0x8905U;
-
 global bool GL_NV_geometry_program4;
 enum uint GL_GEOMETRY_PROGRAM_NV = 0x8C26U;
 enum uint GL_MAX_PROGRAM_OUTPUT_VERTICES_NV = 0x8C27U;
 enum uint GL_MAX_PROGRAM_TOTAL_OUTPUT_COMPONENTS_NV = 0x8C28U;
-
 global bool GL_EXT_framebuffer_multisample_blit_scaled;
 enum uint GL_SCALED_RESOLVE_FASTEST_EXT = 0x90BAU;
 enum uint GL_SCALED_RESOLVE_NICEST_EXT = 0x90BBU;
-
 global bool GL_AMD_debug_output;
 enum uint GL_MAX_DEBUG_MESSAGE_LENGTH_AMD = 0x9143U;
 enum uint GL_MAX_DEBUG_LOGGED_MESSAGES_AMD = 0x9144U;
@@ -2893,12 +2521,9 @@ enum uint GL_DEBUG_CATEGORY_PERFORMANCE_AMD = 0x914DU;
 enum uint GL_DEBUG_CATEGORY_SHADER_COMPILER_AMD = 0x914EU;
 enum uint GL_DEBUG_CATEGORY_APPLICATION_AMD = 0x914FU;
 enum uint GL_DEBUG_CATEGORY_OTHER_AMD = 0x9150U;
-
 global bool GL_ARB_texture_border_clamp;
 enum uint GL_CLAMP_TO_BORDER_ARB = 0x812DU;
-
 global bool GL_ARB_fragment_coord_conventions;
-
 global bool GL_ARB_multitexture;
 enum uint GL_TEXTURE0_ARB = 0x84C0U;
 enum uint GL_TEXTURE1_ARB = 0x84C1U;
@@ -2935,7 +2560,6 @@ enum uint GL_TEXTURE31_ARB = 0x84DFU;
 enum uint GL_ACTIVE_TEXTURE_ARB = 0x84E0U;
 enum uint GL_CLIENT_ACTIVE_TEXTURE_ARB = 0x84E1U;
 enum uint GL_MAX_TEXTURE_UNITS_ARB = 0x84E2U;
-
 global bool GL_SGIX_polynomial_ffd;
 enum uint GL_TEXTURE_DEFORMATION_BIT_SGIX = 0x00000001U;
 enum uint GL_GEOMETRY_DEFORMATION_BIT_SGIX = 0x00000002U;
@@ -2943,39 +2567,29 @@ enum uint GL_GEOMETRY_DEFORMATION_SGIX = 0x8194U;
 enum uint GL_TEXTURE_DEFORMATION_SGIX = 0x8195U;
 enum uint GL_DEFORMATIONS_MASK_SGIX = 0x8196U;
 enum uint GL_MAX_DEFORMATION_ORDER_SGIX = 0x8197U;
-
 global bool GL_EXT_provoking_vertex;
 enum uint GL_QUADS_FOLLOW_PROVOKING_VERTEX_CONVENTION_EXT = 0x8E4CU;
 enum uint GL_FIRST_VERTEX_CONVENTION_EXT = 0x8E4DU;
 enum uint GL_LAST_VERTEX_CONVENTION_EXT = 0x8E4EU;
 enum uint GL_PROVOKING_VERTEX_EXT = 0x8E4FU;
-
 global bool GL_ARB_point_parameters;
 enum uint GL_POINT_SIZE_MIN_ARB = 0x8126U;
 enum uint GL_POINT_SIZE_MAX_ARB = 0x8127U;
 enum uint GL_POINT_FADE_THRESHOLD_SIZE_ARB = 0x8128U;
 enum uint GL_POINT_DISTANCE_ATTENUATION_ARB = 0x8129U;
-
 global bool GL_ARB_shader_image_load_store;
-
 global bool GL_HP_occlusion_test;
 enum uint GL_OCCLUSION_TEST_HP = 0x8165U;
 enum uint GL_OCCLUSION_TEST_RESULT_HP = 0x8166U;
-
 global bool GL_ARB_ES3_compatibility;
-
 global bool GL_SGIX_framezoom;
 enum uint GL_FRAMEZOOM_SGIX = 0x818BU;
 enum uint GL_FRAMEZOOM_FACTOR_SGIX = 0x818CU;
 enum uint GL_MAX_FRAMEZOOM_FACTOR_SGIX = 0x818DU;
-
 global bool GL_ARB_texture_buffer_object_rgb32;
-
 global bool GL_NV_bindless_multi_draw_indirect;
-
 global bool GL_SGIX_texture_multi_buffer;
 enum uint GL_TEXTURE_MULTI_BUFFER_HINT_SGIX = 0x812EU;
-
 global bool GL_EXT_transform_feedback;
 enum uint GL_TRANSFORM_FEEDBACK_BUFFER_EXT = 0x8C8EU;
 enum uint GL_TRANSFORM_FEEDBACK_BUFFER_START_EXT = 0x8C84U;
@@ -2992,7 +2606,6 @@ enum uint GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS_EXT = 0x8C80U;
 enum uint GL_TRANSFORM_FEEDBACK_VARYINGS_EXT = 0x8C83U;
 enum uint GL_TRANSFORM_FEEDBACK_BUFFER_MODE_EXT = 0x8C7FU;
 enum uint GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH_EXT = 0x8C76U;
-
 global bool GL_KHR_texture_compression_astc_ldr;
 enum uint GL_COMPRESSED_RGBA_ASTC_4x4_KHR = 0x93B0U;
 enum uint GL_COMPRESSED_RGBA_ASTC_5x4_KHR = 0x93B1U;
@@ -3022,17 +2635,14 @@ enum uint GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR = 0x93DAU;
 enum uint GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR = 0x93DBU;
 enum uint GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR = 0x93DCU;
 enum uint GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR = 0x93DDU;
-
 global bool GL_3DFX_multisample;
 enum uint GL_MULTISAMPLE_3DFX = 0x86B2U;
 enum uint GL_SAMPLE_BUFFERS_3DFX = 0x86B3U;
 enum uint GL_SAMPLES_3DFX = 0x86B4U;
 enum uint GL_MULTISAMPLE_BIT_3DFX = 0x20000000U;
-
 global bool GL_ARB_texture_env_dot3;
 enum uint GL_DOT3_RGB_ARB = 0x86AEU;
 enum uint GL_DOT3_RGBA_ARB = 0x86AFU;
-
 global bool GL_NV_gpu_program4;
 enum uint GL_MIN_PROGRAM_TEXEL_OFFSET_NV = 0x8904U;
 enum uint GL_MAX_PROGRAM_TEXEL_OFFSET_NV = 0x8905U;
@@ -3042,7 +2652,6 @@ enum uint GL_MAX_PROGRAM_ATTRIB_COMPONENTS_NV = 0x8908U;
 enum uint GL_MAX_PROGRAM_RESULT_COMPONENTS_NV = 0x8909U;
 enum uint GL_MAX_PROGRAM_GENERIC_ATTRIBS_NV = 0x8DA5U;
 enum uint GL_MAX_PROGRAM_GENERIC_RESULTS_NV = 0x8DA6U;
-
 global bool GL_NV_gpu_program5;
 enum uint GL_MAX_GEOMETRY_PROGRAM_INVOCATIONS_NV = 0x8E5AU;
 enum uint GL_MIN_FRAGMENT_INTERPOLATION_OFFSET_NV = 0x8E5BU;
@@ -3052,7 +2661,6 @@ enum uint GL_MIN_PROGRAM_TEXTURE_GATHER_OFFSET_NV = 0x8E5EU;
 enum uint GL_MAX_PROGRAM_TEXTURE_GATHER_OFFSET_NV = 0x8E5FU;
 enum uint GL_MAX_PROGRAM_SUBROUTINE_PARAMETERS_NV = 0x8F44U;
 enum uint GL_MAX_PROGRAM_SUBROUTINE_NUM_NV = 0x8F45U;
-
 global bool GL_NV_float_buffer;
 enum uint GL_FLOAT_R_NV = 0x8880U;
 enum uint GL_FLOAT_RG_NV = 0x8881U;
@@ -3069,17 +2677,12 @@ enum uint GL_FLOAT_RGBA32_NV = 0x888BU;
 enum uint GL_TEXTURE_FLOAT_COMPONENTS_NV = 0x888CU;
 enum uint GL_FLOAT_CLEAR_COLOR_VALUE_NV = 0x888DU;
 enum uint GL_FLOAT_RGBA_MODE_NV = 0x888EU;
-
 global bool GL_SGIS_texture_edge_clamp;
 enum uint GL_CLAMP_TO_EDGE_SGIS = 0x812FU;
-
 global bool GL_ARB_framebuffer_sRGB;
-
 global bool GL_SUN_slice_accum;
 enum uint GL_SLICE_ACCUM_SUN = 0x85CCU;
-
 global bool GL_EXT_index_texture;
-
 global bool GL_ARB_geometry_shader4;
 enum uint GL_LINES_ADJACENCY_ARB = 0x000AU;
 enum uint GL_LINE_STRIP_ADJACENCY_ARB = 0x000BU;
@@ -3099,19 +2702,15 @@ enum uint GL_MAX_VERTEX_VARYING_COMPONENTS_ARB = 0x8DDEU;
 enum uint GL_MAX_GEOMETRY_UNIFORM_COMPONENTS_ARB = 0x8DDFU;
 enum uint GL_MAX_GEOMETRY_OUTPUT_VERTICES_ARB = 0x8DE0U;
 enum uint GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS_ARB = 0x8DE1U;
-
 global bool GL_EXT_separate_specular_color;
 enum uint GL_LIGHT_MODEL_COLOR_CONTROL_EXT = 0x81F8U;
 enum uint GL_SINGLE_COLOR_EXT = 0x81F9U;
 enum uint GL_SEPARATE_SPECULAR_COLOR_EXT = 0x81FAU;
-
 global bool GL_AMD_depth_clamp_separate;
 enum uint GL_DEPTH_CLAMP_NEAR_AMD = 0x901EU;
 enum uint GL_DEPTH_CLAMP_FAR_AMD = 0x901FU;
-
 global bool GL_SUN_convolution_border_modes;
 enum uint GL_WRAP_BORDER_SUN = 0x81D4U;
-
 global bool GL_SGIX_sprite;
 enum uint GL_SPRITE_SGIX = 0x8148U;
 enum uint GL_SPRITE_MODE_SGIX = 0x8149U;
@@ -3120,9 +2719,7 @@ enum uint GL_SPRITE_TRANSLATION_SGIX = 0x814BU;
 enum uint GL_SPRITE_AXIAL_SGIX = 0x814CU;
 enum uint GL_SPRITE_OBJECT_ALIGNED_SGIX = 0x814DU;
 enum uint GL_SPRITE_EYE_ALIGNED_SGIX = 0x814EU;
-
 global bool GL_ARB_get_program_binary;
-
 global bool GL_SGIS_multisample;
 enum uint GL_MULTISAMPLE_SGIS = 0x809DU;
 enum uint GL_SAMPLE_ALPHA_TO_MASK_SGIS = 0x809EU;
@@ -3140,7 +2737,6 @@ enum uint GL_SAMPLES_SGIS = 0x80A9U;
 enum uint GL_SAMPLE_MASK_VALUE_SGIS = 0x80AAU;
 enum uint GL_SAMPLE_MASK_INVERT_SGIS = 0x80ABU;
 enum uint GL_SAMPLE_PATTERN_SGIS = 0x80ACU;
-
 global bool GL_EXT_framebuffer_object;
 enum uint GL_INVALID_FRAMEBUFFER_OPERATION_EXT = 0x0506U;
 enum uint GL_MAX_RENDERBUFFER_SIZE_EXT = 0x84E8U;
@@ -3193,23 +2789,18 @@ enum uint GL_RENDERBUFFER_BLUE_SIZE_EXT = 0x8D52U;
 enum uint GL_RENDERBUFFER_ALPHA_SIZE_EXT = 0x8D53U;
 enum uint GL_RENDERBUFFER_DEPTH_SIZE_EXT = 0x8D54U;
 enum uint GL_RENDERBUFFER_STENCIL_SIZE_EXT = 0x8D55U;
-
 global bool GL_ARB_robustness_isolation;
-
 global bool GL_ARB_vertex_array_bgra;
-
 global bool GL_APPLE_vertex_array_range;
 enum uint GL_VERTEX_ARRAY_RANGE_APPLE = 0x851DU;
 enum uint GL_VERTEX_ARRAY_RANGE_LENGTH_APPLE = 0x851EU;
 enum uint GL_VERTEX_ARRAY_STORAGE_HINT_APPLE = 0x851FU;
 enum uint GL_VERTEX_ARRAY_RANGE_POINTER_APPLE = 0x8521U;
 enum uint GL_STORAGE_CLIENT_APPLE = 0x85B4U;
-
 global bool GL_AMD_query_buffer_object;
 enum uint GL_QUERY_BUFFER_AMD = 0x9192U;
 enum uint GL_QUERY_BUFFER_BINDING_AMD = 0x9193U;
 enum uint GL_QUERY_RESULT_NO_WAIT_AMD = 0x9194U;
-
 global bool GL_NV_register_combiners;
 enum uint GL_REGISTER_COMBINERS_NV = 0x8522U;
 enum uint GL_VARIABLE_A_NV = 0x8523U;
@@ -3262,7 +2853,6 @@ enum uint GL_COMBINER4_NV = 0x8554U;
 enum uint GL_COMBINER5_NV = 0x8555U;
 enum uint GL_COMBINER6_NV = 0x8556U;
 enum uint GL_COMBINER7_NV = 0x8557U;
-
 global bool GL_ARB_draw_buffers;
 enum uint GL_MAX_DRAW_BUFFERS_ARB = 0x8824U;
 enum uint GL_DRAW_BUFFER0_ARB = 0x8825U;
@@ -3281,9 +2871,7 @@ enum uint GL_DRAW_BUFFER12_ARB = 0x8831U;
 enum uint GL_DRAW_BUFFER13_ARB = 0x8832U;
 enum uint GL_DRAW_BUFFER14_ARB = 0x8833U;
 enum uint GL_DRAW_BUFFER15_ARB = 0x8834U;
-
 global bool GL_ARB_clear_texture;
-
 global bool GL_ARB_debug_output;
 enum uint GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB = 0x8242U;
 enum uint GL_DEBUG_NEXT_LOGGED_MESSAGE_LENGTH_ARB = 0x8243U;
@@ -3307,7 +2895,6 @@ enum uint GL_DEBUG_LOGGED_MESSAGES_ARB = 0x9145U;
 enum uint GL_DEBUG_SEVERITY_HIGH_ARB = 0x9146U;
 enum uint GL_DEBUG_SEVERITY_MEDIUM_ARB = 0x9147U;
 enum uint GL_DEBUG_SEVERITY_LOW_ARB = 0x9148U;
-
 global bool GL_SGI_color_matrix;
 enum uint GL_COLOR_MATRIX_SGI = 0x80B1U;
 enum uint GL_COLOR_MATRIX_STACK_DEPTH_SGI = 0x80B2U;
@@ -3320,12 +2907,10 @@ enum uint GL_POST_COLOR_MATRIX_RED_BIAS_SGI = 0x80B8U;
 enum uint GL_POST_COLOR_MATRIX_GREEN_BIAS_SGI = 0x80B9U;
 enum uint GL_POST_COLOR_MATRIX_BLUE_BIAS_SGI = 0x80BAU;
 enum uint GL_POST_COLOR_MATRIX_ALPHA_BIAS_SGI = 0x80BBU;
-
 global bool GL_EXT_cull_vertex;
 enum uint GL_CULL_VERTEX_EXT = 0x81AAU;
 enum uint GL_CULL_VERTEX_EYE_POSITION_EXT = 0x81ABU;
 enum uint GL_CULL_VERTEX_OBJECT_POSITION_EXT = 0x81ACU;
-
 global bool GL_EXT_texture_sRGB;
 enum uint GL_SRGB_EXT = 0x8C40U;
 enum uint GL_SRGB8_EXT = 0x8C41U;
@@ -3343,30 +2928,22 @@ enum uint GL_COMPRESSED_SRGB_S3TC_DXT1_EXT = 0x8C4CU;
 enum uint GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT = 0x8C4DU;
 enum uint GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT = 0x8C4EU;
 enum uint GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT = 0x8C4FU;
-
 global bool GL_APPLE_row_bytes;
 enum uint GL_PACK_ROW_BYTES_APPLE = 0x8A15U;
 enum uint GL_UNPACK_ROW_BYTES_APPLE = 0x8A16U;
-
 global bool GL_NV_texgen_reflection;
 enum uint GL_NORMAL_MAP_NV = 0x8511U;
 enum uint GL_REFLECTION_MAP_NV = 0x8512U;
-
 global bool GL_IBM_multimode_draw_arrays;
-
 global bool GL_APPLE_vertex_array_object;
 enum uint GL_VERTEX_ARRAY_BINDING_APPLE = 0x85B5U;
-
 global bool GL_3DFX_texture_compression_FXT1;
 enum uint GL_COMPRESSED_RGB_FXT1_3DFX = 0x86B0U;
 enum uint GL_COMPRESSED_RGBA_FXT1_3DFX = 0x86B1U;
-
 global bool GL_SGIX_ycrcb;
 enum uint GL_YCRCB_422_SGIX = 0x81BBU;
 enum uint GL_YCRCB_444_SGIX = 0x81BCU;
-
 global bool GL_AMD_conservative_depth;
-
 global bool GL_ARB_texture_float;
 enum uint GL_TEXTURE_RED_TYPE_ARB = 0x8C10U;
 enum uint GL_TEXTURE_GREEN_TYPE_ARB = 0x8C11U;
@@ -3388,9 +2965,7 @@ enum uint GL_ALPHA16F_ARB = 0x881CU;
 enum uint GL_INTENSITY16F_ARB = 0x881DU;
 enum uint GL_LUMINANCE16F_ARB = 0x881EU;
 enum uint GL_LUMINANCE_ALPHA16F_ARB = 0x881FU;
-
 global bool GL_ARB_compressed_texture_pixel_storage;
-
 global bool GL_SGIS_detail_texture;
 enum uint GL_DETAIL_TEXTURE_2D_SGIS = 0x8095U;
 enum uint GL_DETAIL_TEXTURE_2D_BINDING_SGIS = 0x8096U;
@@ -3400,13 +2975,10 @@ enum uint GL_LINEAR_DETAIL_COLOR_SGIS = 0x8099U;
 enum uint GL_DETAIL_TEXTURE_LEVEL_SGIS = 0x809AU;
 enum uint GL_DETAIL_TEXTURE_MODE_SGIS = 0x809BU;
 enum uint GL_DETAIL_TEXTURE_FUNC_POINTS_SGIS = 0x809CU;
-
 global bool GL_ARB_draw_instanced;
-
 global bool GL_OES_read_format;
 enum uint GL_IMPLEMENTATION_COLOR_READ_TYPE_OES = 0x8B9AU;
 enum uint GL_IMPLEMENTATION_COLOR_READ_FORMAT_OES = 0x8B9BU;
-
 global bool GL_ATI_texture_float;
 enum uint GL_RGBA_FLOAT32_ATI = 0x8814U;
 enum uint GL_RGB_FLOAT32_ATI = 0x8815U;
@@ -3420,28 +2992,21 @@ enum uint GL_ALPHA_FLOAT16_ATI = 0x881CU;
 enum uint GL_INTENSITY_FLOAT16_ATI = 0x881DU;
 enum uint GL_LUMINANCE_FLOAT16_ATI = 0x881EU;
 enum uint GL_LUMINANCE_ALPHA_FLOAT16_ATI = 0x881FU;
-
 global bool GL_ARB_texture_gather;
 enum uint GL_MIN_PROGRAM_TEXTURE_GATHER_OFFSET_ARB = 0x8E5EU;
 enum uint GL_MAX_PROGRAM_TEXTURE_GATHER_OFFSET_ARB = 0x8E5FU;
 enum uint GL_MAX_PROGRAM_TEXTURE_GATHER_COMPONENTS_ARB = 0x8F9FU;
-
 global bool GL_AMD_vertex_shader_layer;
-
 global bool GL_ARB_shading_language_include;
 enum uint GL_SHADER_INCLUDE_ARB = 0x8DAEU;
 enum uint GL_NAMED_STRING_LENGTH_ARB = 0x8DE9U;
 enum uint GL_NAMED_STRING_TYPE_ARB = 0x8DEAU;
-
 global bool GL_APPLE_client_storage;
 enum uint GL_UNPACK_CLIENT_STORAGE_APPLE = 0x85B2U;
-
 global bool GL_WIN_phong_shading;
 enum uint GL_PHONG_WIN = 0x80EAU;
 enum uint GL_PHONG_HINT_WIN = 0x80EBU;
-
 global bool GL_INGR_blend_func_separate;
-
 global bool GL_NV_path_rendering;
 enum uint GL_PATH_FORMAT_SVG_NV = 0x9070U;
 enum uint GL_PATH_FORMAT_PS_NV = 0x9071U;
@@ -3570,7 +3135,6 @@ enum uint GL_FONT_MAX_ADVANCE_HEIGHT_BIT_NV = 0x02000000U;
 enum uint GL_FONT_UNDERLINE_POSITION_BIT_NV = 0x04000000U;
 enum uint GL_FONT_UNDERLINE_THICKNESS_BIT_NV = 0x08000000U;
 enum uint GL_FONT_HAS_KERNING_BIT_NV = 0x10000000U;
-
 global bool GL_ATI_vertex_streams;
 enum uint GL_MAX_VERTEX_STREAMS_ATI = 0x876BU;
 enum uint GL_VERTEX_STREAM0_ATI = 0x876CU;
@@ -3582,81 +3146,57 @@ enum uint GL_VERTEX_STREAM5_ATI = 0x8771U;
 enum uint GL_VERTEX_STREAM6_ATI = 0x8772U;
 enum uint GL_VERTEX_STREAM7_ATI = 0x8773U;
 enum uint GL_VERTEX_SOURCE_ATI = 0x8774U;
-
 global bool GL_ARB_texture_non_power_of_two;
-
 global bool GL_APPLE_rgb_422;
 enum uint GL_RGB_422_APPLE = 0x8A1FU;
-
 global bool GL_EXT_texture_lod_bias;
 enum uint GL_MAX_TEXTURE_LOD_BIAS_EXT = 0x84FDU;
 enum uint GL_TEXTURE_FILTER_CONTROL_EXT = 0x8500U;
 enum uint GL_TEXTURE_LOD_BIAS_EXT = 0x8501U;
-
 global bool GL_ARB_seamless_cube_map;
-
 global bool GL_ARB_shader_group_vote;
-
 global bool GL_NV_vdpau_interop;
 enum uint GL_SURFACE_STATE_NV = 0x86EBU;
 enum uint GL_SURFACE_REGISTERED_NV = 0x86FDU;
 enum uint GL_SURFACE_MAPPED_NV = 0x8700U;
 enum uint GL_WRITE_DISCARD_NV = 0x88BEU;
-
 global bool GL_ARB_occlusion_query2;
-
 global bool GL_ARB_internalformat_query2;
 enum uint GL_SRGB_DECODE_ARB = 0x8299U;
-
 global bool GL_EXT_texture_filter_anisotropic;
 enum uint GL_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FEU;
 enum uint GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FFU;
-
 global bool GL_SUN_vertex;
-
 global bool GL_SGIX_igloo_interface;
-
 global bool GL_SGIS_texture_lod;
 enum uint GL_TEXTURE_MIN_LOD_SGIS = 0x813AU;
 enum uint GL_TEXTURE_MAX_LOD_SGIS = 0x813BU;
 enum uint GL_TEXTURE_BASE_LEVEL_SGIS = 0x813CU;
 enum uint GL_TEXTURE_MAX_LEVEL_SGIS = 0x813DU;
-
 global bool GL_NV_vertex_program3;
-
 global bool GL_ARB_draw_indirect;
-
 global bool GL_NV_vertex_program4;
 enum uint GL_VERTEX_ATTRIB_ARRAY_INTEGER_NV = 0x88FDU;
-
 global bool GL_AMD_transform_feedback3_lines_triangles;
-
 global bool GL_SGIS_fog_function;
 enum uint GL_FOG_FUNC_SGIS = 0x812AU;
 enum uint GL_FOG_FUNC_POINTS_SGIS = 0x812BU;
 enum uint GL_MAX_FOG_FUNC_POINTS_SGIS = 0x812CU;
-
 global bool GL_EXT_x11_sync_object;
 enum uint GL_SYNC_X11_FENCE_EXT = 0x90E1U;
-
 global bool GL_ARB_sync;
-
 global bool GL_ARB_compute_variable_group_size;
 enum uint GL_MAX_COMPUTE_VARIABLE_GROUP_INVOCATIONS_ARB = 0x9344U;
 enum uint GL_MAX_COMPUTE_FIXED_GROUP_INVOCATIONS_ARB = 0x90EBU;
 enum uint GL_MAX_COMPUTE_VARIABLE_GROUP_SIZE_ARB = 0x9345U;
 enum uint GL_MAX_COMPUTE_FIXED_GROUP_SIZE_ARB = 0x91BFU;
-
 global bool GL_OES_fixed_point;
 enum uint GL_FIXED_OES = 0x140CU;
-
 global bool GL_EXT_framebuffer_multisample;
 enum uint GL_RENDERBUFFER_SAMPLES_EXT = 0x8CABU;
 enum uint GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT = 0x8D56U;
 enum uint GL_MAX_SAMPLES_EXT = 0x8D57U;
-
 global bool GL_ARB_gpu_shader5;
-
 global bool GL_SGIS_texture4D;
 enum uint GL_PACK_SKIP_VOLUMES_SGIS = 0x8130U;
 enum uint GL_PACK_IMAGE_DEPTH_SGIS = 0x8131U;
@@ -3668,7 +3208,6 @@ enum uint GL_TEXTURE_4DSIZE_SGIS = 0x8136U;
 enum uint GL_TEXTURE_WRAP_Q_SGIS = 0x8137U;
 enum uint GL_MAX_4D_TEXTURE_SIZE_SGIS = 0x8138U;
 enum uint GL_TEXTURE_4D_BINDING_SGIS = 0x814FU;
-
 global bool GL_EXT_texture3D;
 enum uint GL_PACK_SKIP_IMAGES_EXT = 0x806BU;
 enum uint GL_PACK_IMAGE_HEIGHT_EXT = 0x806CU;
@@ -3679,7 +3218,6 @@ enum uint GL_PROXY_TEXTURE_3D_EXT = 0x8070U;
 enum uint GL_TEXTURE_DEPTH_EXT = 0x8071U;
 enum uint GL_TEXTURE_WRAP_R_EXT = 0x8072U;
 enum uint GL_MAX_3D_TEXTURE_SIZE_EXT = 0x8073U;
-
 global bool GL_EXT_multisample;
 enum uint GL_MULTISAMPLE_EXT = 0x809DU;
 enum uint GL_SAMPLE_ALPHA_TO_MASK_EXT = 0x809EU;
@@ -3698,7 +3236,6 @@ enum uint GL_SAMPLE_MASK_VALUE_EXT = 0x80AAU;
 enum uint GL_SAMPLE_MASK_INVERT_EXT = 0x80ABU;
 enum uint GL_SAMPLE_PATTERN_EXT = 0x80ACU;
 enum uint GL_MULTISAMPLE_BIT_EXT = 0x20000000U;
-
 global bool GL_EXT_secondary_color;
 enum uint GL_COLOR_SUM_EXT = 0x8458U;
 enum uint GL_CURRENT_SECONDARY_COLOR_EXT = 0x8459U;
@@ -3707,9 +3244,7 @@ enum uint GL_SECONDARY_COLOR_ARRAY_TYPE_EXT = 0x845BU;
 enum uint GL_SECONDARY_COLOR_ARRAY_STRIDE_EXT = 0x845CU;
 enum uint GL_SECONDARY_COLOR_ARRAY_POINTER_EXT = 0x845DU;
 enum uint GL_SECONDARY_COLOR_ARRAY_EXT = 0x845EU;
-
 global bool GL_NV_parameter_buffer_object2;
-
 global bool GL_ATI_vertex_array_object;
 enum uint GL_STATIC_ATI = 0x8760U;
 enum uint GL_DYNAMIC_ATI = 0x8761U;
@@ -3719,7 +3254,6 @@ enum uint GL_OBJECT_BUFFER_SIZE_ATI = 0x8764U;
 enum uint GL_OBJECT_BUFFER_USAGE_ATI = 0x8765U;
 enum uint GL_ARRAY_OBJECT_BUFFER_ATI = 0x8766U;
 enum uint GL_ARRAY_OBJECT_OFFSET_ATI = 0x8767U;
-
 global bool GL_ARB_sparse_texture;
 enum uint GL_TEXTURE_SPARSE_ARB = 0x91A6U;
 enum uint GL_VIRTUAL_PAGE_SIZE_INDEX_ARB = 0x91A7U;
@@ -3732,7 +3266,6 @@ enum uint GL_MAX_SPARSE_TEXTURE_SIZE_ARB = 0x9198U;
 enum uint GL_MAX_SPARSE_3D_TEXTURE_SIZE_ARB = 0x9199U;
 enum uint GL_MAX_SPARSE_ARRAY_TEXTURE_LAYERS_ARB = 0x919AU;
 enum uint GL_SPARSE_TEXTURE_FULL_ARRAY_CUBE_MIPMAPS_ARB = 0x91A9U;
-
 global bool GL_SGIS_point_line_texgen;
 enum uint GL_EYE_DISTANCE_TO_POINT_SGIS = 0x81F0U;
 enum uint GL_OBJECT_DISTANCE_TO_POINT_SGIS = 0x81F1U;
@@ -3742,15 +3275,12 @@ enum uint GL_EYE_POINT_SGIS = 0x81F4U;
 enum uint GL_OBJECT_POINT_SGIS = 0x81F5U;
 enum uint GL_EYE_LINE_SGIS = 0x81F6U;
 enum uint GL_OBJECT_LINE_SGIS = 0x81F7U;
-
 global bool GL_EXT_draw_range_elements;
 enum uint GL_MAX_ELEMENTS_VERTICES_EXT = 0x80E8U;
 enum uint GL_MAX_ELEMENTS_INDICES_EXT = 0x80E9U;
-
 global bool GL_SGIX_blend_alpha_minmax;
 enum uint GL_ALPHA_MIN_SGIX = 0x8320U;
 enum uint GL_ALPHA_MAX_SGIX = 0x8321U;
-
 extern(System) @loadDynamic {
 void glPointParameteriNV(GLenum, GLint);
 void glPointParameterivNV(GLenum, const(GLint)*);
