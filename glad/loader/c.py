@@ -91,14 +91,16 @@ void* gladGetProcAddress(const char *namez) {
 }
 #endif
 
-GLVersion gladLoadGL(void) {
-    return gladLoadGLLoader(&gladGetProcAddress);
+void gladLoadGL(void) {
+    gladLoadGLLoader(&gladGetProcAddress);
 }
 '''
 
 _OPENGL_HAS_EXT = '''
-static int has_ext(GLVersion glv, const char *extensions, const char *ext) {
-    if(glv.major < 3) {
+static int has_ext(const char *ext) {
+    if(GLVersion.major < 3) {
+        const char *extensions;
+        extensions = (const char *)glGetString(GL_EXTENSIONS);
         return extensions != NULL && ext != NULL && strstr(extensions, ext) != NULL;
     } else {
         int num;
@@ -120,7 +122,7 @@ static int has_ext(GLVersion glv, const char *extensions, const char *ext) {
 _OPENGL_HEADER = '''
 int gladInit(void);
 void* gladGetProcAddress(const char *namez);
-GLVersion gladLoadGL(void);
+void gladLoadGL(void);
 void gladTerminate(void);
 
 #ifdef _WIN32

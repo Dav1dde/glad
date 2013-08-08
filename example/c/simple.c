@@ -9,7 +9,7 @@
 
 // This file is a modified version of gl3w's test.c
 
-// gcc -I. simple.c GL/glad.c -ldl -lglut -Wall -Werror
+// gcc -I. example/c/simple.c GL/glad.c -ldl -lglut
 
 static int width = 600, height = 600;
 
@@ -46,11 +46,11 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    GLVersion glv = gladLoadGL();
+    gladLoadGL();
     // gladLoadGLLoader(&glutGetProcAddress);
-    printf("OpenGL %d.%d\n", glv.major, glv.minor);
-    if (glv.major < 2) {
-        printf("You don't support OpenGL >= 2!");
+    printf("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
+    if (GLVersion.major < 2) {
+        printf("Your system doesn't support OpenGL >= 2!\n");
         return -1;
     }
 

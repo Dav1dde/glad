@@ -30,7 +30,8 @@ bool gladInit() {
             enum const(char)*[] NAMES = [
                 "../Frameworks/OpenGL.framework/OpenGL",
                 "/Library/Frameworks/OpenGL.framework/OpenGL",
-                "/System/Library/Frameworks/OpenGL.framework/OpenGL"
+                "/System/Library/Frameworks/OpenGL.framework/OpenGL",
+                "/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL"
             ];
         } else {
             enum const(char)*[] NAMES = ["libGL.so.1", "libGL.so"];
@@ -92,17 +93,18 @@ void* gladGetProcAddress(const(char)* namez) {
     return result;
 }
 
-GLVersion gladLoadGL() {
+void gladLoadGL() {
     return gladLoadGL(&gladGetProcAddress);
 }
 '''
 
 _OPENGL_HAS_EXT = '''
-struct GLVersion { int major; int minor; }
+static struct GLVersion { static int major = 0; static int minor = 0; }
 private extern(C) char* strstr(const(char)*, const(char)*);
 private extern(C) int strcmp(const(char)*, const(char)*);
-private bool has_ext(GLVersion glv, const(char)* extensions, const(char)* ext) {
-    if(glv.major < 3) {
+private bool has_ext(const(char)* ext) {
+    if(GLVersion.major < 3) {
+        const(char)* extensions = cast(const(char)*)glGetString(GL_EXTENSIONS);
         return extensions !is null && ext !is null && strstr(extensions, ext) !is null;
     } else {
         int num;

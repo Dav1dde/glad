@@ -14,17 +14,17 @@ _HEADER = '''
 #define __glad_h_
 #define __gl_h_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-typedef struct _GLVersion {
+struct {
     int major;
     int minor;
 } GLVersion;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef void* (* LOADER)(const char *name);
-GLVersion gladLoadGLLoader(LOADER);
+void gladLoadGLLoader(LOADER);
 '''
 
 _HEADER_END = '''
@@ -64,51 +64,45 @@ class CGenerator(Generator):
 
             f.write('static int load_{}(LOADER load) {{\n'
                 .format(ext.name))
-            f.write('\tif(!{0}) return {0};\n\n'.format(ext.name))
+            f.write('\tif(!{}) return 0;\n'.format(ext.name))
             for func in ext.functions:
                 # even if they were in written we need to load it
                 f.write('\t{name} = (fp_{name})load("{name}");\n'
                     .format(name=func.proto.name))
-            f.write('\treturn {};\n'.format(ext.name))
+            f.write('\treturn 1;\n')
             f.write('}\n')
 
-            f.write('\n\n')
-
-        f.write('static void find_extensions(GLVersion glv) {\n')
-        f.write('\tconst char *extensions;\n\textensions = (const char *)glGetString(GL_EXTENSIONS);\n\n')
+        f.write('static void find_extensions(void) {\n')
         for ext in extensions:
-            f.write('\t{0} = has_ext(glv, extensions, "{0}");\n'.format(ext.name))
+            f.write('\t{0} = has_ext("{0}");\n'.format(ext.name))
         f.write('}\n\n')
 
-        f.write('static GLVersion find_core(void) {\n')
+        f.write('static void find_core(void) {\n')
 
 
-        f.write('\tint major = 0;\n')
-        f.write('\tint minor = 0;\n')
         f.write('\tconst char* v = (const char*)glGetString(GL_VERSION);\n')
-        f.write('\tif(v != NULL) {\n')
-        f.write('\t\tmajor = v[0] - \'0\';\n')
-        f.write('\t\tminor = v[2] - \'0\';\n')
-        f.write('\t}\n')
+        f.write('\tint major = v[0] - \'0\';\n')
+        f.write('\tint minor = v[2] - \'0\';\n')
         for feature in features:
             f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
                 ' major > {num[0]};\n'.format(feature.name, num=feature.number))
-        f.write('\tGLVersion glv; glv.major = major; glv.minor = minor; return glv;\n')
+        f.write('\tGLVersion.major = major; GLVersion.minor = minor;\n\treturn;\n')
         f.write('}\n\n')
 
-        f.write('GLVersion gladLoadGLLoader(LOADER load) {\n')
+        f.write('void gladLoadGLLoader(LOADER load) {\n')
+        f.write('\tGLVersion.major = 0; GLVersion.minor = 0;\n')
         f.write('\tglGetString = (fp_glGetString)load("glGetString");\n')
-        f.write('\tif(glGetString == NULL) { GLVersion glv = {0, 0}; return glv; }\n\n')
-        f.write('\tGLVersion glv = find_core();\n')
+        f.write('\tif(glGetString == NULL) return;\n')
+        f.write('\tfind_core();\n')
 
         for feature in features:
             f.write('\tload_{}(load);\n'.format(feature.name))
-        f.write('\n\tfind_extensions(glv);\n')
+        f.write('\n\tfind_extensions();\n')
         for ext in extensions:
             if len(list(ext.functions)) == 0:
                 continue
             f.write('\tload_{}(load);\n'.format(ext.name))
-        f.write('\n\treturn glv;\n}\n\n')
+        f.write('\n\treturn;\n}\n\n')
 
         self._f_h.write(_HEADER_END)
 
@@ -154,9 +148,6 @@ class CGenerator(Generator):
 
 
     def generate_extensions(self, api, version, extensions, enums, functions):
-        path = make_path(self.path, 'glad.c')
-        hpath = make_path(self.path, 'glad.h')
-
         write = set()
         written = set(enum.name for enum in enums) | \
                     set(function.proto.name for function in functions)

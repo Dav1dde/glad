@@ -65,38 +65,36 @@ class BaseDGenerator(Generator):
         self.loader.write(f)
         self.loader.write_has_ext(f)
 
-        f.write('GLVersion {}(void* function(const(char)* name) load) {{\n'.format(self.LOAD_GL_NAME))
+        f.write('void {}(void* function(const(char)* name) load) {{\n'.format(self.LOAD_GL_NAME))
         f.write('\tglGetString = cast(typeof(glGetString))load("glGetString");\n')
-        f.write('\tif(glGetString is null) { GLVersion glv; return glv; }\n\n')
-        f.write('\tGLVersion glv = find_core();\n')
+        f.write('\tif(glGetString is null) { return; }\n\n')
+        f.write('\tfind_core();\n')
         for feature in features:
             f.write('\tload_{}(load);\n'.format(feature.name))
-        f.write('\n\tfind_extensions(glv);\n')
+        f.write('\n\tfind_extensions();\n')
         for ext in extensions:
             if len(list(ext.functions)) == 0:
                 continue
             f.write('\tload_{}(load);\n'.format(ext.name))
-        f.write('\n\treturn glv;\n}\n\n')
+        f.write('\n\treturn;\n}\n\n')
 
         f.write('private:\n\n')
 
-        f.write('GLVersion find_core() {\n')
-        f.write('\tint major;\n')
-        f.write('\tint minor;\n')
+        f.write('void find_core() {\n')
         f.write('\tconst(char)* v = cast(const(char)*)glGetString(GL_VERSION);\n')
-        f.write('\tmajor = v[0] - \'0\';\n')
-        f.write('\tminor = v[2] - \'0\';\n')
+        f.write('\tint major = v[0] - \'0\';\n')
+        f.write('\tint minor = v[2] - \'0\';\n')
         for feature in features:
             f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
                 ' major > {num[0]};\n'.format(feature.name, num=feature.number))
-        f.write('\tGLVersion glv; glv.major = major; glv.minor = minor; return glv;\n')
+        f.write('\tGLVersion.major = major; GLVersion.minor = minor;\n')
+        f.write('\treturn;\n')
         f.write('}\n\n')
 
 
-        f.write('void find_extensions(GLVersion glv) {\n')
-        f.write('\tconst(char)* extensions = cast(const(char)*)glGetString(GL_EXTENSIONS);\n\n')
+        f.write('void find_extensions() {\n')
         for ext in extensions:
-            f.write('\t{0} = has_ext(glv, extensions, "{0}");\n'.format(ext.name))
+            f.write('\t{0} = has_ext("{0}");\n'.format(ext.name))
         f.write('}\n\n')
 
 
@@ -115,15 +113,13 @@ class BaseDGenerator(Generator):
 
             f.write('bool load_{}(void* function(const(char)* name) load) {{\n'
                 .format(ext.name))
-            f.write('\tif(!{0}) return {0};\n\n'.format(ext.name))
+            f.write('\tif(!{}) return false;\n'.format(ext.name))
             for func in ext.functions:
                 # even if they were in written we need to load it
                 f.write('\t{name} = cast(typeof({name}))load("{name}");\n'
                     .format(name=func.proto.name))
-            f.write('\treturn {};\n'.format(ext.name))
+            f.write('\treturn true;\n')
             f.write('}\n')
-
-            f.write('\n\n')
 
         self.write_gl()
 
