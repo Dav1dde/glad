@@ -1,7 +1,7 @@
 from glad.parse import Spec
 
 class OpenGLSpec(Spec):
-    URL = 'https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/gl.xml'
+    NAME = 'gl'
 
     def __init__(self, root):
         Spec.__init__(self, root)

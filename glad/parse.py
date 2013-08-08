@@ -9,9 +9,9 @@ from itertools import chain
 from collections import defaultdict, OrderedDict
 
 
-
 class Spec(object):
-    URL = None
+    API = 'https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/'
+    NAME = None
 
     def __init__(self, root):
         self.root = root
@@ -33,7 +33,7 @@ class Spec(object):
 
     @classmethod
     def from_svn(cls):
-        return cls.from_url(cls.URL)
+        return cls.from_url(cls.URL + cls.NAME + '.xml')
 
     @classmethod
     def fromstring(cls, string):
