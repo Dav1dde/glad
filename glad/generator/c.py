@@ -42,7 +42,7 @@ class CGenerator(Generator):
 
         with open(path, 'a') as f:
             for feature in features:
-                f.write('static void load_gl_{}(LOADER load) {{\n'
+                f.write('static void load_{}(LOADER load) {{\n'
                          .format(feature.name))
                 f.write('\tif(!{}) return;\n'.format(feature.name))
                 for func in feature.functions:
@@ -54,7 +54,7 @@ class CGenerator(Generator):
                 if len(list(ext.functions)) == 0:
                     continue
 
-                f.write('static int load_gl_{}(LOADER load) {{\n'
+                f.write('static int load_{}(LOADER load) {{\n'
                     .format(ext.name))
                 f.write('\tif(!{0}) return {0};\n\n'.format(ext.name))
                 for func in ext.functions:
@@ -94,12 +94,12 @@ class CGenerator(Generator):
             f.write('\tGLVersion glv = find_core();\n')
 
             for feature in features:
-                f.write('\tload_gl_{}(load);\n'.format(feature.name))
+                f.write('\tload_{}(load);\n'.format(feature.name))
             f.write('\n\tfind_extensions(glv);\n')
             for ext in extensions:
                 if len(list(ext.functions)) == 0:
                     continue
-                f.write('\tload_gl_{}(load);\n'.format(ext.name))
+                f.write('\tload_{}(load);\n'.format(ext.name))
             f.write('\n\treturn glv;\n}\n\n')
 
 

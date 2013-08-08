@@ -58,12 +58,12 @@ class BaseDGenerator(Generator):
             f.write('\tif(glGetString is null) { GLVersion glv; return glv; }\n\n')
             f.write('\tGLVersion glv = find_core();\n')
             for feature in features:
-                f.write('\tload_gl_{}(load);\n'.format(feature.name))
+                f.write('\tload_{}(load);\n'.format(feature.name))
             f.write('\n\tfind_extensions(glv);\n')
             for ext in extensions:
                 if len(list(ext.functions)) == 0:
                     continue
-                f.write('\tload_gl_{}(load);\n'.format(ext.name))
+                f.write('\tload_{}(load);\n'.format(ext.name))
             f.write('\n\treturn glv;\n}\n\n')
 
             f.write('private:\n\n')
@@ -89,7 +89,7 @@ class BaseDGenerator(Generator):
 
 
             for feature in features:
-                f.write('void load_gl_{}(void* function(const(char)* name) load) {{\n'
+                f.write('void load_{}(void* function(const(char)* name) load) {{\n'
                          .format(feature.name))
                 f.write('\tif(!{}) return;\n'.format(feature.name))
                 for func in feature.functions:
@@ -101,7 +101,7 @@ class BaseDGenerator(Generator):
                 if len(list(ext.functions)) == 0:
                     continue
 
-                f.write('bool load_gl_{}(void* function(const(char)* name) load) {{\n'
+                f.write('bool load_{}(void* function(const(char)* name) load) {{\n'
                     .format(ext.name))
                 f.write('\tif(!{0}) return {0};\n\n'.format(ext.name))
                 for func in ext.functions:
