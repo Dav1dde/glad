@@ -40,192 +40,207 @@ DTYPES = {
 }
 
 class BaseDGenerator(Generator):
+    def open(self):
+        self._f_loader = open(self.make_path(self.LOADER), 'w')
+        self._f_gl = open(self.make_path(self.GL), 'w')
+        self._f_types = open(self.make_path(self.TYPES), 'w')
+        self._f_enums = open(self.make_path(self.FUNCS), 'w')
+        self._f_funcs = open(self.make_path(self.ENUMS), 'w')
+        self._f_exts = open(self.make_path(self.EXT), 'w')
+
+    def close(self):
+        self._f_loader.close()
+        self._f_gl.close()
+        self._f_types.close()
+        self._f_enums.close()
+        self._f_funcs.close()
+        self._f_exts.close()
+
     def generate_loader(self, api, version, features, extensions):
-        path = self.make_path(self.LOADER)
+        f = self._f_loader
 
-        with open(path, 'w') as f:
-            self.write_module(f, self.LOADER)
+        self.write_module(f, self.LOADER)
+        self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES])
+        f.write('\n\n')
 
-            self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES])
+        f.write('struct GLVersion { int major; int minor; }\n')
+
+        self.loader.write(f)
+        self.loader.write_has_ext(f)
+
+        f.write('GLVersion {}(void* function(const(char)* name) load) {{\n'.format(self.LOAD_GL_NAME))
+        f.write('\tglGetString = cast(typeof(glGetString))load("glGetString");\n')
+        f.write('\tif(glGetString is null) { GLVersion glv; return glv; }\n\n')
+        f.write('\tGLVersion glv = find_core();\n')
+        for feature in features:
+            f.write('\tload_{}(load);\n'.format(feature.name))
+        f.write('\n\tfind_extensions(glv);\n')
+        for ext in extensions:
+            if len(list(ext.functions)) == 0:
+                continue
+            f.write('\tload_{}(load);\n'.format(ext.name))
+        f.write('\n\treturn glv;\n}\n\n')
+
+        f.write('private:\n\n')
+
+        f.write('GLVersion find_core() {\n')
+        f.write('\tint major;\n')
+        f.write('\tint minor;\n')
+        f.write('\tconst(char)* v = cast(const(char)*)glGetString(GL_VERSION);\n')
+        f.write('\tmajor = v[0] - \'0\';\n')
+        f.write('\tminor = v[2] - \'0\';\n')
+        for feature in features:
+            f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
+                ' major > {num[0]};\n'.format(feature.name, num=feature.number))
+        f.write('\tGLVersion glv; glv.major = major; glv.minor = minor; return glv;\n')
+        f.write('}\n\n')
+
+
+        f.write('void find_extensions(GLVersion glv) {\n')
+        f.write('\tconst(char)* extensions = cast(const(char)*)glGetString(GL_EXTENSIONS);\n\n')
+        for ext in extensions:
+            f.write('\t{0} = has_ext(glv, extensions, "{0}");\n'.format(ext.name))
+        f.write('}\n\n')
+
+
+        for feature in features:
+            f.write('void load_{}(void* function(const(char)* name) load) {{\n'
+                        .format(feature.name))
+            f.write('\tif(!{}) return;\n'.format(feature.name))
+            for func in feature.functions:
+                f.write('\t{name} = cast(typeof({name}))load("{name}");\n'
+                    .format(name=func.proto.name))
+            f.write('\treturn;\n}\n\n')
+
+        for ext in extensions:
+            if len(list(ext.functions)) == 0:
+                continue
+
+            f.write('bool load_{}(void* function(const(char)* name) load) {{\n'
+                .format(ext.name))
+            f.write('\tif(!{0}) return {0};\n\n'.format(ext.name))
+            for func in ext.functions:
+                # even if they were in written we need to load it
+                f.write('\t{name} = cast(typeof({name}))load("{name}");\n'
+                    .format(name=func.proto.name))
+            f.write('\treturn {};\n'.format(ext.name))
+            f.write('}\n')
+
             f.write('\n\n')
-
-            f.write('struct GLVersion { int major; int minor; }\n')
-
-            self.loader.write(f)
-            self.loader.write_has_ext(f)
-
-            f.write('GLVersion {}(void* function(const(char)* name) load) {{\n'.format(self.LOAD_GL_NAME))
-            f.write('\tglGetString = cast(typeof(glGetString))load("glGetString");\n')
-            f.write('\tif(glGetString is null) { GLVersion glv; return glv; }\n\n')
-            f.write('\tGLVersion glv = find_core();\n')
-            for feature in features:
-                f.write('\tload_{}(load);\n'.format(feature.name))
-            f.write('\n\tfind_extensions(glv);\n')
-            for ext in extensions:
-                if len(list(ext.functions)) == 0:
-                    continue
-                f.write('\tload_{}(load);\n'.format(ext.name))
-            f.write('\n\treturn glv;\n}\n\n')
-
-            f.write('private:\n\n')
-
-            f.write('GLVersion find_core() {\n')
-            f.write('\tint major;\n')
-            f.write('\tint minor;\n')
-            f.write('\tconst(char)* v = cast(const(char)*)glGetString(GL_VERSION);\n')
-            f.write('\tmajor = v[0] - \'0\';\n')
-            f.write('\tminor = v[2] - \'0\';\n')
-            for feature in features:
-                f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
-                    ' major > {num[0]};\n'.format(feature.name, num=feature.number))
-            f.write('\tGLVersion glv; glv.major = major; glv.minor = minor; return glv;\n')
-            f.write('}\n\n')
-
-
-            f.write('void find_extensions(GLVersion glv) {\n')
-            f.write('\tconst(char)* extensions = cast(const(char)*)glGetString(GL_EXTENSIONS);\n\n')
-            for ext in extensions:
-                f.write('\t{0} = has_ext(glv, extensions, "{0}");\n'.format(ext.name))
-            f.write('}\n\n')
-
-
-            for feature in features:
-                f.write('void load_{}(void* function(const(char)* name) load) {{\n'
-                         .format(feature.name))
-                f.write('\tif(!{}) return;\n'.format(feature.name))
-                for func in feature.functions:
-                    f.write('\t{name} = cast(typeof({name}))load("{name}");\n'
-                        .format(name=func.proto.name))
-                f.write('\treturn;\n}\n\n')
-
-            for ext in extensions:
-                if len(list(ext.functions)) == 0:
-                    continue
-
-                f.write('bool load_{}(void* function(const(char)* name) load) {{\n'
-                    .format(ext.name))
-                f.write('\tif(!{0}) return {0};\n\n'.format(ext.name))
-                for func in ext.functions:
-                    # even if they were in written we need to load it
-                    f.write('\t{name} = cast(typeof({name}))load("{name}");\n'
-                        .format(name=func.proto.name))
-                f.write('\treturn {};\n'.format(ext.name))
-                f.write('}\n')
-
-                f.write('\n\n')
 
         self.write_gl()
 
     def write_gl(self):
-        path = self.make_path(self.GL)
+        f = self._f_gl
 
-        with open(path, 'w') as f:
-            self.write_module(f, self.GL)
-            self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES], False)
+        self.write_module(f, self.GL)
+        self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES], False)
 
     def generate_types(self, api, version, types):
-        path = self.make_path(self.TYPES)
+        f = self._f_types
 
-        with open(path, 'w') as f:
-            self.write_module(f, self.TYPES)
+        self.write_module(f, self.TYPES)
 
-            for ogl, d in self.TYPE_DICT.items():
-                self.write_alias(f, ogl, d)
+        for ogl, d in self.TYPE_DICT.items():
+            self.write_alias(f, ogl, d)
 
-            self.write_opaque_struct(f, '__GLsync')
-            self.write_alias(f, 'GLsync', '__GLsync*')
-            self.write_opaque_struct(f, '_cl_context')
-            self.write_opaque_struct(f, '_cl_event')
-            self.write_extern(f)
-            self.write_alias(f, 'GLDEBUGPROC', 'void function(GLenum, GLenum, '
-                    'GLuint, GLenum, GLsizei, in GLchar*, GLvoid*)')
-            self.write_alias(f, 'GLDEBUGPROCARB', 'GLDEBUGPROC')
-            self.write_alias(f, 'GLDEBUGPROCKHR', 'GLDEBUGPROC')
-            self.write_alias(f, 'GLDEBUGPROCAMD', 'void function(GLuint, GLenum, '
-                    'GLenum, GLsizei, in GLchar*, GLvoid*)')
-            self.write_extern_end(f)
+        self.write_opaque_struct(f, '__GLsync')
+        self.write_alias(f, 'GLsync', '__GLsync*')
+        self.write_opaque_struct(f, '_cl_context')
+        self.write_opaque_struct(f, '_cl_event')
+        self.write_extern(f)
+        self.write_alias(f, 'GLDEBUGPROC', 'void function(GLenum, GLenum, '
+                'GLuint, GLenum, GLsizei, in GLchar*, GLvoid*)')
+        self.write_alias(f, 'GLDEBUGPROCARB', 'GLDEBUGPROC')
+        self.write_alias(f, 'GLDEBUGPROCKHR', 'GLDEBUGPROC')
+        self.write_alias(f, 'GLDEBUGPROCAMD', 'void function(GLuint, GLenum, '
+                'GLenum, GLsizei, in GLchar*, GLvoid*)')
+        self.write_extern_end(f)
 
     def generate_features(self, api, version, features):
-        fpath = self.make_path(self.FUNCS)
-        epath = self.make_path(self.ENUMS)
+        self.write_enums(features)
+        self.write_funcs(features)
 
-        with open(epath, 'w') as e:
-            self.write_module(e, self.ENUMS)
-            # SpecialNumbers
-            self.write_enum(e, 'GL_FALSE', '0', 'ubyte')
-            self.write_enum(e, 'GL_TRUE', '1', 'ubyte')
-            self.write_enum(e, 'GL_NO_ERROR', '0')
-            self.write_enum(e, 'GL_NONE', '0')
-            self.write_enum(e, 'GL_ZERO', '0')
-            self.write_enum(e, 'GL_ONE', '1')
-            self.write_enum(e, 'GL_INVALID_INDEX', '0xFFFFFFFF')
-            self.write_enum(e, 'GL_TIMEOUT_IGNORED', '0xFFFFFFFFFFFFFFFF', 'ulong')
-            self.write_enum(e, 'GL_TIMEOUT_IGNORED_APPLE', '0xFFFFFFFFFFFFFFFF', 'ulong')
+    def write_enums(self, features):
+        e = self._f_enums
 
-            written = set()
-            for feature in features:
-                for enum in feature.enums:
-                    if enum.group == 'SpecialNumbers':
-                        continue
-                    if not enum in written:
-                        self.write_enum(e, enum.name, enum.value)
-                    written.add(enum)
+        self.write_module(e, self.ENUMS)
+        # SpecialNumbers
+        self.write_enum(e, 'GL_FALSE', '0', 'ubyte')
+        self.write_enum(e, 'GL_TRUE', '1', 'ubyte')
+        self.write_enum(e, 'GL_NO_ERROR', '0')
+        self.write_enum(e, 'GL_NONE', '0')
+        self.write_enum(e, 'GL_ZERO', '0')
+        self.write_enum(e, 'GL_ONE', '1')
+        self.write_enum(e, 'GL_INVALID_INDEX', '0xFFFFFFFF')
+        self.write_enum(e, 'GL_TIMEOUT_IGNORED', '0xFFFFFFFFFFFFFFFF', 'ulong')
+        self.write_enum(e, 'GL_TIMEOUT_IGNORED_APPLE', '0xFFFFFFFFFFFFFFFF', 'ulong')
 
-        with open(fpath, 'w') as f:
-            self.write_module(f, self.FUNCS)
-            self.write_imports(f, [self.TYPES])
+        written = set()
+        for feature in features:
+            for enum in feature.enums:
+                if enum.group == 'SpecialNumbers':
+                    continue
+                if not enum in written:
+                    self.write_enum(e, enum.name, enum.value)
+                written.add(enum)
 
-            for feature in features:
-                self.write_boolean(f, feature.name)
+    def write_funcs(self, features):
+        f = self._f_funcs
 
-            write = set()
-            written = set()
-            self.write_prototype_pre(f)
-            for feature in features:
-                for func in feature.functions:
-                    if not func in written:
-                        self.write_function_prototype(f, func)
-                        write.add(func)
-                    written.add(func)
-            self.write_prototype_post(f)
+        self.write_module(f, self.FUNCS)
+        self.write_imports(f, [self.TYPES])
 
-            self.write_function_pre(f)
-            for func in write:
-                self.write_function(f, func)
-            self.write_function_post(f)
+        for feature in features:
+            self.write_boolean(f, feature.name)
+
+        write = set()
+        written = set()
+        self.write_prototype_pre(f)
+        for feature in features:
+            for func in feature.functions:
+                if not func in written:
+                    self.write_function_prototype(f, func)
+                    write.add(func)
+                written.add(func)
+        self.write_prototype_post(f)
+
+        self.write_function_pre(f)
+        for func in write:
+            self.write_function(f, func)
+        self.write_function_post(f)
 
     def generate_extensions(self, api, version, extensions, enums, functions):
-        path = self.make_path(self.EXT)
+        f = self._f_exts
 
-        with open(path, 'w') as f:
-            self.write_module(f, self.EXT)
-            self.write_imports(f, [self.TYPES, self.ENUMS, self.FUNCS])
+        self.write_module(f, self.EXT)
+        self.write_imports(f, [self.TYPES, self.ENUMS, self.FUNCS])
 
-            write = set()
-            written = set(enum.name for enum in enums) | \
-                      set(function.proto.name for function in functions)
-            for ext in extensions:
-                self.write_boolean(f, ext.name)
-                for enum in ext.enums:
-                    if not enum.name in written:
-                        self.write_enum(f, enum.name, enum.value)
-                    written.add(enum.name)
+        write = set()
+        written = set(enum.name for enum in enums) | \
+                    set(function.proto.name for function in functions)
+        for ext in extensions:
+            self.write_boolean(f, ext.name)
+            for enum in ext.enums:
+                if not enum.name in written:
+                    self.write_enum(f, enum.name, enum.value)
+                written.add(enum.name)
 
-                f.write('\n')
+            f.write('\n')
 
-            self.write_prototype_pre(f)
-            for ext in extensions:
-                for func in ext.functions:
-                    if not func.proto.name in written:
-                        self.write_function_prototype(f, func)
-                        write.add(func)
-                    written.add(func.proto.name)
-            self.write_prototype_post(f)
+        self.write_prototype_pre(f)
+        for ext in extensions:
+            for func in ext.functions:
+                if not func.proto.name in written:
+                    self.write_function_prototype(f, func)
+                    write.add(func)
+                written.add(func.proto.name)
+        self.write_prototype_post(f)
 
-            self.write_function_pre(f)
-            for func in write:
-                self.write_function(f, func)
-            self.write_function_post(f)
+        self.write_function_pre(f)
+        for func in write:
+            self.write_function(f, func)
+        self.write_function_post(f)
 
 
     def make_path(self, name):

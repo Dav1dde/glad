@@ -96,12 +96,12 @@ def main():
         return parser.error('API/Spec not yet supported')
 
     Generator = get_generator(ns.generator)
-    generator = Generator(ns.out, spec, loader)
 
-    try:
-        generator.generate(api, ns.version, ns.extensions)
-    except Exception, e:
-        parser.error(e.message)
+    with Generator(ns.out, spec, loader) as generator:
+        try:
+            generator.generate(api, ns.version, ns.extensions)
+        except Exception, e:
+            parser.error(e.message)
 
 
 if __name__ == '__main__':

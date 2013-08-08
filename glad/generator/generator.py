@@ -14,6 +14,13 @@ class Generator(object):
         if self.loader is None:
             self.loader = NullLoader
 
+    def __enter__(self):
+        self.open()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
     def generate(self, api, version=None, extensions=None):
         enforce(api in self.spec.features, "Unknown API", ValueError)
 
