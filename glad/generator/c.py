@@ -148,6 +148,7 @@ class CGenerator(Generator):
         with open(path, 'w') as f:
             f.write('#include <string.h>\n#include <GL/glad.h>\n\n')
             self.loader.write(f)
+            self.loader.write_has_ext(f)
 
             for func in write:
                 self.write_function(f, func)

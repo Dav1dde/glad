@@ -52,6 +52,7 @@ class BaseDGenerator(Generator):
             f.write('struct GLVersion { int major; int minor; }\n')
 
             self.loader.write(f)
+            self.loader.write_has_ext(f)
 
             f.write('GLVersion {}(void* function(const(char)* name) load) {{\n'.format(self.LOAD_GL_NAME))
             f.write('\tglGetString = cast(typeof(glGetString))load("glGetString");\n')

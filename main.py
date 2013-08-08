@@ -81,13 +81,6 @@ def main():
 
     ns = parser.parse_args()
 
-    loader = get_loader(ns.generator, ns.api)
-    if ns.no_loader:
-        loader = NullLoader
-
-    Generator = get_generator(ns.generator)
-    generator = Generator(ns.out, loader)
-
     spec = get_spec(ns.spec)
     if spec.NAME == 'gl':
         spec.profile = ns.profile
@@ -97,7 +90,16 @@ def main():
         api = spec.NAME
 
     try:
-        generator.generate(spec, api, ns.version, ns.extensions)
+        loader = get_loader(ns.generator, api)
+        loader.disabled = ns.no_loader
+    except KeyError:
+        return parser.error('API/Spec not yet supported')
+
+    Generator = get_generator(ns.generator)
+    generator = Generator(ns.out, spec, loader)
+
+    try:
+        generator.generate(api, ns.version, ns.extensions)
     except Exception, e:
         parser.error(e.message)
 

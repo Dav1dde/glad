@@ -1,3 +1,5 @@
+from glad.loader import BaseLoader
+
 _OPENGL_LOADER = '''
 #ifdef _WIN32
 #include <windows.h>
@@ -92,7 +94,9 @@ void* gladGetProcAddress(const char *namez) {
 GLVersion gladLoadGL(void) {
     return gladLoadGLLoader(&gladGetProcAddress);
 }
+'''
 
+_OPENGL_HAS_EXT = '''
 static int has_ext(GLVersion glv, const char *extensions, const char *ext) {
     if(glv.major < 3) {
         return extensions != NULL && ext != NULL && strstr(extensions, ext) != NULL;
@@ -111,8 +115,6 @@ static int has_ext(GLVersion glv, const char *extensions, const char *ext) {
 
     return 0;
 }
-
-
 '''
 
 _OPENGL_HEADER = '''
@@ -133,15 +135,15 @@ GLXGETPROCADDRESS gladglXGetProcAddress;
 '''
 
 
-class OpenGLCLoader(object):
-    LOADER = _OPENGL_LOADER
-    HEADER = _OPENGL_HEADER
+class OpenGLCLoader(BaseLoader):
+    def write(self, fobj):
+        if not self.disabled:
+            fobj.write(_OPENGL_LOADER)
 
-    @staticmethod
-    def write(fobj):
-        fobj.write(OpenGLCLoader.LOADER)
+    def write_has_ext(self, fobj):
+        fobj.write(_OPENGL_HAS_EXT)
 
-    @staticmethod
-    def write_header(fobj):
-        fobj.write(OpenGLCLoader.HEADER)
+    def write_header(self, fobj):
+        if not self.disabled:
+            fobj.write(_OPENGL_HEADER)
 

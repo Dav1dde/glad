@@ -1,3 +1,5 @@
+from glad.loader import BaseLoader
+
 _OPENGL_LOADER = '''
 version(Windows) {
     private import std.c.windows.windows;
@@ -93,7 +95,9 @@ void* gladGetProcAddress(const(char)* namez) {
 GLVersion gladLoadGL() {
     return gladLoadGL(&gladGetProcAddress);
 }
+'''
 
+_OPENGL_HAS_EXT = '''
 private extern(C) char* strstr(const(char)*, const(char)*);
 private extern(C) int strcmp(const(char)*, const(char)*);
 private bool has_ext(GLVersion glv, const(char)* extensions, const(char)* ext) {
@@ -114,10 +118,11 @@ private bool has_ext(GLVersion glv, const(char)* extensions, const(char)* ext) {
 }
 '''
 
-class OpenGLDLoader(object):
-    LOADER = _OPENGL_LOADER
+class OpenGLDLoader(BaseLoader):
+    def write(self, fobj):
+        if not self.disabled:
+            fobj.write(_OPENGL_LOADER)
 
-    @staticmethod
-    def write(fobj):
-        fobj.write(OpenGLDLoader.LOADER)
+    def write_has_ext(self, fobj):
+        fobj.write(_OPENGL_HAS_EXT)
 
