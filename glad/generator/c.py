@@ -146,7 +146,7 @@ class CGenerator(Generator):
                     written.add(func)
 
         with open(path, 'w') as f:
-            f.write('#include <string.h>\n#include <GL/glad.h>')
+            f.write('#include <string.h>\n#include <GL/glad.h>\n\n')
             self.loader.write(f)
 
             for func in write:
