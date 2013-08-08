@@ -273,12 +273,12 @@ class Feature(Extension):
     @property
     def enums(self):
         for enum in super(Feature, self).enums:
-            if not enum in self.spec.removed:
+            if not enum in getattr(self.spec, 'removed', []):
                 yield enum
     @property
     def functions(self):
         for func in super(Feature, self).functions:
-            if not func in self.spec.removed:
+            if not func in getattr(self.spec, 'removed', []):
                 yield func
 
     __repr__ = __str__

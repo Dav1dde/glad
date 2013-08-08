@@ -67,8 +67,7 @@ def main():
                         help='OpenGL profile (defaults to compatibility)')
     parser.add_argument('--out-path', dest='out', required=True,
                         help='Output path for loader')
-    parser.add_argument('--api', dest='api',
-                        default='gl', help='OpenGL API type (defaults to gl)')
+    parser.add_argument('--api', dest='api', help='API type')
     parser.add_argument('--version', dest='version', type=opengl_version,
                         default=None, help='OpenGL version (defaults to latest)')
     parser.add_argument('--generator', dest='generator', default='d',
@@ -93,8 +92,12 @@ def main():
     if spec.NAME == 'gl':
         spec.profile = ns.profile
 
+    api = ns.api
+    if api is None:
+        api = spec.NAME
+
     try:
-        generator.generate(spec, ns.api, ns.version, ns.extensions)
+        generator.generate(spec, api, ns.version, ns.extensions)
     except Exception, e:
         parser.error(e.message)
 
