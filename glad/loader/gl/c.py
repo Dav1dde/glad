@@ -120,6 +120,29 @@ static int has_ext(const char *ext) {
 '''
 
 _OPENGL_HEADER = '''
+#ifndef __glad_h_
+
+#ifdef __gl_h_
+#error OpenGL header already included, remove this include, glad already provides it
+#endif
+
+#define __glad_h_
+#define __gl_h_
+
+struct {
+    int major;
+    int minor;
+} GLVersion;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef void* (* LOADER)(const char *name);
+void gladLoadGLLoader(LOADER);
+'''
+
+_OPENGL_HEADER_LOADER = '''
 int gladInit(void);
 void* gladGetProcAddress(const char *namez);
 void gladLoadGL(void);
@@ -151,6 +174,9 @@ class OpenGLCLoader(BaseLoader):
         fobj.write(_OPENGL_HAS_EXT)
 
     def write_header(self, fobj):
+        fobj.write(_OPENGL_HEADER)
         if not self.disabled:
-            fobj.write(_OPENGL_HEADER)
+            fobj.write(_OPENGL_HEADER_LOADER)
 
+    def write_header_end(self, fobj):
+        fobj.write(_OPENGL_HEADER_END)

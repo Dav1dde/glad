@@ -6,6 +6,9 @@ _EGL_LOADER = '''
 _EGL_HEADER = '''
 '''
 
+_EGL_HEADER_LOADER = '''
+'''
+
 _EGL_HAS_EXT = '''
 '''
 
@@ -25,6 +28,10 @@ class EGLCLoader(BaseLoader):
         fobj.write(_EGL_HAS_EXT)
 
     def write_header(self, fobj):
+        fobj.write(_EGL_HEADER)
         if not self.disabled:
-            fobj.write(_EGL_HEADER)
+            fobj.write(_EGL_HEADER_LOADER)
+
+    def write_header_end(self, fobj):
+        pass
 
