@@ -42,10 +42,10 @@ DTYPES = {
 class BaseDGenerator(Generator):
     def open(self):
         self._f_loader = open(self.make_path(self.LOADER), 'w')
-        self._f_gl = open(self.make_path(self.GL), 'w')
+        self._f_gl = open(self.make_path(self.PACKAGE), 'w')
         self._f_types = open(self.make_path(self.TYPES), 'w')
-        self._f_enums = open(self.make_path(self.FUNCS), 'w')
-        self._f_funcs = open(self.make_path(self.ENUMS), 'w')
+        self._f_enums = open(self.make_path(self.ENUMS), 'w')
+        self._f_funcs = open(self.make_path(self.FUNCS), 'w')
         self._f_exts = open(self.make_path(self.EXT), 'w')
 
     def close(self):
@@ -55,6 +55,10 @@ class BaseDGenerator(Generator):
         self._f_enums.close()
         self._f_funcs.close()
         self._f_exts.close()
+
+    @property
+    def PACKAGE(self):
+        return self.api
 
     def generate_loader(self, features, extensions):
         f = self._f_loader
@@ -80,7 +84,7 @@ class BaseDGenerator(Generator):
         f.write('private:\n\n')
 
         f.write('void find_core() {\n')
-        self.loader.write_find_core()
+        self.loader.write_find_core(f)
         for feature in features:
             f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
                 ' major > {num[0]};\n'.format(feature.name, num=feature.number))
@@ -117,12 +121,12 @@ class BaseDGenerator(Generator):
             f.write('\treturn true;\n')
             f.write('}\n')
 
-        self.write_gl()
+        self.write_package()
 
-    def write_gl(self):
+    def write_package(self):
         f = self._f_gl
 
-        self.write_module(f, self.GL)
+        self.write_module(f, self.PACKAGE)
         self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES], False)
 
     def generate_types(self, types):
@@ -221,7 +225,7 @@ class BaseDGenerator(Generator):
 
     def make_path(self, name):
         path = os.path.join(self.path, self.MODULE.split('.')[-1],
-                            name + self.FILE_EXTENSION)
+                            self.api, name + self.FILE_EXTENSION)
         makefiledir(path)
         return path
 
@@ -277,23 +281,14 @@ class BaseDGenerator(Generator):
 class DGenerator(BaseDGenerator):
     MODULE = 'glad'
     LOADER = 'loader'
-    GL = 'gl'
-    ENUMS = 'glenums'
-    EXT = 'glext'
-    FUNCS = 'glfuncs'
-    TYPES = 'gltypes'
+    ENUMS = 'enums'
+    EXT = 'ext'
+    FUNCS = 'funcs'
+    TYPES = 'types'
     FILE_EXTENSION = '.d'
     TYPE_DICT = DTYPES
 
     LOAD_GL_NAME = 'gladLoadGL'
-
-
-    def make_path(self, name):
-        path = os.path.join(self.path, self.MODULE.split('.')[-1],
-                            name + self.FILE_EXTENSION)
-        makefiledir(path)
-        return path
-
 
     def write_imports(self, fobj, modules, private=True):
         for mod in modules:
@@ -302,7 +297,7 @@ class DGenerator(BaseDGenerator):
             else:
                 fobj.write('public ')
 
-            fobj.write('import {}.{};\n'.format(self.MODULE, mod))
+            fobj.write('import {}.{}.{};\n'.format(self.MODULE, self.api, mod))
 
     def write_module(self, fobj, name):
         fobj.write('module {}.{};\n\n\n'.format(self.MODULE, name))

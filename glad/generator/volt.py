@@ -5,7 +5,6 @@ import os.path
 class VoltGenerator(DGenerator):
     MODULE = 'amp.gl'
     LOADER = 'loader'
-    GL = 'package'
     ENUMS = 'enums'
     EXT = 'ext'
     FUNCS = 'funcs'
@@ -14,6 +13,10 @@ class VoltGenerator(DGenerator):
     API = ''
 
     LOAD_GL_NAME = 'loadGL'
+
+    @property
+    def PACKAGE(self):
+        return 'package'
 
     def write_module(self, fobj, name):
         if name == 'package':

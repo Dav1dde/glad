@@ -5,8 +5,15 @@ import os.path
 
 class CGenerator(Generator):
     def open(self):
-        self._f_c = open(make_path(self.path, 'glad.c'), 'w')
-        self._f_h = open(make_path(self.path, 'glad.h'), 'w')
+        suffix = ''
+        if not self.api == 'gl':
+            suffix = '_{}'.format(self.api)
+
+        self.h_include = '<glad/glad{}.h>'.format(suffix)
+        self._f_c = open(make_path(self.path, 'src',
+                                   'glad{}.c'.format(suffix)), 'w')
+        self._f_h = open(make_path(self.path, 'include',
+                                   'glad', 'glad{}.h'.format(suffix)), 'w')
         return self
 
     def close(self):
@@ -99,7 +106,7 @@ class CGenerator(Generator):
                 written.add(func)
 
         f = self._f_c
-        f.write('#include <string.h>\n#include <GL/glad.h>\n\n')
+        f.write('#include <string.h>\n#include {}\n'.format(self.h_include))
         self.loader.write(f)
         self.loader.write_has_ext(f)
 
@@ -142,7 +149,7 @@ class CGenerator(Generator):
         fobj.write('fp_{0} glad{0};\n'.format(func.proto.name))
 
 
-def make_path(path, name):
-    path = os.path.join(path, name)
+def make_path(path, *args):
+    path = os.path.join(path, *args)
     makefiledir(path)
     return path
