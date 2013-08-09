@@ -56,7 +56,7 @@ class BaseDGenerator(Generator):
         self._f_funcs.close()
         self._f_exts.close()
 
-    def generate_loader(self, api, version, features, extensions):
+    def generate_loader(self, features, extensions):
         f = self._f_loader
 
         self.write_module(f, self.LOADER)
@@ -66,8 +66,7 @@ class BaseDGenerator(Generator):
         self.loader.write_has_ext(f)
 
         f.write('void {}(void* function(const(char)* name) load) {{\n'.format(self.LOAD_GL_NAME))
-        f.write('\tglGetString = cast(typeof(glGetString))load("glGetString");\n')
-        f.write('\tif(glGetString is null) { return; }\n\n')
+        self.loader.write_begin_load(f)
         f.write('\tfind_core();\n')
         for feature in features:
             f.write('\tload_{}(load);\n'.format(feature.name))
@@ -81,13 +80,10 @@ class BaseDGenerator(Generator):
         f.write('private:\n\n')
 
         f.write('void find_core() {\n')
-        f.write('\tconst(char)* v = cast(const(char)*)glGetString(GL_VERSION);\n')
-        f.write('\tint major = v[0] - \'0\';\n')
-        f.write('\tint minor = v[2] - \'0\';\n')
+        self.loader.write_find_core()
         for feature in features:
             f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
                 ' major > {num[0]};\n'.format(feature.name, num=feature.number))
-        f.write('\tGLVersion.major = major; GLVersion.minor = minor;\n')
         f.write('\treturn;\n')
         f.write('}\n\n')
 
@@ -129,7 +125,7 @@ class BaseDGenerator(Generator):
         self.write_module(f, self.GL)
         self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES], False)
 
-    def generate_types(self, api, version, types):
+    def generate_types(self, types):
         f = self._f_types
 
         self.write_module(f, self.TYPES)
@@ -150,7 +146,7 @@ class BaseDGenerator(Generator):
                 'GLenum, GLsizei, in GLchar*, GLvoid*)')
         self.write_extern_end(f)
 
-    def generate_features(self, api, version, features):
+    def generate_features(self, features):
         self.write_enums(features)
         self.write_funcs(features)
 
@@ -189,7 +185,7 @@ class BaseDGenerator(Generator):
 
         self.write_functions(f, set(), set(), features)
 
-    def generate_extensions(self, api, version, extensions, enums, functions):
+    def generate_extensions(self, extensions, enums, functions):
         f = self._f_exts
 
         self.write_module(f, self.EXT)

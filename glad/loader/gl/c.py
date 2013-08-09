@@ -142,6 +142,11 @@ class OpenGLCLoader(BaseLoader):
         if not self.disabled:
             fobj.write(_OPENGL_LOADER)
 
+    def write_begin_load(self, fobj):
+        fobj.write('\tGLVersion.major = 0; GLVersion.minor = 0;\n')
+        fobj.write('\tglGetString = (fp_glGetString)load("glGetString");\n')
+        fobj.write('\tif(glGetString == NULL) return;\n')
+
     def write_has_ext(self, fobj):
         fobj.write(_OPENGL_HAS_EXT)
 

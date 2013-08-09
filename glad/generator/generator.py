@@ -6,10 +6,12 @@ from glad.loader import NullLoader
 
 
 class Generator(object):
-    def __init__(self, path, spec, loader):
+    def __init__(self, path, spec, api, loader):
         self.path = os.path.abspath(path)
 
         self.spec = spec
+        self.api = api
+        enforce(self.api in self.spec.features, 'Unknown API', ValueError)
         self.loader = loader
         if self.loader is None:
             self.loader = NullLoader
@@ -21,41 +23,40 @@ class Generator(object):
     def __exit__(self, exc_type, exc_value, traceback):
         self.close()
 
-    def generate(self, api, version=None, extensions=None):
-        enforce(api in self.spec.features, "Unknown API", ValueError)
-
+    def generate(self, version=None, extensions=None):
         if version is None:
-            version = self.spec.features[api].keys()[-1]
-        enforce(version in self.spec.features[api], "Unknown version", ValueError)
+            version = self.spec.features[self.api].keys()[-1]
+        enforce(version in self.spec.features[self.api],
+                'Unknown version', ValueError)
 
         if extensions is None:
-            extensions = self.spec.extensions[api]
-        enforce(all(ext in self.spec.extensions[api] for ext in extensions),
+            extensions = self.spec.extensions[self.api]
+        enforce(all(ext in self.spec.extensions[self.api] for ext in extensions),
                 "Invalid extension", ValueError)
 
-        types = [t for t in self.spec.types if t.api == api]
-        self.generate_types(api, version, types)
+        types = [t for t in self.spec.types if t.api == self.api]
+        self.generate_types(types)
 
-        f = [value for key, value in self.spec.features[api].items()
+        f = [value for key, value in self.spec.features[self.api].items()
              if key <= version]
         enums, functions = merge(f)
-        self.generate_features(api, version, f)
+        self.generate_features(f)
 
-        extensions = [self.spec.extensions[api][ext] for ext in extensions]
-        self.generate_extensions(api, version, extensions, enums, functions)
+        extensions = [self.spec.extensions[self.api][ext] for ext in extensions]
+        self.generate_extensions(extensions, enums, functions)
 
-        self.generate_loader(api, version, f, extensions)
+        self.generate_loader(f, extensions)
 
-    def generate_loader(self, api, version, features, extensions):
+    def generate_loader(self, features, extensions):
         raise NotImplementedError
 
-    def generate_types(self, api, version, types):
+    def generate_types(self, types):
         raise NotImplementedError
 
-    def generate_features(self, api, version, features):
+    def generate_features(self, features):
         raise NotImplementedError
 
-    def generate_extensions(self, api, version, extensions, enums, functions):
+    def generate_extensions(self, extensions, enums, functions):
         raise NotImplementedError
 
 

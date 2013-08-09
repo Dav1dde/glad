@@ -1,4 +1,4 @@
-from glad.loader.d import OpenGLDLoader
+from glad.loader.gl import OpenGLDLoader
 
 class OpenGLVoltLoader(OpenGLDLoader):
     def write(self, fobj):

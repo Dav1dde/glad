@@ -3,9 +3,8 @@ class BaseLoader(object):
         self.disabled = disabled
 
 
-from glad.loader.d import OpenGLDLoader
-from glad.loader.c import OpenGLCLoader
-from glad.loader.volt import OpenGLVoltLoader
+from glad.loader.gl import OpenGLCLoader, OpenGLDLoader, OpenGLVoltLoader
+from glad.loader.egl import EGLCLoader, EGLDLoader, EGLVoltLoader
 
 class NullLoader(BaseLoader):
     def __getattr__(self, name):
@@ -23,6 +22,11 @@ LOADER = {
         'c' : OpenGLCLoader,
         'd' : OpenGLDLoader,
         'volt' : OpenGLVoltLoader
+    },
+    'egl' : {
+        'c' : EGLCLoader,
+        'd' : EGLDLoader,
+        'volt' : EGLVoltLoader
     }
 }
 

@@ -46,7 +46,7 @@ class CGenerator(Generator):
         self._f_c.close()
         self._f_h.close()
 
-    def generate_loader(self, api, version, features, extensions):
+    def generate_loader(self, features, extensions):
         f = self._f_c
 
         for feature in features:
@@ -78,21 +78,15 @@ class CGenerator(Generator):
         f.write('}\n\n')
 
         f.write('static void find_core(void) {\n')
-
-
-        f.write('\tconst char* v = (const char*)glGetString(GL_VERSION);\n')
-        f.write('\tint major = v[0] - \'0\';\n')
-        f.write('\tint minor = v[2] - \'0\';\n')
+        self.loader.write_find_core(f)
         for feature in features:
             f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
                 ' major > {num[0]};\n'.format(feature.name, num=feature.number))
-        f.write('\tGLVersion.major = major; GLVersion.minor = minor;\n\treturn;\n')
         f.write('}\n\n')
 
         f.write('void gladLoadGLLoader(LOADER load) {\n')
-        f.write('\tGLVersion.major = 0; GLVersion.minor = 0;\n')
-        f.write('\tglGetString = (fp_glGetString)load("glGetString");\n')
-        f.write('\tif(glGetString == NULL) return;\n')
+
+        self.loader.write_begin_load(f)
         f.write('\tfind_core();\n')
 
         for feature in features:
@@ -106,20 +100,20 @@ class CGenerator(Generator):
 
         self._f_h.write(_HEADER_END)
 
-    def generate_types(self, api, version, types):
+    def generate_types(self, types):
         f = self._f_h
 
         f.write(_HEADER)
         self.loader.write_header(f)
 
         for type in types:
-            if api == 'gl' and 'khrplatform' in type.raw:
+            if self.api == 'gl' and 'khrplatform' in type.raw:
                 continue
 
             f.write(type.raw.lstrip().replace('        ', ''))
             f.write('\n')
 
-    def generate_features(self, api, version, features):
+    def generate_features(self, features):
         written = set()
         write = set()
 
@@ -147,7 +141,7 @@ class CGenerator(Generator):
             self.write_function(f, func)
 
 
-    def generate_extensions(self, api, version, extensions, enums, functions):
+    def generate_extensions(self, extensions, enums, functions):
         write = set()
         written = set(enum.name for enum in enums) | \
                     set(function.proto.name for function in functions)
