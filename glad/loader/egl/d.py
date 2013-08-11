@@ -1,9 +1,19 @@
 from glad.loader import BaseLoader
 
 _EGL_LOADER = '''
+void gladLoadEGL() {
+    static void* fun(const(char)* x) {
+        return eglGetProcAddress(x);
+    }
+
+    gladLoadEGL(&fun);
+}
 '''
 
 _EGL_HAS_EXT = '''
+private bool has_ext(const(char)* ext) {
+    return true;
+}
 '''
 
 class EGLDLoader(BaseLoader):
@@ -15,10 +25,7 @@ class EGLDLoader(BaseLoader):
         pass
 
     def write_find_core(self, fobj):
-        fobj.write('\tconst char* v = (const char*)glGetString(GL_VERSION);\n')
-        fobj.write('\tint major = v[0] - \'0\';\n')
-        fobj.write('\tint minor = v[2] - \'0\';\n')
-        fobj.write('\tGLVersion.major = major; GLVersion.minor = minor;\n\treturn;\n')
+        pass
 
     def write_has_ext(self, fobj):
         fobj.write(_EGL_HAS_EXT)

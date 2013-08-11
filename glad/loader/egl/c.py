@@ -1,15 +1,42 @@
 from glad.loader import BaseLoader
 
 _EGL_LOADER = '''
+void gladLoadEGL(void) {
+    gladLoadEGL(&eglGetProcAddress);
+}
 '''
 
 _EGL_HEADER = '''
+#ifndef __glad_egl_h_
+
+#ifdef __egl_h_
+#error EGL header already included, remove this include, glad already provides it
+#endif
+
+#define __glad_egl_h_
+#define __egl_h_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 '''
 
 _EGL_HEADER_LOADER = '''
+void gladLoadEGL(void);
+'''
+
+_EGL_HEADER_END = '''
+#ifdef __cplusplus
+}
+#endif
+
+#endif
 '''
 
 _EGL_HAS_EXT = '''
+static int has_ext(const char *ext) {
+    return 1;
+}
 '''
 
 
@@ -33,5 +60,5 @@ class EGLCLoader(BaseLoader):
             fobj.write(_EGL_HEADER_LOADER)
 
     def write_header_end(self, fobj):
-        pass
+        fobj.write(_EGL_HEADER_END)
 

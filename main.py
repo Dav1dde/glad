@@ -98,10 +98,10 @@ def main():
     Generator = get_generator(ns.generator)
 
     with Generator(ns.out, spec, api, loader) as generator:
-        try:
-            generator.generate(ns.version, ns.extensions)
-        except Exception, e:
-            parser.error(e.message)
+        #try:
+        generator.generate(ns.version, ns.extensions)
+        #except Exception, e:
+            #parser.error(e.message)
 
 
 if __name__ == '__main__':

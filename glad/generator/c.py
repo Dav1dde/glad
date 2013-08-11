@@ -23,6 +23,9 @@ class CGenerator(Generator):
     def generate_loader(self, features, extensions):
         f = self._f_c
 
+        if self.api == 'egl':
+            features = []
+
         for feature in features:
             f.write('static void load_{}(LOADER load) {{\n'
                     .format(feature.name))
@@ -58,7 +61,7 @@ class CGenerator(Generator):
                 ' major > {num[0]};\n'.format(feature.name, num=feature.number))
         f.write('}\n\n')
 
-        f.write('void gladLoadGLLoader(LOADER load) {\n')
+        f.write('void gladLoad{}Loader(LOADER load) {{\n'.format(self.api.upper()))
 
         self.loader.write_begin_load(f)
         f.write('\tfind_core();\n')
@@ -87,23 +90,14 @@ class CGenerator(Generator):
             f.write('\n')
 
     def generate_features(self, features):
-        written = set()
-        write = set()
-
         f = self._f_h
-        for feature in features:
-            for enum in feature.enums:
-                if not enum in written:
-                    f.write('#define {} {}\n'.format(enum.name, enum.value))
-                written.add(enum)
-
-        for feature in features:
-            f.write('int {};\n'.format(feature.name))
-            for func in feature.functions:
-                if not func in written:
-                    self.write_function_prototype(f, func)
-                    write.add(func)
-                written.add(func)
+        write = set()
+        if self.api == 'egl':
+            for feature in features:
+                for func in feature.functions:
+                    self.write_function_def(f, func)
+        else:
+            self.write_functions(f, write, set(), features)
 
         f = self._f_c
         f.write('#include <string.h>\n#include {}\n'.format(self.h_include))
@@ -113,30 +107,44 @@ class CGenerator(Generator):
         for func in write:
             self.write_function(f, func)
 
-
     def generate_extensions(self, extensions, enums, functions):
         write = set()
         written = set(enum.name for enum in enums) | \
                     set(function.proto.name for function in functions)
 
         f = self._f_h
-        for ext in extensions:
-            f.write('int {};\n'.format(ext.name))
-            for enum in ext.enums:
-                if not enum.name in written:
-                    f.write('#define {} {}\n'.format(enum.name, enum.value))
-                written.add(enum.name)
-
-            for func in ext.functions:
-                if not func.proto.name in written:
-                    self.write_function_prototype(f, func)
-                    write.add(func)
-                written.add(func.proto.name)
+        self.write_functions(f, write, written, extensions)
 
         f = self._f_c
         for func in write:
             self.write_function(f, func)
 
+    def write_functions(self, f, write, written, extensions):
+        for ext in extensions:
+            for enum in ext.enums:
+                if not enum in written:
+                    f.write('#define {} {}\n'.format(enum.name, enum.value))
+                written.add(enum)
+
+        for ext in extensions:
+            f.write('int {} = {};\n'.format(ext.name,
+                    1 if self.api == 'egl' else 0))
+            for func in ext.functions:
+                if not func in written:
+                    self.write_function_prototype(f, func)
+                    write.add(func)
+                written.add(func)
+
+    def write_extern(self, fobj):
+        fobj.write('#ifdef __cplusplus\nextern "C" {\n#endif\n')
+
+    def write_extern_end(self, fobj):
+        fobj.write('#ifdef __cplusplus\n}\n#endif\n')
+
+    def write_function_def(self, fobj, func):
+        fobj.write('{} {}('.format(func.proto.ret.to_c(), func.proto.name))
+        fobj.write(', '.join(param.type.to_c() for param in func.params))
+        fobj.write(');\n')
 
     def write_function_prototype(self, fobj, func):
         fobj.write('typedef {} (* fp_{})({});\n'.format(func.proto.ret.to_c(),

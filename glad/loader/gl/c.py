@@ -159,6 +159,14 @@ GLXGETPROCADDRESS gladglXGetProcAddress;
 #endif
 '''
 
+_OPENGL_HEADER_END = '''
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+'''
+
 
 class OpenGLCLoader(BaseLoader):
     def write(self, fobj):
@@ -169,6 +177,9 @@ class OpenGLCLoader(BaseLoader):
         fobj.write('\tGLVersion.major = 0; GLVersion.minor = 0;\n')
         fobj.write('\tglGetString = (fp_glGetString)load("glGetString");\n')
         fobj.write('\tif(glGetString == NULL) return;\n')
+
+    def write_find_core(self, fobj):
+        pass
 
     def write_has_ext(self, fobj):
         fobj.write(_OPENGL_HAS_EXT)

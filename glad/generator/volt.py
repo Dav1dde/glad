@@ -12,7 +12,7 @@ class VoltGenerator(DGenerator):
     FILE_EXTENSION = '.volt'
     API = ''
 
-    LOAD_GL_NAME = 'loadGL'
+    LOAD_GL_NAME = 'load'
 
     @property
     def PACKAGE(self):
