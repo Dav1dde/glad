@@ -34,7 +34,7 @@ class Generator(object):
         enforce(all(ext in self.spec.extensions[self.api] for ext in extensions),
                 "Invalid extension", ValueError)
 
-        types = [t for t in self.spec.types if t.api == self.api or self.api == 'egl']
+        types = [t for t in self.spec.types if t.api in (None, self.api)]
         self.generate_types(types)
 
         f = [value for key, value in self.spec.features[self.api].items()

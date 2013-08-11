@@ -121,7 +121,7 @@ class Spec(object):
 class Type(object):
     def __init__(self, element):
         self.raw = ''.join(element.itertext())
-        self.api = element.get('api', 'gl')
+        self.api = element.get('api')
         self.name = element.get('name')
 
     @property
