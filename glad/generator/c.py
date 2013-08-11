@@ -1,7 +1,10 @@
 from glad.generator import Generator
 from glad.generator.util import makefiledir
+from urllib import urlretrieve
 import os.path
+import os
 
+KHRPLATFORM = 'https://www.khronos.org/registry/egl/api/KHR/khrplatform.h'
 
 class CGenerator(Generator):
     def open(self):
@@ -14,6 +17,14 @@ class CGenerator(Generator):
                                    'glad{}.c'.format(suffix)), 'w')
         self._f_h = open(make_path(self.path, 'include',
                                    'glad', 'glad{}.h'.format(suffix)), 'w')
+
+        khr = os.path.join(self.path, 'include', 'KHR')
+        khrplatform = os.path.join(khr, 'khrplatform.h')
+        if not os.path.exists(khrplatform):
+            if not os.path.exists(khr):
+                os.makedirs(khr)
+            urlretrieve(KHRPLATFORM, khrplatform)
+
         return self
 
     def close(self):
