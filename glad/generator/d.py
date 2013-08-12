@@ -70,7 +70,9 @@ struct EGLClientPixmapHI {
 DTYPES = {
     '__other' : {
         'gl' : _gl_types,
-        'egl' : _egl_types
+        'egl' : _egl_types,
+        'glx' : lambda a,b: None,
+        'wgl' : lambda a,b: None
     },
 
     'gl' : { 'GLenum' : 'uint', 'GLvoid' : 'void', 'GLboolean' : 'ubyte',
@@ -94,6 +96,10 @@ DTYPES = {
               'EGLStreamKHR' : 'void*', 'EGLuint64KHR' : 'ulong',
               'EGLsizeiANDROID' : 'ptrdiff_t', 'EGLNativeFileDescriptorKHR' : 'int'
     },
+    'glx' : {
+    },
+    'wgl' : {
+    },
 
     'SpecialNumbers' : {
         'gl' : [('GL_FALSE', '0', 'ubyte'), ('GL_TRUE', '1', 'ubyte'),
@@ -116,7 +122,9 @@ DTYPES = {
                  ('EGL_NO_SYNC_NV', 'cast(EGLSyncNV)0', 'EGLSyncNV'),
                  ('EGL_DISPLAY_SCALING', '10000', 'uint'),
                  ('EGL_FOREVER_KHR', '0xFFFFFFFFFFFFFFFF', 'ulong'),
-                 ('EGL_FOREVER_NV', '0xFFFFFFFFFFFFFFFF', 'ulong')]
+                 ('EGL_FOREVER_NV', '0xFFFFFFFFFFFFFFFF', 'ulong')],
+        'glx' : [],
+        'wgl' : []
     }
 }
 

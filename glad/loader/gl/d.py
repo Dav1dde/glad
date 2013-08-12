@@ -1,91 +1,21 @@
 from glad.loader import BaseLoader
+from glad.loader.d import LOAD_OPENGL_DLL
 
-_OPENGL_LOADER = '''
-version(Windows) {
-    private import std.c.windows.windows;
-} else {
-    private import core.sys.posix.dlfcn;
-}
-
-version(Windows) {
-    private __gshared HMODULE libGL;
-    extern(System) private __gshared void* function(const(char)*) wglGetProcAddress;
-} else {
-    private __gshared void* libGL;
-    extern(System) private __gshared void* function(const(char)*) glXGetProcAddress;
-}
-
-bool gladInit() {
-    version(Windows) {
-        libGL = LoadLibraryA("opengl32.dll");
-        if(libGL !is null) {
-            wglGetProcAddress = cast(typeof(wglGetProcAddress))GetProcAddress(
-                libGL, "wglGetProcAddress");
-            return wglGetProcAddress !is null;
-        }
-
-        return false;
-    } else {
-        version(OSX) {
-            enum const(char)*[] NAMES = [
-                "../Frameworks/OpenGL.framework/OpenGL",
-                "/Library/Frameworks/OpenGL.framework/OpenGL",
-                "/System/Library/Frameworks/OpenGL.framework/OpenGL",
-                "/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL"
-            ];
-        } else {
-            enum const(char)*[] NAMES = ["libGL.so.1", "libGL.so"];
-        }
-
-        foreach(name; NAMES) {
-            libGL = dlopen(name, RTLD_NOW | RTLD_GLOBAL);
-            if(libGL !is null) {
-                version(OSX) {
-                    return true;
-                } else {
-                    glXGetProcAddress = cast(typeof(glXGetProcAddress))dlsym(libGL,
-                        "glXGetProcAddressARB");
-                    return glXGetProcAddress !is null;
-                }
-            }
-        }
-
-        return false;
-    }
-}
-
-void gladTerminate() {
-    version(Windows) {
-        if(libGL !is null) {
-            FreeLibrary(libGL);
-            libGL = null;
-        }
-    } else {
-        if(libGL !is null) {
-            dlclose(libGL);
-            libGL = null;
-        }
-    }
-}
-
+_OPENGL_LOADER = \
+LOAD_OPENGL_DLL % {'pre':'', 'init':'gladInit', 'terminate':'gladTerminate'} + '''
 void* gladGetProcAddress(const(char)* namez) {
     if(libGL is null) return null;
     void* result;
 
-    version(Windows) {
-        if(wglGetProcAddress is null) return null;
+    if(gladGetProcAddressPtr is null) return null;
 
-        result = wglGetProcAddress(namez);
-        if(result is null) {
+    version(OSX) {} else {
+        result = gladGetProcAddressPtr(namez);
+    }
+    if(result is null) {
+        version(Windows) {
             result = GetProcAddress(libGL, namez);
-        }
-    } else {
-        if(glXGetProcAddress is null) return null;
-
-        version(OSX) {} else {
-            result = glXGetProcAddress(namez);
-        }
-        if(result is null) {
+        } else {
             result = dlsym(libGL, namez);
         }
     }
