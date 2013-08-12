@@ -33,7 +33,7 @@ class Spec(object):
 
     @classmethod
     def from_svn(cls):
-        return cls.from_url(cls.URL + cls.NAME + '.xml')
+        return cls.from_url(cls.API + cls.NAME + '.xml')
 
     @classmethod
     def fromstring(cls, string):
