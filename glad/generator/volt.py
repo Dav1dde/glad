@@ -67,6 +67,9 @@ class VoltGenerator(DGenerator):
         except ValueError:
             pass
 
+        if '"' in value:
+            type = 'const(char)*'
+
         fobj.write('enum {} {} = {};\n'.format(type, name, value))
 
     def write_opaque_struct(self, fobj, name):
