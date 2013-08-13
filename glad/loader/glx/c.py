@@ -6,7 +6,7 @@ LOAD_OPENGL_DLL % {'pre':'static', 'init':'open_gl', 'terminate':'close_gl'} + '
 
 int gladLoadGLX(void) {
     if(open_gl()) {
-        gladLoadGLXLoader(&gladGetProcAddressPtr);
+        gladLoadGLXLoader((LOADER)gladGetProcAddressPtr);
         close_gl();
         return 1;
     }
@@ -16,6 +16,11 @@ int gladLoadGLX(void) {
 '''
 
 _GLX_HEADER = '''
+#include <X11/X.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <glad/glad.h>
+
 #ifndef __glad_glxext_h_
 
 #ifdef __glxext_h_

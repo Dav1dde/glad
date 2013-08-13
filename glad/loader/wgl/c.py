@@ -4,7 +4,9 @@ from glad.loader.glx.c import _GLX_LOADER, _GLX_HEADER, \
 
 
 _WGL_LOADER = _GLX_LOADER.replace('GLX', 'WGL')
-_WGL_HEADER = _GLX_HEADER.replace('glx', 'wgl').replace('GLX', 'WGL')
+_WGL_HEADER = '#include <windows.h>\n' + \
+'\n'.join(line for line in _GLX_HEADER.splitlines()
+        if not 'include' in line).replace('glx', 'wgl').replace('GLX', 'WGL')
 _WGL_HEADER_LOADER = _GLX_HEADER_LOADER.replace('GLX', 'WGL')
 _WGL_HEADER_END = _GLX_HEADER_END
 

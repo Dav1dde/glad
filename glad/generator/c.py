@@ -53,10 +53,13 @@ class CGenerator(Generator):
             f.write('static int load_{}(LOADER load) {{\n'
                 .format(ext.name))
             f.write('\tif(!{}) return 0;\n'.format(ext.name))
+            if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
+            if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
             for func in ext.functions:
                 # even if they were in written we need to load it
                 f.write('\t{name} = (fp_{name})load("{name}");\n'
                     .format(name=func.proto.name))
+            if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'): f.write('#endif\n')
             f.write('\treturn 1;\n')
             f.write('}\n')
 
@@ -127,8 +130,13 @@ class CGenerator(Generator):
         self.write_functions(f, write, written, extensions)
 
         f = self._f_c
-        for func in write:
-            self.write_function(f, func)
+        for ext in extensions:
+            if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
+            if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
+            for func in ext.functions:
+                if func in write:
+                    self.write_function(f, func)
+            if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'): f.write('#endif\n')
 
     def write_functions(self, f, write, written, extensions):
         for ext in extensions:
@@ -139,11 +147,14 @@ class CGenerator(Generator):
 
         for ext in extensions:
             f.write('int {};\n'.format(ext.name))
+            if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
+            if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
             for func in ext.functions:
                 if not func in written:
                     self.write_function_prototype(f, func)
                     write.add(func)
                 written.add(func)
+            if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'): f.write('#endif\n')
 
     def write_extern(self, fobj):
         fobj.write('#ifdef __cplusplus\nextern "C" {\n#endif\n')

@@ -3,3 +3,4 @@
 *.kdev4
 build/
 *.o
+*.kdev_include_paths

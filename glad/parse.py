@@ -190,11 +190,14 @@ class OGLType(object):
     def __init__(self, element):
         text = ''.join(element.itertext())
         self.type = (text.replace('const', '').replace('unsigned', '')
-                     .strip().split(None, 1)[0]
+                     .replace('struct', '').strip().split(None, 1)[0]
                 if element.find('ptype') is None else element.find('ptype').text)
         self.is_pointer = 0 if text is None else text.count('*')
         self.is_const = False if text is None else 'const' in text
         self.is_unsigned = False if text is None else 'unsigned' in text
+
+        if 'struct' in text:
+            self.type = 'struct {}'.format(self.type)
 
     def to_d(self):
 

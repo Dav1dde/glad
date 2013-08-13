@@ -2,7 +2,7 @@ from glad.loader import BaseLoader
 
 _EGL_LOADER = '''
 void gladLoadEGL(void) {
-    gladLoadEGL(&eglGetProcAddress);
+    gladLoadEGLLoader((LOADER)eglGetProcAddress);
 }
 '''
 
@@ -19,6 +19,9 @@ _EGL_HEADER = '''
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef void* (* LOADER)(const char *name);
+void gladLoadEGLLoader(LOADER);
 '''
 
 _EGL_HEADER_LOADER = '''
