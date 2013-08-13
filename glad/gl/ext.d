@@ -1,9 +1,9 @@
-module glad.glext;
+module glad.gl.ext;
 
 
-private import glad.gltypes;
-private import glad.glenums;
-private import glad.glfuncs;
+private import glad.gl.types;
+private import glad.gl.enums;
+private import glad.gl.funcs;
 bool GL_SGIX_pixel_tiles;
 enum uint GL_PIXEL_TILE_BEST_ALIGNMENT_SGIX = 0x813E;
 enum uint GL_PIXEL_TILE_CACHE_INCREMENT_SGIX = 0x813F;

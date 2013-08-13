@@ -1,4 +1,4 @@
-module glad.gltypes;
+module glad.gl.types;
 
 
 alias GLvoid = void;

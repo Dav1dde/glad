@@ -1,7 +1,7 @@
-module glad.glfuncs;
+module glad.gl.funcs;
 
 
-private import glad.gltypes;
+private import glad.gl.types;
 bool GL_VERSION_1_0;
 bool GL_VERSION_1_1;
 bool GL_VERSION_1_2;
