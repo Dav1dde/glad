@@ -1,14 +1,13 @@
 glad
 ====
 
-OpenGL Loader based on the official XML-Specs.
-Supporting OpenGL and with still experimental GLES support.
+OpenGL/EGL/GLX/WGL Loader-Generator based on the official specs.
 
 
 Advantages:
 
  * Always up to date
- * Supports every OpenGL extension
+ * Supports every Extension (GL/EGL/GLX/WGL)
  * Easy to maintain and extend (supporting multiple languages at once)
  * Allows you to use your own loader or e.g. SDL_GL_GetProcAddress instead of the builtin
  * Easy way to check if an extension is loaded `if(GL_EXT_Cg_shader) { /* Exists */ }`
