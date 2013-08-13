@@ -1,10 +1,10 @@
-module amp.gl.loader;
+module amp.gl.gl.loader;
 
 
-private import amp.gl.funcs;
-private import amp.gl.ext;
-private import amp.gl.enums;
-private import amp.gl.types;
+private import amp.gl.gl.funcs;
+private import amp.gl.gl.ext;
+private import amp.gl.gl.enums;
+private import amp.gl.gl.types;
 
 static struct GLVersion { static int major = 0; static int minor = 0; }
 private extern(C) char* strstr(const(char)*, const(char)*);
@@ -301,6 +301,7 @@ void find_core() {
 	const(char)* v = cast(const(char)*)glGetString(GL_VERSION);
 	int major = v[0] - '0';
 	int minor = v[2] - '0';
+	GLVersion.major = major; GLVersion.minor = minor;
 	GL_VERSION_1_0 = (major == 1 && minor >= 0) || major > 1;
 	GL_VERSION_1_1 = (major == 1 && minor >= 1) || major > 1;
 	GL_VERSION_1_2 = (major == 1 && minor >= 2) || major > 1;
@@ -318,7 +319,6 @@ void find_core() {
 	GL_VERSION_4_2 = (major == 4 && minor >= 2) || major > 4;
 	GL_VERSION_4_3 = (major == 4 && minor >= 3) || major > 4;
 	GL_VERSION_4_4 = (major == 4 && minor >= 4) || major > 4;
-	GLVersion.major = major; GLVersion.minor = minor;
 	return;
 }
 
@@ -793,6 +793,7 @@ void find_extensions() {
 	GL_SGIS_point_line_texgen = has_ext("GL_SGIS_point_line_texgen");
 	GL_EXT_draw_range_elements = has_ext("GL_EXT_draw_range_elements");
 	GL_SGIX_blend_alpha_minmax = has_ext("GL_SGIX_blend_alpha_minmax");
+	return;
 }
 
 void load_GL_VERSION_1_0(void* function(const(char)* name) load) {
@@ -1806,45 +1807,45 @@ void load_GL_VERSION_4_4(void* function(const(char)* name) load) {
 	return;
 }
 
-bool load_GL_NV_point_sprite(void* function(const(char)* name) load) {
-	if(!GL_NV_point_sprite) return false;
+void load_GL_NV_point_sprite(void* function(const(char)* name) load) {
+	if(!GL_NV_point_sprite) return;
 	glPointParameteriNV = cast(typeof(glPointParameteriNV))load("glPointParameteriNV");
 	glPointParameterivNV = cast(typeof(glPointParameterivNV))load("glPointParameterivNV");
-	return true;
+	return;
 }
-bool load_GL_APPLE_element_array(void* function(const(char)* name) load) {
-	if(!GL_APPLE_element_array) return false;
+void load_GL_APPLE_element_array(void* function(const(char)* name) load) {
+	if(!GL_APPLE_element_array) return;
 	glElementPointerAPPLE = cast(typeof(glElementPointerAPPLE))load("glElementPointerAPPLE");
 	glDrawElementArrayAPPLE = cast(typeof(glDrawElementArrayAPPLE))load("glDrawElementArrayAPPLE");
 	glDrawRangeElementArrayAPPLE = cast(typeof(glDrawRangeElementArrayAPPLE))load("glDrawRangeElementArrayAPPLE");
 	glMultiDrawElementArrayAPPLE = cast(typeof(glMultiDrawElementArrayAPPLE))load("glMultiDrawElementArrayAPPLE");
 	glMultiDrawRangeElementArrayAPPLE = cast(typeof(glMultiDrawRangeElementArrayAPPLE))load("glMultiDrawRangeElementArrayAPPLE");
-	return true;
+	return;
 }
-bool load_GL_AMD_multi_draw_indirect(void* function(const(char)* name) load) {
-	if(!GL_AMD_multi_draw_indirect) return false;
+void load_GL_AMD_multi_draw_indirect(void* function(const(char)* name) load) {
+	if(!GL_AMD_multi_draw_indirect) return;
 	glMultiDrawArraysIndirectAMD = cast(typeof(glMultiDrawArraysIndirectAMD))load("glMultiDrawArraysIndirectAMD");
 	glMultiDrawElementsIndirectAMD = cast(typeof(glMultiDrawElementsIndirectAMD))load("glMultiDrawElementsIndirectAMD");
-	return true;
+	return;
 }
-bool load_GL_SGIX_tag_sample_buffer(void* function(const(char)* name) load) {
-	if(!GL_SGIX_tag_sample_buffer) return false;
+void load_GL_SGIX_tag_sample_buffer(void* function(const(char)* name) load) {
+	if(!GL_SGIX_tag_sample_buffer) return;
 	glTagSampleBufferSGIX = cast(typeof(glTagSampleBufferSGIX))load("glTagSampleBufferSGIX");
-	return true;
+	return;
 }
-bool load_GL_ATI_separate_stencil(void* function(const(char)* name) load) {
-	if(!GL_ATI_separate_stencil) return false;
+void load_GL_ATI_separate_stencil(void* function(const(char)* name) load) {
+	if(!GL_ATI_separate_stencil) return;
 	glStencilOpSeparateATI = cast(typeof(glStencilOpSeparateATI))load("glStencilOpSeparateATI");
 	glStencilFuncSeparateATI = cast(typeof(glStencilFuncSeparateATI))load("glStencilFuncSeparateATI");
-	return true;
+	return;
 }
-bool load_GL_EXT_texture_buffer_object(void* function(const(char)* name) load) {
-	if(!GL_EXT_texture_buffer_object) return false;
+void load_GL_EXT_texture_buffer_object(void* function(const(char)* name) load) {
+	if(!GL_EXT_texture_buffer_object) return;
 	glTexBufferEXT = cast(typeof(glTexBufferEXT))load("glTexBufferEXT");
-	return true;
+	return;
 }
-bool load_GL_ARB_vertex_blend(void* function(const(char)* name) load) {
-	if(!GL_ARB_vertex_blend) return false;
+void load_GL_ARB_vertex_blend(void* function(const(char)* name) load) {
+	if(!GL_ARB_vertex_blend) return;
 	glWeightbvARB = cast(typeof(glWeightbvARB))load("glWeightbvARB");
 	glWeightsvARB = cast(typeof(glWeightsvARB))load("glWeightsvARB");
 	glWeightivARB = cast(typeof(glWeightivARB))load("glWeightivARB");
@@ -1855,25 +1856,25 @@ bool load_GL_ARB_vertex_blend(void* function(const(char)* name) load) {
 	glWeightuivARB = cast(typeof(glWeightuivARB))load("glWeightuivARB");
 	glWeightPointerARB = cast(typeof(glWeightPointerARB))load("glWeightPointerARB");
 	glVertexBlendARB = cast(typeof(glVertexBlendARB))load("glVertexBlendARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_program_interface_query(void* function(const(char)* name) load) {
-	if(!GL_ARB_program_interface_query) return false;
+void load_GL_ARB_program_interface_query(void* function(const(char)* name) load) {
+	if(!GL_ARB_program_interface_query) return;
 	glGetProgramInterfaceiv = cast(typeof(glGetProgramInterfaceiv))load("glGetProgramInterfaceiv");
 	glGetProgramResourceIndex = cast(typeof(glGetProgramResourceIndex))load("glGetProgramResourceIndex");
 	glGetProgramResourceName = cast(typeof(glGetProgramResourceName))load("glGetProgramResourceName");
 	glGetProgramResourceiv = cast(typeof(glGetProgramResourceiv))load("glGetProgramResourceiv");
 	glGetProgramResourceLocation = cast(typeof(glGetProgramResourceLocation))load("glGetProgramResourceLocation");
 	glGetProgramResourceLocationIndex = cast(typeof(glGetProgramResourceLocationIndex))load("glGetProgramResourceLocationIndex");
-	return true;
+	return;
 }
-bool load_GL_EXT_index_func(void* function(const(char)* name) load) {
-	if(!GL_EXT_index_func) return false;
+void load_GL_EXT_index_func(void* function(const(char)* name) load) {
+	if(!GL_EXT_index_func) return;
 	glIndexFuncEXT = cast(typeof(glIndexFuncEXT))load("glIndexFuncEXT");
-	return true;
+	return;
 }
-bool load_GL_NV_shader_buffer_load(void* function(const(char)* name) load) {
-	if(!GL_NV_shader_buffer_load) return false;
+void load_GL_NV_shader_buffer_load(void* function(const(char)* name) load) {
+	if(!GL_NV_shader_buffer_load) return;
 	glMakeBufferResidentNV = cast(typeof(glMakeBufferResidentNV))load("glMakeBufferResidentNV");
 	glMakeBufferNonResidentNV = cast(typeof(glMakeBufferNonResidentNV))load("glMakeBufferNonResidentNV");
 	glIsBufferResidentNV = cast(typeof(glIsBufferResidentNV))load("glIsBufferResidentNV");
@@ -1888,54 +1889,54 @@ bool load_GL_NV_shader_buffer_load(void* function(const(char)* name) load) {
 	glGetUniformui64vNV = cast(typeof(glGetUniformui64vNV))load("glGetUniformui64vNV");
 	glProgramUniformui64NV = cast(typeof(glProgramUniformui64NV))load("glProgramUniformui64NV");
 	glProgramUniformui64vNV = cast(typeof(glProgramUniformui64vNV))load("glProgramUniformui64vNV");
-	return true;
+	return;
 }
-bool load_GL_EXT_color_subtable(void* function(const(char)* name) load) {
-	if(!GL_EXT_color_subtable) return false;
+void load_GL_EXT_color_subtable(void* function(const(char)* name) load) {
+	if(!GL_EXT_color_subtable) return;
 	glColorSubTableEXT = cast(typeof(glColorSubTableEXT))load("glColorSubTableEXT");
 	glCopyColorSubTableEXT = cast(typeof(glCopyColorSubTableEXT))load("glCopyColorSubTableEXT");
-	return true;
+	return;
 }
-bool load_GL_SUNX_constant_data(void* function(const(char)* name) load) {
-	if(!GL_SUNX_constant_data) return false;
+void load_GL_SUNX_constant_data(void* function(const(char)* name) load) {
+	if(!GL_SUNX_constant_data) return;
 	glFinishTextureSUNX = cast(typeof(glFinishTextureSUNX))load("glFinishTextureSUNX");
-	return true;
+	return;
 }
-bool load_GL_EXT_multi_draw_arrays(void* function(const(char)* name) load) {
-	if(!GL_EXT_multi_draw_arrays) return false;
+void load_GL_EXT_multi_draw_arrays(void* function(const(char)* name) load) {
+	if(!GL_EXT_multi_draw_arrays) return;
 	glMultiDrawArraysEXT = cast(typeof(glMultiDrawArraysEXT))load("glMultiDrawArraysEXT");
 	glMultiDrawElementsEXT = cast(typeof(glMultiDrawElementsEXT))load("glMultiDrawElementsEXT");
-	return true;
+	return;
 }
-bool load_GL_ARB_shader_atomic_counters(void* function(const(char)* name) load) {
-	if(!GL_ARB_shader_atomic_counters) return false;
+void load_GL_ARB_shader_atomic_counters(void* function(const(char)* name) load) {
+	if(!GL_ARB_shader_atomic_counters) return;
 	glGetActiveAtomicCounterBufferiv = cast(typeof(glGetActiveAtomicCounterBufferiv))load("glGetActiveAtomicCounterBufferiv");
-	return true;
+	return;
 }
-bool load_GL_NV_conditional_render(void* function(const(char)* name) load) {
-	if(!GL_NV_conditional_render) return false;
+void load_GL_NV_conditional_render(void* function(const(char)* name) load) {
+	if(!GL_NV_conditional_render) return;
 	glBeginConditionalRenderNV = cast(typeof(glBeginConditionalRenderNV))load("glBeginConditionalRenderNV");
 	glEndConditionalRenderNV = cast(typeof(glEndConditionalRenderNV))load("glEndConditionalRenderNV");
-	return true;
+	return;
 }
-bool load_GL_MESA_resize_buffers(void* function(const(char)* name) load) {
-	if(!GL_MESA_resize_buffers) return false;
+void load_GL_MESA_resize_buffers(void* function(const(char)* name) load) {
+	if(!GL_MESA_resize_buffers) return;
 	glResizeBuffersMESA = cast(typeof(glResizeBuffersMESA))load("glResizeBuffersMESA");
-	return true;
+	return;
 }
-bool load_GL_ARB_texture_view(void* function(const(char)* name) load) {
-	if(!GL_ARB_texture_view) return false;
+void load_GL_ARB_texture_view(void* function(const(char)* name) load) {
+	if(!GL_ARB_texture_view) return;
 	glTextureView = cast(typeof(glTextureView))load("glTextureView");
-	return true;
+	return;
 }
-bool load_GL_ARB_map_buffer_range(void* function(const(char)* name) load) {
-	if(!GL_ARB_map_buffer_range) return false;
+void load_GL_ARB_map_buffer_range(void* function(const(char)* name) load) {
+	if(!GL_ARB_map_buffer_range) return;
 	glMapBufferRange = cast(typeof(glMapBufferRange))load("glMapBufferRange");
 	glFlushMappedBufferRange = cast(typeof(glFlushMappedBufferRange))load("glFlushMappedBufferRange");
-	return true;
+	return;
 }
-bool load_GL_EXT_convolution(void* function(const(char)* name) load) {
-	if(!GL_EXT_convolution) return false;
+void load_GL_EXT_convolution(void* function(const(char)* name) load) {
+	if(!GL_EXT_convolution) return;
 	glConvolutionFilter1DEXT = cast(typeof(glConvolutionFilter1DEXT))load("glConvolutionFilter1DEXT");
 	glConvolutionFilter2DEXT = cast(typeof(glConvolutionFilter2DEXT))load("glConvolutionFilter2DEXT");
 	glConvolutionParameterfEXT = cast(typeof(glConvolutionParameterfEXT))load("glConvolutionParameterfEXT");
@@ -1949,10 +1950,10 @@ bool load_GL_EXT_convolution(void* function(const(char)* name) load) {
 	glGetConvolutionParameterivEXT = cast(typeof(glGetConvolutionParameterivEXT))load("glGetConvolutionParameterivEXT");
 	glGetSeparableFilterEXT = cast(typeof(glGetSeparableFilterEXT))load("glGetSeparableFilterEXT");
 	glSeparableFilter2DEXT = cast(typeof(glSeparableFilter2DEXT))load("glSeparableFilter2DEXT");
-	return true;
+	return;
 }
-bool load_GL_NV_vertex_attrib_integer_64bit(void* function(const(char)* name) load) {
-	if(!GL_NV_vertex_attrib_integer_64bit) return false;
+void load_GL_NV_vertex_attrib_integer_64bit(void* function(const(char)* name) load) {
+	if(!GL_NV_vertex_attrib_integer_64bit) return;
 	glVertexAttribL1i64NV = cast(typeof(glVertexAttribL1i64NV))load("glVertexAttribL1i64NV");
 	glVertexAttribL2i64NV = cast(typeof(glVertexAttribL2i64NV))load("glVertexAttribL2i64NV");
 	glVertexAttribL3i64NV = cast(typeof(glVertexAttribL3i64NV))load("glVertexAttribL3i64NV");
@@ -1972,49 +1973,49 @@ bool load_GL_NV_vertex_attrib_integer_64bit(void* function(const(char)* name) lo
 	glGetVertexAttribLi64vNV = cast(typeof(glGetVertexAttribLi64vNV))load("glGetVertexAttribLi64vNV");
 	glGetVertexAttribLui64vNV = cast(typeof(glGetVertexAttribLui64vNV))load("glGetVertexAttribLui64vNV");
 	glVertexAttribLFormatNV = cast(typeof(glVertexAttribLFormatNV))load("glVertexAttribLFormatNV");
-	return true;
+	return;
 }
-bool load_GL_EXT_paletted_texture(void* function(const(char)* name) load) {
-	if(!GL_EXT_paletted_texture) return false;
+void load_GL_EXT_paletted_texture(void* function(const(char)* name) load) {
+	if(!GL_EXT_paletted_texture) return;
 	glColorTableEXT = cast(typeof(glColorTableEXT))load("glColorTableEXT");
 	glGetColorTableEXT = cast(typeof(glGetColorTableEXT))load("glGetColorTableEXT");
 	glGetColorTableParameterivEXT = cast(typeof(glGetColorTableParameterivEXT))load("glGetColorTableParameterivEXT");
 	glGetColorTableParameterfvEXT = cast(typeof(glGetColorTableParameterfvEXT))load("glGetColorTableParameterfvEXT");
-	return true;
+	return;
 }
-bool load_GL_ARB_texture_buffer_object(void* function(const(char)* name) load) {
-	if(!GL_ARB_texture_buffer_object) return false;
+void load_GL_ARB_texture_buffer_object(void* function(const(char)* name) load) {
+	if(!GL_ARB_texture_buffer_object) return;
 	glTexBufferARB = cast(typeof(glTexBufferARB))load("glTexBufferARB");
-	return true;
+	return;
 }
-bool load_GL_ATI_pn_triangles(void* function(const(char)* name) load) {
-	if(!GL_ATI_pn_triangles) return false;
+void load_GL_ATI_pn_triangles(void* function(const(char)* name) load) {
+	if(!GL_ATI_pn_triangles) return;
 	glPNTrianglesiATI = cast(typeof(glPNTrianglesiATI))load("glPNTrianglesiATI");
 	glPNTrianglesfATI = cast(typeof(glPNTrianglesfATI))load("glPNTrianglesfATI");
-	return true;
+	return;
 }
-bool load_GL_SGIX_flush_raster(void* function(const(char)* name) load) {
-	if(!GL_SGIX_flush_raster) return false;
+void load_GL_SGIX_flush_raster(void* function(const(char)* name) load) {
+	if(!GL_SGIX_flush_raster) return;
 	glFlushRasterSGIX = cast(typeof(glFlushRasterSGIX))load("glFlushRasterSGIX");
-	return true;
+	return;
 }
-bool load_GL_EXT_light_texture(void* function(const(char)* name) load) {
-	if(!GL_EXT_light_texture) return false;
+void load_GL_EXT_light_texture(void* function(const(char)* name) load) {
+	if(!GL_EXT_light_texture) return;
 	glApplyTextureEXT = cast(typeof(glApplyTextureEXT))load("glApplyTextureEXT");
 	glTextureLightEXT = cast(typeof(glTextureLightEXT))load("glTextureLightEXT");
 	glTextureMaterialEXT = cast(typeof(glTextureMaterialEXT))load("glTextureMaterialEXT");
-	return true;
+	return;
 }
-bool load_GL_AMD_draw_buffers_blend(void* function(const(char)* name) load) {
-	if(!GL_AMD_draw_buffers_blend) return false;
+void load_GL_AMD_draw_buffers_blend(void* function(const(char)* name) load) {
+	if(!GL_AMD_draw_buffers_blend) return;
 	glBlendFuncIndexedAMD = cast(typeof(glBlendFuncIndexedAMD))load("glBlendFuncIndexedAMD");
 	glBlendFuncSeparateIndexedAMD = cast(typeof(glBlendFuncSeparateIndexedAMD))load("glBlendFuncSeparateIndexedAMD");
 	glBlendEquationIndexedAMD = cast(typeof(glBlendEquationIndexedAMD))load("glBlendEquationIndexedAMD");
 	glBlendEquationSeparateIndexedAMD = cast(typeof(glBlendEquationSeparateIndexedAMD))load("glBlendEquationSeparateIndexedAMD");
-	return true;
+	return;
 }
-bool load_GL_MESA_window_pos(void* function(const(char)* name) load) {
-	if(!GL_MESA_window_pos) return false;
+void load_GL_MESA_window_pos(void* function(const(char)* name) load) {
+	if(!GL_MESA_window_pos) return;
 	glWindowPos2dMESA = cast(typeof(glWindowPos2dMESA))load("glWindowPos2dMESA");
 	glWindowPos2dvMESA = cast(typeof(glWindowPos2dvMESA))load("glWindowPos2dvMESA");
 	glWindowPos2fMESA = cast(typeof(glWindowPos2fMESA))load("glWindowPos2fMESA");
@@ -2039,15 +2040,15 @@ bool load_GL_MESA_window_pos(void* function(const(char)* name) load) {
 	glWindowPos4ivMESA = cast(typeof(glWindowPos4ivMESA))load("glWindowPos4ivMESA");
 	glWindowPos4sMESA = cast(typeof(glWindowPos4sMESA))load("glWindowPos4sMESA");
 	glWindowPos4svMESA = cast(typeof(glWindowPos4svMESA))load("glWindowPos4svMESA");
-	return true;
+	return;
 }
-bool load_GL_NV_texture_barrier(void* function(const(char)* name) load) {
-	if(!GL_NV_texture_barrier) return false;
+void load_GL_NV_texture_barrier(void* function(const(char)* name) load) {
+	if(!GL_NV_texture_barrier) return;
 	glTextureBarrierNV = cast(typeof(glTextureBarrierNV))load("glTextureBarrierNV");
-	return true;
+	return;
 }
-bool load_GL_ARB_vertex_type_2_10_10_10_rev(void* function(const(char)* name) load) {
-	if(!GL_ARB_vertex_type_2_10_10_10_rev) return false;
+void load_GL_ARB_vertex_type_2_10_10_10_rev(void* function(const(char)* name) load) {
+	if(!GL_ARB_vertex_type_2_10_10_10_rev) return;
 	glVertexAttribP1ui = cast(typeof(glVertexAttribP1ui))load("glVertexAttribP1ui");
 	glVertexAttribP1uiv = cast(typeof(glVertexAttribP1uiv))load("glVertexAttribP1uiv");
 	glVertexAttribP2ui = cast(typeof(glVertexAttribP2ui))load("glVertexAttribP2ui");
@@ -2086,26 +2087,26 @@ bool load_GL_ARB_vertex_type_2_10_10_10_rev(void* function(const(char)* name) lo
 	glColorP4uiv = cast(typeof(glColorP4uiv))load("glColorP4uiv");
 	glSecondaryColorP3ui = cast(typeof(glSecondaryColorP3ui))load("glSecondaryColorP3ui");
 	glSecondaryColorP3uiv = cast(typeof(glSecondaryColorP3uiv))load("glSecondaryColorP3uiv");
-	return true;
+	return;
 }
-bool load_GL_3DFX_tbuffer(void* function(const(char)* name) load) {
-	if(!GL_3DFX_tbuffer) return false;
+void load_GL_3DFX_tbuffer(void* function(const(char)* name) load) {
+	if(!GL_3DFX_tbuffer) return;
 	glTbufferMask3DFX = cast(typeof(glTbufferMask3DFX))load("glTbufferMask3DFX");
-	return true;
+	return;
 }
-bool load_GL_GREMEDY_frame_terminator(void* function(const(char)* name) load) {
-	if(!GL_GREMEDY_frame_terminator) return false;
+void load_GL_GREMEDY_frame_terminator(void* function(const(char)* name) load) {
+	if(!GL_GREMEDY_frame_terminator) return;
 	glFrameTerminatorGREMEDY = cast(typeof(glFrameTerminatorGREMEDY))load("glFrameTerminatorGREMEDY");
-	return true;
+	return;
 }
-bool load_GL_ARB_blend_func_extended(void* function(const(char)* name) load) {
-	if(!GL_ARB_blend_func_extended) return false;
+void load_GL_ARB_blend_func_extended(void* function(const(char)* name) load) {
+	if(!GL_ARB_blend_func_extended) return;
 	glBindFragDataLocationIndexed = cast(typeof(glBindFragDataLocationIndexed))load("glBindFragDataLocationIndexed");
 	glGetFragDataIndex = cast(typeof(glGetFragDataIndex))load("glGetFragDataIndex");
-	return true;
+	return;
 }
-bool load_GL_EXT_separate_shader_objects(void* function(const(char)* name) load) {
-	if(!GL_EXT_separate_shader_objects) return false;
+void load_GL_EXT_separate_shader_objects(void* function(const(char)* name) load) {
+	if(!GL_EXT_separate_shader_objects) return;
 	glUseShaderProgramEXT = cast(typeof(glUseShaderProgramEXT))load("glUseShaderProgramEXT");
 	glActiveProgramEXT = cast(typeof(glActiveProgramEXT))load("glActiveProgramEXT");
 	glCreateShaderProgramEXT = cast(typeof(glCreateShaderProgramEXT))load("glCreateShaderProgramEXT");
@@ -2139,20 +2140,20 @@ bool load_GL_EXT_separate_shader_objects(void* function(const(char)* name) load)
 	glProgramUniformMatrix4fvEXT = cast(typeof(glProgramUniformMatrix4fvEXT))load("glProgramUniformMatrix4fvEXT");
 	glUseProgramStagesEXT = cast(typeof(glUseProgramStagesEXT))load("glUseProgramStagesEXT");
 	glValidateProgramPipelineEXT = cast(typeof(glValidateProgramPipelineEXT))load("glValidateProgramPipelineEXT");
-	return true;
+	return;
 }
-bool load_GL_NV_texture_multisample(void* function(const(char)* name) load) {
-	if(!GL_NV_texture_multisample) return false;
+void load_GL_NV_texture_multisample(void* function(const(char)* name) load) {
+	if(!GL_NV_texture_multisample) return;
 	glTexImage2DMultisampleCoverageNV = cast(typeof(glTexImage2DMultisampleCoverageNV))load("glTexImage2DMultisampleCoverageNV");
 	glTexImage3DMultisampleCoverageNV = cast(typeof(glTexImage3DMultisampleCoverageNV))load("glTexImage3DMultisampleCoverageNV");
 	glTextureImage2DMultisampleNV = cast(typeof(glTextureImage2DMultisampleNV))load("glTextureImage2DMultisampleNV");
 	glTextureImage3DMultisampleNV = cast(typeof(glTextureImage3DMultisampleNV))load("glTextureImage3DMultisampleNV");
 	glTextureImage2DMultisampleCoverageNV = cast(typeof(glTextureImage2DMultisampleCoverageNV))load("glTextureImage2DMultisampleCoverageNV");
 	glTextureImage3DMultisampleCoverageNV = cast(typeof(glTextureImage3DMultisampleCoverageNV))load("glTextureImage3DMultisampleCoverageNV");
-	return true;
+	return;
 }
-bool load_GL_ARB_shader_objects(void* function(const(char)* name) load) {
-	if(!GL_ARB_shader_objects) return false;
+void load_GL_ARB_shader_objects(void* function(const(char)* name) load) {
+	if(!GL_ARB_shader_objects) return;
 	glDeleteObjectARB = cast(typeof(glDeleteObjectARB))load("glDeleteObjectARB");
 	glGetHandleARB = cast(typeof(glGetHandleARB))load("glGetHandleARB");
 	glDetachObjectARB = cast(typeof(glDetachObjectARB))load("glDetachObjectARB");
@@ -2192,10 +2193,10 @@ bool load_GL_ARB_shader_objects(void* function(const(char)* name) load) {
 	glGetUniformfvARB = cast(typeof(glGetUniformfvARB))load("glGetUniformfvARB");
 	glGetUniformivARB = cast(typeof(glGetUniformivARB))load("glGetUniformivARB");
 	glGetShaderSourceARB = cast(typeof(glGetShaderSourceARB))load("glGetShaderSourceARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_framebuffer_object(void* function(const(char)* name) load) {
-	if(!GL_ARB_framebuffer_object) return false;
+void load_GL_ARB_framebuffer_object(void* function(const(char)* name) load) {
+	if(!GL_ARB_framebuffer_object) return;
 	glIsRenderbuffer = cast(typeof(glIsRenderbuffer))load("glIsRenderbuffer");
 	glBindRenderbuffer = cast(typeof(glBindRenderbuffer))load("glBindRenderbuffer");
 	glDeleteRenderbuffers = cast(typeof(glDeleteRenderbuffers))load("glDeleteRenderbuffers");
@@ -2216,24 +2217,24 @@ bool load_GL_ARB_framebuffer_object(void* function(const(char)* name) load) {
 	glBlitFramebuffer = cast(typeof(glBlitFramebuffer))load("glBlitFramebuffer");
 	glRenderbufferStorageMultisample = cast(typeof(glRenderbufferStorageMultisample))load("glRenderbufferStorageMultisample");
 	glFramebufferTextureLayer = cast(typeof(glFramebufferTextureLayer))load("glFramebufferTextureLayer");
-	return true;
+	return;
 }
-bool load_GL_ATI_envmap_bumpmap(void* function(const(char)* name) load) {
-	if(!GL_ATI_envmap_bumpmap) return false;
+void load_GL_ATI_envmap_bumpmap(void* function(const(char)* name) load) {
+	if(!GL_ATI_envmap_bumpmap) return;
 	glTexBumpParameterivATI = cast(typeof(glTexBumpParameterivATI))load("glTexBumpParameterivATI");
 	glTexBumpParameterfvATI = cast(typeof(glTexBumpParameterfvATI))load("glTexBumpParameterfvATI");
 	glGetTexBumpParameterivATI = cast(typeof(glGetTexBumpParameterivATI))load("glGetTexBumpParameterivATI");
 	glGetTexBumpParameterfvATI = cast(typeof(glGetTexBumpParameterfvATI))load("glGetTexBumpParameterfvATI");
-	return true;
+	return;
 }
-bool load_GL_ATI_map_object_buffer(void* function(const(char)* name) load) {
-	if(!GL_ATI_map_object_buffer) return false;
+void load_GL_ATI_map_object_buffer(void* function(const(char)* name) load) {
+	if(!GL_ATI_map_object_buffer) return;
 	glMapObjectBufferATI = cast(typeof(glMapObjectBufferATI))load("glMapObjectBufferATI");
 	glUnmapObjectBufferATI = cast(typeof(glUnmapObjectBufferATI))load("glUnmapObjectBufferATI");
-	return true;
+	return;
 }
-bool load_GL_ARB_robustness(void* function(const(char)* name) load) {
-	if(!GL_ARB_robustness) return false;
+void load_GL_ARB_robustness(void* function(const(char)* name) load) {
+	if(!GL_ARB_robustness) return;
 	glGetGraphicsResetStatusARB = cast(typeof(glGetGraphicsResetStatusARB))load("glGetGraphicsResetStatusARB");
 	glGetnTexImageARB = cast(typeof(glGetnTexImageARB))load("glGetnTexImageARB");
 	glReadnPixelsARB = cast(typeof(glReadnPixelsARB))load("glReadnPixelsARB");
@@ -2254,21 +2255,21 @@ bool load_GL_ARB_robustness(void* function(const(char)* name) load) {
 	glGetnSeparableFilterARB = cast(typeof(glGetnSeparableFilterARB))load("glGetnSeparableFilterARB");
 	glGetnHistogramARB = cast(typeof(glGetnHistogramARB))load("glGetnHistogramARB");
 	glGetnMinmaxARB = cast(typeof(glGetnMinmaxARB))load("glGetnMinmaxARB");
-	return true;
+	return;
 }
-bool load_GL_NV_pixel_data_range(void* function(const(char)* name) load) {
-	if(!GL_NV_pixel_data_range) return false;
+void load_GL_NV_pixel_data_range(void* function(const(char)* name) load) {
+	if(!GL_NV_pixel_data_range) return;
 	glPixelDataRangeNV = cast(typeof(glPixelDataRangeNV))load("glPixelDataRangeNV");
 	glFlushPixelDataRangeNV = cast(typeof(glFlushPixelDataRangeNV))load("glFlushPixelDataRangeNV");
-	return true;
+	return;
 }
-bool load_GL_EXT_framebuffer_blit(void* function(const(char)* name) load) {
-	if(!GL_EXT_framebuffer_blit) return false;
+void load_GL_EXT_framebuffer_blit(void* function(const(char)* name) load) {
+	if(!GL_EXT_framebuffer_blit) return;
 	glBlitFramebufferEXT = cast(typeof(glBlitFramebufferEXT))load("glBlitFramebufferEXT");
-	return true;
+	return;
 }
-bool load_GL_ARB_gpu_shader_fp64(void* function(const(char)* name) load) {
-	if(!GL_ARB_gpu_shader_fp64) return false;
+void load_GL_ARB_gpu_shader_fp64(void* function(const(char)* name) load) {
+	if(!GL_ARB_gpu_shader_fp64) return;
 	glUniform1d = cast(typeof(glUniform1d))load("glUniform1d");
 	glUniform2d = cast(typeof(glUniform2d))load("glUniform2d");
 	glUniform3d = cast(typeof(glUniform3d))load("glUniform3d");
@@ -2287,28 +2288,28 @@ bool load_GL_ARB_gpu_shader_fp64(void* function(const(char)* name) load) {
 	glUniformMatrix4x2dv = cast(typeof(glUniformMatrix4x2dv))load("glUniformMatrix4x2dv");
 	glUniformMatrix4x3dv = cast(typeof(glUniformMatrix4x3dv))load("glUniformMatrix4x3dv");
 	glGetUniformdv = cast(typeof(glGetUniformdv))load("glGetUniformdv");
-	return true;
+	return;
 }
-bool load_GL_EXT_vertex_weighting(void* function(const(char)* name) load) {
-	if(!GL_EXT_vertex_weighting) return false;
+void load_GL_EXT_vertex_weighting(void* function(const(char)* name) load) {
+	if(!GL_EXT_vertex_weighting) return;
 	glVertexWeightfEXT = cast(typeof(glVertexWeightfEXT))load("glVertexWeightfEXT");
 	glVertexWeightfvEXT = cast(typeof(glVertexWeightfvEXT))load("glVertexWeightfvEXT");
 	glVertexWeightPointerEXT = cast(typeof(glVertexWeightPointerEXT))load("glVertexWeightPointerEXT");
-	return true;
+	return;
 }
-bool load_GL_GREMEDY_string_marker(void* function(const(char)* name) load) {
-	if(!GL_GREMEDY_string_marker) return false;
+void load_GL_GREMEDY_string_marker(void* function(const(char)* name) load) {
+	if(!GL_GREMEDY_string_marker) return;
 	glStringMarkerGREMEDY = cast(typeof(glStringMarkerGREMEDY))load("glStringMarkerGREMEDY");
-	return true;
+	return;
 }
-bool load_GL_EXT_subtexture(void* function(const(char)* name) load) {
-	if(!GL_EXT_subtexture) return false;
+void load_GL_EXT_subtexture(void* function(const(char)* name) load) {
+	if(!GL_EXT_subtexture) return;
 	glTexSubImage1DEXT = cast(typeof(glTexSubImage1DEXT))load("glTexSubImage1DEXT");
 	glTexSubImage2DEXT = cast(typeof(glTexSubImage2DEXT))load("glTexSubImage2DEXT");
-	return true;
+	return;
 }
-bool load_GL_NV_evaluators(void* function(const(char)* name) load) {
-	if(!GL_NV_evaluators) return false;
+void load_GL_NV_evaluators(void* function(const(char)* name) load) {
+	if(!GL_NV_evaluators) return;
 	glMapControlPointsNV = cast(typeof(glMapControlPointsNV))load("glMapControlPointsNV");
 	glMapParameterivNV = cast(typeof(glMapParameterivNV))load("glMapParameterivNV");
 	glMapParameterfvNV = cast(typeof(glMapParameterfvNV))load("glMapParameterfvNV");
@@ -2318,16 +2319,16 @@ bool load_GL_NV_evaluators(void* function(const(char)* name) load) {
 	glGetMapAttribParameterivNV = cast(typeof(glGetMapAttribParameterivNV))load("glGetMapAttribParameterivNV");
 	glGetMapAttribParameterfvNV = cast(typeof(glGetMapAttribParameterfvNV))load("glGetMapAttribParameterfvNV");
 	glEvalMapsNV = cast(typeof(glEvalMapsNV))load("glEvalMapsNV");
-	return true;
+	return;
 }
-bool load_GL_SGIS_texture_filter4(void* function(const(char)* name) load) {
-	if(!GL_SGIS_texture_filter4) return false;
+void load_GL_SGIS_texture_filter4(void* function(const(char)* name) load) {
+	if(!GL_SGIS_texture_filter4) return;
 	glGetTexFilterFuncSGIS = cast(typeof(glGetTexFilterFuncSGIS))load("glGetTexFilterFuncSGIS");
 	glTexFilterFuncSGIS = cast(typeof(glTexFilterFuncSGIS))load("glTexFilterFuncSGIS");
-	return true;
+	return;
 }
-bool load_GL_AMD_performance_monitor(void* function(const(char)* name) load) {
-	if(!GL_AMD_performance_monitor) return false;
+void load_GL_AMD_performance_monitor(void* function(const(char)* name) load) {
+	if(!GL_AMD_performance_monitor) return;
 	glGetPerfMonitorGroupsAMD = cast(typeof(glGetPerfMonitorGroupsAMD))load("glGetPerfMonitorGroupsAMD");
 	glGetPerfMonitorCountersAMD = cast(typeof(glGetPerfMonitorCountersAMD))load("glGetPerfMonitorCountersAMD");
 	glGetPerfMonitorGroupStringAMD = cast(typeof(glGetPerfMonitorGroupStringAMD))load("glGetPerfMonitorGroupStringAMD");
@@ -2339,49 +2340,49 @@ bool load_GL_AMD_performance_monitor(void* function(const(char)* name) load) {
 	glBeginPerfMonitorAMD = cast(typeof(glBeginPerfMonitorAMD))load("glBeginPerfMonitorAMD");
 	glEndPerfMonitorAMD = cast(typeof(glEndPerfMonitorAMD))load("glEndPerfMonitorAMD");
 	glGetPerfMonitorCounterDataAMD = cast(typeof(glGetPerfMonitorCounterDataAMD))load("glGetPerfMonitorCounterDataAMD");
-	return true;
+	return;
 }
-bool load_GL_EXT_stencil_clear_tag(void* function(const(char)* name) load) {
-	if(!GL_EXT_stencil_clear_tag) return false;
+void load_GL_EXT_stencil_clear_tag(void* function(const(char)* name) load) {
+	if(!GL_EXT_stencil_clear_tag) return;
 	glStencilClearTagEXT = cast(typeof(glStencilClearTagEXT))load("glStencilClearTagEXT");
-	return true;
+	return;
 }
-bool load_GL_NV_present_video(void* function(const(char)* name) load) {
-	if(!GL_NV_present_video) return false;
+void load_GL_NV_present_video(void* function(const(char)* name) load) {
+	if(!GL_NV_present_video) return;
 	glPresentFrameKeyedNV = cast(typeof(glPresentFrameKeyedNV))load("glPresentFrameKeyedNV");
 	glPresentFrameDualFillNV = cast(typeof(glPresentFrameDualFillNV))load("glPresentFrameDualFillNV");
 	glGetVideoivNV = cast(typeof(glGetVideoivNV))load("glGetVideoivNV");
 	glGetVideouivNV = cast(typeof(glGetVideouivNV))load("glGetVideouivNV");
 	glGetVideoi64vNV = cast(typeof(glGetVideoi64vNV))load("glGetVideoi64vNV");
 	glGetVideoui64vNV = cast(typeof(glGetVideoui64vNV))load("glGetVideoui64vNV");
-	return true;
+	return;
 }
-bool load_GL_EXT_gpu_program_parameters(void* function(const(char)* name) load) {
-	if(!GL_EXT_gpu_program_parameters) return false;
+void load_GL_EXT_gpu_program_parameters(void* function(const(char)* name) load) {
+	if(!GL_EXT_gpu_program_parameters) return;
 	glProgramEnvParameters4fvEXT = cast(typeof(glProgramEnvParameters4fvEXT))load("glProgramEnvParameters4fvEXT");
 	glProgramLocalParameters4fvEXT = cast(typeof(glProgramLocalParameters4fvEXT))load("glProgramLocalParameters4fvEXT");
-	return true;
+	return;
 }
-bool load_GL_SGIX_list_priority(void* function(const(char)* name) load) {
-	if(!GL_SGIX_list_priority) return false;
+void load_GL_SGIX_list_priority(void* function(const(char)* name) load) {
+	if(!GL_SGIX_list_priority) return;
 	glGetListParameterfvSGIX = cast(typeof(glGetListParameterfvSGIX))load("glGetListParameterfvSGIX");
 	glGetListParameterivSGIX = cast(typeof(glGetListParameterivSGIX))load("glGetListParameterivSGIX");
 	glListParameterfSGIX = cast(typeof(glListParameterfSGIX))load("glListParameterfSGIX");
 	glListParameterfvSGIX = cast(typeof(glListParameterfvSGIX))load("glListParameterfvSGIX");
 	glListParameteriSGIX = cast(typeof(glListParameteriSGIX))load("glListParameteriSGIX");
 	glListParameterivSGIX = cast(typeof(glListParameterivSGIX))load("glListParameterivSGIX");
-	return true;
+	return;
 }
-bool load_GL_ARB_draw_elements_base_vertex(void* function(const(char)* name) load) {
-	if(!GL_ARB_draw_elements_base_vertex) return false;
+void load_GL_ARB_draw_elements_base_vertex(void* function(const(char)* name) load) {
+	if(!GL_ARB_draw_elements_base_vertex) return;
 	glDrawElementsBaseVertex = cast(typeof(glDrawElementsBaseVertex))load("glDrawElementsBaseVertex");
 	glDrawRangeElementsBaseVertex = cast(typeof(glDrawRangeElementsBaseVertex))load("glDrawRangeElementsBaseVertex");
 	glDrawElementsInstancedBaseVertex = cast(typeof(glDrawElementsInstancedBaseVertex))load("glDrawElementsInstancedBaseVertex");
 	glMultiDrawElementsBaseVertex = cast(typeof(glMultiDrawElementsBaseVertex))load("glMultiDrawElementsBaseVertex");
-	return true;
+	return;
 }
-bool load_GL_NV_transform_feedback(void* function(const(char)* name) load) {
-	if(!GL_NV_transform_feedback) return false;
+void load_GL_NV_transform_feedback(void* function(const(char)* name) load) {
+	if(!GL_NV_transform_feedback) return;
 	glBeginTransformFeedbackNV = cast(typeof(glBeginTransformFeedbackNV))load("glBeginTransformFeedbackNV");
 	glEndTransformFeedbackNV = cast(typeof(glEndTransformFeedbackNV))load("glEndTransformFeedbackNV");
 	glTransformFeedbackAttribsNV = cast(typeof(glTransformFeedbackAttribsNV))load("glTransformFeedbackAttribsNV");
@@ -2394,41 +2395,41 @@ bool load_GL_NV_transform_feedback(void* function(const(char)* name) load) {
 	glGetActiveVaryingNV = cast(typeof(glGetActiveVaryingNV))load("glGetActiveVaryingNV");
 	glGetTransformFeedbackVaryingNV = cast(typeof(glGetTransformFeedbackVaryingNV))load("glGetTransformFeedbackVaryingNV");
 	glTransformFeedbackStreamAttribsNV = cast(typeof(glTransformFeedbackStreamAttribsNV))load("glTransformFeedbackStreamAttribsNV");
-	return true;
+	return;
 }
-bool load_GL_NV_fragment_program(void* function(const(char)* name) load) {
-	if(!GL_NV_fragment_program) return false;
+void load_GL_NV_fragment_program(void* function(const(char)* name) load) {
+	if(!GL_NV_fragment_program) return;
 	glProgramNamedParameter4fNV = cast(typeof(glProgramNamedParameter4fNV))load("glProgramNamedParameter4fNV");
 	glProgramNamedParameter4fvNV = cast(typeof(glProgramNamedParameter4fvNV))load("glProgramNamedParameter4fvNV");
 	glProgramNamedParameter4dNV = cast(typeof(glProgramNamedParameter4dNV))load("glProgramNamedParameter4dNV");
 	glProgramNamedParameter4dvNV = cast(typeof(glProgramNamedParameter4dvNV))load("glProgramNamedParameter4dvNV");
 	glGetProgramNamedParameterfvNV = cast(typeof(glGetProgramNamedParameterfvNV))load("glGetProgramNamedParameterfvNV");
 	glGetProgramNamedParameterdvNV = cast(typeof(glGetProgramNamedParameterdvNV))load("glGetProgramNamedParameterdvNV");
-	return true;
+	return;
 }
-bool load_GL_AMD_stencil_operation_extended(void* function(const(char)* name) load) {
-	if(!GL_AMD_stencil_operation_extended) return false;
+void load_GL_AMD_stencil_operation_extended(void* function(const(char)* name) load) {
+	if(!GL_AMD_stencil_operation_extended) return;
 	glStencilOpValueAMD = cast(typeof(glStencilOpValueAMD))load("glStencilOpValueAMD");
-	return true;
+	return;
 }
-bool load_GL_ARB_instanced_arrays(void* function(const(char)* name) load) {
-	if(!GL_ARB_instanced_arrays) return false;
+void load_GL_ARB_instanced_arrays(void* function(const(char)* name) load) {
+	if(!GL_ARB_instanced_arrays) return;
 	glVertexAttribDivisorARB = cast(typeof(glVertexAttribDivisorARB))load("glVertexAttribDivisorARB");
-	return true;
+	return;
 }
-bool load_GL_EXT_polygon_offset(void* function(const(char)* name) load) {
-	if(!GL_EXT_polygon_offset) return false;
+void load_GL_EXT_polygon_offset(void* function(const(char)* name) load) {
+	if(!GL_EXT_polygon_offset) return;
 	glPolygonOffsetEXT = cast(typeof(glPolygonOffsetEXT))load("glPolygonOffsetEXT");
-	return true;
+	return;
 }
-bool load_GL_AMD_sparse_texture(void* function(const(char)* name) load) {
-	if(!GL_AMD_sparse_texture) return false;
+void load_GL_AMD_sparse_texture(void* function(const(char)* name) load) {
+	if(!GL_AMD_sparse_texture) return;
 	glTexStorageSparseAMD = cast(typeof(glTexStorageSparseAMD))load("glTexStorageSparseAMD");
 	glTextureStorageSparseAMD = cast(typeof(glTextureStorageSparseAMD))load("glTextureStorageSparseAMD");
-	return true;
+	return;
 }
-bool load_GL_NV_fence(void* function(const(char)* name) load) {
-	if(!GL_NV_fence) return false;
+void load_GL_NV_fence(void* function(const(char)* name) load) {
+	if(!GL_NV_fence) return;
 	glDeleteFencesNV = cast(typeof(glDeleteFencesNV))load("glDeleteFencesNV");
 	glGenFencesNV = cast(typeof(glGenFencesNV))load("glGenFencesNV");
 	glIsFenceNV = cast(typeof(glIsFenceNV))load("glIsFenceNV");
@@ -2436,57 +2437,57 @@ bool load_GL_NV_fence(void* function(const(char)* name) load) {
 	glGetFenceivNV = cast(typeof(glGetFenceivNV))load("glGetFenceivNV");
 	glFinishFenceNV = cast(typeof(glFinishFenceNV))load("glFinishFenceNV");
 	glSetFenceNV = cast(typeof(glSetFenceNV))load("glSetFenceNV");
-	return true;
+	return;
 }
-bool load_GL_ARB_texture_buffer_range(void* function(const(char)* name) load) {
-	if(!GL_ARB_texture_buffer_range) return false;
+void load_GL_ARB_texture_buffer_range(void* function(const(char)* name) load) {
+	if(!GL_ARB_texture_buffer_range) return;
 	glTexBufferRange = cast(typeof(glTexBufferRange))load("glTexBufferRange");
-	return true;
+	return;
 }
-bool load_GL_SUN_mesh_array(void* function(const(char)* name) load) {
-	if(!GL_SUN_mesh_array) return false;
+void load_GL_SUN_mesh_array(void* function(const(char)* name) load) {
+	if(!GL_SUN_mesh_array) return;
 	glDrawMeshArraysSUN = cast(typeof(glDrawMeshArraysSUN))load("glDrawMeshArraysSUN");
-	return true;
+	return;
 }
-bool load_GL_ARB_vertex_attrib_binding(void* function(const(char)* name) load) {
-	if(!GL_ARB_vertex_attrib_binding) return false;
+void load_GL_ARB_vertex_attrib_binding(void* function(const(char)* name) load) {
+	if(!GL_ARB_vertex_attrib_binding) return;
 	glBindVertexBuffer = cast(typeof(glBindVertexBuffer))load("glBindVertexBuffer");
 	glVertexAttribFormat = cast(typeof(glVertexAttribFormat))load("glVertexAttribFormat");
 	glVertexAttribIFormat = cast(typeof(glVertexAttribIFormat))load("glVertexAttribIFormat");
 	glVertexAttribLFormat = cast(typeof(glVertexAttribLFormat))load("glVertexAttribLFormat");
 	glVertexAttribBinding = cast(typeof(glVertexAttribBinding))load("glVertexAttribBinding");
 	glVertexBindingDivisor = cast(typeof(glVertexBindingDivisor))load("glVertexBindingDivisor");
-	return true;
+	return;
 }
-bool load_GL_ARB_framebuffer_no_attachments(void* function(const(char)* name) load) {
-	if(!GL_ARB_framebuffer_no_attachments) return false;
+void load_GL_ARB_framebuffer_no_attachments(void* function(const(char)* name) load) {
+	if(!GL_ARB_framebuffer_no_attachments) return;
 	glFramebufferParameteri = cast(typeof(glFramebufferParameteri))load("glFramebufferParameteri");
 	glGetFramebufferParameteriv = cast(typeof(glGetFramebufferParameteriv))load("glGetFramebufferParameteriv");
-	return true;
+	return;
 }
-bool load_GL_ARB_cl_event(void* function(const(char)* name) load) {
-	if(!GL_ARB_cl_event) return false;
+void load_GL_ARB_cl_event(void* function(const(char)* name) load) {
+	if(!GL_ARB_cl_event) return;
 	glCreateSyncFromCLeventARB = cast(typeof(glCreateSyncFromCLeventARB))load("glCreateSyncFromCLeventARB");
-	return true;
+	return;
 }
-bool load_GL_OES_single_precision(void* function(const(char)* name) load) {
-	if(!GL_OES_single_precision) return false;
+void load_GL_OES_single_precision(void* function(const(char)* name) load) {
+	if(!GL_OES_single_precision) return;
 	glClearDepthfOES = cast(typeof(glClearDepthfOES))load("glClearDepthfOES");
 	glClipPlanefOES = cast(typeof(glClipPlanefOES))load("glClipPlanefOES");
 	glDepthRangefOES = cast(typeof(glDepthRangefOES))load("glDepthRangefOES");
 	glFrustumfOES = cast(typeof(glFrustumfOES))load("glFrustumfOES");
 	glGetClipPlanefOES = cast(typeof(glGetClipPlanefOES))load("glGetClipPlanefOES");
 	glOrthofOES = cast(typeof(glOrthofOES))load("glOrthofOES");
-	return true;
+	return;
 }
-bool load_GL_NV_primitive_restart(void* function(const(char)* name) load) {
-	if(!GL_NV_primitive_restart) return false;
+void load_GL_NV_primitive_restart(void* function(const(char)* name) load) {
+	if(!GL_NV_primitive_restart) return;
 	glPrimitiveRestartNV = cast(typeof(glPrimitiveRestartNV))load("glPrimitiveRestartNV");
 	glPrimitiveRestartIndexNV = cast(typeof(glPrimitiveRestartIndexNV))load("glPrimitiveRestartIndexNV");
-	return true;
+	return;
 }
-bool load_GL_SUN_global_alpha(void* function(const(char)* name) load) {
-	if(!GL_SUN_global_alpha) return false;
+void load_GL_SUN_global_alpha(void* function(const(char)* name) load) {
+	if(!GL_SUN_global_alpha) return;
 	glGlobalAlphaFactorbSUN = cast(typeof(glGlobalAlphaFactorbSUN))load("glGlobalAlphaFactorbSUN");
 	glGlobalAlphaFactorsSUN = cast(typeof(glGlobalAlphaFactorsSUN))load("glGlobalAlphaFactorsSUN");
 	glGlobalAlphaFactoriSUN = cast(typeof(glGlobalAlphaFactoriSUN))load("glGlobalAlphaFactoriSUN");
@@ -2495,32 +2496,32 @@ bool load_GL_SUN_global_alpha(void* function(const(char)* name) load) {
 	glGlobalAlphaFactorubSUN = cast(typeof(glGlobalAlphaFactorubSUN))load("glGlobalAlphaFactorubSUN");
 	glGlobalAlphaFactorusSUN = cast(typeof(glGlobalAlphaFactorusSUN))load("glGlobalAlphaFactorusSUN");
 	glGlobalAlphaFactoruiSUN = cast(typeof(glGlobalAlphaFactoruiSUN))load("glGlobalAlphaFactoruiSUN");
-	return true;
+	return;
 }
-bool load_GL_EXT_texture_object(void* function(const(char)* name) load) {
-	if(!GL_EXT_texture_object) return false;
+void load_GL_EXT_texture_object(void* function(const(char)* name) load) {
+	if(!GL_EXT_texture_object) return;
 	glAreTexturesResidentEXT = cast(typeof(glAreTexturesResidentEXT))load("glAreTexturesResidentEXT");
 	glBindTextureEXT = cast(typeof(glBindTextureEXT))load("glBindTextureEXT");
 	glDeleteTexturesEXT = cast(typeof(glDeleteTexturesEXT))load("glDeleteTexturesEXT");
 	glGenTexturesEXT = cast(typeof(glGenTexturesEXT))load("glGenTexturesEXT");
 	glIsTextureEXT = cast(typeof(glIsTextureEXT))load("glIsTextureEXT");
 	glPrioritizeTexturesEXT = cast(typeof(glPrioritizeTexturesEXT))load("glPrioritizeTexturesEXT");
-	return true;
+	return;
 }
-bool load_GL_AMD_name_gen_delete(void* function(const(char)* name) load) {
-	if(!GL_AMD_name_gen_delete) return false;
+void load_GL_AMD_name_gen_delete(void* function(const(char)* name) load) {
+	if(!GL_AMD_name_gen_delete) return;
 	glGenNamesAMD = cast(typeof(glGenNamesAMD))load("glGenNamesAMD");
 	glDeleteNamesAMD = cast(typeof(glDeleteNamesAMD))load("glDeleteNamesAMD");
 	glIsNameAMD = cast(typeof(glIsNameAMD))load("glIsNameAMD");
-	return true;
+	return;
 }
-bool load_GL_ARB_buffer_storage(void* function(const(char)* name) load) {
-	if(!GL_ARB_buffer_storage) return false;
+void load_GL_ARB_buffer_storage(void* function(const(char)* name) load) {
+	if(!GL_ARB_buffer_storage) return;
 	glBufferStorage = cast(typeof(glBufferStorage))load("glBufferStorage");
-	return true;
+	return;
 }
-bool load_GL_APPLE_vertex_program_evaluators(void* function(const(char)* name) load) {
-	if(!GL_APPLE_vertex_program_evaluators) return false;
+void load_GL_APPLE_vertex_program_evaluators(void* function(const(char)* name) load) {
+	if(!GL_APPLE_vertex_program_evaluators) return;
 	glEnableVertexAttribAPPLE = cast(typeof(glEnableVertexAttribAPPLE))load("glEnableVertexAttribAPPLE");
 	glDisableVertexAttribAPPLE = cast(typeof(glDisableVertexAttribAPPLE))load("glDisableVertexAttribAPPLE");
 	glIsVertexAttribEnabledAPPLE = cast(typeof(glIsVertexAttribEnabledAPPLE))load("glIsVertexAttribEnabledAPPLE");
@@ -2528,20 +2529,20 @@ bool load_GL_APPLE_vertex_program_evaluators(void* function(const(char)* name) l
 	glMapVertexAttrib1fAPPLE = cast(typeof(glMapVertexAttrib1fAPPLE))load("glMapVertexAttrib1fAPPLE");
 	glMapVertexAttrib2dAPPLE = cast(typeof(glMapVertexAttrib2dAPPLE))load("glMapVertexAttrib2dAPPLE");
 	glMapVertexAttrib2fAPPLE = cast(typeof(glMapVertexAttrib2fAPPLE))load("glMapVertexAttrib2fAPPLE");
-	return true;
+	return;
 }
-bool load_GL_ARB_multi_bind(void* function(const(char)* name) load) {
-	if(!GL_ARB_multi_bind) return false;
+void load_GL_ARB_multi_bind(void* function(const(char)* name) load) {
+	if(!GL_ARB_multi_bind) return;
 	glBindBuffersBase = cast(typeof(glBindBuffersBase))load("glBindBuffersBase");
 	glBindBuffersRange = cast(typeof(glBindBuffersRange))load("glBindBuffersRange");
 	glBindTextures = cast(typeof(glBindTextures))load("glBindTextures");
 	glBindSamplers = cast(typeof(glBindSamplers))load("glBindSamplers");
 	glBindImageTextures = cast(typeof(glBindImageTextures))load("glBindImageTextures");
 	glBindVertexBuffers = cast(typeof(glBindVertexBuffers))load("glBindVertexBuffers");
-	return true;
+	return;
 }
-bool load_GL_NV_vertex_buffer_unified_memory(void* function(const(char)* name) load) {
-	if(!GL_NV_vertex_buffer_unified_memory) return false;
+void load_GL_NV_vertex_buffer_unified_memory(void* function(const(char)* name) load) {
+	if(!GL_NV_vertex_buffer_unified_memory) return;
 	glBufferAddressRangeNV = cast(typeof(glBufferAddressRangeNV))load("glBufferAddressRangeNV");
 	glVertexFormatNV = cast(typeof(glVertexFormatNV))load("glVertexFormatNV");
 	glNormalFormatNV = cast(typeof(glNormalFormatNV))load("glNormalFormatNV");
@@ -2554,22 +2555,22 @@ bool load_GL_NV_vertex_buffer_unified_memory(void* function(const(char)* name) l
 	glVertexAttribFormatNV = cast(typeof(glVertexAttribFormatNV))load("glVertexAttribFormatNV");
 	glVertexAttribIFormatNV = cast(typeof(glVertexAttribIFormatNV))load("glVertexAttribIFormatNV");
 	glGetIntegerui64i_vNV = cast(typeof(glGetIntegerui64i_vNV))load("glGetIntegerui64i_vNV");
-	return true;
+	return;
 }
-bool load_GL_NV_blend_equation_advanced(void* function(const(char)* name) load) {
-	if(!GL_NV_blend_equation_advanced) return false;
+void load_GL_NV_blend_equation_advanced(void* function(const(char)* name) load) {
+	if(!GL_NV_blend_equation_advanced) return;
 	glBlendParameteriNV = cast(typeof(glBlendParameteriNV))load("glBlendParameteriNV");
 	glBlendBarrierNV = cast(typeof(glBlendBarrierNV))load("glBlendBarrierNV");
-	return true;
+	return;
 }
-bool load_GL_SGIS_sharpen_texture(void* function(const(char)* name) load) {
-	if(!GL_SGIS_sharpen_texture) return false;
+void load_GL_SGIS_sharpen_texture(void* function(const(char)* name) load) {
+	if(!GL_SGIS_sharpen_texture) return;
 	glSharpenTexFuncSGIS = cast(typeof(glSharpenTexFuncSGIS))load("glSharpenTexFuncSGIS");
 	glGetSharpenTexFuncSGIS = cast(typeof(glGetSharpenTexFuncSGIS))load("glGetSharpenTexFuncSGIS");
-	return true;
+	return;
 }
-bool load_GL_ARB_vertex_program(void* function(const(char)* name) load) {
-	if(!GL_ARB_vertex_program) return false;
+void load_GL_ARB_vertex_program(void* function(const(char)* name) load) {
+	if(!GL_ARB_vertex_program) return;
 	glVertexAttrib1dARB = cast(typeof(glVertexAttrib1dARB))load("glVertexAttrib1dARB");
 	glVertexAttrib1dvARB = cast(typeof(glVertexAttrib1dvARB))load("glVertexAttrib1dvARB");
 	glVertexAttrib1fARB = cast(typeof(glVertexAttrib1fARB))load("glVertexAttrib1fARB");
@@ -2632,10 +2633,10 @@ bool load_GL_ARB_vertex_program(void* function(const(char)* name) load) {
 	glGetVertexAttribivARB = cast(typeof(glGetVertexAttribivARB))load("glGetVertexAttribivARB");
 	glGetVertexAttribPointervARB = cast(typeof(glGetVertexAttribPointervARB))load("glGetVertexAttribPointervARB");
 	glIsProgramARB = cast(typeof(glIsProgramARB))load("glIsProgramARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_vertex_buffer_object(void* function(const(char)* name) load) {
-	if(!GL_ARB_vertex_buffer_object) return false;
+void load_GL_ARB_vertex_buffer_object(void* function(const(char)* name) load) {
+	if(!GL_ARB_vertex_buffer_object) return;
 	glBindBufferARB = cast(typeof(glBindBufferARB))load("glBindBufferARB");
 	glDeleteBuffersARB = cast(typeof(glDeleteBuffersARB))load("glDeleteBuffersARB");
 	glGenBuffersARB = cast(typeof(glGenBuffersARB))load("glGenBuffersARB");
@@ -2647,16 +2648,16 @@ bool load_GL_ARB_vertex_buffer_object(void* function(const(char)* name) load) {
 	glUnmapBufferARB = cast(typeof(glUnmapBufferARB))load("glUnmapBufferARB");
 	glGetBufferParameterivARB = cast(typeof(glGetBufferParameterivARB))load("glGetBufferParameterivARB");
 	glGetBufferPointervARB = cast(typeof(glGetBufferPointervARB))load("glGetBufferPointervARB");
-	return true;
+	return;
 }
-bool load_GL_NV_vertex_array_range(void* function(const(char)* name) load) {
-	if(!GL_NV_vertex_array_range) return false;
+void load_GL_NV_vertex_array_range(void* function(const(char)* name) load) {
+	if(!GL_NV_vertex_array_range) return;
 	glFlushVertexArrayRangeNV = cast(typeof(glFlushVertexArrayRangeNV))load("glFlushVertexArrayRangeNV");
 	glVertexArrayRangeNV = cast(typeof(glVertexArrayRangeNV))load("glVertexArrayRangeNV");
-	return true;
+	return;
 }
-bool load_GL_SGIX_fragment_lighting(void* function(const(char)* name) load) {
-	if(!GL_SGIX_fragment_lighting) return false;
+void load_GL_SGIX_fragment_lighting(void* function(const(char)* name) load) {
+	if(!GL_SGIX_fragment_lighting) return;
 	glFragmentColorMaterialSGIX = cast(typeof(glFragmentColorMaterialSGIX))load("glFragmentColorMaterialSGIX");
 	glFragmentLightfSGIX = cast(typeof(glFragmentLightfSGIX))load("glFragmentLightfSGIX");
 	glFragmentLightfvSGIX = cast(typeof(glFragmentLightfvSGIX))load("glFragmentLightfvSGIX");
@@ -2675,21 +2676,21 @@ bool load_GL_SGIX_fragment_lighting(void* function(const(char)* name) load) {
 	glGetFragmentMaterialfvSGIX = cast(typeof(glGetFragmentMaterialfvSGIX))load("glGetFragmentMaterialfvSGIX");
 	glGetFragmentMaterialivSGIX = cast(typeof(glGetFragmentMaterialivSGIX))load("glGetFragmentMaterialivSGIX");
 	glLightEnviSGIX = cast(typeof(glLightEnviSGIX))load("glLightEnviSGIX");
-	return true;
+	return;
 }
-bool load_GL_NV_framebuffer_multisample_coverage(void* function(const(char)* name) load) {
-	if(!GL_NV_framebuffer_multisample_coverage) return false;
+void load_GL_NV_framebuffer_multisample_coverage(void* function(const(char)* name) load) {
+	if(!GL_NV_framebuffer_multisample_coverage) return;
 	glRenderbufferStorageMultisampleCoverageNV = cast(typeof(glRenderbufferStorageMultisampleCoverageNV))load("glRenderbufferStorageMultisampleCoverageNV");
-	return true;
+	return;
 }
-bool load_GL_EXT_timer_query(void* function(const(char)* name) load) {
-	if(!GL_EXT_timer_query) return false;
+void load_GL_EXT_timer_query(void* function(const(char)* name) load) {
+	if(!GL_EXT_timer_query) return;
 	glGetQueryObjecti64vEXT = cast(typeof(glGetQueryObjecti64vEXT))load("glGetQueryObjecti64vEXT");
 	glGetQueryObjectui64vEXT = cast(typeof(glGetQueryObjectui64vEXT))load("glGetQueryObjectui64vEXT");
-	return true;
+	return;
 }
-bool load_GL_NV_bindless_texture(void* function(const(char)* name) load) {
-	if(!GL_NV_bindless_texture) return false;
+void load_GL_NV_bindless_texture(void* function(const(char)* name) load) {
+	if(!GL_NV_bindless_texture) return;
 	glGetTextureHandleNV = cast(typeof(glGetTextureHandleNV))load("glGetTextureHandleNV");
 	glGetTextureSamplerHandleNV = cast(typeof(glGetTextureSamplerHandleNV))load("glGetTextureSamplerHandleNV");
 	glMakeTextureHandleResidentNV = cast(typeof(glMakeTextureHandleResidentNV))load("glMakeTextureHandleResidentNV");
@@ -2703,10 +2704,10 @@ bool load_GL_NV_bindless_texture(void* function(const(char)* name) load) {
 	glProgramUniformHandleui64vNV = cast(typeof(glProgramUniformHandleui64vNV))load("glProgramUniformHandleui64vNV");
 	glIsTextureHandleResidentNV = cast(typeof(glIsTextureHandleResidentNV))load("glIsTextureHandleResidentNV");
 	glIsImageHandleResidentNV = cast(typeof(glIsImageHandleResidentNV))load("glIsImageHandleResidentNV");
-	return true;
+	return;
 }
-bool load_GL_KHR_debug(void* function(const(char)* name) load) {
-	if(!GL_KHR_debug) return false;
+void load_GL_KHR_debug(void* function(const(char)* name) load) {
+	if(!GL_KHR_debug) return;
 	glDebugMessageControl = cast(typeof(glDebugMessageControl))load("glDebugMessageControl");
 	glDebugMessageInsert = cast(typeof(glDebugMessageInsert))load("glDebugMessageInsert");
 	glDebugMessageCallback = cast(typeof(glDebugMessageCallback))load("glDebugMessageCallback");
@@ -2729,97 +2730,97 @@ bool load_GL_KHR_debug(void* function(const(char)* name) load) {
 	glObjectPtrLabelKHR = cast(typeof(glObjectPtrLabelKHR))load("glObjectPtrLabelKHR");
 	glGetObjectPtrLabelKHR = cast(typeof(glGetObjectPtrLabelKHR))load("glGetObjectPtrLabelKHR");
 	glGetPointervKHR = cast(typeof(glGetPointervKHR))load("glGetPointervKHR");
-	return true;
+	return;
 }
-bool load_GL_ATI_vertex_attrib_array_object(void* function(const(char)* name) load) {
-	if(!GL_ATI_vertex_attrib_array_object) return false;
+void load_GL_ATI_vertex_attrib_array_object(void* function(const(char)* name) load) {
+	if(!GL_ATI_vertex_attrib_array_object) return;
 	glVertexAttribArrayObjectATI = cast(typeof(glVertexAttribArrayObjectATI))load("glVertexAttribArrayObjectATI");
 	glGetVertexAttribArrayObjectfvATI = cast(typeof(glGetVertexAttribArrayObjectfvATI))load("glGetVertexAttribArrayObjectfvATI");
 	glGetVertexAttribArrayObjectivATI = cast(typeof(glGetVertexAttribArrayObjectivATI))load("glGetVertexAttribArrayObjectivATI");
-	return true;
+	return;
 }
-bool load_GL_EXT_geometry_shader4(void* function(const(char)* name) load) {
-	if(!GL_EXT_geometry_shader4) return false;
+void load_GL_EXT_geometry_shader4(void* function(const(char)* name) load) {
+	if(!GL_EXT_geometry_shader4) return;
 	glProgramParameteriEXT = cast(typeof(glProgramParameteriEXT))load("glProgramParameteriEXT");
-	return true;
+	return;
 }
-bool load_GL_EXT_bindable_uniform(void* function(const(char)* name) load) {
-	if(!GL_EXT_bindable_uniform) return false;
+void load_GL_EXT_bindable_uniform(void* function(const(char)* name) load) {
+	if(!GL_EXT_bindable_uniform) return;
 	glUniformBufferEXT = cast(typeof(glUniformBufferEXT))load("glUniformBufferEXT");
 	glGetUniformBufferSizeEXT = cast(typeof(glGetUniformBufferSizeEXT))load("glGetUniformBufferSizeEXT");
 	glGetUniformOffsetEXT = cast(typeof(glGetUniformOffsetEXT))load("glGetUniformOffsetEXT");
-	return true;
+	return;
 }
-bool load_GL_ATI_element_array(void* function(const(char)* name) load) {
-	if(!GL_ATI_element_array) return false;
+void load_GL_ATI_element_array(void* function(const(char)* name) load) {
+	if(!GL_ATI_element_array) return;
 	glElementPointerATI = cast(typeof(glElementPointerATI))load("glElementPointerATI");
 	glDrawElementArrayATI = cast(typeof(glDrawElementArrayATI))load("glDrawElementArrayATI");
 	glDrawRangeElementArrayATI = cast(typeof(glDrawRangeElementArrayATI))load("glDrawRangeElementArrayATI");
-	return true;
+	return;
 }
-bool load_GL_SGIX_reference_plane(void* function(const(char)* name) load) {
-	if(!GL_SGIX_reference_plane) return false;
+void load_GL_SGIX_reference_plane(void* function(const(char)* name) load) {
+	if(!GL_SGIX_reference_plane) return;
 	glReferencePlaneSGIX = cast(typeof(glReferencePlaneSGIX))load("glReferencePlaneSGIX");
-	return true;
+	return;
 }
-bool load_GL_EXT_stencil_two_side(void* function(const(char)* name) load) {
-	if(!GL_EXT_stencil_two_side) return false;
+void load_GL_EXT_stencil_two_side(void* function(const(char)* name) load) {
+	if(!GL_EXT_stencil_two_side) return;
 	glActiveStencilFaceEXT = cast(typeof(glActiveStencilFaceEXT))load("glActiveStencilFaceEXT");
-	return true;
+	return;
 }
-bool load_GL_NV_explicit_multisample(void* function(const(char)* name) load) {
-	if(!GL_NV_explicit_multisample) return false;
+void load_GL_NV_explicit_multisample(void* function(const(char)* name) load) {
+	if(!GL_NV_explicit_multisample) return;
 	glGetMultisamplefvNV = cast(typeof(glGetMultisamplefvNV))load("glGetMultisamplefvNV");
 	glSampleMaskIndexedNV = cast(typeof(glSampleMaskIndexedNV))load("glSampleMaskIndexedNV");
 	glTexRenderbufferNV = cast(typeof(glTexRenderbufferNV))load("glTexRenderbufferNV");
-	return true;
+	return;
 }
-bool load_GL_IBM_static_data(void* function(const(char)* name) load) {
-	if(!GL_IBM_static_data) return false;
+void load_GL_IBM_static_data(void* function(const(char)* name) load) {
+	if(!GL_IBM_static_data) return;
 	glFlushStaticDataIBM = cast(typeof(glFlushStaticDataIBM))load("glFlushStaticDataIBM");
-	return true;
+	return;
 }
-bool load_GL_EXT_texture_perturb_normal(void* function(const(char)* name) load) {
-	if(!GL_EXT_texture_perturb_normal) return false;
+void load_GL_EXT_texture_perturb_normal(void* function(const(char)* name) load) {
+	if(!GL_EXT_texture_perturb_normal) return;
 	glTextureNormalEXT = cast(typeof(glTextureNormalEXT))load("glTextureNormalEXT");
-	return true;
+	return;
 }
-bool load_GL_EXT_point_parameters(void* function(const(char)* name) load) {
-	if(!GL_EXT_point_parameters) return false;
+void load_GL_EXT_point_parameters(void* function(const(char)* name) load) {
+	if(!GL_EXT_point_parameters) return;
 	glPointParameterfEXT = cast(typeof(glPointParameterfEXT))load("glPointParameterfEXT");
 	glPointParameterfvEXT = cast(typeof(glPointParameterfvEXT))load("glPointParameterfvEXT");
-	return true;
+	return;
 }
-bool load_GL_PGI_misc_hints(void* function(const(char)* name) load) {
-	if(!GL_PGI_misc_hints) return false;
+void load_GL_PGI_misc_hints(void* function(const(char)* name) load) {
+	if(!GL_PGI_misc_hints) return;
 	glHintPGI = cast(typeof(glHintPGI))load("glHintPGI");
-	return true;
+	return;
 }
-bool load_GL_ARB_vertex_shader(void* function(const(char)* name) load) {
-	if(!GL_ARB_vertex_shader) return false;
+void load_GL_ARB_vertex_shader(void* function(const(char)* name) load) {
+	if(!GL_ARB_vertex_shader) return;
 	glBindAttribLocationARB = cast(typeof(glBindAttribLocationARB))load("glBindAttribLocationARB");
 	glGetActiveAttribARB = cast(typeof(glGetActiveAttribARB))load("glGetActiveAttribARB");
 	glGetAttribLocationARB = cast(typeof(glGetAttribLocationARB))load("glGetAttribLocationARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_tessellation_shader(void* function(const(char)* name) load) {
-	if(!GL_ARB_tessellation_shader) return false;
+void load_GL_ARB_tessellation_shader(void* function(const(char)* name) load) {
+	if(!GL_ARB_tessellation_shader) return;
 	glPatchParameteri = cast(typeof(glPatchParameteri))load("glPatchParameteri");
 	glPatchParameterfv = cast(typeof(glPatchParameterfv))load("glPatchParameterfv");
-	return true;
+	return;
 }
-bool load_GL_EXT_draw_buffers2(void* function(const(char)* name) load) {
-	if(!GL_EXT_draw_buffers2) return false;
+void load_GL_EXT_draw_buffers2(void* function(const(char)* name) load) {
+	if(!GL_EXT_draw_buffers2) return;
 	glColorMaskIndexedEXT = cast(typeof(glColorMaskIndexedEXT))load("glColorMaskIndexedEXT");
 	glGetBooleanIndexedvEXT = cast(typeof(glGetBooleanIndexedvEXT))load("glGetBooleanIndexedvEXT");
 	glGetIntegerIndexedvEXT = cast(typeof(glGetIntegerIndexedvEXT))load("glGetIntegerIndexedvEXT");
 	glEnableIndexedEXT = cast(typeof(glEnableIndexedEXT))load("glEnableIndexedEXT");
 	glDisableIndexedEXT = cast(typeof(glDisableIndexedEXT))load("glDisableIndexedEXT");
 	glIsEnabledIndexedEXT = cast(typeof(glIsEnabledIndexedEXT))load("glIsEnabledIndexedEXT");
-	return true;
+	return;
 }
-bool load_GL_ARB_vertex_attrib_64bit(void* function(const(char)* name) load) {
-	if(!GL_ARB_vertex_attrib_64bit) return false;
+void load_GL_ARB_vertex_attrib_64bit(void* function(const(char)* name) load) {
+	if(!GL_ARB_vertex_attrib_64bit) return;
 	glVertexAttribL1d = cast(typeof(glVertexAttribL1d))load("glVertexAttribL1d");
 	glVertexAttribL2d = cast(typeof(glVertexAttribL2d))load("glVertexAttribL2d");
 	glVertexAttribL3d = cast(typeof(glVertexAttribL3d))load("glVertexAttribL3d");
@@ -2830,15 +2831,15 @@ bool load_GL_ARB_vertex_attrib_64bit(void* function(const(char)* name) load) {
 	glVertexAttribL4dv = cast(typeof(glVertexAttribL4dv))load("glVertexAttribL4dv");
 	glVertexAttribLPointer = cast(typeof(glVertexAttribLPointer))load("glVertexAttribLPointer");
 	glGetVertexAttribLdv = cast(typeof(glGetVertexAttribLdv))load("glGetVertexAttribLdv");
-	return true;
+	return;
 }
-bool load_GL_AMD_interleaved_elements(void* function(const(char)* name) load) {
-	if(!GL_AMD_interleaved_elements) return false;
+void load_GL_AMD_interleaved_elements(void* function(const(char)* name) load) {
+	if(!GL_AMD_interleaved_elements) return;
 	glVertexAttribParameteriAMD = cast(typeof(glVertexAttribParameteriAMD))load("glVertexAttribParameteriAMD");
-	return true;
+	return;
 }
-bool load_GL_ARB_fragment_program(void* function(const(char)* name) load) {
-	if(!GL_ARB_fragment_program) return false;
+void load_GL_ARB_fragment_program(void* function(const(char)* name) load) {
+	if(!GL_ARB_fragment_program) return;
 	glProgramStringARB = cast(typeof(glProgramStringARB))load("glProgramStringARB");
 	glBindProgramARB = cast(typeof(glBindProgramARB))load("glBindProgramARB");
 	glDeleteProgramsARB = cast(typeof(glDeleteProgramsARB))load("glDeleteProgramsARB");
@@ -2858,130 +2859,130 @@ bool load_GL_ARB_fragment_program(void* function(const(char)* name) load) {
 	glGetProgramivARB = cast(typeof(glGetProgramivARB))load("glGetProgramivARB");
 	glGetProgramStringARB = cast(typeof(glGetProgramStringARB))load("glGetProgramStringARB");
 	glIsProgramARB = cast(typeof(glIsProgramARB))load("glIsProgramARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_texture_storage(void* function(const(char)* name) load) {
-	if(!GL_ARB_texture_storage) return false;
+void load_GL_ARB_texture_storage(void* function(const(char)* name) load) {
+	if(!GL_ARB_texture_storage) return;
 	glTexStorage1D = cast(typeof(glTexStorage1D))load("glTexStorage1D");
 	glTexStorage2D = cast(typeof(glTexStorage2D))load("glTexStorage2D");
 	glTexStorage3D = cast(typeof(glTexStorage3D))load("glTexStorage3D");
-	return true;
+	return;
 }
-bool load_GL_ARB_copy_image(void* function(const(char)* name) load) {
-	if(!GL_ARB_copy_image) return false;
+void load_GL_ARB_copy_image(void* function(const(char)* name) load) {
+	if(!GL_ARB_copy_image) return;
 	glCopyImageSubData = cast(typeof(glCopyImageSubData))load("glCopyImageSubData");
-	return true;
+	return;
 }
-bool load_GL_SGIS_pixel_texture(void* function(const(char)* name) load) {
-	if(!GL_SGIS_pixel_texture) return false;
+void load_GL_SGIS_pixel_texture(void* function(const(char)* name) load) {
+	if(!GL_SGIS_pixel_texture) return;
 	glPixelTexGenParameteriSGIS = cast(typeof(glPixelTexGenParameteriSGIS))load("glPixelTexGenParameteriSGIS");
 	glPixelTexGenParameterivSGIS = cast(typeof(glPixelTexGenParameterivSGIS))load("glPixelTexGenParameterivSGIS");
 	glPixelTexGenParameterfSGIS = cast(typeof(glPixelTexGenParameterfSGIS))load("glPixelTexGenParameterfSGIS");
 	glPixelTexGenParameterfvSGIS = cast(typeof(glPixelTexGenParameterfvSGIS))load("glPixelTexGenParameterfvSGIS");
 	glGetPixelTexGenParameterivSGIS = cast(typeof(glGetPixelTexGenParameterivSGIS))load("glGetPixelTexGenParameterivSGIS");
 	glGetPixelTexGenParameterfvSGIS = cast(typeof(glGetPixelTexGenParameterfvSGIS))load("glGetPixelTexGenParameterfvSGIS");
-	return true;
+	return;
 }
-bool load_GL_SGIX_instruments(void* function(const(char)* name) load) {
-	if(!GL_SGIX_instruments) return false;
+void load_GL_SGIX_instruments(void* function(const(char)* name) load) {
+	if(!GL_SGIX_instruments) return;
 	glGetInstrumentsSGIX = cast(typeof(glGetInstrumentsSGIX))load("glGetInstrumentsSGIX");
 	glInstrumentsBufferSGIX = cast(typeof(glInstrumentsBufferSGIX))load("glInstrumentsBufferSGIX");
 	glPollInstrumentsSGIX = cast(typeof(glPollInstrumentsSGIX))load("glPollInstrumentsSGIX");
 	glReadInstrumentsSGIX = cast(typeof(glReadInstrumentsSGIX))load("glReadInstrumentsSGIX");
 	glStartInstrumentsSGIX = cast(typeof(glStartInstrumentsSGIX))load("glStartInstrumentsSGIX");
 	glStopInstrumentsSGIX = cast(typeof(glStopInstrumentsSGIX))load("glStopInstrumentsSGIX");
-	return true;
+	return;
 }
-bool load_GL_ARB_shader_storage_buffer_object(void* function(const(char)* name) load) {
-	if(!GL_ARB_shader_storage_buffer_object) return false;
+void load_GL_ARB_shader_storage_buffer_object(void* function(const(char)* name) load) {
+	if(!GL_ARB_shader_storage_buffer_object) return;
 	glShaderStorageBlockBinding = cast(typeof(glShaderStorageBlockBinding))load("glShaderStorageBlockBinding");
-	return true;
+	return;
 }
-bool load_GL_EXT_blend_minmax(void* function(const(char)* name) load) {
-	if(!GL_EXT_blend_minmax) return false;
+void load_GL_EXT_blend_minmax(void* function(const(char)* name) load) {
+	if(!GL_EXT_blend_minmax) return;
 	glBlendEquationEXT = cast(typeof(glBlendEquationEXT))load("glBlendEquationEXT");
-	return true;
+	return;
 }
-bool load_GL_ARB_base_instance(void* function(const(char)* name) load) {
-	if(!GL_ARB_base_instance) return false;
+void load_GL_ARB_base_instance(void* function(const(char)* name) load) {
+	if(!GL_ARB_base_instance) return;
 	glDrawArraysInstancedBaseInstance = cast(typeof(glDrawArraysInstancedBaseInstance))load("glDrawArraysInstancedBaseInstance");
 	glDrawElementsInstancedBaseInstance = cast(typeof(glDrawElementsInstancedBaseInstance))load("glDrawElementsInstancedBaseInstance");
 	glDrawElementsInstancedBaseVertexBaseInstance = cast(typeof(glDrawElementsInstancedBaseVertexBaseInstance))load("glDrawElementsInstancedBaseVertexBaseInstance");
-	return true;
+	return;
 }
-bool load_GL_EXT_texture_integer(void* function(const(char)* name) load) {
-	if(!GL_EXT_texture_integer) return false;
+void load_GL_EXT_texture_integer(void* function(const(char)* name) load) {
+	if(!GL_EXT_texture_integer) return;
 	glTexParameterIivEXT = cast(typeof(glTexParameterIivEXT))load("glTexParameterIivEXT");
 	glTexParameterIuivEXT = cast(typeof(glTexParameterIuivEXT))load("glTexParameterIuivEXT");
 	glGetTexParameterIivEXT = cast(typeof(glGetTexParameterIivEXT))load("glGetTexParameterIivEXT");
 	glGetTexParameterIuivEXT = cast(typeof(glGetTexParameterIuivEXT))load("glGetTexParameterIuivEXT");
 	glClearColorIiEXT = cast(typeof(glClearColorIiEXT))load("glClearColorIiEXT");
 	glClearColorIuiEXT = cast(typeof(glClearColorIuiEXT))load("glClearColorIuiEXT");
-	return true;
+	return;
 }
-bool load_GL_ARB_texture_multisample(void* function(const(char)* name) load) {
-	if(!GL_ARB_texture_multisample) return false;
+void load_GL_ARB_texture_multisample(void* function(const(char)* name) load) {
+	if(!GL_ARB_texture_multisample) return;
 	glTexImage2DMultisample = cast(typeof(glTexImage2DMultisample))load("glTexImage2DMultisample");
 	glTexImage3DMultisample = cast(typeof(glTexImage3DMultisample))load("glTexImage3DMultisample");
 	glGetMultisamplefv = cast(typeof(glGetMultisamplefv))load("glGetMultisamplefv");
 	glSampleMaski = cast(typeof(glSampleMaski))load("glSampleMaski");
-	return true;
+	return;
 }
-bool load_GL_AMD_vertex_shader_tessellator(void* function(const(char)* name) load) {
-	if(!GL_AMD_vertex_shader_tessellator) return false;
+void load_GL_AMD_vertex_shader_tessellator(void* function(const(char)* name) load) {
+	if(!GL_AMD_vertex_shader_tessellator) return;
 	glTessellationFactorAMD = cast(typeof(glTessellationFactorAMD))load("glTessellationFactorAMD");
 	glTessellationModeAMD = cast(typeof(glTessellationModeAMD))load("glTessellationModeAMD");
-	return true;
+	return;
 }
-bool load_GL_ARB_invalidate_subdata(void* function(const(char)* name) load) {
-	if(!GL_ARB_invalidate_subdata) return false;
+void load_GL_ARB_invalidate_subdata(void* function(const(char)* name) load) {
+	if(!GL_ARB_invalidate_subdata) return;
 	glInvalidateTexSubImage = cast(typeof(glInvalidateTexSubImage))load("glInvalidateTexSubImage");
 	glInvalidateTexImage = cast(typeof(glInvalidateTexImage))load("glInvalidateTexImage");
 	glInvalidateBufferSubData = cast(typeof(glInvalidateBufferSubData))load("glInvalidateBufferSubData");
 	glInvalidateBufferData = cast(typeof(glInvalidateBufferData))load("glInvalidateBufferData");
 	glInvalidateFramebuffer = cast(typeof(glInvalidateFramebuffer))load("glInvalidateFramebuffer");
 	glInvalidateSubFramebuffer = cast(typeof(glInvalidateSubFramebuffer))load("glInvalidateSubFramebuffer");
-	return true;
+	return;
 }
-bool load_GL_EXT_index_material(void* function(const(char)* name) load) {
-	if(!GL_EXT_index_material) return false;
+void load_GL_EXT_index_material(void* function(const(char)* name) load) {
+	if(!GL_EXT_index_material) return;
 	glIndexMaterialEXT = cast(typeof(glIndexMaterialEXT))load("glIndexMaterialEXT");
-	return true;
+	return;
 }
-bool load_GL_INTEL_parallel_arrays(void* function(const(char)* name) load) {
-	if(!GL_INTEL_parallel_arrays) return false;
+void load_GL_INTEL_parallel_arrays(void* function(const(char)* name) load) {
+	if(!GL_INTEL_parallel_arrays) return;
 	glVertexPointervINTEL = cast(typeof(glVertexPointervINTEL))load("glVertexPointervINTEL");
 	glNormalPointervINTEL = cast(typeof(glNormalPointervINTEL))load("glNormalPointervINTEL");
 	glColorPointervINTEL = cast(typeof(glColorPointervINTEL))load("glColorPointervINTEL");
 	glTexCoordPointervINTEL = cast(typeof(glTexCoordPointervINTEL))load("glTexCoordPointervINTEL");
-	return true;
+	return;
 }
-bool load_GL_ATI_draw_buffers(void* function(const(char)* name) load) {
-	if(!GL_ATI_draw_buffers) return false;
+void load_GL_ATI_draw_buffers(void* function(const(char)* name) load) {
+	if(!GL_ATI_draw_buffers) return;
 	glDrawBuffersATI = cast(typeof(glDrawBuffersATI))load("glDrawBuffersATI");
-	return true;
+	return;
 }
-bool load_GL_SGIX_pixel_texture(void* function(const(char)* name) load) {
-	if(!GL_SGIX_pixel_texture) return false;
+void load_GL_SGIX_pixel_texture(void* function(const(char)* name) load) {
+	if(!GL_SGIX_pixel_texture) return;
 	glPixelTexGenSGIX = cast(typeof(glPixelTexGenSGIX))load("glPixelTexGenSGIX");
-	return true;
+	return;
 }
-bool load_GL_ARB_timer_query(void* function(const(char)* name) load) {
-	if(!GL_ARB_timer_query) return false;
+void load_GL_ARB_timer_query(void* function(const(char)* name) load) {
+	if(!GL_ARB_timer_query) return;
 	glQueryCounter = cast(typeof(glQueryCounter))load("glQueryCounter");
 	glGetQueryObjecti64v = cast(typeof(glGetQueryObjecti64v))load("glGetQueryObjecti64v");
 	glGetQueryObjectui64v = cast(typeof(glGetQueryObjectui64v))load("glGetQueryObjectui64v");
-	return true;
+	return;
 }
-bool load_GL_NV_parameter_buffer_object(void* function(const(char)* name) load) {
-	if(!GL_NV_parameter_buffer_object) return false;
+void load_GL_NV_parameter_buffer_object(void* function(const(char)* name) load) {
+	if(!GL_NV_parameter_buffer_object) return;
 	glProgramBufferParametersfvNV = cast(typeof(glProgramBufferParametersfvNV))load("glProgramBufferParametersfvNV");
 	glProgramBufferParametersIivNV = cast(typeof(glProgramBufferParametersIivNV))load("glProgramBufferParametersIivNV");
 	glProgramBufferParametersIuivNV = cast(typeof(glProgramBufferParametersIuivNV))load("glProgramBufferParametersIuivNV");
-	return true;
+	return;
 }
-bool load_GL_ARB_uniform_buffer_object(void* function(const(char)* name) load) {
-	if(!GL_ARB_uniform_buffer_object) return false;
+void load_GL_ARB_uniform_buffer_object(void* function(const(char)* name) load) {
+	if(!GL_ARB_uniform_buffer_object) return;
 	glGetUniformIndices = cast(typeof(glGetUniformIndices))load("glGetUniformIndices");
 	glGetActiveUniformsiv = cast(typeof(glGetActiveUniformsiv))load("glGetActiveUniformsiv");
 	glGetActiveUniformName = cast(typeof(glGetActiveUniformName))load("glGetActiveUniformName");
@@ -2989,10 +2990,10 @@ bool load_GL_ARB_uniform_buffer_object(void* function(const(char)* name) load) {
 	glGetActiveUniformBlockiv = cast(typeof(glGetActiveUniformBlockiv))load("glGetActiveUniformBlockiv");
 	glGetActiveUniformBlockName = cast(typeof(glGetActiveUniformBlockName))load("glGetActiveUniformBlockName");
 	glUniformBlockBinding = cast(typeof(glUniformBlockBinding))load("glUniformBlockBinding");
-	return true;
+	return;
 }
-bool load_GL_NV_transform_feedback2(void* function(const(char)* name) load) {
-	if(!GL_NV_transform_feedback2) return false;
+void load_GL_NV_transform_feedback2(void* function(const(char)* name) load) {
+	if(!GL_NV_transform_feedback2) return;
 	glBindTransformFeedbackNV = cast(typeof(glBindTransformFeedbackNV))load("glBindTransformFeedbackNV");
 	glDeleteTransformFeedbacksNV = cast(typeof(glDeleteTransformFeedbacksNV))load("glDeleteTransformFeedbacksNV");
 	glGenTransformFeedbacksNV = cast(typeof(glGenTransformFeedbacksNV))load("glGenTransformFeedbacksNV");
@@ -3000,15 +3001,15 @@ bool load_GL_NV_transform_feedback2(void* function(const(char)* name) load) {
 	glPauseTransformFeedbackNV = cast(typeof(glPauseTransformFeedbackNV))load("glPauseTransformFeedbackNV");
 	glResumeTransformFeedbackNV = cast(typeof(glResumeTransformFeedbackNV))load("glResumeTransformFeedbackNV");
 	glDrawTransformFeedbackNV = cast(typeof(glDrawTransformFeedbackNV))load("glDrawTransformFeedbackNV");
-	return true;
+	return;
 }
-bool load_GL_EXT_blend_color(void* function(const(char)* name) load) {
-	if(!GL_EXT_blend_color) return false;
+void load_GL_EXT_blend_color(void* function(const(char)* name) load) {
+	if(!GL_EXT_blend_color) return;
 	glBlendColorEXT = cast(typeof(glBlendColorEXT))load("glBlendColorEXT");
-	return true;
+	return;
 }
-bool load_GL_EXT_histogram(void* function(const(char)* name) load) {
-	if(!GL_EXT_histogram) return false;
+void load_GL_EXT_histogram(void* function(const(char)* name) load) {
+	if(!GL_EXT_histogram) return;
 	glGetHistogramEXT = cast(typeof(glGetHistogramEXT))load("glGetHistogramEXT");
 	glGetHistogramParameterfvEXT = cast(typeof(glGetHistogramParameterfvEXT))load("glGetHistogramParameterfvEXT");
 	glGetHistogramParameterivEXT = cast(typeof(glGetHistogramParameterivEXT))load("glGetHistogramParameterivEXT");
@@ -3019,16 +3020,16 @@ bool load_GL_EXT_histogram(void* function(const(char)* name) load) {
 	glMinmaxEXT = cast(typeof(glMinmaxEXT))load("glMinmaxEXT");
 	glResetHistogramEXT = cast(typeof(glResetHistogramEXT))load("glResetHistogramEXT");
 	glResetMinmaxEXT = cast(typeof(glResetMinmaxEXT))load("glResetMinmaxEXT");
-	return true;
+	return;
 }
-bool load_GL_SGIS_point_parameters(void* function(const(char)* name) load) {
-	if(!GL_SGIS_point_parameters) return false;
+void load_GL_SGIS_point_parameters(void* function(const(char)* name) load) {
+	if(!GL_SGIS_point_parameters) return;
 	glPointParameterfSGIS = cast(typeof(glPointParameterfSGIS))load("glPointParameterfSGIS");
 	glPointParameterfvSGIS = cast(typeof(glPointParameterfvSGIS))load("glPointParameterfvSGIS");
-	return true;
+	return;
 }
-bool load_GL_EXT_direct_state_access(void* function(const(char)* name) load) {
-	if(!GL_EXT_direct_state_access) return false;
+void load_GL_EXT_direct_state_access(void* function(const(char)* name) load) {
+	if(!GL_EXT_direct_state_access) return;
 	glMatrixLoadfEXT = cast(typeof(glMatrixLoadfEXT))load("glMatrixLoadfEXT");
 	glMatrixLoaddEXT = cast(typeof(glMatrixLoaddEXT))load("glMatrixLoaddEXT");
 	glMatrixMultfEXT = cast(typeof(glMatrixMultfEXT))load("glMatrixMultfEXT");
@@ -3282,15 +3283,15 @@ bool load_GL_EXT_direct_state_access(void* function(const(char)* name) load) {
 	glVertexArrayVertexBindingDivisorEXT = cast(typeof(glVertexArrayVertexBindingDivisorEXT))load("glVertexArrayVertexBindingDivisorEXT");
 	glVertexArrayVertexAttribLOffsetEXT = cast(typeof(glVertexArrayVertexAttribLOffsetEXT))load("glVertexArrayVertexAttribLOffsetEXT");
 	glTexturePageCommitmentEXT = cast(typeof(glTexturePageCommitmentEXT))load("glTexturePageCommitmentEXT");
-	return true;
+	return;
 }
-bool load_GL_AMD_sample_positions(void* function(const(char)* name) load) {
-	if(!GL_AMD_sample_positions) return false;
+void load_GL_AMD_sample_positions(void* function(const(char)* name) load) {
+	if(!GL_AMD_sample_positions) return;
 	glSetMultisamplefvAMD = cast(typeof(glSetMultisamplefvAMD))load("glSetMultisamplefvAMD");
-	return true;
+	return;
 }
-bool load_GL_NV_vertex_program(void* function(const(char)* name) load) {
-	if(!GL_NV_vertex_program) return false;
+void load_GL_NV_vertex_program(void* function(const(char)* name) load) {
+	if(!GL_NV_vertex_program) return;
 	glAreProgramsResidentNV = cast(typeof(glAreProgramsResidentNV))load("glAreProgramsResidentNV");
 	glBindProgramNV = cast(typeof(glBindProgramNV))load("glBindProgramNV");
 	glDeleteProgramsNV = cast(typeof(glDeleteProgramsNV))load("glDeleteProgramsNV");
@@ -3355,16 +3356,16 @@ bool load_GL_NV_vertex_program(void* function(const(char)* name) load) {
 	glVertexAttribs4fvNV = cast(typeof(glVertexAttribs4fvNV))load("glVertexAttribs4fvNV");
 	glVertexAttribs4svNV = cast(typeof(glVertexAttribs4svNV))load("glVertexAttribs4svNV");
 	glVertexAttribs4ubvNV = cast(typeof(glVertexAttribs4ubvNV))load("glVertexAttribs4ubvNV");
-	return true;
+	return;
 }
-bool load_GL_NVX_conditional_render(void* function(const(char)* name) load) {
-	if(!GL_NVX_conditional_render) return false;
+void load_GL_NVX_conditional_render(void* function(const(char)* name) load) {
+	if(!GL_NVX_conditional_render) return;
 	glBeginConditionalRenderNVX = cast(typeof(glBeginConditionalRenderNVX))load("glBeginConditionalRenderNVX");
 	glEndConditionalRenderNVX = cast(typeof(glEndConditionalRenderNVX))load("glEndConditionalRenderNVX");
-	return true;
+	return;
 }
-bool load_GL_EXT_vertex_shader(void* function(const(char)* name) load) {
-	if(!GL_EXT_vertex_shader) return false;
+void load_GL_EXT_vertex_shader(void* function(const(char)* name) load) {
+	if(!GL_EXT_vertex_shader) return;
 	glBeginVertexShaderEXT = cast(typeof(glBeginVertexShaderEXT))load("glBeginVertexShaderEXT");
 	glEndVertexShaderEXT = cast(typeof(glEndVertexShaderEXT))load("glEndVertexShaderEXT");
 	glBindVertexShaderEXT = cast(typeof(glBindVertexShaderEXT))load("glBindVertexShaderEXT");
@@ -3407,15 +3408,15 @@ bool load_GL_EXT_vertex_shader(void* function(const(char)* name) load) {
 	glGetLocalConstantBooleanvEXT = cast(typeof(glGetLocalConstantBooleanvEXT))load("glGetLocalConstantBooleanvEXT");
 	glGetLocalConstantIntegervEXT = cast(typeof(glGetLocalConstantIntegervEXT))load("glGetLocalConstantIntegervEXT");
 	glGetLocalConstantFloatvEXT = cast(typeof(glGetLocalConstantFloatvEXT))load("glGetLocalConstantFloatvEXT");
-	return true;
+	return;
 }
-bool load_GL_EXT_blend_func_separate(void* function(const(char)* name) load) {
-	if(!GL_EXT_blend_func_separate) return false;
+void load_GL_EXT_blend_func_separate(void* function(const(char)* name) load) {
+	if(!GL_EXT_blend_func_separate) return;
 	glBlendFuncSeparateEXT = cast(typeof(glBlendFuncSeparateEXT))load("glBlendFuncSeparateEXT");
-	return true;
+	return;
 }
-bool load_GL_APPLE_fence(void* function(const(char)* name) load) {
-	if(!GL_APPLE_fence) return false;
+void load_GL_APPLE_fence(void* function(const(char)* name) load) {
+	if(!GL_APPLE_fence) return;
 	glGenFencesAPPLE = cast(typeof(glGenFencesAPPLE))load("glGenFencesAPPLE");
 	glDeleteFencesAPPLE = cast(typeof(glDeleteFencesAPPLE))load("glDeleteFencesAPPLE");
 	glSetFenceAPPLE = cast(typeof(glSetFenceAPPLE))load("glSetFenceAPPLE");
@@ -3424,10 +3425,10 @@ bool load_GL_APPLE_fence(void* function(const(char)* name) load) {
 	glFinishFenceAPPLE = cast(typeof(glFinishFenceAPPLE))load("glFinishFenceAPPLE");
 	glTestObjectAPPLE = cast(typeof(glTestObjectAPPLE))load("glTestObjectAPPLE");
 	glFinishObjectAPPLE = cast(typeof(glFinishObjectAPPLE))load("glFinishObjectAPPLE");
-	return true;
+	return;
 }
-bool load_GL_OES_byte_coordinates(void* function(const(char)* name) load) {
-	if(!GL_OES_byte_coordinates) return false;
+void load_GL_OES_byte_coordinates(void* function(const(char)* name) load) {
+	if(!GL_OES_byte_coordinates) return;
 	glMultiTexCoord1bOES = cast(typeof(glMultiTexCoord1bOES))load("glMultiTexCoord1bOES");
 	glMultiTexCoord1bvOES = cast(typeof(glMultiTexCoord1bvOES))load("glMultiTexCoord1bvOES");
 	glMultiTexCoord2bOES = cast(typeof(glMultiTexCoord2bOES))load("glMultiTexCoord2bOES");
@@ -3450,32 +3451,32 @@ bool load_GL_OES_byte_coordinates(void* function(const(char)* name) load) {
 	glVertex3bvOES = cast(typeof(glVertex3bvOES))load("glVertex3bvOES");
 	glVertex4bOES = cast(typeof(glVertex4bOES))load("glVertex4bOES");
 	glVertex4bvOES = cast(typeof(glVertex4bvOES))load("glVertex4bvOES");
-	return true;
+	return;
 }
-bool load_GL_ARB_transpose_matrix(void* function(const(char)* name) load) {
-	if(!GL_ARB_transpose_matrix) return false;
+void load_GL_ARB_transpose_matrix(void* function(const(char)* name) load) {
+	if(!GL_ARB_transpose_matrix) return;
 	glLoadTransposeMatrixfARB = cast(typeof(glLoadTransposeMatrixfARB))load("glLoadTransposeMatrixfARB");
 	glLoadTransposeMatrixdARB = cast(typeof(glLoadTransposeMatrixdARB))load("glLoadTransposeMatrixdARB");
 	glMultTransposeMatrixfARB = cast(typeof(glMultTransposeMatrixfARB))load("glMultTransposeMatrixfARB");
 	glMultTransposeMatrixdARB = cast(typeof(glMultTransposeMatrixdARB))load("glMultTransposeMatrixdARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_provoking_vertex(void* function(const(char)* name) load) {
-	if(!GL_ARB_provoking_vertex) return false;
+void load_GL_ARB_provoking_vertex(void* function(const(char)* name) load) {
+	if(!GL_ARB_provoking_vertex) return;
 	glProvokingVertex = cast(typeof(glProvokingVertex))load("glProvokingVertex");
-	return true;
+	return;
 }
-bool load_GL_EXT_fog_coord(void* function(const(char)* name) load) {
-	if(!GL_EXT_fog_coord) return false;
+void load_GL_EXT_fog_coord(void* function(const(char)* name) load) {
+	if(!GL_EXT_fog_coord) return;
 	glFogCoordfEXT = cast(typeof(glFogCoordfEXT))load("glFogCoordfEXT");
 	glFogCoordfvEXT = cast(typeof(glFogCoordfvEXT))load("glFogCoordfvEXT");
 	glFogCoorddEXT = cast(typeof(glFogCoorddEXT))load("glFogCoorddEXT");
 	glFogCoorddvEXT = cast(typeof(glFogCoorddvEXT))load("glFogCoorddvEXT");
 	glFogCoordPointerEXT = cast(typeof(glFogCoordPointerEXT))load("glFogCoordPointerEXT");
-	return true;
+	return;
 }
-bool load_GL_EXT_vertex_array(void* function(const(char)* name) load) {
-	if(!GL_EXT_vertex_array) return false;
+void load_GL_EXT_vertex_array(void* function(const(char)* name) load) {
+	if(!GL_EXT_vertex_array) return;
 	glArrayElementEXT = cast(typeof(glArrayElementEXT))load("glArrayElementEXT");
 	glColorPointerEXT = cast(typeof(glColorPointerEXT))load("glColorPointerEXT");
 	glDrawArraysEXT = cast(typeof(glDrawArraysEXT))load("glDrawArraysEXT");
@@ -3485,26 +3486,26 @@ bool load_GL_EXT_vertex_array(void* function(const(char)* name) load) {
 	glNormalPointerEXT = cast(typeof(glNormalPointerEXT))load("glNormalPointerEXT");
 	glTexCoordPointerEXT = cast(typeof(glTexCoordPointerEXT))load("glTexCoordPointerEXT");
 	glVertexPointerEXT = cast(typeof(glVertexPointerEXT))load("glVertexPointerEXT");
-	return true;
+	return;
 }
-bool load_GL_EXT_blend_equation_separate(void* function(const(char)* name) load) {
-	if(!GL_EXT_blend_equation_separate) return false;
+void load_GL_EXT_blend_equation_separate(void* function(const(char)* name) load) {
+	if(!GL_EXT_blend_equation_separate) return;
 	glBlendEquationSeparateEXT = cast(typeof(glBlendEquationSeparateEXT))load("glBlendEquationSeparateEXT");
-	return true;
+	return;
 }
-bool load_GL_ARB_multi_draw_indirect(void* function(const(char)* name) load) {
-	if(!GL_ARB_multi_draw_indirect) return false;
+void load_GL_ARB_multi_draw_indirect(void* function(const(char)* name) load) {
+	if(!GL_ARB_multi_draw_indirect) return;
 	glMultiDrawArraysIndirect = cast(typeof(glMultiDrawArraysIndirect))load("glMultiDrawArraysIndirect");
 	glMultiDrawElementsIndirect = cast(typeof(glMultiDrawElementsIndirect))load("glMultiDrawElementsIndirect");
-	return true;
+	return;
 }
-bool load_GL_NV_copy_image(void* function(const(char)* name) load) {
-	if(!GL_NV_copy_image) return false;
+void load_GL_NV_copy_image(void* function(const(char)* name) load) {
+	if(!GL_NV_copy_image) return;
 	glCopyImageSubDataNV = cast(typeof(glCopyImageSubDataNV))load("glCopyImageSubDataNV");
-	return true;
+	return;
 }
-bool load_GL_ARB_transform_feedback2(void* function(const(char)* name) load) {
-	if(!GL_ARB_transform_feedback2) return false;
+void load_GL_ARB_transform_feedback2(void* function(const(char)* name) load) {
+	if(!GL_ARB_transform_feedback2) return;
 	glBindTransformFeedback = cast(typeof(glBindTransformFeedback))load("glBindTransformFeedback");
 	glDeleteTransformFeedbacks = cast(typeof(glDeleteTransformFeedbacks))load("glDeleteTransformFeedbacks");
 	glGenTransformFeedbacks = cast(typeof(glGenTransformFeedbacks))load("glGenTransformFeedbacks");
@@ -3512,28 +3513,28 @@ bool load_GL_ARB_transform_feedback2(void* function(const(char)* name) load) {
 	glPauseTransformFeedback = cast(typeof(glPauseTransformFeedback))load("glPauseTransformFeedback");
 	glResumeTransformFeedback = cast(typeof(glResumeTransformFeedback))load("glResumeTransformFeedback");
 	glDrawTransformFeedback = cast(typeof(glDrawTransformFeedback))load("glDrawTransformFeedback");
-	return true;
+	return;
 }
-bool load_GL_ARB_transform_feedback3(void* function(const(char)* name) load) {
-	if(!GL_ARB_transform_feedback3) return false;
+void load_GL_ARB_transform_feedback3(void* function(const(char)* name) load) {
+	if(!GL_ARB_transform_feedback3) return;
 	glDrawTransformFeedbackStream = cast(typeof(glDrawTransformFeedbackStream))load("glDrawTransformFeedbackStream");
 	glBeginQueryIndexed = cast(typeof(glBeginQueryIndexed))load("glBeginQueryIndexed");
 	glEndQueryIndexed = cast(typeof(glEndQueryIndexed))load("glEndQueryIndexed");
 	glGetQueryIndexediv = cast(typeof(glGetQueryIndexediv))load("glGetQueryIndexediv");
-	return true;
+	return;
 }
-bool load_GL_EXT_pixel_transform(void* function(const(char)* name) load) {
-	if(!GL_EXT_pixel_transform) return false;
+void load_GL_EXT_pixel_transform(void* function(const(char)* name) load) {
+	if(!GL_EXT_pixel_transform) return;
 	glPixelTransformParameteriEXT = cast(typeof(glPixelTransformParameteriEXT))load("glPixelTransformParameteriEXT");
 	glPixelTransformParameterfEXT = cast(typeof(glPixelTransformParameterfEXT))load("glPixelTransformParameterfEXT");
 	glPixelTransformParameterivEXT = cast(typeof(glPixelTransformParameterivEXT))load("glPixelTransformParameterivEXT");
 	glPixelTransformParameterfvEXT = cast(typeof(glPixelTransformParameterfvEXT))load("glPixelTransformParameterfvEXT");
 	glGetPixelTransformParameterivEXT = cast(typeof(glGetPixelTransformParameterivEXT))load("glGetPixelTransformParameterivEXT");
 	glGetPixelTransformParameterfvEXT = cast(typeof(glGetPixelTransformParameterfvEXT))load("glGetPixelTransformParameterfvEXT");
-	return true;
+	return;
 }
-bool load_GL_ATI_fragment_shader(void* function(const(char)* name) load) {
-	if(!GL_ATI_fragment_shader) return false;
+void load_GL_ATI_fragment_shader(void* function(const(char)* name) load) {
+	if(!GL_ATI_fragment_shader) return;
 	glGenFragmentShadersATI = cast(typeof(glGenFragmentShadersATI))load("glGenFragmentShadersATI");
 	glBindFragmentShaderATI = cast(typeof(glBindFragmentShaderATI))load("glBindFragmentShaderATI");
 	glDeleteFragmentShaderATI = cast(typeof(glDeleteFragmentShaderATI))load("glDeleteFragmentShaderATI");
@@ -3548,18 +3549,18 @@ bool load_GL_ATI_fragment_shader(void* function(const(char)* name) load) {
 	glAlphaFragmentOp2ATI = cast(typeof(glAlphaFragmentOp2ATI))load("glAlphaFragmentOp2ATI");
 	glAlphaFragmentOp3ATI = cast(typeof(glAlphaFragmentOp3ATI))load("glAlphaFragmentOp3ATI");
 	glSetFragmentShaderConstantATI = cast(typeof(glSetFragmentShaderConstantATI))load("glSetFragmentShaderConstantATI");
-	return true;
+	return;
 }
-bool load_GL_ARB_vertex_array_object(void* function(const(char)* name) load) {
-	if(!GL_ARB_vertex_array_object) return false;
+void load_GL_ARB_vertex_array_object(void* function(const(char)* name) load) {
+	if(!GL_ARB_vertex_array_object) return;
 	glBindVertexArray = cast(typeof(glBindVertexArray))load("glBindVertexArray");
 	glDeleteVertexArrays = cast(typeof(glDeleteVertexArrays))load("glDeleteVertexArrays");
 	glGenVertexArrays = cast(typeof(glGenVertexArrays))load("glGenVertexArrays");
 	glIsVertexArray = cast(typeof(glIsVertexArray))load("glIsVertexArray");
-	return true;
+	return;
 }
-bool load_GL_SUN_triangle_list(void* function(const(char)* name) load) {
-	if(!GL_SUN_triangle_list) return false;
+void load_GL_SUN_triangle_list(void* function(const(char)* name) load) {
+	if(!GL_SUN_triangle_list) return;
 	glReplacementCodeuiSUN = cast(typeof(glReplacementCodeuiSUN))load("glReplacementCodeuiSUN");
 	glReplacementCodeusSUN = cast(typeof(glReplacementCodeusSUN))load("glReplacementCodeusSUN");
 	glReplacementCodeubSUN = cast(typeof(glReplacementCodeubSUN))load("glReplacementCodeubSUN");
@@ -3567,26 +3568,26 @@ bool load_GL_SUN_triangle_list(void* function(const(char)* name) load) {
 	glReplacementCodeusvSUN = cast(typeof(glReplacementCodeusvSUN))load("glReplacementCodeusvSUN");
 	glReplacementCodeubvSUN = cast(typeof(glReplacementCodeubvSUN))load("glReplacementCodeubvSUN");
 	glReplacementCodePointerSUN = cast(typeof(glReplacementCodePointerSUN))load("glReplacementCodePointerSUN");
-	return true;
+	return;
 }
-bool load_GL_ARB_transform_feedback_instanced(void* function(const(char)* name) load) {
-	if(!GL_ARB_transform_feedback_instanced) return false;
+void load_GL_ARB_transform_feedback_instanced(void* function(const(char)* name) load) {
+	if(!GL_ARB_transform_feedback_instanced) return;
 	glDrawTransformFeedbackInstanced = cast(typeof(glDrawTransformFeedbackInstanced))load("glDrawTransformFeedbackInstanced");
 	glDrawTransformFeedbackStreamInstanced = cast(typeof(glDrawTransformFeedbackStreamInstanced))load("glDrawTransformFeedbackStreamInstanced");
-	return true;
+	return;
 }
-bool load_GL_SGIX_async(void* function(const(char)* name) load) {
-	if(!GL_SGIX_async) return false;
+void load_GL_SGIX_async(void* function(const(char)* name) load) {
+	if(!GL_SGIX_async) return;
 	glAsyncMarkerSGIX = cast(typeof(glAsyncMarkerSGIX))load("glAsyncMarkerSGIX");
 	glFinishAsyncSGIX = cast(typeof(glFinishAsyncSGIX))load("glFinishAsyncSGIX");
 	glPollAsyncSGIX = cast(typeof(glPollAsyncSGIX))load("glPollAsyncSGIX");
 	glGenAsyncMarkersSGIX = cast(typeof(glGenAsyncMarkersSGIX))load("glGenAsyncMarkersSGIX");
 	glDeleteAsyncMarkersSGIX = cast(typeof(glDeleteAsyncMarkersSGIX))load("glDeleteAsyncMarkersSGIX");
 	glIsAsyncMarkerSGIX = cast(typeof(glIsAsyncMarkerSGIX))load("glIsAsyncMarkerSGIX");
-	return true;
+	return;
 }
-bool load_GL_NV_gpu_shader5(void* function(const(char)* name) load) {
-	if(!GL_NV_gpu_shader5) return false;
+void load_GL_NV_gpu_shader5(void* function(const(char)* name) load) {
+	if(!GL_NV_gpu_shader5) return;
 	glUniform1i64NV = cast(typeof(glUniform1i64NV))load("glUniform1i64NV");
 	glUniform2i64NV = cast(typeof(glUniform2i64NV))load("glUniform2i64NV");
 	glUniform3i64NV = cast(typeof(glUniform3i64NV))load("glUniform3i64NV");
@@ -3620,25 +3621,25 @@ bool load_GL_NV_gpu_shader5(void* function(const(char)* name) load) {
 	glProgramUniform2ui64vNV = cast(typeof(glProgramUniform2ui64vNV))load("glProgramUniform2ui64vNV");
 	glProgramUniform3ui64vNV = cast(typeof(glProgramUniform3ui64vNV))load("glProgramUniform3ui64vNV");
 	glProgramUniform4ui64vNV = cast(typeof(glProgramUniform4ui64vNV))load("glProgramUniform4ui64vNV");
-	return true;
+	return;
 }
-bool load_GL_ARB_ES2_compatibility(void* function(const(char)* name) load) {
-	if(!GL_ARB_ES2_compatibility) return false;
+void load_GL_ARB_ES2_compatibility(void* function(const(char)* name) load) {
+	if(!GL_ARB_ES2_compatibility) return;
 	glReleaseShaderCompiler = cast(typeof(glReleaseShaderCompiler))load("glReleaseShaderCompiler");
 	glShaderBinary = cast(typeof(glShaderBinary))load("glShaderBinary");
 	glGetShaderPrecisionFormat = cast(typeof(glGetShaderPrecisionFormat))load("glGetShaderPrecisionFormat");
 	glDepthRangef = cast(typeof(glDepthRangef))load("glDepthRangef");
 	glClearDepthf = cast(typeof(glClearDepthf))load("glClearDepthf");
-	return true;
+	return;
 }
-bool load_GL_ARB_indirect_parameters(void* function(const(char)* name) load) {
-	if(!GL_ARB_indirect_parameters) return false;
+void load_GL_ARB_indirect_parameters(void* function(const(char)* name) load) {
+	if(!GL_ARB_indirect_parameters) return;
 	glMultiDrawArraysIndirectCountARB = cast(typeof(glMultiDrawArraysIndirectCountARB))load("glMultiDrawArraysIndirectCountARB");
 	glMultiDrawElementsIndirectCountARB = cast(typeof(glMultiDrawElementsIndirectCountARB))load("glMultiDrawElementsIndirectCountARB");
-	return true;
+	return;
 }
-bool load_GL_NV_half_float(void* function(const(char)* name) load) {
-	if(!GL_NV_half_float) return false;
+void load_GL_NV_half_float(void* function(const(char)* name) load) {
+	if(!GL_NV_half_float) return;
 	glVertex2hNV = cast(typeof(glVertex2hNV))load("glVertex2hNV");
 	glVertex2hvNV = cast(typeof(glVertex2hvNV))load("glVertex2hvNV");
 	glVertex3hNV = cast(typeof(glVertex3hNV))load("glVertex3hNV");
@@ -3685,10 +3686,10 @@ bool load_GL_NV_half_float(void* function(const(char)* name) load) {
 	glVertexAttribs2hvNV = cast(typeof(glVertexAttribs2hvNV))load("glVertexAttribs2hvNV");
 	glVertexAttribs3hvNV = cast(typeof(glVertexAttribs3hvNV))load("glVertexAttribs3hvNV");
 	glVertexAttribs4hvNV = cast(typeof(glVertexAttribs4hvNV))load("glVertexAttribs4hvNV");
-	return true;
+	return;
 }
-bool load_GL_EXT_coordinate_frame(void* function(const(char)* name) load) {
-	if(!GL_EXT_coordinate_frame) return false;
+void load_GL_EXT_coordinate_frame(void* function(const(char)* name) load) {
+	if(!GL_EXT_coordinate_frame) return;
 	glTangent3bEXT = cast(typeof(glTangent3bEXT))load("glTangent3bEXT");
 	glTangent3bvEXT = cast(typeof(glTangent3bvEXT))load("glTangent3bvEXT");
 	glTangent3dEXT = cast(typeof(glTangent3dEXT))load("glTangent3dEXT");
@@ -3711,23 +3712,23 @@ bool load_GL_EXT_coordinate_frame(void* function(const(char)* name) load) {
 	glBinormal3svEXT = cast(typeof(glBinormal3svEXT))load("glBinormal3svEXT");
 	glTangentPointerEXT = cast(typeof(glTangentPointerEXT))load("glTangentPointerEXT");
 	glBinormalPointerEXT = cast(typeof(glBinormalPointerEXT))load("glBinormalPointerEXT");
-	return true;
+	return;
 }
-bool load_GL_EXT_compiled_vertex_array(void* function(const(char)* name) load) {
-	if(!GL_EXT_compiled_vertex_array) return false;
+void load_GL_EXT_compiled_vertex_array(void* function(const(char)* name) load) {
+	if(!GL_EXT_compiled_vertex_array) return;
 	glLockArraysEXT = cast(typeof(glLockArraysEXT))load("glLockArraysEXT");
 	glUnlockArraysEXT = cast(typeof(glUnlockArraysEXT))load("glUnlockArraysEXT");
-	return true;
+	return;
 }
-bool load_GL_NV_depth_buffer_float(void* function(const(char)* name) load) {
-	if(!GL_NV_depth_buffer_float) return false;
+void load_GL_NV_depth_buffer_float(void* function(const(char)* name) load) {
+	if(!GL_NV_depth_buffer_float) return;
 	glDepthRangedNV = cast(typeof(glDepthRangedNV))load("glDepthRangedNV");
 	glClearDepthdNV = cast(typeof(glClearDepthdNV))load("glClearDepthdNV");
 	glDepthBoundsdNV = cast(typeof(glDepthBoundsdNV))load("glDepthBoundsdNV");
-	return true;
+	return;
 }
-bool load_GL_NV_occlusion_query(void* function(const(char)* name) load) {
-	if(!GL_NV_occlusion_query) return false;
+void load_GL_NV_occlusion_query(void* function(const(char)* name) load) {
+	if(!GL_NV_occlusion_query) return;
 	glGenOcclusionQueriesNV = cast(typeof(glGenOcclusionQueriesNV))load("glGenOcclusionQueriesNV");
 	glDeleteOcclusionQueriesNV = cast(typeof(glDeleteOcclusionQueriesNV))load("glDeleteOcclusionQueriesNV");
 	glIsOcclusionQueryNV = cast(typeof(glIsOcclusionQueryNV))load("glIsOcclusionQueryNV");
@@ -3735,16 +3736,16 @@ bool load_GL_NV_occlusion_query(void* function(const(char)* name) load) {
 	glEndOcclusionQueryNV = cast(typeof(glEndOcclusionQueryNV))load("glEndOcclusionQueryNV");
 	glGetOcclusionQueryivNV = cast(typeof(glGetOcclusionQueryivNV))load("glGetOcclusionQueryivNV");
 	glGetOcclusionQueryuivNV = cast(typeof(glGetOcclusionQueryuivNV))load("glGetOcclusionQueryuivNV");
-	return true;
+	return;
 }
-bool load_GL_APPLE_flush_buffer_range(void* function(const(char)* name) load) {
-	if(!GL_APPLE_flush_buffer_range) return false;
+void load_GL_APPLE_flush_buffer_range(void* function(const(char)* name) load) {
+	if(!GL_APPLE_flush_buffer_range) return;
 	glBufferParameteriAPPLE = cast(typeof(glBufferParameteriAPPLE))load("glBufferParameteriAPPLE");
 	glFlushMappedBufferRangeAPPLE = cast(typeof(glFlushMappedBufferRangeAPPLE))load("glFlushMappedBufferRangeAPPLE");
-	return true;
+	return;
 }
-bool load_GL_ARB_imaging(void* function(const(char)* name) load) {
-	if(!GL_ARB_imaging) return false;
+void load_GL_ARB_imaging(void* function(const(char)* name) load) {
+	if(!GL_ARB_imaging) return;
 	glColorTable = cast(typeof(glColorTable))load("glColorTable");
 	glColorTableParameterfv = cast(typeof(glColorTableParameterfv))load("glColorTableParameterfv");
 	glColorTableParameteriv = cast(typeof(glColorTableParameteriv))load("glColorTableParameteriv");
@@ -3777,47 +3778,47 @@ bool load_GL_ARB_imaging(void* function(const(char)* name) load) {
 	glMinmax = cast(typeof(glMinmax))load("glMinmax");
 	glResetHistogram = cast(typeof(glResetHistogram))load("glResetHistogram");
 	glResetMinmax = cast(typeof(glResetMinmax))load("glResetMinmax");
-	return true;
+	return;
 }
-bool load_GL_ARB_draw_buffers_blend(void* function(const(char)* name) load) {
-	if(!GL_ARB_draw_buffers_blend) return false;
+void load_GL_ARB_draw_buffers_blend(void* function(const(char)* name) load) {
+	if(!GL_ARB_draw_buffers_blend) return;
 	glBlendEquationiARB = cast(typeof(glBlendEquationiARB))load("glBlendEquationiARB");
 	glBlendEquationSeparateiARB = cast(typeof(glBlendEquationSeparateiARB))load("glBlendEquationSeparateiARB");
 	glBlendFunciARB = cast(typeof(glBlendFunciARB))load("glBlendFunciARB");
 	glBlendFuncSeparateiARB = cast(typeof(glBlendFuncSeparateiARB))load("glBlendFuncSeparateiARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_clear_buffer_object(void* function(const(char)* name) load) {
-	if(!GL_ARB_clear_buffer_object) return false;
+void load_GL_ARB_clear_buffer_object(void* function(const(char)* name) load) {
+	if(!GL_ARB_clear_buffer_object) return;
 	glClearBufferData = cast(typeof(glClearBufferData))load("glClearBufferData");
 	glClearBufferSubData = cast(typeof(glClearBufferSubData))load("glClearBufferSubData");
-	return true;
+	return;
 }
-bool load_GL_ARB_multisample(void* function(const(char)* name) load) {
-	if(!GL_ARB_multisample) return false;
+void load_GL_ARB_multisample(void* function(const(char)* name) load) {
+	if(!GL_ARB_multisample) return;
 	glSampleCoverageARB = cast(typeof(glSampleCoverageARB))load("glSampleCoverageARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_sample_shading(void* function(const(char)* name) load) {
-	if(!GL_ARB_sample_shading) return false;
+void load_GL_ARB_sample_shading(void* function(const(char)* name) load) {
+	if(!GL_ARB_sample_shading) return;
 	glMinSampleShadingARB = cast(typeof(glMinSampleShadingARB))load("glMinSampleShadingARB");
-	return true;
+	return;
 }
-bool load_GL_INTEL_map_texture(void* function(const(char)* name) load) {
-	if(!GL_INTEL_map_texture) return false;
+void load_GL_INTEL_map_texture(void* function(const(char)* name) load) {
+	if(!GL_INTEL_map_texture) return;
 	glSyncTextureINTEL = cast(typeof(glSyncTextureINTEL))load("glSyncTextureINTEL");
 	glUnmapTexture2DINTEL = cast(typeof(glUnmapTexture2DINTEL))load("glUnmapTexture2DINTEL");
 	glMapTexture2DINTEL = cast(typeof(glMapTexture2DINTEL))load("glMapTexture2DINTEL");
-	return true;
+	return;
 }
-bool load_GL_ARB_compute_shader(void* function(const(char)* name) load) {
-	if(!GL_ARB_compute_shader) return false;
+void load_GL_ARB_compute_shader(void* function(const(char)* name) load) {
+	if(!GL_ARB_compute_shader) return;
 	glDispatchCompute = cast(typeof(glDispatchCompute))load("glDispatchCompute");
 	glDispatchComputeIndirect = cast(typeof(glDispatchComputeIndirect))load("glDispatchComputeIndirect");
-	return true;
+	return;
 }
-bool load_GL_IBM_vertex_array_lists(void* function(const(char)* name) load) {
-	if(!GL_IBM_vertex_array_lists) return false;
+void load_GL_IBM_vertex_array_lists(void* function(const(char)* name) load) {
+	if(!GL_IBM_vertex_array_lists) return;
 	glColorPointerListIBM = cast(typeof(glColorPointerListIBM))load("glColorPointerListIBM");
 	glSecondaryColorPointerListIBM = cast(typeof(glSecondaryColorPointerListIBM))load("glSecondaryColorPointerListIBM");
 	glEdgeFlagPointerListIBM = cast(typeof(glEdgeFlagPointerListIBM))load("glEdgeFlagPointerListIBM");
@@ -3826,15 +3827,15 @@ bool load_GL_IBM_vertex_array_lists(void* function(const(char)* name) load) {
 	glNormalPointerListIBM = cast(typeof(glNormalPointerListIBM))load("glNormalPointerListIBM");
 	glTexCoordPointerListIBM = cast(typeof(glTexCoordPointerListIBM))load("glTexCoordPointerListIBM");
 	glVertexPointerListIBM = cast(typeof(glVertexPointerListIBM))load("glVertexPointerListIBM");
-	return true;
+	return;
 }
-bool load_GL_ARB_color_buffer_float(void* function(const(char)* name) load) {
-	if(!GL_ARB_color_buffer_float) return false;
+void load_GL_ARB_color_buffer_float(void* function(const(char)* name) load) {
+	if(!GL_ARB_color_buffer_float) return;
 	glClampColorARB = cast(typeof(glClampColorARB))load("glClampColorARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_bindless_texture(void* function(const(char)* name) load) {
-	if(!GL_ARB_bindless_texture) return false;
+void load_GL_ARB_bindless_texture(void* function(const(char)* name) load) {
+	if(!GL_ARB_bindless_texture) return;
 	glGetTextureHandleARB = cast(typeof(glGetTextureHandleARB))load("glGetTextureHandleARB");
 	glGetTextureSamplerHandleARB = cast(typeof(glGetTextureSamplerHandleARB))load("glGetTextureSamplerHandleARB");
 	glMakeTextureHandleResidentARB = cast(typeof(glMakeTextureHandleResidentARB))load("glMakeTextureHandleResidentARB");
@@ -3851,10 +3852,10 @@ bool load_GL_ARB_bindless_texture(void* function(const(char)* name) load) {
 	glVertexAttribL1ui64ARB = cast(typeof(glVertexAttribL1ui64ARB))load("glVertexAttribL1ui64ARB");
 	glVertexAttribL1ui64vARB = cast(typeof(glVertexAttribL1ui64vARB))load("glVertexAttribL1ui64vARB");
 	glGetVertexAttribLui64vARB = cast(typeof(glGetVertexAttribLui64vARB))load("glGetVertexAttribLui64vARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_window_pos(void* function(const(char)* name) load) {
-	if(!GL_ARB_window_pos) return false;
+void load_GL_ARB_window_pos(void* function(const(char)* name) load) {
+	if(!GL_ARB_window_pos) return;
 	glWindowPos2dARB = cast(typeof(glWindowPos2dARB))load("glWindowPos2dARB");
 	glWindowPos2dvARB = cast(typeof(glWindowPos2dvARB))load("glWindowPos2dvARB");
 	glWindowPos2fARB = cast(typeof(glWindowPos2fARB))load("glWindowPos2fARB");
@@ -3871,47 +3872,47 @@ bool load_GL_ARB_window_pos(void* function(const(char)* name) load) {
 	glWindowPos3ivARB = cast(typeof(glWindowPos3ivARB))load("glWindowPos3ivARB");
 	glWindowPos3sARB = cast(typeof(glWindowPos3sARB))load("glWindowPos3sARB");
 	glWindowPos3svARB = cast(typeof(glWindowPos3svARB))load("glWindowPos3svARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_internalformat_query(void* function(const(char)* name) load) {
-	if(!GL_ARB_internalformat_query) return false;
+void load_GL_ARB_internalformat_query(void* function(const(char)* name) load) {
+	if(!GL_ARB_internalformat_query) return;
 	glGetInternalformativ = cast(typeof(glGetInternalformativ))load("glGetInternalformativ");
-	return true;
+	return;
 }
-bool load_GL_EXT_shader_image_load_store(void* function(const(char)* name) load) {
-	if(!GL_EXT_shader_image_load_store) return false;
+void load_GL_EXT_shader_image_load_store(void* function(const(char)* name) load) {
+	if(!GL_EXT_shader_image_load_store) return;
 	glBindImageTextureEXT = cast(typeof(glBindImageTextureEXT))load("glBindImageTextureEXT");
 	glMemoryBarrierEXT = cast(typeof(glMemoryBarrierEXT))load("glMemoryBarrierEXT");
-	return true;
+	return;
 }
-bool load_GL_EXT_copy_texture(void* function(const(char)* name) load) {
-	if(!GL_EXT_copy_texture) return false;
+void load_GL_EXT_copy_texture(void* function(const(char)* name) load) {
+	if(!GL_EXT_copy_texture) return;
 	glCopyTexImage1DEXT = cast(typeof(glCopyTexImage1DEXT))load("glCopyTexImage1DEXT");
 	glCopyTexImage2DEXT = cast(typeof(glCopyTexImage2DEXT))load("glCopyTexImage2DEXT");
 	glCopyTexSubImage1DEXT = cast(typeof(glCopyTexSubImage1DEXT))load("glCopyTexSubImage1DEXT");
 	glCopyTexSubImage2DEXT = cast(typeof(glCopyTexSubImage2DEXT))load("glCopyTexSubImage2DEXT");
 	glCopyTexSubImage3DEXT = cast(typeof(glCopyTexSubImage3DEXT))load("glCopyTexSubImage3DEXT");
-	return true;
+	return;
 }
-bool load_GL_NV_register_combiners2(void* function(const(char)* name) load) {
-	if(!GL_NV_register_combiners2) return false;
+void load_GL_NV_register_combiners2(void* function(const(char)* name) load) {
+	if(!GL_NV_register_combiners2) return;
 	glCombinerStageParameterfvNV = cast(typeof(glCombinerStageParameterfvNV))load("glCombinerStageParameterfvNV");
 	glGetCombinerStageParameterfvNV = cast(typeof(glGetCombinerStageParameterfvNV))load("glGetCombinerStageParameterfvNV");
-	return true;
+	return;
 }
-bool load_GL_NV_draw_texture(void* function(const(char)* name) load) {
-	if(!GL_NV_draw_texture) return false;
+void load_GL_NV_draw_texture(void* function(const(char)* name) load) {
+	if(!GL_NV_draw_texture) return;
 	glDrawTextureNV = cast(typeof(glDrawTextureNV))load("glDrawTextureNV");
-	return true;
+	return;
 }
-bool load_GL_EXT_draw_instanced(void* function(const(char)* name) load) {
-	if(!GL_EXT_draw_instanced) return false;
+void load_GL_EXT_draw_instanced(void* function(const(char)* name) load) {
+	if(!GL_EXT_draw_instanced) return;
 	glDrawArraysInstancedEXT = cast(typeof(glDrawArraysInstancedEXT))load("glDrawArraysInstancedEXT");
 	glDrawElementsInstancedEXT = cast(typeof(glDrawElementsInstancedEXT))load("glDrawElementsInstancedEXT");
-	return true;
+	return;
 }
-bool load_GL_ARB_viewport_array(void* function(const(char)* name) load) {
-	if(!GL_ARB_viewport_array) return false;
+void load_GL_ARB_viewport_array(void* function(const(char)* name) load) {
+	if(!GL_ARB_viewport_array) return;
 	glViewportArrayv = cast(typeof(glViewportArrayv))load("glViewportArrayv");
 	glViewportIndexedf = cast(typeof(glViewportIndexedf))load("glViewportIndexedf");
 	glViewportIndexedfv = cast(typeof(glViewportIndexedfv))load("glViewportIndexedfv");
@@ -3922,10 +3923,10 @@ bool load_GL_ARB_viewport_array(void* function(const(char)* name) load) {
 	glDepthRangeIndexed = cast(typeof(glDepthRangeIndexed))load("glDepthRangeIndexed");
 	glGetFloati_v = cast(typeof(glGetFloati_v))load("glGetFloati_v");
 	glGetDoublei_v = cast(typeof(glGetDoublei_v))load("glGetDoublei_v");
-	return true;
+	return;
 }
-bool load_GL_ARB_separate_shader_objects(void* function(const(char)* name) load) {
-	if(!GL_ARB_separate_shader_objects) return false;
+void load_GL_ARB_separate_shader_objects(void* function(const(char)* name) load) {
+	if(!GL_ARB_separate_shader_objects) return;
 	glUseProgramStages = cast(typeof(glUseProgramStages))load("glUseProgramStages");
 	glActiveShaderProgram = cast(typeof(glActiveShaderProgram))load("glActiveShaderProgram");
 	glCreateShaderProgramv = cast(typeof(glCreateShaderProgramv))load("glCreateShaderProgramv");
@@ -3986,25 +3987,25 @@ bool load_GL_ARB_separate_shader_objects(void* function(const(char)* name) load)
 	glProgramUniformMatrix4x3dv = cast(typeof(glProgramUniformMatrix4x3dv))load("glProgramUniformMatrix4x3dv");
 	glValidateProgramPipeline = cast(typeof(glValidateProgramPipeline))load("glValidateProgramPipeline");
 	glGetProgramPipelineInfoLog = cast(typeof(glGetProgramPipelineInfoLog))load("glGetProgramPipelineInfoLog");
-	return true;
+	return;
 }
-bool load_GL_EXT_depth_bounds_test(void* function(const(char)* name) load) {
-	if(!GL_EXT_depth_bounds_test) return false;
+void load_GL_EXT_depth_bounds_test(void* function(const(char)* name) load) {
+	if(!GL_EXT_depth_bounds_test) return;
 	glDepthBoundsEXT = cast(typeof(glDepthBoundsEXT))load("glDepthBoundsEXT");
-	return true;
+	return;
 }
-bool load_GL_HP_image_transform(void* function(const(char)* name) load) {
-	if(!GL_HP_image_transform) return false;
+void load_GL_HP_image_transform(void* function(const(char)* name) load) {
+	if(!GL_HP_image_transform) return;
 	glImageTransformParameteriHP = cast(typeof(glImageTransformParameteriHP))load("glImageTransformParameteriHP");
 	glImageTransformParameterfHP = cast(typeof(glImageTransformParameterfHP))load("glImageTransformParameterfHP");
 	glImageTransformParameterivHP = cast(typeof(glImageTransformParameterivHP))load("glImageTransformParameterivHP");
 	glImageTransformParameterfvHP = cast(typeof(glImageTransformParameterfvHP))load("glImageTransformParameterfvHP");
 	glGetImageTransformParameterivHP = cast(typeof(glGetImageTransformParameterivHP))load("glGetImageTransformParameterivHP");
 	glGetImageTransformParameterfvHP = cast(typeof(glGetImageTransformParameterfvHP))load("glGetImageTransformParameterfvHP");
-	return true;
+	return;
 }
-bool load_GL_NV_video_capture(void* function(const(char)* name) load) {
-	if(!GL_NV_video_capture) return false;
+void load_GL_NV_video_capture(void* function(const(char)* name) load) {
+	if(!GL_NV_video_capture) return;
 	glBeginVideoCaptureNV = cast(typeof(glBeginVideoCaptureNV))load("glBeginVideoCaptureNV");
 	glBindVideoCaptureStreamBufferNV = cast(typeof(glBindVideoCaptureStreamBufferNV))load("glBindVideoCaptureStreamBufferNV");
 	glBindVideoCaptureStreamTextureNV = cast(typeof(glBindVideoCaptureStreamTextureNV))load("glBindVideoCaptureStreamTextureNV");
@@ -4017,10 +4018,10 @@ bool load_GL_NV_video_capture(void* function(const(char)* name) load) {
 	glVideoCaptureStreamParameterivNV = cast(typeof(glVideoCaptureStreamParameterivNV))load("glVideoCaptureStreamParameterivNV");
 	glVideoCaptureStreamParameterfvNV = cast(typeof(glVideoCaptureStreamParameterfvNV))load("glVideoCaptureStreamParameterfvNV");
 	glVideoCaptureStreamParameterdvNV = cast(typeof(glVideoCaptureStreamParameterdvNV))load("glVideoCaptureStreamParameterdvNV");
-	return true;
+	return;
 }
-bool load_GL_ARB_sampler_objects(void* function(const(char)* name) load) {
-	if(!GL_ARB_sampler_objects) return false;
+void load_GL_ARB_sampler_objects(void* function(const(char)* name) load) {
+	if(!GL_ARB_sampler_objects) return;
 	glGenSamplers = cast(typeof(glGenSamplers))load("glGenSamplers");
 	glDeleteSamplers = cast(typeof(glDeleteSamplers))load("glDeleteSamplers");
 	glIsSampler = cast(typeof(glIsSampler))load("glIsSampler");
@@ -4035,24 +4036,24 @@ bool load_GL_ARB_sampler_objects(void* function(const(char)* name) load) {
 	glGetSamplerParameterIiv = cast(typeof(glGetSamplerParameterIiv))load("glGetSamplerParameterIiv");
 	glGetSamplerParameterfv = cast(typeof(glGetSamplerParameterfv))load("glGetSamplerParameterfv");
 	glGetSamplerParameterIuiv = cast(typeof(glGetSamplerParameterIuiv))load("glGetSamplerParameterIuiv");
-	return true;
+	return;
 }
-bool load_GL_ARB_matrix_palette(void* function(const(char)* name) load) {
-	if(!GL_ARB_matrix_palette) return false;
+void load_GL_ARB_matrix_palette(void* function(const(char)* name) load) {
+	if(!GL_ARB_matrix_palette) return;
 	glCurrentPaletteMatrixARB = cast(typeof(glCurrentPaletteMatrixARB))load("glCurrentPaletteMatrixARB");
 	glMatrixIndexubvARB = cast(typeof(glMatrixIndexubvARB))load("glMatrixIndexubvARB");
 	glMatrixIndexusvARB = cast(typeof(glMatrixIndexusvARB))load("glMatrixIndexusvARB");
 	glMatrixIndexuivARB = cast(typeof(glMatrixIndexuivARB))load("glMatrixIndexuivARB");
 	glMatrixIndexPointerARB = cast(typeof(glMatrixIndexPointerARB))load("glMatrixIndexPointerARB");
-	return true;
+	return;
 }
-bool load_GL_SGIS_texture_color_mask(void* function(const(char)* name) load) {
-	if(!GL_SGIS_texture_color_mask) return false;
+void load_GL_SGIS_texture_color_mask(void* function(const(char)* name) load) {
+	if(!GL_SGIS_texture_color_mask) return;
 	glTextureColorMaskSGIS = cast(typeof(glTextureColorMaskSGIS))load("glTextureColorMaskSGIS");
-	return true;
+	return;
 }
-bool load_GL_ARB_texture_compression(void* function(const(char)* name) load) {
-	if(!GL_ARB_texture_compression) return false;
+void load_GL_ARB_texture_compression(void* function(const(char)* name) load) {
+	if(!GL_ARB_texture_compression) return;
 	glCompressedTexImage3DARB = cast(typeof(glCompressedTexImage3DARB))load("glCompressedTexImage3DARB");
 	glCompressedTexImage2DARB = cast(typeof(glCompressedTexImage2DARB))load("glCompressedTexImage2DARB");
 	glCompressedTexImage1DARB = cast(typeof(glCompressedTexImage1DARB))load("glCompressedTexImage1DARB");
@@ -4060,10 +4061,10 @@ bool load_GL_ARB_texture_compression(void* function(const(char)* name) load) {
 	glCompressedTexSubImage2DARB = cast(typeof(glCompressedTexSubImage2DARB))load("glCompressedTexSubImage2DARB");
 	glCompressedTexSubImage1DARB = cast(typeof(glCompressedTexSubImage1DARB))load("glCompressedTexSubImage1DARB");
 	glGetCompressedTexImageARB = cast(typeof(glGetCompressedTexImageARB))load("glGetCompressedTexImageARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_shader_subroutine(void* function(const(char)* name) load) {
-	if(!GL_ARB_shader_subroutine) return false;
+void load_GL_ARB_shader_subroutine(void* function(const(char)* name) load) {
+	if(!GL_ARB_shader_subroutine) return;
 	glGetSubroutineUniformLocation = cast(typeof(glGetSubroutineUniformLocation))load("glGetSubroutineUniformLocation");
 	glGetSubroutineIndex = cast(typeof(glGetSubroutineIndex))load("glGetSubroutineIndex");
 	glGetActiveSubroutineUniformiv = cast(typeof(glGetActiveSubroutineUniformiv))load("glGetActiveSubroutineUniformiv");
@@ -4072,16 +4073,16 @@ bool load_GL_ARB_shader_subroutine(void* function(const(char)* name) load) {
 	glUniformSubroutinesuiv = cast(typeof(glUniformSubroutinesuiv))load("glUniformSubroutinesuiv");
 	glGetUniformSubroutineuiv = cast(typeof(glGetUniformSubroutineuiv))load("glGetUniformSubroutineuiv");
 	glGetProgramStageiv = cast(typeof(glGetProgramStageiv))load("glGetProgramStageiv");
-	return true;
+	return;
 }
-bool load_GL_ARB_texture_storage_multisample(void* function(const(char)* name) load) {
-	if(!GL_ARB_texture_storage_multisample) return false;
+void load_GL_ARB_texture_storage_multisample(void* function(const(char)* name) load) {
+	if(!GL_ARB_texture_storage_multisample) return;
 	glTexStorage2DMultisample = cast(typeof(glTexStorage2DMultisample))load("glTexStorage2DMultisample");
 	glTexStorage3DMultisample = cast(typeof(glTexStorage3DMultisample))load("glTexStorage3DMultisample");
-	return true;
+	return;
 }
-bool load_GL_EXT_vertex_attrib_64bit(void* function(const(char)* name) load) {
-	if(!GL_EXT_vertex_attrib_64bit) return false;
+void load_GL_EXT_vertex_attrib_64bit(void* function(const(char)* name) load) {
+	if(!GL_EXT_vertex_attrib_64bit) return;
 	glVertexAttribL1dEXT = cast(typeof(glVertexAttribL1dEXT))load("glVertexAttribL1dEXT");
 	glVertexAttribL2dEXT = cast(typeof(glVertexAttribL2dEXT))load("glVertexAttribL2dEXT");
 	glVertexAttribL3dEXT = cast(typeof(glVertexAttribL3dEXT))load("glVertexAttribL3dEXT");
@@ -4092,33 +4093,33 @@ bool load_GL_EXT_vertex_attrib_64bit(void* function(const(char)* name) load) {
 	glVertexAttribL4dvEXT = cast(typeof(glVertexAttribL4dvEXT))load("glVertexAttribL4dvEXT");
 	glVertexAttribLPointerEXT = cast(typeof(glVertexAttribLPointerEXT))load("glVertexAttribLPointerEXT");
 	glGetVertexAttribLdvEXT = cast(typeof(glGetVertexAttribLdvEXT))load("glGetVertexAttribLdvEXT");
-	return true;
+	return;
 }
-bool load_GL_OES_query_matrix(void* function(const(char)* name) load) {
-	if(!GL_OES_query_matrix) return false;
+void load_GL_OES_query_matrix(void* function(const(char)* name) load) {
+	if(!GL_OES_query_matrix) return;
 	glQueryMatrixxOES = cast(typeof(glQueryMatrixxOES))load("glQueryMatrixxOES");
-	return true;
+	return;
 }
-bool load_GL_APPLE_texture_range(void* function(const(char)* name) load) {
-	if(!GL_APPLE_texture_range) return false;
+void load_GL_APPLE_texture_range(void* function(const(char)* name) load) {
+	if(!GL_APPLE_texture_range) return;
 	glTextureRangeAPPLE = cast(typeof(glTextureRangeAPPLE))load("glTextureRangeAPPLE");
 	glGetTexParameterPointervAPPLE = cast(typeof(glGetTexParameterPointervAPPLE))load("glGetTexParameterPointervAPPLE");
-	return true;
+	return;
 }
-bool load_GL_ARB_copy_buffer(void* function(const(char)* name) load) {
-	if(!GL_ARB_copy_buffer) return false;
+void load_GL_ARB_copy_buffer(void* function(const(char)* name) load) {
+	if(!GL_ARB_copy_buffer) return;
 	glCopyBufferSubData = cast(typeof(glCopyBufferSubData))load("glCopyBufferSubData");
-	return true;
+	return;
 }
-bool load_GL_APPLE_object_purgeable(void* function(const(char)* name) load) {
-	if(!GL_APPLE_object_purgeable) return false;
+void load_GL_APPLE_object_purgeable(void* function(const(char)* name) load) {
+	if(!GL_APPLE_object_purgeable) return;
 	glObjectPurgeableAPPLE = cast(typeof(glObjectPurgeableAPPLE))load("glObjectPurgeableAPPLE");
 	glObjectUnpurgeableAPPLE = cast(typeof(glObjectUnpurgeableAPPLE))load("glObjectUnpurgeableAPPLE");
 	glGetObjectParameterivAPPLE = cast(typeof(glGetObjectParameterivAPPLE))load("glGetObjectParameterivAPPLE");
-	return true;
+	return;
 }
-bool load_GL_ARB_occlusion_query(void* function(const(char)* name) load) {
-	if(!GL_ARB_occlusion_query) return false;
+void load_GL_ARB_occlusion_query(void* function(const(char)* name) load) {
+	if(!GL_ARB_occlusion_query) return;
 	glGenQueriesARB = cast(typeof(glGenQueriesARB))load("glGenQueriesARB");
 	glDeleteQueriesARB = cast(typeof(glDeleteQueriesARB))load("glDeleteQueriesARB");
 	glIsQueryARB = cast(typeof(glIsQueryARB))load("glIsQueryARB");
@@ -4127,10 +4128,10 @@ bool load_GL_ARB_occlusion_query(void* function(const(char)* name) load) {
 	glGetQueryivARB = cast(typeof(glGetQueryivARB))load("glGetQueryivARB");
 	glGetQueryObjectivARB = cast(typeof(glGetQueryObjectivARB))load("glGetQueryObjectivARB");
 	glGetQueryObjectuivARB = cast(typeof(glGetQueryObjectuivARB))load("glGetQueryObjectuivARB");
-	return true;
+	return;
 }
-bool load_GL_SGI_color_table(void* function(const(char)* name) load) {
-	if(!GL_SGI_color_table) return false;
+void load_GL_SGI_color_table(void* function(const(char)* name) load) {
+	if(!GL_SGI_color_table) return;
 	glColorTableSGI = cast(typeof(glColorTableSGI))load("glColorTableSGI");
 	glColorTableParameterfvSGI = cast(typeof(glColorTableParameterfvSGI))load("glColorTableParameterfvSGI");
 	glColorTableParameterivSGI = cast(typeof(glColorTableParameterivSGI))load("glColorTableParameterivSGI");
@@ -4138,10 +4139,10 @@ bool load_GL_SGI_color_table(void* function(const(char)* name) load) {
 	glGetColorTableSGI = cast(typeof(glGetColorTableSGI))load("glGetColorTableSGI");
 	glGetColorTableParameterfvSGI = cast(typeof(glGetColorTableParameterfvSGI))load("glGetColorTableParameterfvSGI");
 	glGetColorTableParameterivSGI = cast(typeof(glGetColorTableParameterivSGI))load("glGetColorTableParameterivSGI");
-	return true;
+	return;
 }
-bool load_GL_EXT_gpu_shader4(void* function(const(char)* name) load) {
-	if(!GL_EXT_gpu_shader4) return false;
+void load_GL_EXT_gpu_shader4(void* function(const(char)* name) load) {
+	if(!GL_EXT_gpu_shader4) return;
 	glGetUniformuivEXT = cast(typeof(glGetUniformuivEXT))load("glGetUniformuivEXT");
 	glBindFragDataLocationEXT = cast(typeof(glBindFragDataLocationEXT))load("glBindFragDataLocationEXT");
 	glGetFragDataLocationEXT = cast(typeof(glGetFragDataLocationEXT))load("glGetFragDataLocationEXT");
@@ -4153,26 +4154,26 @@ bool load_GL_EXT_gpu_shader4(void* function(const(char)* name) load) {
 	glUniform2uivEXT = cast(typeof(glUniform2uivEXT))load("glUniform2uivEXT");
 	glUniform3uivEXT = cast(typeof(glUniform3uivEXT))load("glUniform3uivEXT");
 	glUniform4uivEXT = cast(typeof(glUniform4uivEXT))load("glUniform4uivEXT");
-	return true;
+	return;
 }
-bool load_GL_NV_geometry_program4(void* function(const(char)* name) load) {
-	if(!GL_NV_geometry_program4) return false;
+void load_GL_NV_geometry_program4(void* function(const(char)* name) load) {
+	if(!GL_NV_geometry_program4) return;
 	glProgramVertexLimitNV = cast(typeof(glProgramVertexLimitNV))load("glProgramVertexLimitNV");
 	glFramebufferTextureEXT = cast(typeof(glFramebufferTextureEXT))load("glFramebufferTextureEXT");
 	glFramebufferTextureLayerEXT = cast(typeof(glFramebufferTextureLayerEXT))load("glFramebufferTextureLayerEXT");
 	glFramebufferTextureFaceEXT = cast(typeof(glFramebufferTextureFaceEXT))load("glFramebufferTextureFaceEXT");
-	return true;
+	return;
 }
-bool load_GL_AMD_debug_output(void* function(const(char)* name) load) {
-	if(!GL_AMD_debug_output) return false;
+void load_GL_AMD_debug_output(void* function(const(char)* name) load) {
+	if(!GL_AMD_debug_output) return;
 	glDebugMessageEnableAMD = cast(typeof(glDebugMessageEnableAMD))load("glDebugMessageEnableAMD");
 	glDebugMessageInsertAMD = cast(typeof(glDebugMessageInsertAMD))load("glDebugMessageInsertAMD");
 	glDebugMessageCallbackAMD = cast(typeof(glDebugMessageCallbackAMD))load("glDebugMessageCallbackAMD");
 	glGetDebugMessageLogAMD = cast(typeof(glGetDebugMessageLogAMD))load("glGetDebugMessageLogAMD");
-	return true;
+	return;
 }
-bool load_GL_ARB_multitexture(void* function(const(char)* name) load) {
-	if(!GL_ARB_multitexture) return false;
+void load_GL_ARB_multitexture(void* function(const(char)* name) load) {
+	if(!GL_ARB_multitexture) return;
 	glActiveTextureARB = cast(typeof(glActiveTextureARB))load("glActiveTextureARB");
 	glClientActiveTextureARB = cast(typeof(glClientActiveTextureARB))load("glClientActiveTextureARB");
 	glMultiTexCoord1dARB = cast(typeof(glMultiTexCoord1dARB))load("glMultiTexCoord1dARB");
@@ -4207,46 +4208,46 @@ bool load_GL_ARB_multitexture(void* function(const(char)* name) load) {
 	glMultiTexCoord4ivARB = cast(typeof(glMultiTexCoord4ivARB))load("glMultiTexCoord4ivARB");
 	glMultiTexCoord4sARB = cast(typeof(glMultiTexCoord4sARB))load("glMultiTexCoord4sARB");
 	glMultiTexCoord4svARB = cast(typeof(glMultiTexCoord4svARB))load("glMultiTexCoord4svARB");
-	return true;
+	return;
 }
-bool load_GL_SGIX_polynomial_ffd(void* function(const(char)* name) load) {
-	if(!GL_SGIX_polynomial_ffd) return false;
+void load_GL_SGIX_polynomial_ffd(void* function(const(char)* name) load) {
+	if(!GL_SGIX_polynomial_ffd) return;
 	glDeformationMap3dSGIX = cast(typeof(glDeformationMap3dSGIX))load("glDeformationMap3dSGIX");
 	glDeformationMap3fSGIX = cast(typeof(glDeformationMap3fSGIX))load("glDeformationMap3fSGIX");
 	glDeformSGIX = cast(typeof(glDeformSGIX))load("glDeformSGIX");
 	glLoadIdentityDeformationMapSGIX = cast(typeof(glLoadIdentityDeformationMapSGIX))load("glLoadIdentityDeformationMapSGIX");
-	return true;
+	return;
 }
-bool load_GL_EXT_provoking_vertex(void* function(const(char)* name) load) {
-	if(!GL_EXT_provoking_vertex) return false;
+void load_GL_EXT_provoking_vertex(void* function(const(char)* name) load) {
+	if(!GL_EXT_provoking_vertex) return;
 	glProvokingVertexEXT = cast(typeof(glProvokingVertexEXT))load("glProvokingVertexEXT");
-	return true;
+	return;
 }
-bool load_GL_ARB_point_parameters(void* function(const(char)* name) load) {
-	if(!GL_ARB_point_parameters) return false;
+void load_GL_ARB_point_parameters(void* function(const(char)* name) load) {
+	if(!GL_ARB_point_parameters) return;
 	glPointParameterfARB = cast(typeof(glPointParameterfARB))load("glPointParameterfARB");
 	glPointParameterfvARB = cast(typeof(glPointParameterfvARB))load("glPointParameterfvARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_shader_image_load_store(void* function(const(char)* name) load) {
-	if(!GL_ARB_shader_image_load_store) return false;
+void load_GL_ARB_shader_image_load_store(void* function(const(char)* name) load) {
+	if(!GL_ARB_shader_image_load_store) return;
 	glBindImageTexture = cast(typeof(glBindImageTexture))load("glBindImageTexture");
 	glMemoryBarrier = cast(typeof(glMemoryBarrier))load("glMemoryBarrier");
-	return true;
+	return;
 }
-bool load_GL_SGIX_framezoom(void* function(const(char)* name) load) {
-	if(!GL_SGIX_framezoom) return false;
+void load_GL_SGIX_framezoom(void* function(const(char)* name) load) {
+	if(!GL_SGIX_framezoom) return;
 	glFrameZoomSGIX = cast(typeof(glFrameZoomSGIX))load("glFrameZoomSGIX");
-	return true;
+	return;
 }
-bool load_GL_NV_bindless_multi_draw_indirect(void* function(const(char)* name) load) {
-	if(!GL_NV_bindless_multi_draw_indirect) return false;
+void load_GL_NV_bindless_multi_draw_indirect(void* function(const(char)* name) load) {
+	if(!GL_NV_bindless_multi_draw_indirect) return;
 	glMultiDrawArraysIndirectBindlessNV = cast(typeof(glMultiDrawArraysIndirectBindlessNV))load("glMultiDrawArraysIndirectBindlessNV");
 	glMultiDrawElementsIndirectBindlessNV = cast(typeof(glMultiDrawElementsIndirectBindlessNV))load("glMultiDrawElementsIndirectBindlessNV");
-	return true;
+	return;
 }
-bool load_GL_EXT_transform_feedback(void* function(const(char)* name) load) {
-	if(!GL_EXT_transform_feedback) return false;
+void load_GL_EXT_transform_feedback(void* function(const(char)* name) load) {
+	if(!GL_EXT_transform_feedback) return;
 	glBeginTransformFeedbackEXT = cast(typeof(glBeginTransformFeedbackEXT))load("glBeginTransformFeedbackEXT");
 	glEndTransformFeedbackEXT = cast(typeof(glEndTransformFeedbackEXT))load("glEndTransformFeedbackEXT");
 	glBindBufferRangeEXT = cast(typeof(glBindBufferRangeEXT))load("glBindBufferRangeEXT");
@@ -4254,10 +4255,10 @@ bool load_GL_EXT_transform_feedback(void* function(const(char)* name) load) {
 	glBindBufferBaseEXT = cast(typeof(glBindBufferBaseEXT))load("glBindBufferBaseEXT");
 	glTransformFeedbackVaryingsEXT = cast(typeof(glTransformFeedbackVaryingsEXT))load("glTransformFeedbackVaryingsEXT");
 	glGetTransformFeedbackVaryingEXT = cast(typeof(glGetTransformFeedbackVaryingEXT))load("glGetTransformFeedbackVaryingEXT");
-	return true;
+	return;
 }
-bool load_GL_NV_gpu_program4(void* function(const(char)* name) load) {
-	if(!GL_NV_gpu_program4) return false;
+void load_GL_NV_gpu_program4(void* function(const(char)* name) load) {
+	if(!GL_NV_gpu_program4) return;
 	glProgramLocalParameterI4iNV = cast(typeof(glProgramLocalParameterI4iNV))load("glProgramLocalParameterI4iNV");
 	glProgramLocalParameterI4ivNV = cast(typeof(glProgramLocalParameterI4ivNV))load("glProgramLocalParameterI4ivNV");
 	glProgramLocalParametersI4ivNV = cast(typeof(glProgramLocalParametersI4ivNV))load("glProgramLocalParametersI4ivNV");
@@ -4274,45 +4275,45 @@ bool load_GL_NV_gpu_program4(void* function(const(char)* name) load) {
 	glGetProgramLocalParameterIuivNV = cast(typeof(glGetProgramLocalParameterIuivNV))load("glGetProgramLocalParameterIuivNV");
 	glGetProgramEnvParameterIivNV = cast(typeof(glGetProgramEnvParameterIivNV))load("glGetProgramEnvParameterIivNV");
 	glGetProgramEnvParameterIuivNV = cast(typeof(glGetProgramEnvParameterIuivNV))load("glGetProgramEnvParameterIuivNV");
-	return true;
+	return;
 }
-bool load_GL_NV_gpu_program5(void* function(const(char)* name) load) {
-	if(!GL_NV_gpu_program5) return false;
+void load_GL_NV_gpu_program5(void* function(const(char)* name) load) {
+	if(!GL_NV_gpu_program5) return;
 	glProgramSubroutineParametersuivNV = cast(typeof(glProgramSubroutineParametersuivNV))load("glProgramSubroutineParametersuivNV");
 	glGetProgramSubroutineParameteruivNV = cast(typeof(glGetProgramSubroutineParameteruivNV))load("glGetProgramSubroutineParameteruivNV");
-	return true;
+	return;
 }
-bool load_GL_ARB_geometry_shader4(void* function(const(char)* name) load) {
-	if(!GL_ARB_geometry_shader4) return false;
+void load_GL_ARB_geometry_shader4(void* function(const(char)* name) load) {
+	if(!GL_ARB_geometry_shader4) return;
 	glProgramParameteriARB = cast(typeof(glProgramParameteriARB))load("glProgramParameteriARB");
 	glFramebufferTextureARB = cast(typeof(glFramebufferTextureARB))load("glFramebufferTextureARB");
 	glFramebufferTextureLayerARB = cast(typeof(glFramebufferTextureLayerARB))load("glFramebufferTextureLayerARB");
 	glFramebufferTextureFaceARB = cast(typeof(glFramebufferTextureFaceARB))load("glFramebufferTextureFaceARB");
-	return true;
+	return;
 }
-bool load_GL_SGIX_sprite(void* function(const(char)* name) load) {
-	if(!GL_SGIX_sprite) return false;
+void load_GL_SGIX_sprite(void* function(const(char)* name) load) {
+	if(!GL_SGIX_sprite) return;
 	glSpriteParameterfSGIX = cast(typeof(glSpriteParameterfSGIX))load("glSpriteParameterfSGIX");
 	glSpriteParameterfvSGIX = cast(typeof(glSpriteParameterfvSGIX))load("glSpriteParameterfvSGIX");
 	glSpriteParameteriSGIX = cast(typeof(glSpriteParameteriSGIX))load("glSpriteParameteriSGIX");
 	glSpriteParameterivSGIX = cast(typeof(glSpriteParameterivSGIX))load("glSpriteParameterivSGIX");
-	return true;
+	return;
 }
-bool load_GL_ARB_get_program_binary(void* function(const(char)* name) load) {
-	if(!GL_ARB_get_program_binary) return false;
+void load_GL_ARB_get_program_binary(void* function(const(char)* name) load) {
+	if(!GL_ARB_get_program_binary) return;
 	glGetProgramBinary = cast(typeof(glGetProgramBinary))load("glGetProgramBinary");
 	glProgramBinary = cast(typeof(glProgramBinary))load("glProgramBinary");
 	glProgramParameteri = cast(typeof(glProgramParameteri))load("glProgramParameteri");
-	return true;
+	return;
 }
-bool load_GL_SGIS_multisample(void* function(const(char)* name) load) {
-	if(!GL_SGIS_multisample) return false;
+void load_GL_SGIS_multisample(void* function(const(char)* name) load) {
+	if(!GL_SGIS_multisample) return;
 	glSampleMaskSGIS = cast(typeof(glSampleMaskSGIS))load("glSampleMaskSGIS");
 	glSamplePatternSGIS = cast(typeof(glSamplePatternSGIS))load("glSamplePatternSGIS");
-	return true;
+	return;
 }
-bool load_GL_EXT_framebuffer_object(void* function(const(char)* name) load) {
-	if(!GL_EXT_framebuffer_object) return false;
+void load_GL_EXT_framebuffer_object(void* function(const(char)* name) load) {
+	if(!GL_EXT_framebuffer_object) return;
 	glIsRenderbufferEXT = cast(typeof(glIsRenderbufferEXT))load("glIsRenderbufferEXT");
 	glBindRenderbufferEXT = cast(typeof(glBindRenderbufferEXT))load("glBindRenderbufferEXT");
 	glDeleteRenderbuffersEXT = cast(typeof(glDeleteRenderbuffersEXT))load("glDeleteRenderbuffersEXT");
@@ -4330,17 +4331,17 @@ bool load_GL_EXT_framebuffer_object(void* function(const(char)* name) load) {
 	glFramebufferRenderbufferEXT = cast(typeof(glFramebufferRenderbufferEXT))load("glFramebufferRenderbufferEXT");
 	glGetFramebufferAttachmentParameterivEXT = cast(typeof(glGetFramebufferAttachmentParameterivEXT))load("glGetFramebufferAttachmentParameterivEXT");
 	glGenerateMipmapEXT = cast(typeof(glGenerateMipmapEXT))load("glGenerateMipmapEXT");
-	return true;
+	return;
 }
-bool load_GL_APPLE_vertex_array_range(void* function(const(char)* name) load) {
-	if(!GL_APPLE_vertex_array_range) return false;
+void load_GL_APPLE_vertex_array_range(void* function(const(char)* name) load) {
+	if(!GL_APPLE_vertex_array_range) return;
 	glVertexArrayRangeAPPLE = cast(typeof(glVertexArrayRangeAPPLE))load("glVertexArrayRangeAPPLE");
 	glFlushVertexArrayRangeAPPLE = cast(typeof(glFlushVertexArrayRangeAPPLE))load("glFlushVertexArrayRangeAPPLE");
 	glVertexArrayParameteriAPPLE = cast(typeof(glVertexArrayParameteriAPPLE))load("glVertexArrayParameteriAPPLE");
-	return true;
+	return;
 }
-bool load_GL_NV_register_combiners(void* function(const(char)* name) load) {
-	if(!GL_NV_register_combiners) return false;
+void load_GL_NV_register_combiners(void* function(const(char)* name) load) {
+	if(!GL_NV_register_combiners) return;
 	glCombinerParameterfvNV = cast(typeof(glCombinerParameterfvNV))load("glCombinerParameterfvNV");
 	glCombinerParameterfNV = cast(typeof(glCombinerParameterfNV))load("glCombinerParameterfNV");
 	glCombinerParameterivNV = cast(typeof(glCombinerParameterivNV))load("glCombinerParameterivNV");
@@ -4354,76 +4355,76 @@ bool load_GL_NV_register_combiners(void* function(const(char)* name) load) {
 	glGetCombinerOutputParameterivNV = cast(typeof(glGetCombinerOutputParameterivNV))load("glGetCombinerOutputParameterivNV");
 	glGetFinalCombinerInputParameterfvNV = cast(typeof(glGetFinalCombinerInputParameterfvNV))load("glGetFinalCombinerInputParameterfvNV");
 	glGetFinalCombinerInputParameterivNV = cast(typeof(glGetFinalCombinerInputParameterivNV))load("glGetFinalCombinerInputParameterivNV");
-	return true;
+	return;
 }
-bool load_GL_ARB_draw_buffers(void* function(const(char)* name) load) {
-	if(!GL_ARB_draw_buffers) return false;
+void load_GL_ARB_draw_buffers(void* function(const(char)* name) load) {
+	if(!GL_ARB_draw_buffers) return;
 	glDrawBuffersARB = cast(typeof(glDrawBuffersARB))load("glDrawBuffersARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_clear_texture(void* function(const(char)* name) load) {
-	if(!GL_ARB_clear_texture) return false;
+void load_GL_ARB_clear_texture(void* function(const(char)* name) load) {
+	if(!GL_ARB_clear_texture) return;
 	glClearTexImage = cast(typeof(glClearTexImage))load("glClearTexImage");
 	glClearTexSubImage = cast(typeof(glClearTexSubImage))load("glClearTexSubImage");
-	return true;
+	return;
 }
-bool load_GL_ARB_debug_output(void* function(const(char)* name) load) {
-	if(!GL_ARB_debug_output) return false;
+void load_GL_ARB_debug_output(void* function(const(char)* name) load) {
+	if(!GL_ARB_debug_output) return;
 	glDebugMessageControlARB = cast(typeof(glDebugMessageControlARB))load("glDebugMessageControlARB");
 	glDebugMessageInsertARB = cast(typeof(glDebugMessageInsertARB))load("glDebugMessageInsertARB");
 	glDebugMessageCallbackARB = cast(typeof(glDebugMessageCallbackARB))load("glDebugMessageCallbackARB");
 	glGetDebugMessageLogARB = cast(typeof(glGetDebugMessageLogARB))load("glGetDebugMessageLogARB");
-	return true;
+	return;
 }
-bool load_GL_EXT_cull_vertex(void* function(const(char)* name) load) {
-	if(!GL_EXT_cull_vertex) return false;
+void load_GL_EXT_cull_vertex(void* function(const(char)* name) load) {
+	if(!GL_EXT_cull_vertex) return;
 	glCullParameterdvEXT = cast(typeof(glCullParameterdvEXT))load("glCullParameterdvEXT");
 	glCullParameterfvEXT = cast(typeof(glCullParameterfvEXT))load("glCullParameterfvEXT");
-	return true;
+	return;
 }
-bool load_GL_IBM_multimode_draw_arrays(void* function(const(char)* name) load) {
-	if(!GL_IBM_multimode_draw_arrays) return false;
+void load_GL_IBM_multimode_draw_arrays(void* function(const(char)* name) load) {
+	if(!GL_IBM_multimode_draw_arrays) return;
 	glMultiModeDrawArraysIBM = cast(typeof(glMultiModeDrawArraysIBM))load("glMultiModeDrawArraysIBM");
 	glMultiModeDrawElementsIBM = cast(typeof(glMultiModeDrawElementsIBM))load("glMultiModeDrawElementsIBM");
-	return true;
+	return;
 }
-bool load_GL_APPLE_vertex_array_object(void* function(const(char)* name) load) {
-	if(!GL_APPLE_vertex_array_object) return false;
+void load_GL_APPLE_vertex_array_object(void* function(const(char)* name) load) {
+	if(!GL_APPLE_vertex_array_object) return;
 	glBindVertexArrayAPPLE = cast(typeof(glBindVertexArrayAPPLE))load("glBindVertexArrayAPPLE");
 	glDeleteVertexArraysAPPLE = cast(typeof(glDeleteVertexArraysAPPLE))load("glDeleteVertexArraysAPPLE");
 	glGenVertexArraysAPPLE = cast(typeof(glGenVertexArraysAPPLE))load("glGenVertexArraysAPPLE");
 	glIsVertexArrayAPPLE = cast(typeof(glIsVertexArrayAPPLE))load("glIsVertexArrayAPPLE");
-	return true;
+	return;
 }
-bool load_GL_SGIS_detail_texture(void* function(const(char)* name) load) {
-	if(!GL_SGIS_detail_texture) return false;
+void load_GL_SGIS_detail_texture(void* function(const(char)* name) load) {
+	if(!GL_SGIS_detail_texture) return;
 	glDetailTexFuncSGIS = cast(typeof(glDetailTexFuncSGIS))load("glDetailTexFuncSGIS");
 	glGetDetailTexFuncSGIS = cast(typeof(glGetDetailTexFuncSGIS))load("glGetDetailTexFuncSGIS");
-	return true;
+	return;
 }
-bool load_GL_ARB_draw_instanced(void* function(const(char)* name) load) {
-	if(!GL_ARB_draw_instanced) return false;
+void load_GL_ARB_draw_instanced(void* function(const(char)* name) load) {
+	if(!GL_ARB_draw_instanced) return;
 	glDrawArraysInstancedARB = cast(typeof(glDrawArraysInstancedARB))load("glDrawArraysInstancedARB");
 	glDrawElementsInstancedARB = cast(typeof(glDrawElementsInstancedARB))load("glDrawElementsInstancedARB");
-	return true;
+	return;
 }
-bool load_GL_ARB_shading_language_include(void* function(const(char)* name) load) {
-	if(!GL_ARB_shading_language_include) return false;
+void load_GL_ARB_shading_language_include(void* function(const(char)* name) load) {
+	if(!GL_ARB_shading_language_include) return;
 	glNamedStringARB = cast(typeof(glNamedStringARB))load("glNamedStringARB");
 	glDeleteNamedStringARB = cast(typeof(glDeleteNamedStringARB))load("glDeleteNamedStringARB");
 	glCompileShaderIncludeARB = cast(typeof(glCompileShaderIncludeARB))load("glCompileShaderIncludeARB");
 	glIsNamedStringARB = cast(typeof(glIsNamedStringARB))load("glIsNamedStringARB");
 	glGetNamedStringARB = cast(typeof(glGetNamedStringARB))load("glGetNamedStringARB");
 	glGetNamedStringivARB = cast(typeof(glGetNamedStringivARB))load("glGetNamedStringivARB");
-	return true;
+	return;
 }
-bool load_GL_INGR_blend_func_separate(void* function(const(char)* name) load) {
-	if(!GL_INGR_blend_func_separate) return false;
+void load_GL_INGR_blend_func_separate(void* function(const(char)* name) load) {
+	if(!GL_INGR_blend_func_separate) return;
 	glBlendFuncSeparateINGR = cast(typeof(glBlendFuncSeparateINGR))load("glBlendFuncSeparateINGR");
-	return true;
+	return;
 }
-bool load_GL_NV_path_rendering(void* function(const(char)* name) load) {
-	if(!GL_NV_path_rendering) return false;
+void load_GL_NV_path_rendering(void* function(const(char)* name) load) {
+	if(!GL_NV_path_rendering) return;
 	glGenPathsNV = cast(typeof(glGenPathsNV))load("glGenPathsNV");
 	glDeletePathsNV = cast(typeof(glDeletePathsNV))load("glDeletePathsNV");
 	glIsPathNV = cast(typeof(glIsPathNV))load("glIsPathNV");
@@ -4473,10 +4474,10 @@ bool load_GL_NV_path_rendering(void* function(const(char)* name) load) {
 	glIsPointInStrokePathNV = cast(typeof(glIsPointInStrokePathNV))load("glIsPointInStrokePathNV");
 	glGetPathLengthNV = cast(typeof(glGetPathLengthNV))load("glGetPathLengthNV");
 	glPointAlongPathNV = cast(typeof(glPointAlongPathNV))load("glPointAlongPathNV");
-	return true;
+	return;
 }
-bool load_GL_ATI_vertex_streams(void* function(const(char)* name) load) {
-	if(!GL_ATI_vertex_streams) return false;
+void load_GL_ATI_vertex_streams(void* function(const(char)* name) load) {
+	if(!GL_ATI_vertex_streams) return;
 	glVertexStream1sATI = cast(typeof(glVertexStream1sATI))load("glVertexStream1sATI");
 	glVertexStream1svATI = cast(typeof(glVertexStream1svATI))load("glVertexStream1svATI");
 	glVertexStream1iATI = cast(typeof(glVertexStream1iATI))load("glVertexStream1iATI");
@@ -4522,10 +4523,10 @@ bool load_GL_ATI_vertex_streams(void* function(const(char)* name) load) {
 	glClientActiveVertexStreamATI = cast(typeof(glClientActiveVertexStreamATI))load("glClientActiveVertexStreamATI");
 	glVertexBlendEnviATI = cast(typeof(glVertexBlendEnviATI))load("glVertexBlendEnviATI");
 	glVertexBlendEnvfATI = cast(typeof(glVertexBlendEnvfATI))load("glVertexBlendEnvfATI");
-	return true;
+	return;
 }
-bool load_GL_NV_vdpau_interop(void* function(const(char)* name) load) {
-	if(!GL_NV_vdpau_interop) return false;
+void load_GL_NV_vdpau_interop(void* function(const(char)* name) load) {
+	if(!GL_NV_vdpau_interop) return;
 	glVDPAUInitNV = cast(typeof(glVDPAUInitNV))load("glVDPAUInitNV");
 	glVDPAUFiniNV = cast(typeof(glVDPAUFiniNV))load("glVDPAUFiniNV");
 	glVDPAURegisterVideoSurfaceNV = cast(typeof(glVDPAURegisterVideoSurfaceNV))load("glVDPAURegisterVideoSurfaceNV");
@@ -4536,15 +4537,15 @@ bool load_GL_NV_vdpau_interop(void* function(const(char)* name) load) {
 	glVDPAUSurfaceAccessNV = cast(typeof(glVDPAUSurfaceAccessNV))load("glVDPAUSurfaceAccessNV");
 	glVDPAUMapSurfacesNV = cast(typeof(glVDPAUMapSurfacesNV))load("glVDPAUMapSurfacesNV");
 	glVDPAUUnmapSurfacesNV = cast(typeof(glVDPAUUnmapSurfacesNV))load("glVDPAUUnmapSurfacesNV");
-	return true;
+	return;
 }
-bool load_GL_ARB_internalformat_query2(void* function(const(char)* name) load) {
-	if(!GL_ARB_internalformat_query2) return false;
+void load_GL_ARB_internalformat_query2(void* function(const(char)* name) load) {
+	if(!GL_ARB_internalformat_query2) return;
 	glGetInternalformati64v = cast(typeof(glGetInternalformati64v))load("glGetInternalformati64v");
-	return true;
+	return;
 }
-bool load_GL_SUN_vertex(void* function(const(char)* name) load) {
-	if(!GL_SUN_vertex) return false;
+void load_GL_SUN_vertex(void* function(const(char)* name) load) {
+	if(!GL_SUN_vertex) return;
 	glColor4ubVertex2fSUN = cast(typeof(glColor4ubVertex2fSUN))load("glColor4ubVertex2fSUN");
 	glColor4ubVertex2fvSUN = cast(typeof(glColor4ubVertex2fvSUN))load("glColor4ubVertex2fvSUN");
 	glColor4ubVertex3fSUN = cast(typeof(glColor4ubVertex3fSUN))load("glColor4ubVertex3fSUN");
@@ -4585,21 +4586,21 @@ bool load_GL_SUN_vertex(void* function(const(char)* name) load) {
 	glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN = cast(typeof(glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN))load("glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN");
 	glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN = cast(typeof(glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN))load("glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN");
 	glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN = cast(typeof(glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN))load("glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN");
-	return true;
+	return;
 }
-bool load_GL_SGIX_igloo_interface(void* function(const(char)* name) load) {
-	if(!GL_SGIX_igloo_interface) return false;
+void load_GL_SGIX_igloo_interface(void* function(const(char)* name) load) {
+	if(!GL_SGIX_igloo_interface) return;
 	glIglooInterfaceSGIX = cast(typeof(glIglooInterfaceSGIX))load("glIglooInterfaceSGIX");
-	return true;
+	return;
 }
-bool load_GL_ARB_draw_indirect(void* function(const(char)* name) load) {
-	if(!GL_ARB_draw_indirect) return false;
+void load_GL_ARB_draw_indirect(void* function(const(char)* name) load) {
+	if(!GL_ARB_draw_indirect) return;
 	glDrawArraysIndirect = cast(typeof(glDrawArraysIndirect))load("glDrawArraysIndirect");
 	glDrawElementsIndirect = cast(typeof(glDrawElementsIndirect))load("glDrawElementsIndirect");
-	return true;
+	return;
 }
-bool load_GL_NV_vertex_program4(void* function(const(char)* name) load) {
-	if(!GL_NV_vertex_program4) return false;
+void load_GL_NV_vertex_program4(void* function(const(char)* name) load) {
+	if(!GL_NV_vertex_program4) return;
 	glVertexAttribI1iEXT = cast(typeof(glVertexAttribI1iEXT))load("glVertexAttribI1iEXT");
 	glVertexAttribI2iEXT = cast(typeof(glVertexAttribI2iEXT))load("glVertexAttribI2iEXT");
 	glVertexAttribI3iEXT = cast(typeof(glVertexAttribI3iEXT))load("glVertexAttribI3iEXT");
@@ -4623,21 +4624,21 @@ bool load_GL_NV_vertex_program4(void* function(const(char)* name) load) {
 	glVertexAttribIPointerEXT = cast(typeof(glVertexAttribIPointerEXT))load("glVertexAttribIPointerEXT");
 	glGetVertexAttribIivEXT = cast(typeof(glGetVertexAttribIivEXT))load("glGetVertexAttribIivEXT");
 	glGetVertexAttribIuivEXT = cast(typeof(glGetVertexAttribIuivEXT))load("glGetVertexAttribIuivEXT");
-	return true;
+	return;
 }
-bool load_GL_SGIS_fog_function(void* function(const(char)* name) load) {
-	if(!GL_SGIS_fog_function) return false;
+void load_GL_SGIS_fog_function(void* function(const(char)* name) load) {
+	if(!GL_SGIS_fog_function) return;
 	glFogFuncSGIS = cast(typeof(glFogFuncSGIS))load("glFogFuncSGIS");
 	glGetFogFuncSGIS = cast(typeof(glGetFogFuncSGIS))load("glGetFogFuncSGIS");
-	return true;
+	return;
 }
-bool load_GL_EXT_x11_sync_object(void* function(const(char)* name) load) {
-	if(!GL_EXT_x11_sync_object) return false;
+void load_GL_EXT_x11_sync_object(void* function(const(char)* name) load) {
+	if(!GL_EXT_x11_sync_object) return;
 	glImportSyncEXT = cast(typeof(glImportSyncEXT))load("glImportSyncEXT");
-	return true;
+	return;
 }
-bool load_GL_ARB_sync(void* function(const(char)* name) load) {
-	if(!GL_ARB_sync) return false;
+void load_GL_ARB_sync(void* function(const(char)* name) load) {
+	if(!GL_ARB_sync) return;
 	glFenceSync = cast(typeof(glFenceSync))load("glFenceSync");
 	glIsSync = cast(typeof(glIsSync))load("glIsSync");
 	glDeleteSync = cast(typeof(glDeleteSync))load("glDeleteSync");
@@ -4645,15 +4646,15 @@ bool load_GL_ARB_sync(void* function(const(char)* name) load) {
 	glWaitSync = cast(typeof(glWaitSync))load("glWaitSync");
 	glGetInteger64v = cast(typeof(glGetInteger64v))load("glGetInteger64v");
 	glGetSynciv = cast(typeof(glGetSynciv))load("glGetSynciv");
-	return true;
+	return;
 }
-bool load_GL_ARB_compute_variable_group_size(void* function(const(char)* name) load) {
-	if(!GL_ARB_compute_variable_group_size) return false;
+void load_GL_ARB_compute_variable_group_size(void* function(const(char)* name) load) {
+	if(!GL_ARB_compute_variable_group_size) return;
 	glDispatchComputeGroupSizeARB = cast(typeof(glDispatchComputeGroupSizeARB))load("glDispatchComputeGroupSizeARB");
-	return true;
+	return;
 }
-bool load_GL_OES_fixed_point(void* function(const(char)* name) load) {
-	if(!GL_OES_fixed_point) return false;
+void load_GL_OES_fixed_point(void* function(const(char)* name) load) {
+	if(!GL_OES_fixed_point) return;
 	glAlphaFuncxOES = cast(typeof(glAlphaFuncxOES))load("glAlphaFuncxOES");
 	glClearColorxOES = cast(typeof(glClearColorxOES))load("glClearColorxOES");
 	glClearDepthxOES = cast(typeof(glClearDepthxOES))load("glClearDepthxOES");
@@ -4762,33 +4763,33 @@ bool load_GL_OES_fixed_point(void* function(const(char)* name) load) {
 	glVertex3xvOES = cast(typeof(glVertex3xvOES))load("glVertex3xvOES");
 	glVertex4xOES = cast(typeof(glVertex4xOES))load("glVertex4xOES");
 	glVertex4xvOES = cast(typeof(glVertex4xvOES))load("glVertex4xvOES");
-	return true;
+	return;
 }
-bool load_GL_EXT_framebuffer_multisample(void* function(const(char)* name) load) {
-	if(!GL_EXT_framebuffer_multisample) return false;
+void load_GL_EXT_framebuffer_multisample(void* function(const(char)* name) load) {
+	if(!GL_EXT_framebuffer_multisample) return;
 	glRenderbufferStorageMultisampleEXT = cast(typeof(glRenderbufferStorageMultisampleEXT))load("glRenderbufferStorageMultisampleEXT");
-	return true;
+	return;
 }
-bool load_GL_SGIS_texture4D(void* function(const(char)* name) load) {
-	if(!GL_SGIS_texture4D) return false;
+void load_GL_SGIS_texture4D(void* function(const(char)* name) load) {
+	if(!GL_SGIS_texture4D) return;
 	glTexImage4DSGIS = cast(typeof(glTexImage4DSGIS))load("glTexImage4DSGIS");
 	glTexSubImage4DSGIS = cast(typeof(glTexSubImage4DSGIS))load("glTexSubImage4DSGIS");
-	return true;
+	return;
 }
-bool load_GL_EXT_texture3D(void* function(const(char)* name) load) {
-	if(!GL_EXT_texture3D) return false;
+void load_GL_EXT_texture3D(void* function(const(char)* name) load) {
+	if(!GL_EXT_texture3D) return;
 	glTexImage3DEXT = cast(typeof(glTexImage3DEXT))load("glTexImage3DEXT");
 	glTexSubImage3DEXT = cast(typeof(glTexSubImage3DEXT))load("glTexSubImage3DEXT");
-	return true;
+	return;
 }
-bool load_GL_EXT_multisample(void* function(const(char)* name) load) {
-	if(!GL_EXT_multisample) return false;
+void load_GL_EXT_multisample(void* function(const(char)* name) load) {
+	if(!GL_EXT_multisample) return;
 	glSampleMaskEXT = cast(typeof(glSampleMaskEXT))load("glSampleMaskEXT");
 	glSamplePatternEXT = cast(typeof(glSamplePatternEXT))load("glSamplePatternEXT");
-	return true;
+	return;
 }
-bool load_GL_EXT_secondary_color(void* function(const(char)* name) load) {
-	if(!GL_EXT_secondary_color) return false;
+void load_GL_EXT_secondary_color(void* function(const(char)* name) load) {
+	if(!GL_EXT_secondary_color) return;
 	glSecondaryColor3bEXT = cast(typeof(glSecondaryColor3bEXT))load("glSecondaryColor3bEXT");
 	glSecondaryColor3bvEXT = cast(typeof(glSecondaryColor3bvEXT))load("glSecondaryColor3bvEXT");
 	glSecondaryColor3dEXT = cast(typeof(glSecondaryColor3dEXT))load("glSecondaryColor3dEXT");
@@ -4806,10 +4807,10 @@ bool load_GL_EXT_secondary_color(void* function(const(char)* name) load) {
 	glSecondaryColor3usEXT = cast(typeof(glSecondaryColor3usEXT))load("glSecondaryColor3usEXT");
 	glSecondaryColor3usvEXT = cast(typeof(glSecondaryColor3usvEXT))load("glSecondaryColor3usvEXT");
 	glSecondaryColorPointerEXT = cast(typeof(glSecondaryColorPointerEXT))load("glSecondaryColorPointerEXT");
-	return true;
+	return;
 }
-bool load_GL_ATI_vertex_array_object(void* function(const(char)* name) load) {
-	if(!GL_ATI_vertex_array_object) return false;
+void load_GL_ATI_vertex_array_object(void* function(const(char)* name) load) {
+	if(!GL_ATI_vertex_array_object) return;
 	glNewObjectBufferATI = cast(typeof(glNewObjectBufferATI))load("glNewObjectBufferATI");
 	glIsObjectBufferATI = cast(typeof(glIsObjectBufferATI))load("glIsObjectBufferATI");
 	glUpdateObjectBufferATI = cast(typeof(glUpdateObjectBufferATI))load("glUpdateObjectBufferATI");
@@ -4822,15 +4823,15 @@ bool load_GL_ATI_vertex_array_object(void* function(const(char)* name) load) {
 	glVariantArrayObjectATI = cast(typeof(glVariantArrayObjectATI))load("glVariantArrayObjectATI");
 	glGetVariantArrayObjectfvATI = cast(typeof(glGetVariantArrayObjectfvATI))load("glGetVariantArrayObjectfvATI");
 	glGetVariantArrayObjectivATI = cast(typeof(glGetVariantArrayObjectivATI))load("glGetVariantArrayObjectivATI");
-	return true;
+	return;
 }
-bool load_GL_ARB_sparse_texture(void* function(const(char)* name) load) {
-	if(!GL_ARB_sparse_texture) return false;
+void load_GL_ARB_sparse_texture(void* function(const(char)* name) load) {
+	if(!GL_ARB_sparse_texture) return;
 	glTexPageCommitmentARB = cast(typeof(glTexPageCommitmentARB))load("glTexPageCommitmentARB");
-	return true;
+	return;
 }
-bool load_GL_EXT_draw_range_elements(void* function(const(char)* name) load) {
-	if(!GL_EXT_draw_range_elements) return false;
+void load_GL_EXT_draw_range_elements(void* function(const(char)* name) load) {
+	if(!GL_EXT_draw_range_elements) return;
 	glDrawRangeElementsEXT = cast(typeof(glDrawRangeElementsEXT))load("glDrawRangeElementsEXT");
-	return true;
+	return;
 }

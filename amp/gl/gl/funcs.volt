@@ -1,7 +1,7 @@
-module amp.gl.funcs;
+module amp.gl.gl.funcs;
 
 
-private import amp.gl.types;
+private import amp.gl.gl.types;
 global bool GL_VERSION_1_0;
 global bool GL_VERSION_1_1;
 global bool GL_VERSION_1_2;

@@ -1,4 +1,4 @@
-module amp.gl.types;
+module amp.gl.gl.types;
 
 
 alias GLvoid = void;
