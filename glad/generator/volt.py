@@ -55,10 +55,11 @@ class VoltGenerator(DGenerator):
         fobj.write('global bool {};\n'.format(name))
 
     def write_enum(self, fobj, name, value, type='uint'):
-        if value.startswith('0x') and type.startswith('u'):
-            value += 'U'
-        if len(value) > 12 and type.startswith('u'):
-            value += 'L'
+        if isinstance(value, basestring):
+            if value.startswith('0x') and type.startswith('u'):
+                value += 'U'
+            if len(value) > 12 and type.startswith('u'):
+                value += 'L'
 
         try:
             v = int(value)
@@ -67,7 +68,7 @@ class VoltGenerator(DGenerator):
         except ValueError:
             pass
 
-        if '"' in value:
+        if isinstance(value, basestring) and '"' in value:
             type = 'const(char)*'
 
         fobj.write('enum {} {} = {};\n'.format(type, name, value))
