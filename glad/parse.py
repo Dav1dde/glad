@@ -189,24 +189,29 @@ class Param(object):
 class OGLType(object):
     def __init__(self, element):
         text = ''.join(element.itertext())
-        self.type = (text.strip().strip('const').strip().split(None, 1)[0]
+        self.type = (text.replace('const', '').replace('unsigned', '')
+                     .strip().split(None, 1)[0]
                 if element.find('ptype') is None else element.find('ptype').text)
         self.is_pointer = 0 if text is None else text.count('*')
         self.is_const = False if text is None else 'const' in text
+        self.is_unsigned = False if text is None else 'unsigned' in text
 
     def to_d(self):
 
         if self.is_pointer > 1 and self.is_const:
-            s = 'const({}*)'.format(self.type)
+            s = 'const({}{}*)'.format('u' if self.is_unsigned else '', self.type)
             s += '*'*(self.is_pointer-1)
         else:
-            s = 'const({})'.format(self.type) if self.is_const else self.type
+            t = '{}{}'.format('u' if self.is_unsigned else '', self.type)
+            s = 'const({})'.format(t) if self.is_const else t
             s += '*'*self.is_pointer
         return s.replace('struct ', '')
     to_volt = to_d
 
     def to_c(self):
-        s = 'const {}'.format(self.type) if self.is_const else self.type
+        ut = 'unsigned {}'.format(self.type)
+        s = '{}const {}'.format('unsigned ' if self.is_unsigned else '', self.type) \
+                if self.is_const else ut
         s += '*'*self.is_pointer
         return s
 

@@ -65,6 +65,131 @@ struct EGLClientPixmapHI {
 ''')
     gen.write_opaque_struct(f, '_cl_event')
 
+def _wgl_types(gen, f):
+    f.write(
+'''
+version(Windows) {
+    import core.sys.windows;
+} else {
+    alias BOOL = int;
+    alias CHAR = char;
+    alias WORD = ushort;
+    alias DWORD = uint;
+    alias FLOAT = float;
+    alias HANDLE = void*;
+    alias HDC = HANDLE;
+    alias HGLRC = HANDLE;
+    alias INT = int;
+    alias LPCSTR = const(CHAR)*;
+    alias LPVOID = void*;
+    alias UINT = uint;
+    alias USHORT = ushort;
+    alias VOID = void;
+    alias COLORREF = DWORD;
+    alias HENHMETAFILE = HANDLE;
+    alias BYTE = byte;
+}
+
+alias PROC = HANDLE;
+
+extern(System) {
+    struct RECT {
+        int left;
+        int top;
+        int right;
+        int bottom;
+    }
+
+    struct LAYERPLANEDESCRIPTOR {
+        WORD     nSize;
+        WORD     nVersion;
+        DWORD    dwFlags;
+        BYTE     iPixelType;
+        BYTE     cColorBits;
+        BYTE     cRedBits;
+        BYTE     cRedShift;
+        BYTE     cGreenBits;
+        BYTE     cGreenShift;
+        BYTE     cBlueBits;
+        BYTE     cBlueShift;
+        BYTE     cAlphaBits;
+        BYTE     cAlphaShift;
+        BYTE     cAccumBits;
+        BYTE     cAccumRedBits;
+        BYTE     cAccumGreenBits;
+        BYTE     cAccumBlueBits;
+        BYTE     cAccumAlphaBits;
+        BYTE     cDepthBits;
+        BYTE     cStencilBits;
+        BYTE     cAuxBuffers;
+        BYTE     iLayerType;
+        BYTE     bReserved;
+        COLORREF crTransparent;
+    }
+
+    struct PIXELFORMATDESCRIPTOR {
+        WORD  nSize;
+        WORD  nVersion;
+        DWORD dwFlags;
+        BYTE  iPixelType;
+        BYTE  cColorBits;
+        BYTE  cRedBits;
+        BYTE  cRedShift;
+        BYTE  cGreenBits;
+        BYTE  cGreenShift;
+        BYTE  cBlueBits;
+        BYTE  cBlueShift;
+        BYTE  cAlphaBits;
+        BYTE  cAlphaShift;
+        BYTE  cAccumBits;
+        BYTE  cAccumRedBits;
+        BYTE  cAccumGreenBits;
+        BYTE  cAccumBlueBits;
+        BYTE  cAccumAlphaBits;
+        BYTE  cDepthBits;
+        BYTE  cStencilBits;
+        BYTE  cAuxBuffers;
+        BYTE  iLayerType;
+        BYTE  bReserved;
+        DWORD dwLayerMask;
+        DWORD dwVisibleMask;
+        DWORD dwDamageMask;
+    }
+
+    struct POINTFLOAT {
+        FLOAT x;
+        FLOAT y;
+    }
+
+    struct GLYPHMETRICSFLOAT {
+        FLOAT      gmfBlackBoxX;
+        FLOAT      gmfBlackBoxY;
+        POINTFLOAT gmfptGlyphOrigin;
+        FLOAT      gmfCellIncX;
+        FLOAT      gmfCellIncY;
+    }
+    alias PGLYPHMETRICSFLOAT = GLYPHMETRICSFLOAT*;
+    alias LPGLYPHMETRICSFLOAT = GLYPHMETRICSFLOAT;
+
+    struct GPU_DEVICE {
+        DWORD  cb;
+        CHAR   DeviceName[32];
+        CHAR   DeviceString[128];
+        DWORD  Flags;
+        RECT   rcVirtualScreen;
+    }
+
+    alias PGPU_DEVICE = GPU_DEVICE;
+}
+''')
+    gen.write_opaque_struct(f, 'HPBUFFERARB')
+    gen.write_opaque_struct(f, 'HPBUFFEREXT')
+    gen.write_opaque_struct(f, 'HVIDEOOUTPUTDEVICENV')
+    gen.write_opaque_struct(f, 'HPVIDEODEV')
+    gen.write_opaque_struct(f, 'HPGPUNV')
+    gen.write_opaque_struct(f, 'HGPUNV')
+    gen.write_opaque_struct(f, 'HVIDEOINPUTDEVICENV')
+
 
 
 DTYPES = {
@@ -72,7 +197,7 @@ DTYPES = {
         'gl' : _gl_types,
         'egl' : _egl_types,
         'glx' : lambda a,b: None,
-        'wgl' : lambda a,b: None
+        'wgl' : _wgl_types
     },
 
     'gl' : { 'GLenum' : 'uint', 'GLvoid' : 'void', 'GLboolean' : 'ubyte',
@@ -97,8 +222,12 @@ DTYPES = {
               'EGLsizeiANDROID' : 'ptrdiff_t', 'EGLNativeFileDescriptorKHR' : 'int'
     },
     'glx' : {
+
     },
-    'wgl' : {
+    'wgl' : { 'GLbitfield' : 'uint', 'GLenum' : 'uint', 'GLfloat' : 'float',
+              'GLint' : 'int', 'GLsizei' : 'int', 'GLuint' : 'uint',
+              'GLushort' : 'ushort', 'INT32' : 'int', 'INT64' : 'long',
+              'GLboolean' : 'ubyte'
     },
 
     'SpecialNumbers' : {
@@ -123,10 +252,11 @@ DTYPES = {
                  ('EGL_DISPLAY_SCALING', '10000', 'uint'),
                  ('EGL_FOREVER_KHR', '0xFFFFFFFFFFFFFFFF', 'ulong'),
                  ('EGL_FOREVER_NV', '0xFFFFFFFFFFFFFFFF', 'ulong')],
-        'glx' : [],
-        'wgl' : []
+        'glx' : [('GLX_DONT_CARE', '0xFFFFFFFF', 'uint')],
+        'wgl' : [('WGL_FONT_LINES', '0', 'uint'), ('WGL_FONT_POLYGONS', 1, 'uint')]
     }
 }
+
 
 class BaseDGenerator(Generator):
     def open(self):

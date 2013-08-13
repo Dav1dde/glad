@@ -5,6 +5,9 @@ from glad.loader.glx.d import _GLX_LOADER
 _WGL_LOADER = _GLX_LOADER.replace('GLX', 'WGL')
 
 _WGL_HAS_EXT = '''
+private bool has_ext(const(char)* name) {
+    return true;
+}
 '''
 
 class WGLDLoader(BaseLoader):
