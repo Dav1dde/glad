@@ -40,19 +40,21 @@ class CGenerator(Generator):
         for feature in features:
             f.write('static void load_{}(LOADER load) {{\n'
                     .format(feature.name))
-            f.write('\tif(!{}) return;\n'.format(feature.name))
+            if self.api == 'gl':
+                f.write('\tif(!{}) return;\n'.format(feature.name))
             for func in feature.functions:
                 f.write('\t{name} = (fp_{name})load("{name}");\n'
                     .format(name=func.proto.name))
-            f.write('\treturn;\n}\n\n')
+            f.write('}\n')
 
         for ext in extensions:
             if len(list(ext.functions)) == 0:
                 continue
 
-            f.write('static int load_{}(LOADER load) {{\n'
+            f.write('static void load_{}(LOADER load) {{\n'
                 .format(ext.name))
-            f.write('\tif(!{}) return 0;\n'.format(ext.name))
+            if self.api == 'gl':
+                f.write('\tif(!{}) return;\n'.format(ext.name))
             if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
             if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
             for func in ext.functions:
@@ -60,19 +62,20 @@ class CGenerator(Generator):
                 f.write('\t{name} = (fp_{name})load("{name}");\n'
                     .format(name=func.proto.name))
             if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'): f.write('#endif\n')
-            f.write('\treturn 1;\n')
             f.write('}\n')
 
         f.write('static void find_extensions(void) {\n')
-        for ext in extensions:
-            f.write('\t{0} = has_ext("{0}");\n'.format(ext.name))
+        if self.api == 'gl':
+            for ext in extensions:
+                f.write('\tGLAD_{0} = has_ext("{0}");\n'.format(ext.name))
         f.write('}\n\n')
 
         f.write('static void find_core(void) {\n')
         self.loader.write_find_core(f)
-        for feature in features:
-            f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
-                ' major > {num[0]};\n'.format(feature.name, num=feature.number))
+        if self.api == 'gl':
+            for feature in features:
+                f.write('\tGLAD_{} = (major == {num[0]} && minor >= {num[1]}) ||'
+                    ' major > {num[0]};\n'.format(feature.name, num=feature.number))
         f.write('}\n\n')
 
         f.write('void gladLoad{}Loader(LOADER load) {{\n'.format(self.api.upper()))
@@ -146,7 +149,9 @@ class CGenerator(Generator):
                 written.add(enum)
 
         for ext in extensions:
-            f.write('int {};\n'.format(ext.name))
+            f.write('#ifndef {0}\n#define {0} 1;\n#endif\n'.format(ext.name))
+            if self.api == 'gl':
+                f.write('int GLAD_{};'.format(ext.name))
             if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
             if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
             for func in ext.functions:

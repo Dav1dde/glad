@@ -21,9 +21,6 @@ bool gladLoadGLX() {
 '''
 
 _GLX_HAS_EXT = '''
-private bool has_ext(const(char)* ext) {
-    return true;
-}
 '''
 
 class GLXDLoader(BaseLoader):
@@ -35,7 +32,7 @@ class GLXDLoader(BaseLoader):
         pass
 
     def write_find_core(self, fobj):
-        fobj.write('\tint major = 9;\n\tint minor = 9;\n')
+        pass
 
     def write_has_ext(self, fobj):
         fobj.write(_GLX_HAS_EXT)

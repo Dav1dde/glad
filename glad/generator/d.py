@@ -471,22 +471,26 @@ class BaseDGenerator(Generator):
 
         f.write('void find_core() {\n')
         self.loader.write_find_core(f)
-        for feature in features:
-            f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
-                ' major > {num[0]};\n'.format(feature.name, num=feature.number))
+        if self.api == 'gl':
+            for feature in features:
+                f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
+                    ' major > {num[0]};\n'.format(feature.name, num=feature.number))
         f.write('\treturn;\n')
         f.write('}\n\n')
 
         f.write('void find_extensions() {\n')
-        for ext in extensions:
-            f.write('\t{0} = has_ext("{0}");\n'.format(ext.name))
+        if self.api == 'gl':
+            for ext in extensions:
+                f.write('\t{0} = has_ext("{0}");\n'.format(ext.name))
+        f.write('\treturn;\n')
         f.write('}\n\n')
 
 
         for feature in features:
             f.write('void load_{}(void* function(const(char)* name) load) {{\n'
                         .format(feature.name))
-            f.write('\tif(!{}) return;\n'.format(feature.name))
+            if self.api == 'gl':
+                f.write('\tif(!{}) return;\n'.format(feature.name))
             for func in feature.functions:
                 f.write('\t{name} = cast(typeof({name}))load("{name}");\n'
                     .format(name=func.proto.name))
@@ -496,14 +500,15 @@ class BaseDGenerator(Generator):
             if len(list(ext.functions)) == 0:
                 continue
 
-            f.write('bool load_{}(void* function(const(char)* name) load) {{\n'
+            f.write('void load_{}(void* function(const(char)* name) load) {{\n'
                 .format(ext.name))
-            f.write('\tif(!{}) return false;\n'.format(ext.name))
+            if self.api == 'gl':
+                f.write('\tif(!{}) return;\n'.format(ext.name))
             for func in ext.functions:
                 # even if they were in written we need to load it
                 f.write('\t{name} = cast(typeof({name}))load("{name}");\n'
                     .format(name=func.proto.name))
-            f.write('\treturn true;\n')
+            f.write('\treturn;\n')
             f.write('}\n')
 
         self.write_package()
@@ -552,8 +557,9 @@ class BaseDGenerator(Generator):
         self.write_module(f, self.FUNCS)
         self.write_imports(f, [self.TYPES])
 
-        for feature in features:
-            self.write_boolean(f, feature.name, self.api == 'egl')
+        if self.api == 'gl':
+            for feature in features:
+                self.write_boolean(f, feature.name)
 
         if self.api == 'egl':
             self.write_extern(f)
@@ -574,7 +580,8 @@ class BaseDGenerator(Generator):
         written = set(enum.name for enum in enums) | \
                     set(function.proto.name for function in functions)
         for ext in extensions:
-            self.write_boolean(f, ext.name)
+            if self.api == 'gl':
+                self.write_boolean(f, ext.name)
             for enum in ext.enums:
                 if not enum.name in written and not enum.group == 'SpecialNumbers':
                     self.write_enum(f, enum.name, enum.value)
@@ -726,7 +733,7 @@ class DGenerator(BaseDGenerator):
             fobj.write('bool {};\n'.format(name))
 
     def write_enum(self, fobj, name, value, type='uint'):
-        if '"' in value:
+        if isinstance(value, basestring) and '"' in value:
             type = 'const(char)*'
 
         fobj.write('enum {} {} = {};\n'.format(type, name, value))
