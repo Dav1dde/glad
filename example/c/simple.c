@@ -41,12 +41,10 @@ int main(int argc, char **argv)
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);
 
-    if (!gladInit()) {
-        fprintf(stderr, "failed to initialize glad\n");
-        return -1;
+    if(!gladLoadGL()) {
+        printf("Something went wrong!\n");
+        exit(-1);
     }
-
-    gladLoadGL();
     // gladLoadGLLoader(&glutGetProcAddress);
     printf("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
     if (GLVersion.major < 2) {
@@ -58,9 +56,6 @@ int main(int argc, char **argv)
            glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     glutMainLoop();
-
-    // once gladTerminate is called gladGetProcAddress will return NULL
-    gladTerminate();
 
     return 0;
 }

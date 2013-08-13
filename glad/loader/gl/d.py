@@ -2,8 +2,8 @@ from glad.loader import BaseLoader
 from glad.loader.d import LOAD_OPENGL_DLL
 
 _OPENGL_LOADER = \
-LOAD_OPENGL_DLL % {'pre':'', 'init':'gladInit', 'terminate':'gladTerminate'} + '''
-void* gladGetProcAddress(const(char)* namez) {
+LOAD_OPENGL_DLL % {'pre':'private', 'init':'open_gl', 'terminate':'close_gl'} + '''
+void* get_proc(const(char)* namez) {
     if(libGL is null) return null;
     void* result;
 
@@ -23,8 +23,13 @@ void* gladGetProcAddress(const(char)* namez) {
     return result;
 }
 
-void gladLoadGL() {
-    return gladLoadGL(&gladGetProcAddress);
+bool gladLoadGL() {
+    if(open_gl()) {
+        gladLoadGL(&get_proc);
+        close_gl();
+        return true;
+    }
+    return false;
 }
 '''
 

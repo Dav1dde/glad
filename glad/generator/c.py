@@ -149,9 +149,9 @@ class CGenerator(Generator):
                 written.add(enum)
 
         for ext in extensions:
-            f.write('#ifndef {0}\n#define {0} 1;\n#endif\n'.format(ext.name))
+            f.write('#ifndef {0}\n#define {0} 1\n#endif\n'.format(ext.name))
             if self.api == 'gl':
-                f.write('int GLAD_{};'.format(ext.name))
+                f.write('int GLAD_{};\n'.format(ext.name))
             if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
             if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
             for func in ext.functions:

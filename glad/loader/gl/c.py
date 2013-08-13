@@ -2,8 +2,8 @@ from glad.loader import BaseLoader
 from glad.loader.c import LOAD_OPENGL_DLL, LOAD_OPENGL_DLL_H
 
 _OPENGL_LOADER = \
-LOAD_OPENGL_DLL % {'pre':'', 'init':'gladInit', 'terminate':'gladTerminate'} + '''
-void* gladGetProcAddress(const char *namez) {
+LOAD_OPENGL_DLL % {'pre':'static', 'init':'open_gl', 'terminate':'close_gl'} + '''
+static void* get_proc(const char *namez) {
     if(libGL == NULL) return NULL;
     void* result = NULL;
 
@@ -21,8 +21,13 @@ void* gladGetProcAddress(const char *namez) {
     return result;
 }
 
-void gladLoadGL(void) {
-    gladLoadGLLoader(&gladGetProcAddress);
+int gladLoadGL(void) {
+    if(open_gl()) {
+        gladLoadGLLoader(&get_proc);
+        close_gl();
+        return 1;
+    }
+    return 0;
 }
 '''
 
@@ -73,10 +78,7 @@ void gladLoadGLLoader(LOADER);
 '''
 
 _OPENGL_HEADER_LOADER = '''
-int gladInit(void);
-void* gladGetProcAddress(const char *namez);
-void gladLoadGL(void);
-void gladTerminate(void);
+int gladLoadGL(void);
 ''' + LOAD_OPENGL_DLL_H
 
 _OPENGL_HEADER_END = '''

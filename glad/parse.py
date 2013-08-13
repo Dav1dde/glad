@@ -196,7 +196,7 @@ class OGLType(object):
         self.is_const = False if text is None else 'const' in text
         self.is_unsigned = False if text is None else 'unsigned' in text
 
-        if 'struct' in text:
+        if 'struct' in text and not 'struct' in self.type:
             self.type = 'struct {}'.format(self.type)
 
     def to_d(self):
