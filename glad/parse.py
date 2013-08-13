@@ -209,7 +209,7 @@ class OGLType(object):
     to_volt = to_d
 
     def to_c(self):
-        ut = 'unsigned {}'.format(self.type)
+        ut = 'unsigned {}'.format(self.type) if self.is_unsigned else self.type
         s = '{}const {}'.format('unsigned ' if self.is_unsigned else '', self.type) \
                 if self.is_const else ut
         s += '*'*self.is_pointer

@@ -138,8 +138,7 @@ class CGenerator(Generator):
                 written.add(enum)
 
         for ext in extensions:
-            f.write('int {} = {};\n'.format(ext.name,
-                    1 if self.api == 'egl' else 0))
+            f.write('int {};\n'.format(ext.name))
             for func in ext.functions:
                 if not func in written:
                     self.write_function_prototype(f, func)
