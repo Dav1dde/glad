@@ -28,10 +28,8 @@ What a D code using glad (and SDL) could look like:
 Of course you don't need to use SDL, glad provides its own OpenGL loder:
 
     void main() {
-        enforce(gladInit()); // make sure initialization succeeds
-        scope(exit) gladTerminate();
         /* setup OpenGL context with e.g. glfw */
-        gladLoadGL();
+        enforce(gladLoadGL());
         enforce(GLVersion.major == 3 && GLVersion.minor == 2);
         enforce(GL_EXT_texture_filter_anisotropic, "Extension not supported!");
         /* done, use OpenGL here */
@@ -95,43 +93,19 @@ struct {
 typedef void* (* LOADER)(const char *name);
 
 /*
- * gladInit returns a boolean (represented as an integer in C)
- * indicating if it succeeded to open OpenGL. If this call fails
- * gladLoadGL() cannot succeed and will return an OpenGL version
- * of 0.0.
+ * Load OpenGL using the internal loader.
+ * Returns the true/1 if loading succeeded.
  *
  */
-int gladInit(void);
-/*
- * gladGetProcAddress only returns a non-null value if gladInit
- * was called.
- *
- */
-void* gladGetProcAddress(const char *name);
-/*
- * Load OpenGL using the internal loader, which requires gladInit
- * to be called.
- * Returns the loaded OpenGL version, 0.0 if it fails. It will only
- * fail if gladInit was not called.
- *
- */
-void gladLoadGL(void);
+int gladLoadGL(void);
 /*
  * Load OpenGL using an external loader like SDL_GL_GetProcAddress.
- * If using this function gladInit and gladTerminate are obsolete.
  *
  * Note: in D this function is an overload of gladLoadGL:
  * GLVersion gladLoadGL(void* function(const(char)* name));
  *
  */
 void gladLoadGLLoader(LOADER);
-/*
- * This frees the internal handle to OpenGL, once this function was
- * called, gladGetProcAddress will return always NULL. Only needs to
- * be called if gladInit was called before.
- *
- */
-void gladTerminate(void);
 ```
 
 
@@ -139,7 +113,7 @@ void gladTerminate(void);
 
 `glad.h` completly replaces any `gl.h` or `gl3.h` only include `glad.h`.
 
-    gladLoadGL();
+    if(!gladLoadGL()) { exit(-1) };
     printf("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
     if(GL_EXT_gpu_shader4) { /* GL_EXT_gpu_shader4 is supported */ }
     if(GL_VERSION_3_0) { /* We support at least OpenGL version 3 */ }
@@ -152,7 +126,7 @@ On non-Windows platforms `glad` requires `libdl`, make sure to link with it (`-l
 Import `glad.gl` for OpenGL functions/extensions, import `glad.loader` to import
 the functions needed to initialize `glad` and load the OpenGL functions.
 
-    gladLoadGL();
+    enforce(gladLoadGL());
     writefln("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
     if(GL_EXT_gpu_shader4) { /* GL_EXT_gpu_shader4 is supported */ }
     if(GL_VERSION_3_0) { /* We support at least OpenGL version 3 */ }
