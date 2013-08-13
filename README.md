@@ -55,20 +55,30 @@ interpreter.
 
 Possible commandline options:
 
-    -h, --help            show this help message and exit
-    --profile {core,compatability}
-                          OpenGL profile (defaults to compatability)
-    --out-path OUT        Output path for loader
-    --api {gl,gles1,gles2}
-                          OpenGL API type (defaults to gl)
-    --version VERSION     OpenGL version (defaults to latest)
+    usage: main.py [-h] [--profile {core,compatibility}] --out-path OUT
+                [--api API] [--version VERSION] [--generator {c,d,volt}]
+                [--extensions EXTENSIONS] [--spec {gl,egl,glx,wgl}]
+                [--no-loader]
+
+    Uses the offcial OpenGL spec (gl.xml) to generate an OpenGL loader made for
+    your needs. glad currently supports the languages C, D and Volt.
+
+    optional arguments:
+    -h, --help              show this help message and exit
+    --profile {core,compatibility}
+                            OpenGL profile (defaults to compatibility)
+    --out-path OUT          Output path for loader
+    --api API               API type
+    --version VERSION       OpenGL version (defaults to latest)
     --generator {c,d,volt}
-                          Language (defaults to d)
+                            Language (defaults to d)
     --extensions EXTENSIONS
-                          Path to extensions file or comma separated list of
-                          extensions
-    --spec SPEC           Path to gl.xml, if none specified, downloaded from
-                          khronos.org
+                            Path to extensions file or comma separated list of
+                            extensions
+    --spec {gl,egl,glx,wgl}
+                            Name of spec
+    --no-loader
+
 
 By default a loader for the D programming language will be generated. To generate
 a loader for C with two extensions, it could look like that:
