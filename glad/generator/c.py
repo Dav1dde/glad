@@ -41,7 +41,7 @@ class CGenerator(Generator):
             f.write('static void load_{}(LOADER load) {{\n'
                     .format(feature.name))
             if self.api == 'gl':
-                f.write('\tif(!{}) return;\n'.format(feature.name))
+                f.write('\tif(!GLAD_{}) return;\n'.format(feature.name))
             for func in feature.functions:
                 f.write('\t{name} = (fp_{name})load("{name}");\n'
                     .format(name=func.proto.name))
