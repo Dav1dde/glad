@@ -144,9 +144,9 @@ class CGenerator(Generator):
     def write_functions(self, f, write, written, extensions):
         for ext in extensions:
             for enum in ext.enums:
-                if not enum in written:
+                if not enum.name in written:
                     f.write('#define {} {}\n'.format(enum.name, enum.value))
-                written.add(enum)
+                written.add(enum.name)
 
         for ext in extensions:
             f.write('#ifndef {0}\n#define {0} 1\n#endif\n'.format(ext.name))
@@ -155,10 +155,10 @@ class CGenerator(Generator):
             if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
             if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
             for func in ext.functions:
-                if not func in written:
+                if not func.proto.name in written:
                     self.write_function_prototype(f, func)
                     write.add(func)
-                written.add(func)
+                written.add(func.proto.name)
             if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'): f.write('#endif\n')
 
     def write_extern(self, fobj):
