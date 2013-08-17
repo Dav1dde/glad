@@ -13,6 +13,16 @@
 #define __glad_glxext_h_
 #define __glxext_h_
 
+#ifndef APIENTRY
+#define APIENTRY
+#endif
+#ifndef APIENTRYP
+#define APIENTRYP APIENTRY *
+#endif
+#ifndef GLAPI
+#define GLAPI extern
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -256,137 +266,137 @@ typedef struct {
 #define GLX_SAMPLE_BUFFERS 100000
 #define GLX_SAMPLES 100001
 #ifndef GLX_VERSION_1_0
-#define GLX_VERSION_1_0 1;
-#endif
-typedef XVisualInfo* (* fp_glXChooseVisual)(Display*, int, int*);
-extern fp_glXChooseVisual gladglXChooseVisual;
+#define GLX_VERSION_1_0 1
+typedef XVisualInfo* (APIENTRYP fp_glXChooseVisual)(Display*, int, int*);
+GLAPI fp_glXChooseVisual gladglXChooseVisual;
 #define glXChooseVisual gladglXChooseVisual
-typedef GLXContext (* fp_glXCreateContext)(Display*, XVisualInfo*, GLXContext, Bool);
-extern fp_glXCreateContext gladglXCreateContext;
+typedef GLXContext (APIENTRYP fp_glXCreateContext)(Display*, XVisualInfo*, GLXContext, Bool);
+GLAPI fp_glXCreateContext gladglXCreateContext;
 #define glXCreateContext gladglXCreateContext
-typedef void (* fp_glXDestroyContext)(Display*, GLXContext);
-extern fp_glXDestroyContext gladglXDestroyContext;
+typedef void (APIENTRYP fp_glXDestroyContext)(Display*, GLXContext);
+GLAPI fp_glXDestroyContext gladglXDestroyContext;
 #define glXDestroyContext gladglXDestroyContext
-typedef Bool (* fp_glXMakeCurrent)(Display*, GLXDrawable, GLXContext);
-extern fp_glXMakeCurrent gladglXMakeCurrent;
+typedef Bool (APIENTRYP fp_glXMakeCurrent)(Display*, GLXDrawable, GLXContext);
+GLAPI fp_glXMakeCurrent gladglXMakeCurrent;
 #define glXMakeCurrent gladglXMakeCurrent
-typedef void (* fp_glXCopyContext)(Display*, GLXContext, GLXContext, unsigned long);
-extern fp_glXCopyContext gladglXCopyContext;
+typedef void (APIENTRYP fp_glXCopyContext)(Display*, GLXContext, GLXContext, unsigned long);
+GLAPI fp_glXCopyContext gladglXCopyContext;
 #define glXCopyContext gladglXCopyContext
-typedef void (* fp_glXSwapBuffers)(Display*, GLXDrawable);
-extern fp_glXSwapBuffers gladglXSwapBuffers;
+typedef void (APIENTRYP fp_glXSwapBuffers)(Display*, GLXDrawable);
+GLAPI fp_glXSwapBuffers gladglXSwapBuffers;
 #define glXSwapBuffers gladglXSwapBuffers
-typedef GLXPixmap (* fp_glXCreateGLXPixmap)(Display*, XVisualInfo*, Pixmap);
-extern fp_glXCreateGLXPixmap gladglXCreateGLXPixmap;
+typedef GLXPixmap (APIENTRYP fp_glXCreateGLXPixmap)(Display*, XVisualInfo*, Pixmap);
+GLAPI fp_glXCreateGLXPixmap gladglXCreateGLXPixmap;
 #define glXCreateGLXPixmap gladglXCreateGLXPixmap
-typedef void (* fp_glXDestroyGLXPixmap)(Display*, GLXPixmap);
-extern fp_glXDestroyGLXPixmap gladglXDestroyGLXPixmap;
+typedef void (APIENTRYP fp_glXDestroyGLXPixmap)(Display*, GLXPixmap);
+GLAPI fp_glXDestroyGLXPixmap gladglXDestroyGLXPixmap;
 #define glXDestroyGLXPixmap gladglXDestroyGLXPixmap
-typedef Bool (* fp_glXQueryExtension)(Display*, int*, int*);
-extern fp_glXQueryExtension gladglXQueryExtension;
+typedef Bool (APIENTRYP fp_glXQueryExtension)(Display*, int*, int*);
+GLAPI fp_glXQueryExtension gladglXQueryExtension;
 #define glXQueryExtension gladglXQueryExtension
-typedef Bool (* fp_glXQueryVersion)(Display*, int*, int*);
-extern fp_glXQueryVersion gladglXQueryVersion;
+typedef Bool (APIENTRYP fp_glXQueryVersion)(Display*, int*, int*);
+GLAPI fp_glXQueryVersion gladglXQueryVersion;
 #define glXQueryVersion gladglXQueryVersion
-typedef Bool (* fp_glXIsDirect)(Display*, GLXContext);
-extern fp_glXIsDirect gladglXIsDirect;
+typedef Bool (APIENTRYP fp_glXIsDirect)(Display*, GLXContext);
+GLAPI fp_glXIsDirect gladglXIsDirect;
 #define glXIsDirect gladglXIsDirect
-typedef int (* fp_glXGetConfig)(Display*, XVisualInfo*, int, int*);
-extern fp_glXGetConfig gladglXGetConfig;
+typedef int (APIENTRYP fp_glXGetConfig)(Display*, XVisualInfo*, int, int*);
+GLAPI fp_glXGetConfig gladglXGetConfig;
 #define glXGetConfig gladglXGetConfig
-typedef GLXContext (* fp_glXGetCurrentContext)();
-extern fp_glXGetCurrentContext gladglXGetCurrentContext;
+typedef GLXContext (APIENTRYP fp_glXGetCurrentContext)();
+GLAPI fp_glXGetCurrentContext gladglXGetCurrentContext;
 #define glXGetCurrentContext gladglXGetCurrentContext
-typedef GLXDrawable (* fp_glXGetCurrentDrawable)();
-extern fp_glXGetCurrentDrawable gladglXGetCurrentDrawable;
+typedef GLXDrawable (APIENTRYP fp_glXGetCurrentDrawable)();
+GLAPI fp_glXGetCurrentDrawable gladglXGetCurrentDrawable;
 #define glXGetCurrentDrawable gladglXGetCurrentDrawable
-typedef void (* fp_glXWaitGL)();
-extern fp_glXWaitGL gladglXWaitGL;
+typedef void (APIENTRYP fp_glXWaitGL)();
+GLAPI fp_glXWaitGL gladglXWaitGL;
 #define glXWaitGL gladglXWaitGL
-typedef void (* fp_glXWaitX)();
-extern fp_glXWaitX gladglXWaitX;
+typedef void (APIENTRYP fp_glXWaitX)();
+GLAPI fp_glXWaitX gladglXWaitX;
 #define glXWaitX gladglXWaitX
-typedef void (* fp_glXUseXFont)(Font, int, int, int);
-extern fp_glXUseXFont gladglXUseXFont;
+typedef void (APIENTRYP fp_glXUseXFont)(Font, int, int, int);
+GLAPI fp_glXUseXFont gladglXUseXFont;
 #define glXUseXFont gladglXUseXFont
+#endif
 #ifndef GLX_VERSION_1_1
-#define GLX_VERSION_1_1 1;
-#endif
-typedef const char* (* fp_glXQueryExtensionsString)(Display*, int);
-extern fp_glXQueryExtensionsString gladglXQueryExtensionsString;
+#define GLX_VERSION_1_1 1
+typedef const char* (APIENTRYP fp_glXQueryExtensionsString)(Display*, int);
+GLAPI fp_glXQueryExtensionsString gladglXQueryExtensionsString;
 #define glXQueryExtensionsString gladglXQueryExtensionsString
-typedef const char* (* fp_glXQueryServerString)(Display*, int, int);
-extern fp_glXQueryServerString gladglXQueryServerString;
+typedef const char* (APIENTRYP fp_glXQueryServerString)(Display*, int, int);
+GLAPI fp_glXQueryServerString gladglXQueryServerString;
 #define glXQueryServerString gladglXQueryServerString
-typedef const char* (* fp_glXGetClientString)(Display*, int);
-extern fp_glXGetClientString gladglXGetClientString;
+typedef const char* (APIENTRYP fp_glXGetClientString)(Display*, int);
+GLAPI fp_glXGetClientString gladglXGetClientString;
 #define glXGetClientString gladglXGetClientString
+#endif
 #ifndef GLX_VERSION_1_2
-#define GLX_VERSION_1_2 1;
-#endif
-typedef Display* (* fp_glXGetCurrentDisplay)();
-extern fp_glXGetCurrentDisplay gladglXGetCurrentDisplay;
+#define GLX_VERSION_1_2 1
+typedef Display* (APIENTRYP fp_glXGetCurrentDisplay)();
+GLAPI fp_glXGetCurrentDisplay gladglXGetCurrentDisplay;
 #define glXGetCurrentDisplay gladglXGetCurrentDisplay
+#endif
 #ifndef GLX_VERSION_1_3
-#define GLX_VERSION_1_3 1;
-#endif
-typedef GLXFBConfig* (* fp_glXGetFBConfigs)(Display*, int, int*);
-extern fp_glXGetFBConfigs gladglXGetFBConfigs;
+#define GLX_VERSION_1_3 1
+typedef GLXFBConfig* (APIENTRYP fp_glXGetFBConfigs)(Display*, int, int*);
+GLAPI fp_glXGetFBConfigs gladglXGetFBConfigs;
 #define glXGetFBConfigs gladglXGetFBConfigs
-typedef GLXFBConfig* (* fp_glXChooseFBConfig)(Display*, int, const int*, int*);
-extern fp_glXChooseFBConfig gladglXChooseFBConfig;
+typedef GLXFBConfig* (APIENTRYP fp_glXChooseFBConfig)(Display*, int, const int*, int*);
+GLAPI fp_glXChooseFBConfig gladglXChooseFBConfig;
 #define glXChooseFBConfig gladglXChooseFBConfig
-typedef int (* fp_glXGetFBConfigAttrib)(Display*, GLXFBConfig, int, int*);
-extern fp_glXGetFBConfigAttrib gladglXGetFBConfigAttrib;
+typedef int (APIENTRYP fp_glXGetFBConfigAttrib)(Display*, GLXFBConfig, int, int*);
+GLAPI fp_glXGetFBConfigAttrib gladglXGetFBConfigAttrib;
 #define glXGetFBConfigAttrib gladglXGetFBConfigAttrib
-typedef XVisualInfo* (* fp_glXGetVisualFromFBConfig)(Display*, GLXFBConfig);
-extern fp_glXGetVisualFromFBConfig gladglXGetVisualFromFBConfig;
+typedef XVisualInfo* (APIENTRYP fp_glXGetVisualFromFBConfig)(Display*, GLXFBConfig);
+GLAPI fp_glXGetVisualFromFBConfig gladglXGetVisualFromFBConfig;
 #define glXGetVisualFromFBConfig gladglXGetVisualFromFBConfig
-typedef GLXWindow (* fp_glXCreateWindow)(Display*, GLXFBConfig, Window, const int*);
-extern fp_glXCreateWindow gladglXCreateWindow;
+typedef GLXWindow (APIENTRYP fp_glXCreateWindow)(Display*, GLXFBConfig, Window, const int*);
+GLAPI fp_glXCreateWindow gladglXCreateWindow;
 #define glXCreateWindow gladglXCreateWindow
-typedef void (* fp_glXDestroyWindow)(Display*, GLXWindow);
-extern fp_glXDestroyWindow gladglXDestroyWindow;
+typedef void (APIENTRYP fp_glXDestroyWindow)(Display*, GLXWindow);
+GLAPI fp_glXDestroyWindow gladglXDestroyWindow;
 #define glXDestroyWindow gladglXDestroyWindow
-typedef GLXPixmap (* fp_glXCreatePixmap)(Display*, GLXFBConfig, Pixmap, const int*);
-extern fp_glXCreatePixmap gladglXCreatePixmap;
+typedef GLXPixmap (APIENTRYP fp_glXCreatePixmap)(Display*, GLXFBConfig, Pixmap, const int*);
+GLAPI fp_glXCreatePixmap gladglXCreatePixmap;
 #define glXCreatePixmap gladglXCreatePixmap
-typedef void (* fp_glXDestroyPixmap)(Display*, GLXPixmap);
-extern fp_glXDestroyPixmap gladglXDestroyPixmap;
+typedef void (APIENTRYP fp_glXDestroyPixmap)(Display*, GLXPixmap);
+GLAPI fp_glXDestroyPixmap gladglXDestroyPixmap;
 #define glXDestroyPixmap gladglXDestroyPixmap
-typedef GLXPbuffer (* fp_glXCreatePbuffer)(Display*, GLXFBConfig, const int*);
-extern fp_glXCreatePbuffer gladglXCreatePbuffer;
+typedef GLXPbuffer (APIENTRYP fp_glXCreatePbuffer)(Display*, GLXFBConfig, const int*);
+GLAPI fp_glXCreatePbuffer gladglXCreatePbuffer;
 #define glXCreatePbuffer gladglXCreatePbuffer
-typedef void (* fp_glXDestroyPbuffer)(Display*, GLXPbuffer);
-extern fp_glXDestroyPbuffer gladglXDestroyPbuffer;
+typedef void (APIENTRYP fp_glXDestroyPbuffer)(Display*, GLXPbuffer);
+GLAPI fp_glXDestroyPbuffer gladglXDestroyPbuffer;
 #define glXDestroyPbuffer gladglXDestroyPbuffer
-typedef void (* fp_glXQueryDrawable)(Display*, GLXDrawable, int, unsigned int*);
-extern fp_glXQueryDrawable gladglXQueryDrawable;
+typedef void (APIENTRYP fp_glXQueryDrawable)(Display*, GLXDrawable, int, unsigned int*);
+GLAPI fp_glXQueryDrawable gladglXQueryDrawable;
 #define glXQueryDrawable gladglXQueryDrawable
-typedef GLXContext (* fp_glXCreateNewContext)(Display*, GLXFBConfig, int, GLXContext, Bool);
-extern fp_glXCreateNewContext gladglXCreateNewContext;
+typedef GLXContext (APIENTRYP fp_glXCreateNewContext)(Display*, GLXFBConfig, int, GLXContext, Bool);
+GLAPI fp_glXCreateNewContext gladglXCreateNewContext;
 #define glXCreateNewContext gladglXCreateNewContext
-typedef Bool (* fp_glXMakeContextCurrent)(Display*, GLXDrawable, GLXDrawable, GLXContext);
-extern fp_glXMakeContextCurrent gladglXMakeContextCurrent;
+typedef Bool (APIENTRYP fp_glXMakeContextCurrent)(Display*, GLXDrawable, GLXDrawable, GLXContext);
+GLAPI fp_glXMakeContextCurrent gladglXMakeContextCurrent;
 #define glXMakeContextCurrent gladglXMakeContextCurrent
-typedef GLXDrawable (* fp_glXGetCurrentReadDrawable)();
-extern fp_glXGetCurrentReadDrawable gladglXGetCurrentReadDrawable;
+typedef GLXDrawable (APIENTRYP fp_glXGetCurrentReadDrawable)();
+GLAPI fp_glXGetCurrentReadDrawable gladglXGetCurrentReadDrawable;
 #define glXGetCurrentReadDrawable gladglXGetCurrentReadDrawable
-typedef int (* fp_glXQueryContext)(Display*, GLXContext, int, int*);
-extern fp_glXQueryContext gladglXQueryContext;
+typedef int (APIENTRYP fp_glXQueryContext)(Display*, GLXContext, int, int*);
+GLAPI fp_glXQueryContext gladglXQueryContext;
 #define glXQueryContext gladglXQueryContext
-typedef void (* fp_glXSelectEvent)(Display*, GLXDrawable, unsigned long);
-extern fp_glXSelectEvent gladglXSelectEvent;
+typedef void (APIENTRYP fp_glXSelectEvent)(Display*, GLXDrawable, unsigned long);
+GLAPI fp_glXSelectEvent gladglXSelectEvent;
 #define glXSelectEvent gladglXSelectEvent
-typedef void (* fp_glXGetSelectedEvent)(Display*, GLXDrawable, unsigned long*);
-extern fp_glXGetSelectedEvent gladglXGetSelectedEvent;
+typedef void (APIENTRYP fp_glXGetSelectedEvent)(Display*, GLXDrawable, unsigned long*);
+GLAPI fp_glXGetSelectedEvent gladglXGetSelectedEvent;
 #define glXGetSelectedEvent gladglXGetSelectedEvent
-#ifndef GLX_VERSION_1_4
-#define GLX_VERSION_1_4 1;
 #endif
-typedef __GLXextFuncPtr (* fp_glXGetProcAddress)(const GLubyte*);
-extern fp_glXGetProcAddress gladglXGetProcAddress;
+#ifndef GLX_VERSION_1_4
+#define GLX_VERSION_1_4 1
+typedef __GLXextFuncPtr (APIENTRYP fp_glXGetProcAddress)(const GLubyte*);
+GLAPI fp_glXGetProcAddress gladglXGetProcAddress;
 #define glXGetProcAddress gladglXGetProcAddress
+#endif
 #define GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB 0x20B2
 #define GLX_SHARE_CONTEXT_EXT 0x800A
 #define GLX_VISUAL_ID_EXT 0x800B
@@ -564,404 +574,404 @@ extern fp_glXGetProcAddress gladglXGetProcAddress;
 #define GLX_CONTEXT_PROFILE_MASK_ARB 0x9126
 #define GLX_CONTEXT_ALLOW_BUFFER_BYTE_ORDER_MISMATCH_ARB 0x2095
 #ifndef GLX_ARB_framebuffer_sRGB
-#define GLX_ARB_framebuffer_sRGB 1;
+#define GLX_ARB_framebuffer_sRGB 1
 #endif
 #ifndef GLX_EXT_import_context
-#define GLX_EXT_import_context 1;
-#endif
-typedef Display* (* fp_glXGetCurrentDisplayEXT)();
-extern fp_glXGetCurrentDisplayEXT gladglXGetCurrentDisplayEXT;
+#define GLX_EXT_import_context 1
+typedef Display* (APIENTRYP fp_glXGetCurrentDisplayEXT)();
+GLAPI fp_glXGetCurrentDisplayEXT gladglXGetCurrentDisplayEXT;
 #define glXGetCurrentDisplayEXT gladglXGetCurrentDisplayEXT
-typedef int (* fp_glXQueryContextInfoEXT)(Display*, GLXContext, int, int*);
-extern fp_glXQueryContextInfoEXT gladglXQueryContextInfoEXT;
+typedef int (APIENTRYP fp_glXQueryContextInfoEXT)(Display*, GLXContext, int, int*);
+GLAPI fp_glXQueryContextInfoEXT gladglXQueryContextInfoEXT;
 #define glXQueryContextInfoEXT gladglXQueryContextInfoEXT
-typedef GLXContextID (* fp_glXGetContextIDEXT)(const GLXContext);
-extern fp_glXGetContextIDEXT gladglXGetContextIDEXT;
+typedef GLXContextID (APIENTRYP fp_glXGetContextIDEXT)(const GLXContext);
+GLAPI fp_glXGetContextIDEXT gladglXGetContextIDEXT;
 #define glXGetContextIDEXT gladglXGetContextIDEXT
-typedef GLXContext (* fp_glXImportContextEXT)(Display*, GLXContextID);
-extern fp_glXImportContextEXT gladglXImportContextEXT;
+typedef GLXContext (APIENTRYP fp_glXImportContextEXT)(Display*, GLXContextID);
+GLAPI fp_glXImportContextEXT gladglXImportContextEXT;
 #define glXImportContextEXT gladglXImportContextEXT
-typedef void (* fp_glXFreeContextEXT)(Display*, GLXContext);
-extern fp_glXFreeContextEXT gladglXFreeContextEXT;
+typedef void (APIENTRYP fp_glXFreeContextEXT)(Display*, GLXContext);
+GLAPI fp_glXFreeContextEXT gladglXFreeContextEXT;
 #define glXFreeContextEXT gladglXFreeContextEXT
+#endif
 #ifndef GLX_NV_multisample_coverage
-#define GLX_NV_multisample_coverage 1;
+#define GLX_NV_multisample_coverage 1
 #endif
 #ifndef GLX_SGIS_shared_multisample
-#define GLX_SGIS_shared_multisample 1;
+#define GLX_SGIS_shared_multisample 1
 #endif
 #ifndef GLX_SGIX_pbuffer
-#define GLX_SGIX_pbuffer 1;
-#endif
-typedef GLXPbufferSGIX (* fp_glXCreateGLXPbufferSGIX)(Display*, GLXFBConfigSGIX, unsigned int, unsigned int, int*);
-extern fp_glXCreateGLXPbufferSGIX gladglXCreateGLXPbufferSGIX;
+#define GLX_SGIX_pbuffer 1
+typedef GLXPbufferSGIX (APIENTRYP fp_glXCreateGLXPbufferSGIX)(Display*, GLXFBConfigSGIX, unsigned int, unsigned int, int*);
+GLAPI fp_glXCreateGLXPbufferSGIX gladglXCreateGLXPbufferSGIX;
 #define glXCreateGLXPbufferSGIX gladglXCreateGLXPbufferSGIX
-typedef void (* fp_glXDestroyGLXPbufferSGIX)(Display*, GLXPbufferSGIX);
-extern fp_glXDestroyGLXPbufferSGIX gladglXDestroyGLXPbufferSGIX;
+typedef void (APIENTRYP fp_glXDestroyGLXPbufferSGIX)(Display*, GLXPbufferSGIX);
+GLAPI fp_glXDestroyGLXPbufferSGIX gladglXDestroyGLXPbufferSGIX;
 #define glXDestroyGLXPbufferSGIX gladglXDestroyGLXPbufferSGIX
-typedef int (* fp_glXQueryGLXPbufferSGIX)(Display*, GLXPbufferSGIX, int, unsigned int*);
-extern fp_glXQueryGLXPbufferSGIX gladglXQueryGLXPbufferSGIX;
+typedef int (APIENTRYP fp_glXQueryGLXPbufferSGIX)(Display*, GLXPbufferSGIX, int, unsigned int*);
+GLAPI fp_glXQueryGLXPbufferSGIX gladglXQueryGLXPbufferSGIX;
 #define glXQueryGLXPbufferSGIX gladglXQueryGLXPbufferSGIX
-typedef void (* fp_glXSelectEventSGIX)(Display*, GLXDrawable, unsigned long);
-extern fp_glXSelectEventSGIX gladglXSelectEventSGIX;
+typedef void (APIENTRYP fp_glXSelectEventSGIX)(Display*, GLXDrawable, unsigned long);
+GLAPI fp_glXSelectEventSGIX gladglXSelectEventSGIX;
 #define glXSelectEventSGIX gladglXSelectEventSGIX
-typedef void (* fp_glXGetSelectedEventSGIX)(Display*, GLXDrawable, unsigned long*);
-extern fp_glXGetSelectedEventSGIX gladglXGetSelectedEventSGIX;
+typedef void (APIENTRYP fp_glXGetSelectedEventSGIX)(Display*, GLXDrawable, unsigned long*);
+GLAPI fp_glXGetSelectedEventSGIX gladglXGetSelectedEventSGIX;
 #define glXGetSelectedEventSGIX gladglXGetSelectedEventSGIX
-#ifndef GLX_NV_swap_group
-#define GLX_NV_swap_group 1;
 #endif
-typedef Bool (* fp_glXJoinSwapGroupNV)(Display*, GLXDrawable, GLuint);
-extern fp_glXJoinSwapGroupNV gladglXJoinSwapGroupNV;
+#ifndef GLX_NV_swap_group
+#define GLX_NV_swap_group 1
+typedef Bool (APIENTRYP fp_glXJoinSwapGroupNV)(Display*, GLXDrawable, GLuint);
+GLAPI fp_glXJoinSwapGroupNV gladglXJoinSwapGroupNV;
 #define glXJoinSwapGroupNV gladglXJoinSwapGroupNV
-typedef Bool (* fp_glXBindSwapBarrierNV)(Display*, GLuint, GLuint);
-extern fp_glXBindSwapBarrierNV gladglXBindSwapBarrierNV;
+typedef Bool (APIENTRYP fp_glXBindSwapBarrierNV)(Display*, GLuint, GLuint);
+GLAPI fp_glXBindSwapBarrierNV gladglXBindSwapBarrierNV;
 #define glXBindSwapBarrierNV gladglXBindSwapBarrierNV
-typedef Bool (* fp_glXQuerySwapGroupNV)(Display*, GLXDrawable, GLuint*, GLuint*);
-extern fp_glXQuerySwapGroupNV gladglXQuerySwapGroupNV;
+typedef Bool (APIENTRYP fp_glXQuerySwapGroupNV)(Display*, GLXDrawable, GLuint*, GLuint*);
+GLAPI fp_glXQuerySwapGroupNV gladglXQuerySwapGroupNV;
 #define glXQuerySwapGroupNV gladglXQuerySwapGroupNV
-typedef Bool (* fp_glXQueryMaxSwapGroupsNV)(Display*, int, GLuint*, GLuint*);
-extern fp_glXQueryMaxSwapGroupsNV gladglXQueryMaxSwapGroupsNV;
+typedef Bool (APIENTRYP fp_glXQueryMaxSwapGroupsNV)(Display*, int, GLuint*, GLuint*);
+GLAPI fp_glXQueryMaxSwapGroupsNV gladglXQueryMaxSwapGroupsNV;
 #define glXQueryMaxSwapGroupsNV gladglXQueryMaxSwapGroupsNV
-typedef Bool (* fp_glXQueryFrameCountNV)(Display*, int, GLuint*);
-extern fp_glXQueryFrameCountNV gladglXQueryFrameCountNV;
+typedef Bool (APIENTRYP fp_glXQueryFrameCountNV)(Display*, int, GLuint*);
+GLAPI fp_glXQueryFrameCountNV gladglXQueryFrameCountNV;
 #define glXQueryFrameCountNV gladglXQueryFrameCountNV
-typedef Bool (* fp_glXResetFrameCountNV)(Display*, int);
-extern fp_glXResetFrameCountNV gladglXResetFrameCountNV;
+typedef Bool (APIENTRYP fp_glXResetFrameCountNV)(Display*, int);
+GLAPI fp_glXResetFrameCountNV gladglXResetFrameCountNV;
 #define glXResetFrameCountNV gladglXResetFrameCountNV
+#endif
 #ifndef GLX_ARB_fbconfig_float
-#define GLX_ARB_fbconfig_float 1;
+#define GLX_ARB_fbconfig_float 1
 #endif
 #ifndef GLX_SGIX_hyperpipe
-#define GLX_SGIX_hyperpipe 1;
-#endif
-typedef GLXHyperpipeNetworkSGIX* (* fp_glXQueryHyperpipeNetworkSGIX)(Display*, int*);
-extern fp_glXQueryHyperpipeNetworkSGIX gladglXQueryHyperpipeNetworkSGIX;
+#define GLX_SGIX_hyperpipe 1
+typedef GLXHyperpipeNetworkSGIX* (APIENTRYP fp_glXQueryHyperpipeNetworkSGIX)(Display*, int*);
+GLAPI fp_glXQueryHyperpipeNetworkSGIX gladglXQueryHyperpipeNetworkSGIX;
 #define glXQueryHyperpipeNetworkSGIX gladglXQueryHyperpipeNetworkSGIX
-typedef int (* fp_glXHyperpipeConfigSGIX)(Display*, int, int, GLXHyperpipeConfigSGIX*, int*);
-extern fp_glXHyperpipeConfigSGIX gladglXHyperpipeConfigSGIX;
+typedef int (APIENTRYP fp_glXHyperpipeConfigSGIX)(Display*, int, int, GLXHyperpipeConfigSGIX*, int*);
+GLAPI fp_glXHyperpipeConfigSGIX gladglXHyperpipeConfigSGIX;
 #define glXHyperpipeConfigSGIX gladglXHyperpipeConfigSGIX
-typedef GLXHyperpipeConfigSGIX* (* fp_glXQueryHyperpipeConfigSGIX)(Display*, int, int*);
-extern fp_glXQueryHyperpipeConfigSGIX gladglXQueryHyperpipeConfigSGIX;
+typedef GLXHyperpipeConfigSGIX* (APIENTRYP fp_glXQueryHyperpipeConfigSGIX)(Display*, int, int*);
+GLAPI fp_glXQueryHyperpipeConfigSGIX gladglXQueryHyperpipeConfigSGIX;
 #define glXQueryHyperpipeConfigSGIX gladglXQueryHyperpipeConfigSGIX
-typedef int (* fp_glXDestroyHyperpipeConfigSGIX)(Display*, int);
-extern fp_glXDestroyHyperpipeConfigSGIX gladglXDestroyHyperpipeConfigSGIX;
+typedef int (APIENTRYP fp_glXDestroyHyperpipeConfigSGIX)(Display*, int);
+GLAPI fp_glXDestroyHyperpipeConfigSGIX gladglXDestroyHyperpipeConfigSGIX;
 #define glXDestroyHyperpipeConfigSGIX gladglXDestroyHyperpipeConfigSGIX
-typedef int (* fp_glXBindHyperpipeSGIX)(Display*, int);
-extern fp_glXBindHyperpipeSGIX gladglXBindHyperpipeSGIX;
+typedef int (APIENTRYP fp_glXBindHyperpipeSGIX)(Display*, int);
+GLAPI fp_glXBindHyperpipeSGIX gladglXBindHyperpipeSGIX;
 #define glXBindHyperpipeSGIX gladglXBindHyperpipeSGIX
-typedef int (* fp_glXQueryHyperpipeBestAttribSGIX)(Display*, int, int, int, void*, void*);
-extern fp_glXQueryHyperpipeBestAttribSGIX gladglXQueryHyperpipeBestAttribSGIX;
+typedef int (APIENTRYP fp_glXQueryHyperpipeBestAttribSGIX)(Display*, int, int, int, void*, void*);
+GLAPI fp_glXQueryHyperpipeBestAttribSGIX gladglXQueryHyperpipeBestAttribSGIX;
 #define glXQueryHyperpipeBestAttribSGIX gladglXQueryHyperpipeBestAttribSGIX
-typedef int (* fp_glXHyperpipeAttribSGIX)(Display*, int, int, int, void*);
-extern fp_glXHyperpipeAttribSGIX gladglXHyperpipeAttribSGIX;
+typedef int (APIENTRYP fp_glXHyperpipeAttribSGIX)(Display*, int, int, int, void*);
+GLAPI fp_glXHyperpipeAttribSGIX gladglXHyperpipeAttribSGIX;
 #define glXHyperpipeAttribSGIX gladglXHyperpipeAttribSGIX
-typedef int (* fp_glXQueryHyperpipeAttribSGIX)(Display*, int, int, int, void*);
-extern fp_glXQueryHyperpipeAttribSGIX gladglXQueryHyperpipeAttribSGIX;
+typedef int (APIENTRYP fp_glXQueryHyperpipeAttribSGIX)(Display*, int, int, int, void*);
+GLAPI fp_glXQueryHyperpipeAttribSGIX gladglXQueryHyperpipeAttribSGIX;
 #define glXQueryHyperpipeAttribSGIX gladglXQueryHyperpipeAttribSGIX
+#endif
 #ifndef GLX_ARB_robustness_share_group_isolation
-#define GLX_ARB_robustness_share_group_isolation 1;
+#define GLX_ARB_robustness_share_group_isolation 1
 #endif
 #ifndef GLX_INTEL_swap_event
-#define GLX_INTEL_swap_event 1;
+#define GLX_INTEL_swap_event 1
 #endif
 #ifndef GLX_SGIX_video_resize
-#define GLX_SGIX_video_resize 1;
-#endif
-typedef int (* fp_glXBindChannelToWindowSGIX)(Display*, int, int, Window);
-extern fp_glXBindChannelToWindowSGIX gladglXBindChannelToWindowSGIX;
+#define GLX_SGIX_video_resize 1
+typedef int (APIENTRYP fp_glXBindChannelToWindowSGIX)(Display*, int, int, Window);
+GLAPI fp_glXBindChannelToWindowSGIX gladglXBindChannelToWindowSGIX;
 #define glXBindChannelToWindowSGIX gladglXBindChannelToWindowSGIX
-typedef int (* fp_glXChannelRectSGIX)(Display*, int, int, int, int, int, int);
-extern fp_glXChannelRectSGIX gladglXChannelRectSGIX;
+typedef int (APIENTRYP fp_glXChannelRectSGIX)(Display*, int, int, int, int, int, int);
+GLAPI fp_glXChannelRectSGIX gladglXChannelRectSGIX;
 #define glXChannelRectSGIX gladglXChannelRectSGIX
-typedef int (* fp_glXQueryChannelRectSGIX)(Display*, int, int, int*, int*, int*, int*);
-extern fp_glXQueryChannelRectSGIX gladglXQueryChannelRectSGIX;
+typedef int (APIENTRYP fp_glXQueryChannelRectSGIX)(Display*, int, int, int*, int*, int*, int*);
+GLAPI fp_glXQueryChannelRectSGIX gladglXQueryChannelRectSGIX;
 #define glXQueryChannelRectSGIX gladglXQueryChannelRectSGIX
-typedef int (* fp_glXQueryChannelDeltasSGIX)(Display*, int, int, int*, int*, int*, int*);
-extern fp_glXQueryChannelDeltasSGIX gladglXQueryChannelDeltasSGIX;
+typedef int (APIENTRYP fp_glXQueryChannelDeltasSGIX)(Display*, int, int, int*, int*, int*, int*);
+GLAPI fp_glXQueryChannelDeltasSGIX gladglXQueryChannelDeltasSGIX;
 #define glXQueryChannelDeltasSGIX gladglXQueryChannelDeltasSGIX
-typedef int (* fp_glXChannelRectSyncSGIX)(Display*, int, int, GLenum);
-extern fp_glXChannelRectSyncSGIX gladglXChannelRectSyncSGIX;
+typedef int (APIENTRYP fp_glXChannelRectSyncSGIX)(Display*, int, int, GLenum);
+GLAPI fp_glXChannelRectSyncSGIX gladglXChannelRectSyncSGIX;
 #define glXChannelRectSyncSGIX gladglXChannelRectSyncSGIX
+#endif
 #ifndef GLX_EXT_create_context_es2_profile
-#define GLX_EXT_create_context_es2_profile 1;
+#define GLX_EXT_create_context_es2_profile 1
 #endif
 #ifndef GLX_ARB_robustness_application_isolation
-#define GLX_ARB_robustness_application_isolation 1;
+#define GLX_ARB_robustness_application_isolation 1
 #endif
 #ifndef GLX_NV_copy_image
-#define GLX_NV_copy_image 1;
-#endif
-typedef void (* fp_glXCopyImageSubDataNV)(Display*, GLXContext, GLuint, GLenum, GLint, GLint, GLint, GLint, GLXContext, GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei);
-extern fp_glXCopyImageSubDataNV gladglXCopyImageSubDataNV;
+#define GLX_NV_copy_image 1
+typedef void (APIENTRYP fp_glXCopyImageSubDataNV)(Display*, GLXContext, GLuint, GLenum, GLint, GLint, GLint, GLint, GLXContext, GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei);
+GLAPI fp_glXCopyImageSubDataNV gladglXCopyImageSubDataNV;
 #define glXCopyImageSubDataNV gladglXCopyImageSubDataNV
-#ifndef GLX_OML_sync_control
-#define GLX_OML_sync_control 1;
 #endif
-typedef Bool (* fp_glXGetSyncValuesOML)(Display*, GLXDrawable, int64_t*, int64_t*, int64_t*);
-extern fp_glXGetSyncValuesOML gladglXGetSyncValuesOML;
+#ifndef GLX_OML_sync_control
+#define GLX_OML_sync_control 1
+typedef Bool (APIENTRYP fp_glXGetSyncValuesOML)(Display*, GLXDrawable, int64_t*, int64_t*, int64_t*);
+GLAPI fp_glXGetSyncValuesOML gladglXGetSyncValuesOML;
 #define glXGetSyncValuesOML gladglXGetSyncValuesOML
-typedef Bool (* fp_glXGetMscRateOML)(Display*, GLXDrawable, int32_t*, int32_t*);
-extern fp_glXGetMscRateOML gladglXGetMscRateOML;
+typedef Bool (APIENTRYP fp_glXGetMscRateOML)(Display*, GLXDrawable, int32_t*, int32_t*);
+GLAPI fp_glXGetMscRateOML gladglXGetMscRateOML;
 #define glXGetMscRateOML gladglXGetMscRateOML
-typedef int64_t (* fp_glXSwapBuffersMscOML)(Display*, GLXDrawable, int64_t, int64_t, int64_t);
-extern fp_glXSwapBuffersMscOML gladglXSwapBuffersMscOML;
+typedef int64_t (APIENTRYP fp_glXSwapBuffersMscOML)(Display*, GLXDrawable, int64_t, int64_t, int64_t);
+GLAPI fp_glXSwapBuffersMscOML gladglXSwapBuffersMscOML;
 #define glXSwapBuffersMscOML gladglXSwapBuffersMscOML
-typedef Bool (* fp_glXWaitForMscOML)(Display*, GLXDrawable, int64_t, int64_t, int64_t, int64_t*, int64_t*, int64_t*);
-extern fp_glXWaitForMscOML gladglXWaitForMscOML;
+typedef Bool (APIENTRYP fp_glXWaitForMscOML)(Display*, GLXDrawable, int64_t, int64_t, int64_t, int64_t*, int64_t*, int64_t*);
+GLAPI fp_glXWaitForMscOML gladglXWaitForMscOML;
 #define glXWaitForMscOML gladglXWaitForMscOML
-typedef Bool (* fp_glXWaitForSbcOML)(Display*, GLXDrawable, int64_t, int64_t*, int64_t*, int64_t*);
-extern fp_glXWaitForSbcOML gladglXWaitForSbcOML;
+typedef Bool (APIENTRYP fp_glXWaitForSbcOML)(Display*, GLXDrawable, int64_t, int64_t*, int64_t*, int64_t*);
+GLAPI fp_glXWaitForSbcOML gladglXWaitForSbcOML;
 #define glXWaitForSbcOML gladglXWaitForSbcOML
+#endif
 #ifndef GLX_EXT_framebuffer_sRGB
-#define GLX_EXT_framebuffer_sRGB 1;
+#define GLX_EXT_framebuffer_sRGB 1
 #endif
 #ifndef GLX_SGI_make_current_read
-#define GLX_SGI_make_current_read 1;
-#endif
-typedef Bool (* fp_glXMakeCurrentReadSGI)(Display*, GLXDrawable, GLXDrawable, GLXContext);
-extern fp_glXMakeCurrentReadSGI gladglXMakeCurrentReadSGI;
+#define GLX_SGI_make_current_read 1
+typedef Bool (APIENTRYP fp_glXMakeCurrentReadSGI)(Display*, GLXDrawable, GLXDrawable, GLXContext);
+GLAPI fp_glXMakeCurrentReadSGI gladglXMakeCurrentReadSGI;
 #define glXMakeCurrentReadSGI gladglXMakeCurrentReadSGI
-typedef GLXDrawable (* fp_glXGetCurrentReadDrawableSGI)();
-extern fp_glXGetCurrentReadDrawableSGI gladglXGetCurrentReadDrawableSGI;
+typedef GLXDrawable (APIENTRYP fp_glXGetCurrentReadDrawableSGI)();
+GLAPI fp_glXGetCurrentReadDrawableSGI gladglXGetCurrentReadDrawableSGI;
 #define glXGetCurrentReadDrawableSGI gladglXGetCurrentReadDrawableSGI
-#ifndef GLX_SGI_swap_control
-#define GLX_SGI_swap_control 1;
 #endif
-typedef int (* fp_glXSwapIntervalSGI)(int);
-extern fp_glXSwapIntervalSGI gladglXSwapIntervalSGI;
+#ifndef GLX_SGI_swap_control
+#define GLX_SGI_swap_control 1
+typedef int (APIENTRYP fp_glXSwapIntervalSGI)(int);
+GLAPI fp_glXSwapIntervalSGI gladglXSwapIntervalSGI;
 #define glXSwapIntervalSGI gladglXSwapIntervalSGI
+#endif
 #ifndef GLX_EXT_fbconfig_packed_float
-#define GLX_EXT_fbconfig_packed_float 1;
+#define GLX_EXT_fbconfig_packed_float 1
 #endif
 #ifndef GLX_EXT_buffer_age
-#define GLX_EXT_buffer_age 1;
+#define GLX_EXT_buffer_age 1
 #endif
 #ifndef GLX_3DFX_multisample
-#define GLX_3DFX_multisample 1;
+#define GLX_3DFX_multisample 1
 #endif
 #ifndef GLX_EXT_visual_info
-#define GLX_EXT_visual_info 1;
+#define GLX_EXT_visual_info 1
 #endif
 #ifndef GLX_SGI_video_sync
-#define GLX_SGI_video_sync 1;
-#endif
-typedef int (* fp_glXGetVideoSyncSGI)(unsigned int*);
-extern fp_glXGetVideoSyncSGI gladglXGetVideoSyncSGI;
+#define GLX_SGI_video_sync 1
+typedef int (APIENTRYP fp_glXGetVideoSyncSGI)(unsigned int*);
+GLAPI fp_glXGetVideoSyncSGI gladglXGetVideoSyncSGI;
 #define glXGetVideoSyncSGI gladglXGetVideoSyncSGI
-typedef int (* fp_glXWaitVideoSyncSGI)(int, int, unsigned int*);
-extern fp_glXWaitVideoSyncSGI gladglXWaitVideoSyncSGI;
+typedef int (APIENTRYP fp_glXWaitVideoSyncSGI)(int, int, unsigned int*);
+GLAPI fp_glXWaitVideoSyncSGI gladglXWaitVideoSyncSGI;
 #define glXWaitVideoSyncSGI gladglXWaitVideoSyncSGI
-#ifndef GLX_MESA_agp_offset
-#define GLX_MESA_agp_offset 1;
 #endif
-typedef unsigned int (* fp_glXGetAGPOffsetMESA)(const void*);
-extern fp_glXGetAGPOffsetMESA gladglXGetAGPOffsetMESA;
+#ifndef GLX_MESA_agp_offset
+#define GLX_MESA_agp_offset 1
+typedef unsigned int (APIENTRYP fp_glXGetAGPOffsetMESA)(const void*);
+GLAPI fp_glXGetAGPOffsetMESA gladglXGetAGPOffsetMESA;
 #define glXGetAGPOffsetMESA gladglXGetAGPOffsetMESA
+#endif
 #ifndef GLX_SGIS_multisample
-#define GLX_SGIS_multisample 1;
+#define GLX_SGIS_multisample 1
 #endif
 #ifndef GLX_MESA_set_3dfx_mode
-#define GLX_MESA_set_3dfx_mode 1;
-#endif
-typedef Bool (* fp_glXSet3DfxModeMESA)(int);
-extern fp_glXSet3DfxModeMESA gladglXSet3DfxModeMESA;
+#define GLX_MESA_set_3dfx_mode 1
+typedef Bool (APIENTRYP fp_glXSet3DfxModeMESA)(int);
+GLAPI fp_glXSet3DfxModeMESA gladglXSet3DfxModeMESA;
 #define glXSet3DfxModeMESA gladglXSet3DfxModeMESA
+#endif
 #ifndef GLX_EXT_texture_from_pixmap
-#define GLX_EXT_texture_from_pixmap 1;
-#endif
-typedef void (* fp_glXBindTexImageEXT)(Display*, GLXDrawable, int, const int*);
-extern fp_glXBindTexImageEXT gladglXBindTexImageEXT;
+#define GLX_EXT_texture_from_pixmap 1
+typedef void (APIENTRYP fp_glXBindTexImageEXT)(Display*, GLXDrawable, int, const int*);
+GLAPI fp_glXBindTexImageEXT gladglXBindTexImageEXT;
 #define glXBindTexImageEXT gladglXBindTexImageEXT
-typedef void (* fp_glXReleaseTexImageEXT)(Display*, GLXDrawable, int);
-extern fp_glXReleaseTexImageEXT gladglXReleaseTexImageEXT;
+typedef void (APIENTRYP fp_glXReleaseTexImageEXT)(Display*, GLXDrawable, int);
+GLAPI fp_glXReleaseTexImageEXT gladglXReleaseTexImageEXT;
 #define glXReleaseTexImageEXT gladglXReleaseTexImageEXT
-#ifndef GLX_NV_video_capture
-#define GLX_NV_video_capture 1;
 #endif
-typedef int (* fp_glXBindVideoCaptureDeviceNV)(Display*, unsigned int, GLXVideoCaptureDeviceNV);
-extern fp_glXBindVideoCaptureDeviceNV gladglXBindVideoCaptureDeviceNV;
+#ifndef GLX_NV_video_capture
+#define GLX_NV_video_capture 1
+typedef int (APIENTRYP fp_glXBindVideoCaptureDeviceNV)(Display*, unsigned int, GLXVideoCaptureDeviceNV);
+GLAPI fp_glXBindVideoCaptureDeviceNV gladglXBindVideoCaptureDeviceNV;
 #define glXBindVideoCaptureDeviceNV gladglXBindVideoCaptureDeviceNV
-typedef GLXVideoCaptureDeviceNV* (* fp_glXEnumerateVideoCaptureDevicesNV)(Display*, int, int*);
-extern fp_glXEnumerateVideoCaptureDevicesNV gladglXEnumerateVideoCaptureDevicesNV;
+typedef GLXVideoCaptureDeviceNV* (APIENTRYP fp_glXEnumerateVideoCaptureDevicesNV)(Display*, int, int*);
+GLAPI fp_glXEnumerateVideoCaptureDevicesNV gladglXEnumerateVideoCaptureDevicesNV;
 #define glXEnumerateVideoCaptureDevicesNV gladglXEnumerateVideoCaptureDevicesNV
-typedef void (* fp_glXLockVideoCaptureDeviceNV)(Display*, GLXVideoCaptureDeviceNV);
-extern fp_glXLockVideoCaptureDeviceNV gladglXLockVideoCaptureDeviceNV;
+typedef void (APIENTRYP fp_glXLockVideoCaptureDeviceNV)(Display*, GLXVideoCaptureDeviceNV);
+GLAPI fp_glXLockVideoCaptureDeviceNV gladglXLockVideoCaptureDeviceNV;
 #define glXLockVideoCaptureDeviceNV gladglXLockVideoCaptureDeviceNV
-typedef int (* fp_glXQueryVideoCaptureDeviceNV)(Display*, GLXVideoCaptureDeviceNV, int, int*);
-extern fp_glXQueryVideoCaptureDeviceNV gladglXQueryVideoCaptureDeviceNV;
+typedef int (APIENTRYP fp_glXQueryVideoCaptureDeviceNV)(Display*, GLXVideoCaptureDeviceNV, int, int*);
+GLAPI fp_glXQueryVideoCaptureDeviceNV gladglXQueryVideoCaptureDeviceNV;
 #define glXQueryVideoCaptureDeviceNV gladglXQueryVideoCaptureDeviceNV
-typedef void (* fp_glXReleaseVideoCaptureDeviceNV)(Display*, GLXVideoCaptureDeviceNV);
-extern fp_glXReleaseVideoCaptureDeviceNV gladglXReleaseVideoCaptureDeviceNV;
+typedef void (APIENTRYP fp_glXReleaseVideoCaptureDeviceNV)(Display*, GLXVideoCaptureDeviceNV);
+GLAPI fp_glXReleaseVideoCaptureDeviceNV gladglXReleaseVideoCaptureDeviceNV;
 #define glXReleaseVideoCaptureDeviceNV gladglXReleaseVideoCaptureDeviceNV
+#endif
 #ifndef GLX_ARB_multisample
-#define GLX_ARB_multisample 1;
+#define GLX_ARB_multisample 1
 #endif
 #ifndef GLX_SGIX_swap_group
-#define GLX_SGIX_swap_group 1;
-#endif
-typedef void (* fp_glXJoinSwapGroupSGIX)(Display*, GLXDrawable, GLXDrawable);
-extern fp_glXJoinSwapGroupSGIX gladglXJoinSwapGroupSGIX;
+#define GLX_SGIX_swap_group 1
+typedef void (APIENTRYP fp_glXJoinSwapGroupSGIX)(Display*, GLXDrawable, GLXDrawable);
+GLAPI fp_glXJoinSwapGroupSGIX gladglXJoinSwapGroupSGIX;
 #define glXJoinSwapGroupSGIX gladglXJoinSwapGroupSGIX
+#endif
 #ifndef GLX_EXT_swap_control
-#define GLX_EXT_swap_control 1;
-#endif
-typedef void (* fp_glXSwapIntervalEXT)(Display*, GLXDrawable, int);
-extern fp_glXSwapIntervalEXT gladglXSwapIntervalEXT;
+#define GLX_EXT_swap_control 1
+typedef void (APIENTRYP fp_glXSwapIntervalEXT)(Display*, GLXDrawable, int);
+GLAPI fp_glXSwapIntervalEXT gladglXSwapIntervalEXT;
 #define glXSwapIntervalEXT gladglXSwapIntervalEXT
-#ifndef GLX_SGIX_video_source
-#define GLX_SGIX_video_source 1;
 #endif
+#ifndef GLX_SGIX_video_source
+#define GLX_SGIX_video_source 1
 #ifdef _VL_H_
-typedef GLXVideoSourceSGIX (* fp_glXCreateGLXVideoSourceSGIX)(Display*, int, VLServer, VLPath, int, VLNode);
-extern fp_glXCreateGLXVideoSourceSGIX gladglXCreateGLXVideoSourceSGIX;
+typedef GLXVideoSourceSGIX (APIENTRYP fp_glXCreateGLXVideoSourceSGIX)(Display*, int, VLServer, VLPath, int, VLNode);
+GLAPI fp_glXCreateGLXVideoSourceSGIX gladglXCreateGLXVideoSourceSGIX;
 #define glXCreateGLXVideoSourceSGIX gladglXCreateGLXVideoSourceSGIX
-typedef void (* fp_glXDestroyGLXVideoSourceSGIX)(Display*, GLXVideoSourceSGIX);
-extern fp_glXDestroyGLXVideoSourceSGIX gladglXDestroyGLXVideoSourceSGIX;
+typedef void (APIENTRYP fp_glXDestroyGLXVideoSourceSGIX)(Display*, GLXVideoSourceSGIX);
+GLAPI fp_glXDestroyGLXVideoSourceSGIX gladglXDestroyGLXVideoSourceSGIX;
 #define glXDestroyGLXVideoSourceSGIX gladglXDestroyGLXVideoSourceSGIX
 #endif
-#ifndef GLX_ARB_create_context
-#define GLX_ARB_create_context 1;
 #endif
-typedef GLXContext (* fp_glXCreateContextAttribsARB)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
-extern fp_glXCreateContextAttribsARB gladglXCreateContextAttribsARB;
+#ifndef GLX_ARB_create_context
+#define GLX_ARB_create_context 1
+typedef GLXContext (APIENTRYP fp_glXCreateContextAttribsARB)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
+GLAPI fp_glXCreateContextAttribsARB gladglXCreateContextAttribsARB;
 #define glXCreateContextAttribsARB gladglXCreateContextAttribsARB
+#endif
 #ifndef GLX_EXT_create_context_es_profile
-#define GLX_EXT_create_context_es_profile 1;
+#define GLX_EXT_create_context_es_profile 1
 #endif
 #ifndef GLX_SGIX_fbconfig
-#define GLX_SGIX_fbconfig 1;
-#endif
-typedef int (* fp_glXGetFBConfigAttribSGIX)(Display*, GLXFBConfigSGIX, int, int*);
-extern fp_glXGetFBConfigAttribSGIX gladglXGetFBConfigAttribSGIX;
+#define GLX_SGIX_fbconfig 1
+typedef int (APIENTRYP fp_glXGetFBConfigAttribSGIX)(Display*, GLXFBConfigSGIX, int, int*);
+GLAPI fp_glXGetFBConfigAttribSGIX gladglXGetFBConfigAttribSGIX;
 #define glXGetFBConfigAttribSGIX gladglXGetFBConfigAttribSGIX
-typedef GLXFBConfigSGIX* (* fp_glXChooseFBConfigSGIX)(Display*, int, int*, int*);
-extern fp_glXChooseFBConfigSGIX gladglXChooseFBConfigSGIX;
+typedef GLXFBConfigSGIX* (APIENTRYP fp_glXChooseFBConfigSGIX)(Display*, int, int*, int*);
+GLAPI fp_glXChooseFBConfigSGIX gladglXChooseFBConfigSGIX;
 #define glXChooseFBConfigSGIX gladglXChooseFBConfigSGIX
-typedef GLXPixmap (* fp_glXCreateGLXPixmapWithConfigSGIX)(Display*, GLXFBConfigSGIX, Pixmap);
-extern fp_glXCreateGLXPixmapWithConfigSGIX gladglXCreateGLXPixmapWithConfigSGIX;
+typedef GLXPixmap (APIENTRYP fp_glXCreateGLXPixmapWithConfigSGIX)(Display*, GLXFBConfigSGIX, Pixmap);
+GLAPI fp_glXCreateGLXPixmapWithConfigSGIX gladglXCreateGLXPixmapWithConfigSGIX;
 #define glXCreateGLXPixmapWithConfigSGIX gladglXCreateGLXPixmapWithConfigSGIX
-typedef GLXContext (* fp_glXCreateContextWithConfigSGIX)(Display*, GLXFBConfigSGIX, int, GLXContext, Bool);
-extern fp_glXCreateContextWithConfigSGIX gladglXCreateContextWithConfigSGIX;
+typedef GLXContext (APIENTRYP fp_glXCreateContextWithConfigSGIX)(Display*, GLXFBConfigSGIX, int, GLXContext, Bool);
+GLAPI fp_glXCreateContextWithConfigSGIX gladglXCreateContextWithConfigSGIX;
 #define glXCreateContextWithConfigSGIX gladglXCreateContextWithConfigSGIX
-typedef XVisualInfo* (* fp_glXGetVisualFromFBConfigSGIX)(Display*, GLXFBConfigSGIX);
-extern fp_glXGetVisualFromFBConfigSGIX gladglXGetVisualFromFBConfigSGIX;
+typedef XVisualInfo* (APIENTRYP fp_glXGetVisualFromFBConfigSGIX)(Display*, GLXFBConfigSGIX);
+GLAPI fp_glXGetVisualFromFBConfigSGIX gladglXGetVisualFromFBConfigSGIX;
 #define glXGetVisualFromFBConfigSGIX gladglXGetVisualFromFBConfigSGIX
-typedef GLXFBConfigSGIX (* fp_glXGetFBConfigFromVisualSGIX)(Display*, XVisualInfo*);
-extern fp_glXGetFBConfigFromVisualSGIX gladglXGetFBConfigFromVisualSGIX;
+typedef GLXFBConfigSGIX (APIENTRYP fp_glXGetFBConfigFromVisualSGIX)(Display*, XVisualInfo*);
+GLAPI fp_glXGetFBConfigFromVisualSGIX gladglXGetFBConfigFromVisualSGIX;
 #define glXGetFBConfigFromVisualSGIX gladglXGetFBConfigFromVisualSGIX
-#ifndef GLX_MESA_pixmap_colormap
-#define GLX_MESA_pixmap_colormap 1;
 #endif
-typedef GLXPixmap (* fp_glXCreateGLXPixmapMESA)(Display*, XVisualInfo*, Pixmap, Colormap);
-extern fp_glXCreateGLXPixmapMESA gladglXCreateGLXPixmapMESA;
+#ifndef GLX_MESA_pixmap_colormap
+#define GLX_MESA_pixmap_colormap 1
+typedef GLXPixmap (APIENTRYP fp_glXCreateGLXPixmapMESA)(Display*, XVisualInfo*, Pixmap, Colormap);
+GLAPI fp_glXCreateGLXPixmapMESA gladglXCreateGLXPixmapMESA;
 #define glXCreateGLXPixmapMESA gladglXCreateGLXPixmapMESA
+#endif
 #ifndef GLX_SGIX_visual_select_group
-#define GLX_SGIX_visual_select_group 1;
+#define GLX_SGIX_visual_select_group 1
 #endif
 #ifndef GLX_NV_video_output
-#define GLX_NV_video_output 1;
-#endif
-typedef int (* fp_glXGetVideoDeviceNV)(Display*, int, int, GLXVideoDeviceNV*);
-extern fp_glXGetVideoDeviceNV gladglXGetVideoDeviceNV;
+#define GLX_NV_video_output 1
+typedef int (APIENTRYP fp_glXGetVideoDeviceNV)(Display*, int, int, GLXVideoDeviceNV*);
+GLAPI fp_glXGetVideoDeviceNV gladglXGetVideoDeviceNV;
 #define glXGetVideoDeviceNV gladglXGetVideoDeviceNV
-typedef int (* fp_glXReleaseVideoDeviceNV)(Display*, int, GLXVideoDeviceNV);
-extern fp_glXReleaseVideoDeviceNV gladglXReleaseVideoDeviceNV;
+typedef int (APIENTRYP fp_glXReleaseVideoDeviceNV)(Display*, int, GLXVideoDeviceNV);
+GLAPI fp_glXReleaseVideoDeviceNV gladglXReleaseVideoDeviceNV;
 #define glXReleaseVideoDeviceNV gladglXReleaseVideoDeviceNV
-typedef int (* fp_glXBindVideoImageNV)(Display*, GLXVideoDeviceNV, GLXPbuffer, int);
-extern fp_glXBindVideoImageNV gladglXBindVideoImageNV;
+typedef int (APIENTRYP fp_glXBindVideoImageNV)(Display*, GLXVideoDeviceNV, GLXPbuffer, int);
+GLAPI fp_glXBindVideoImageNV gladglXBindVideoImageNV;
 #define glXBindVideoImageNV gladglXBindVideoImageNV
-typedef int (* fp_glXReleaseVideoImageNV)(Display*, GLXPbuffer);
-extern fp_glXReleaseVideoImageNV gladglXReleaseVideoImageNV;
+typedef int (APIENTRYP fp_glXReleaseVideoImageNV)(Display*, GLXPbuffer);
+GLAPI fp_glXReleaseVideoImageNV gladglXReleaseVideoImageNV;
 #define glXReleaseVideoImageNV gladglXReleaseVideoImageNV
-typedef int (* fp_glXSendPbufferToVideoNV)(Display*, GLXPbuffer, int, unsigned long*, GLboolean);
-extern fp_glXSendPbufferToVideoNV gladglXSendPbufferToVideoNV;
+typedef int (APIENTRYP fp_glXSendPbufferToVideoNV)(Display*, GLXPbuffer, int, unsigned long*, GLboolean);
+GLAPI fp_glXSendPbufferToVideoNV gladglXSendPbufferToVideoNV;
 #define glXSendPbufferToVideoNV gladglXSendPbufferToVideoNV
-typedef int (* fp_glXGetVideoInfoNV)(Display*, int, GLXVideoDeviceNV, unsigned long*, unsigned long*);
-extern fp_glXGetVideoInfoNV gladglXGetVideoInfoNV;
+typedef int (APIENTRYP fp_glXGetVideoInfoNV)(Display*, int, GLXVideoDeviceNV, unsigned long*, unsigned long*);
+GLAPI fp_glXGetVideoInfoNV gladglXGetVideoInfoNV;
 #define glXGetVideoInfoNV gladglXGetVideoInfoNV
+#endif
 #ifndef GLX_SGIS_blended_overlay
-#define GLX_SGIS_blended_overlay 1;
+#define GLX_SGIS_blended_overlay 1
 #endif
 #ifndef GLX_SGIX_dmbuffer
-#define GLX_SGIX_dmbuffer 1;
-#endif
+#define GLX_SGIX_dmbuffer 1
 #ifdef _DM_BUFFER_H_
-typedef Bool (* fp_glXAssociateDMPbufferSGIX)(Display*, GLXPbufferSGIX, DMparams*, DMbuffer);
-extern fp_glXAssociateDMPbufferSGIX gladglXAssociateDMPbufferSGIX;
+typedef Bool (APIENTRYP fp_glXAssociateDMPbufferSGIX)(Display*, GLXPbufferSGIX, DMparams*, DMbuffer);
+GLAPI fp_glXAssociateDMPbufferSGIX gladglXAssociateDMPbufferSGIX;
 #define glXAssociateDMPbufferSGIX gladglXAssociateDMPbufferSGIX
 #endif
+#endif
 #ifndef GLX_ARB_create_context_robustness
-#define GLX_ARB_create_context_robustness 1;
+#define GLX_ARB_create_context_robustness 1
 #endif
 #ifndef GLX_SGIX_swap_barrier
-#define GLX_SGIX_swap_barrier 1;
-#endif
-typedef void (* fp_glXBindSwapBarrierSGIX)(Display*, GLXDrawable, int);
-extern fp_glXBindSwapBarrierSGIX gladglXBindSwapBarrierSGIX;
+#define GLX_SGIX_swap_barrier 1
+typedef void (APIENTRYP fp_glXBindSwapBarrierSGIX)(Display*, GLXDrawable, int);
+GLAPI fp_glXBindSwapBarrierSGIX gladglXBindSwapBarrierSGIX;
 #define glXBindSwapBarrierSGIX gladglXBindSwapBarrierSGIX
-typedef Bool (* fp_glXQueryMaxSwapBarriersSGIX)(Display*, int, int*);
-extern fp_glXQueryMaxSwapBarriersSGIX gladglXQueryMaxSwapBarriersSGIX;
+typedef Bool (APIENTRYP fp_glXQueryMaxSwapBarriersSGIX)(Display*, int, int*);
+GLAPI fp_glXQueryMaxSwapBarriersSGIX gladglXQueryMaxSwapBarriersSGIX;
 #define glXQueryMaxSwapBarriersSGIX gladglXQueryMaxSwapBarriersSGIX
+#endif
 #ifndef GLX_EXT_swap_control_tear
-#define GLX_EXT_swap_control_tear 1;
+#define GLX_EXT_swap_control_tear 1
 #endif
 #ifndef GLX_MESA_release_buffers
-#define GLX_MESA_release_buffers 1;
-#endif
-typedef Bool (* fp_glXReleaseBuffersMESA)(Display*, GLXDrawable);
-extern fp_glXReleaseBuffersMESA gladglXReleaseBuffersMESA;
+#define GLX_MESA_release_buffers 1
+typedef Bool (APIENTRYP fp_glXReleaseBuffersMESA)(Display*, GLXDrawable);
+GLAPI fp_glXReleaseBuffersMESA gladglXReleaseBuffersMESA;
 #define glXReleaseBuffersMESA gladglXReleaseBuffersMESA
+#endif
 #ifndef GLX_EXT_visual_rating
-#define GLX_EXT_visual_rating 1;
+#define GLX_EXT_visual_rating 1
 #endif
 #ifndef GLX_MESA_copy_sub_buffer
-#define GLX_MESA_copy_sub_buffer 1;
-#endif
-typedef void (* fp_glXCopySubBufferMESA)(Display*, GLXDrawable, int, int, int, int);
-extern fp_glXCopySubBufferMESA gladglXCopySubBufferMESA;
+#define GLX_MESA_copy_sub_buffer 1
+typedef void (APIENTRYP fp_glXCopySubBufferMESA)(Display*, GLXDrawable, int, int, int, int);
+GLAPI fp_glXCopySubBufferMESA gladglXCopySubBufferMESA;
 #define glXCopySubBufferMESA gladglXCopySubBufferMESA
-#ifndef GLX_SGI_cushion
-#define GLX_SGI_cushion 1;
 #endif
-typedef void (* fp_glXCushionSGI)(Display*, Window, float);
-extern fp_glXCushionSGI gladglXCushionSGI;
+#ifndef GLX_SGI_cushion
+#define GLX_SGI_cushion 1
+typedef void (APIENTRYP fp_glXCushionSGI)(Display*, Window, float);
+GLAPI fp_glXCushionSGI gladglXCushionSGI;
 #define glXCushionSGI gladglXCushionSGI
+#endif
 #ifndef GLX_NV_float_buffer
-#define GLX_NV_float_buffer 1;
+#define GLX_NV_float_buffer 1
 #endif
 #ifndef GLX_OML_swap_method
-#define GLX_OML_swap_method 1;
+#define GLX_OML_swap_method 1
 #endif
 #ifndef GLX_NV_present_video
-#define GLX_NV_present_video 1;
-#endif
-typedef unsigned int* (* fp_glXEnumerateVideoDevicesNV)(Display*, int, int*);
-extern fp_glXEnumerateVideoDevicesNV gladglXEnumerateVideoDevicesNV;
+#define GLX_NV_present_video 1
+typedef unsigned int* (APIENTRYP fp_glXEnumerateVideoDevicesNV)(Display*, int, int*);
+GLAPI fp_glXEnumerateVideoDevicesNV gladglXEnumerateVideoDevicesNV;
 #define glXEnumerateVideoDevicesNV gladglXEnumerateVideoDevicesNV
-typedef int (* fp_glXBindVideoDeviceNV)(Display*, unsigned int, unsigned int, const int*);
-extern fp_glXBindVideoDeviceNV gladglXBindVideoDeviceNV;
+typedef int (APIENTRYP fp_glXBindVideoDeviceNV)(Display*, unsigned int, unsigned int, const int*);
+GLAPI fp_glXBindVideoDeviceNV gladglXBindVideoDeviceNV;
 #define glXBindVideoDeviceNV gladglXBindVideoDeviceNV
-#ifndef GLX_SUN_get_transparent_index
-#define GLX_SUN_get_transparent_index 1;
 #endif
-typedef Status (* fp_glXGetTransparentIndexSUN)(Display*, Window, Window, long*);
-extern fp_glXGetTransparentIndexSUN gladglXGetTransparentIndexSUN;
+#ifndef GLX_SUN_get_transparent_index
+#define GLX_SUN_get_transparent_index 1
+typedef Status (APIENTRYP fp_glXGetTransparentIndexSUN)(Display*, Window, Window, long*);
+GLAPI fp_glXGetTransparentIndexSUN gladglXGetTransparentIndexSUN;
 #define glXGetTransparentIndexSUN gladglXGetTransparentIndexSUN
+#endif
 #ifndef GLX_AMD_gpu_association
-#define GLX_AMD_gpu_association 1;
+#define GLX_AMD_gpu_association 1
 #endif
 #ifndef GLX_ARB_create_context_profile
-#define GLX_ARB_create_context_profile 1;
+#define GLX_ARB_create_context_profile 1
 #endif
 #ifndef GLX_ARB_get_proc_address
-#define GLX_ARB_get_proc_address 1;
-#endif
-typedef __GLXextFuncPtr (* fp_glXGetProcAddressARB)(const GLubyte*);
-extern fp_glXGetProcAddressARB gladglXGetProcAddressARB;
+#define GLX_ARB_get_proc_address 1
+typedef __GLXextFuncPtr (APIENTRYP fp_glXGetProcAddressARB)(const GLubyte*);
+GLAPI fp_glXGetProcAddressARB gladglXGetProcAddressARB;
 #define glXGetProcAddressARB gladglXGetProcAddressARB
+#endif
 #ifndef GLX_ARB_vertex_buffer_object
-#define GLX_ARB_vertex_buffer_object 1;
+#define GLX_ARB_vertex_buffer_object 1
 #endif
 
 #ifdef __cplusplus

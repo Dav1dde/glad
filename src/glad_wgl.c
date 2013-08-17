@@ -227,7 +227,6 @@ fp_wglDeleteBufferRegionARB gladwglDeleteBufferRegionARB;
 fp_wglSaveBufferRegionARB gladwglSaveBufferRegionARB;
 fp_wglRestoreBufferRegionARB gladwglRestoreBufferRegionARB;
 static void load_WGL_VERSION_1_0(LOADER load) {
-	if(!WGL_VERSION_1_0) return;
 	ChoosePixelFormat = (fp_ChoosePixelFormat)load("ChoosePixelFormat");
 	DescribePixelFormat = (fp_DescribePixelFormat)load("DescribePixelFormat");
 	GetEnhMetaFilePixelFormat = (fp_GetEnhMetaFilePixelFormat)load("GetEnhMetaFilePixelFormat");
@@ -254,96 +253,71 @@ static void load_WGL_VERSION_1_0(LOADER load) {
 	wglUseFontOutlines = (fp_wglUseFontOutlines)load("wglUseFontOutlines");
 	wglUseFontOutlinesA = (fp_wglUseFontOutlinesA)load("wglUseFontOutlinesA");
 	wglUseFontOutlinesW = (fp_wglUseFontOutlinesW)load("wglUseFontOutlinesW");
-	return;
 }
-
-static int load_WGL_I3D_image_buffer(LOADER load) {
-	if(!WGL_I3D_image_buffer) return 0;
+static void load_WGL_I3D_image_buffer(LOADER load) {
 	wglCreateImageBufferI3D = (fp_wglCreateImageBufferI3D)load("wglCreateImageBufferI3D");
 	wglDestroyImageBufferI3D = (fp_wglDestroyImageBufferI3D)load("wglDestroyImageBufferI3D");
 	wglAssociateImageBufferEventsI3D = (fp_wglAssociateImageBufferEventsI3D)load("wglAssociateImageBufferEventsI3D");
 	wglReleaseImageBufferEventsI3D = (fp_wglReleaseImageBufferEventsI3D)load("wglReleaseImageBufferEventsI3D");
-	return 1;
 }
-static int load_WGL_I3D_swap_frame_usage(LOADER load) {
-	if(!WGL_I3D_swap_frame_usage) return 0;
+static void load_WGL_I3D_swap_frame_usage(LOADER load) {
 	wglGetFrameUsageI3D = (fp_wglGetFrameUsageI3D)load("wglGetFrameUsageI3D");
 	wglBeginFrameTrackingI3D = (fp_wglBeginFrameTrackingI3D)load("wglBeginFrameTrackingI3D");
 	wglEndFrameTrackingI3D = (fp_wglEndFrameTrackingI3D)load("wglEndFrameTrackingI3D");
 	wglQueryFrameTrackingI3D = (fp_wglQueryFrameTrackingI3D)load("wglQueryFrameTrackingI3D");
-	return 1;
 }
-static int load_WGL_OML_sync_control(LOADER load) {
-	if(!WGL_OML_sync_control) return 0;
+static void load_WGL_OML_sync_control(LOADER load) {
 	wglGetSyncValuesOML = (fp_wglGetSyncValuesOML)load("wglGetSyncValuesOML");
 	wglGetMscRateOML = (fp_wglGetMscRateOML)load("wglGetMscRateOML");
 	wglSwapBuffersMscOML = (fp_wglSwapBuffersMscOML)load("wglSwapBuffersMscOML");
 	wglSwapLayerBuffersMscOML = (fp_wglSwapLayerBuffersMscOML)load("wglSwapLayerBuffersMscOML");
 	wglWaitForMscOML = (fp_wglWaitForMscOML)load("wglWaitForMscOML");
 	wglWaitForSbcOML = (fp_wglWaitForSbcOML)load("wglWaitForSbcOML");
-	return 1;
 }
-static int load_WGL_ARB_create_context(LOADER load) {
-	if(!WGL_ARB_create_context) return 0;
+static void load_WGL_ARB_create_context(LOADER load) {
 	wglCreateContextAttribsARB = (fp_wglCreateContextAttribsARB)load("wglCreateContextAttribsARB");
-	return 1;
 }
-static int load_WGL_NV_swap_group(LOADER load) {
-	if(!WGL_NV_swap_group) return 0;
+static void load_WGL_NV_swap_group(LOADER load) {
 	wglJoinSwapGroupNV = (fp_wglJoinSwapGroupNV)load("wglJoinSwapGroupNV");
 	wglBindSwapBarrierNV = (fp_wglBindSwapBarrierNV)load("wglBindSwapBarrierNV");
 	wglQuerySwapGroupNV = (fp_wglQuerySwapGroupNV)load("wglQuerySwapGroupNV");
 	wglQueryMaxSwapGroupsNV = (fp_wglQueryMaxSwapGroupsNV)load("wglQueryMaxSwapGroupsNV");
 	wglQueryFrameCountNV = (fp_wglQueryFrameCountNV)load("wglQueryFrameCountNV");
 	wglResetFrameCountNV = (fp_wglResetFrameCountNV)load("wglResetFrameCountNV");
-	return 1;
 }
-static int load_WGL_NV_gpu_affinity(LOADER load) {
-	if(!WGL_NV_gpu_affinity) return 0;
+static void load_WGL_NV_gpu_affinity(LOADER load) {
 	wglEnumGpusNV = (fp_wglEnumGpusNV)load("wglEnumGpusNV");
 	wglEnumGpuDevicesNV = (fp_wglEnumGpuDevicesNV)load("wglEnumGpuDevicesNV");
 	wglCreateAffinityDCNV = (fp_wglCreateAffinityDCNV)load("wglCreateAffinityDCNV");
 	wglEnumGpusFromAffinityDCNV = (fp_wglEnumGpusFromAffinityDCNV)load("wglEnumGpusFromAffinityDCNV");
 	wglDeleteDCNV = (fp_wglDeleteDCNV)load("wglDeleteDCNV");
-	return 1;
 }
-static int load_WGL_EXT_pixel_format(LOADER load) {
-	if(!WGL_EXT_pixel_format) return 0;
+static void load_WGL_EXT_pixel_format(LOADER load) {
 	wglGetPixelFormatAttribivEXT = (fp_wglGetPixelFormatAttribivEXT)load("wglGetPixelFormatAttribivEXT");
 	wglGetPixelFormatAttribfvEXT = (fp_wglGetPixelFormatAttribfvEXT)load("wglGetPixelFormatAttribfvEXT");
 	wglChoosePixelFormatEXT = (fp_wglChoosePixelFormatEXT)load("wglChoosePixelFormatEXT");
-	return 1;
 }
-static int load_WGL_ARB_extensions_string(LOADER load) {
-	if(!WGL_ARB_extensions_string) return 0;
+static void load_WGL_ARB_extensions_string(LOADER load) {
 	wglGetExtensionsStringARB = (fp_wglGetExtensionsStringARB)load("wglGetExtensionsStringARB");
-	return 1;
 }
-static int load_WGL_NV_video_capture(LOADER load) {
-	if(!WGL_NV_video_capture) return 0;
+static void load_WGL_NV_video_capture(LOADER load) {
 	wglBindVideoCaptureDeviceNV = (fp_wglBindVideoCaptureDeviceNV)load("wglBindVideoCaptureDeviceNV");
 	wglEnumerateVideoCaptureDevicesNV = (fp_wglEnumerateVideoCaptureDevicesNV)load("wglEnumerateVideoCaptureDevicesNV");
 	wglLockVideoCaptureDeviceNV = (fp_wglLockVideoCaptureDeviceNV)load("wglLockVideoCaptureDeviceNV");
 	wglQueryVideoCaptureDeviceNV = (fp_wglQueryVideoCaptureDeviceNV)load("wglQueryVideoCaptureDeviceNV");
 	wglReleaseVideoCaptureDeviceNV = (fp_wglReleaseVideoCaptureDeviceNV)load("wglReleaseVideoCaptureDeviceNV");
-	return 1;
 }
-static int load_WGL_ARB_render_texture(LOADER load) {
-	if(!WGL_ARB_render_texture) return 0;
+static void load_WGL_ARB_render_texture(LOADER load) {
 	wglBindTexImageARB = (fp_wglBindTexImageARB)load("wglBindTexImageARB");
 	wglReleaseTexImageARB = (fp_wglReleaseTexImageARB)load("wglReleaseTexImageARB");
 	wglSetPbufferAttribARB = (fp_wglSetPbufferAttribARB)load("wglSetPbufferAttribARB");
-	return 1;
 }
-static int load_WGL_ARB_pixel_format(LOADER load) {
-	if(!WGL_ARB_pixel_format) return 0;
+static void load_WGL_ARB_pixel_format(LOADER load) {
 	wglGetPixelFormatAttribivARB = (fp_wglGetPixelFormatAttribivARB)load("wglGetPixelFormatAttribivARB");
 	wglGetPixelFormatAttribfvARB = (fp_wglGetPixelFormatAttribfvARB)load("wglGetPixelFormatAttribfvARB");
 	wglChoosePixelFormatARB = (fp_wglChoosePixelFormatARB)load("wglChoosePixelFormatARB");
-	return 1;
 }
-static int load_WGL_I3D_genlock(LOADER load) {
-	if(!WGL_I3D_genlock) return 0;
+static void load_WGL_I3D_genlock(LOADER load) {
 	wglEnableGenlockI3D = (fp_wglEnableGenlockI3D)load("wglEnableGenlockI3D");
 	wglDisableGenlockI3D = (fp_wglDisableGenlockI3D)load("wglDisableGenlockI3D");
 	wglIsEnabledGenlockI3D = (fp_wglIsEnabledGenlockI3D)load("wglIsEnabledGenlockI3D");
@@ -356,10 +330,8 @@ static int load_WGL_I3D_genlock(LOADER load) {
 	wglGenlockSourceDelayI3D = (fp_wglGenlockSourceDelayI3D)load("wglGenlockSourceDelayI3D");
 	wglGetGenlockSourceDelayI3D = (fp_wglGetGenlockSourceDelayI3D)load("wglGetGenlockSourceDelayI3D");
 	wglQueryGenlockMaxSourceDelayI3D = (fp_wglQueryGenlockMaxSourceDelayI3D)load("wglQueryGenlockMaxSourceDelayI3D");
-	return 1;
 }
-static int load_WGL_NV_DX_interop(LOADER load) {
-	if(!WGL_NV_DX_interop) return 0;
+static void load_WGL_NV_DX_interop(LOADER load) {
 	wglDXSetResourceShareHandleNV = (fp_wglDXSetResourceShareHandleNV)load("wglDXSetResourceShareHandleNV");
 	wglDXOpenDeviceNV = (fp_wglDXOpenDeviceNV)load("wglDXOpenDeviceNV");
 	wglDXCloseDeviceNV = (fp_wglDXCloseDeviceNV)load("wglDXCloseDeviceNV");
@@ -368,100 +340,72 @@ static int load_WGL_NV_DX_interop(LOADER load) {
 	wglDXObjectAccessNV = (fp_wglDXObjectAccessNV)load("wglDXObjectAccessNV");
 	wglDXLockObjectsNV = (fp_wglDXLockObjectsNV)load("wglDXLockObjectsNV");
 	wglDXUnlockObjectsNV = (fp_wglDXUnlockObjectsNV)load("wglDXUnlockObjectsNV");
-	return 1;
 }
-static int load_WGL_3DL_stereo_control(LOADER load) {
-	if(!WGL_3DL_stereo_control) return 0;
+static void load_WGL_3DL_stereo_control(LOADER load) {
 	wglSetStereoEmitterState3DL = (fp_wglSetStereoEmitterState3DL)load("wglSetStereoEmitterState3DL");
-	return 1;
 }
-static int load_WGL_EXT_pbuffer(LOADER load) {
-	if(!WGL_EXT_pbuffer) return 0;
+static void load_WGL_EXT_pbuffer(LOADER load) {
 	wglCreatePbufferEXT = (fp_wglCreatePbufferEXT)load("wglCreatePbufferEXT");
 	wglGetPbufferDCEXT = (fp_wglGetPbufferDCEXT)load("wglGetPbufferDCEXT");
 	wglReleasePbufferDCEXT = (fp_wglReleasePbufferDCEXT)load("wglReleasePbufferDCEXT");
 	wglDestroyPbufferEXT = (fp_wglDestroyPbufferEXT)load("wglDestroyPbufferEXT");
 	wglQueryPbufferEXT = (fp_wglQueryPbufferEXT)load("wglQueryPbufferEXT");
-	return 1;
 }
-static int load_WGL_EXT_display_color_table(LOADER load) {
-	if(!WGL_EXT_display_color_table) return 0;
+static void load_WGL_EXT_display_color_table(LOADER load) {
 	wglCreateDisplayColorTableEXT = (fp_wglCreateDisplayColorTableEXT)load("wglCreateDisplayColorTableEXT");
 	wglLoadDisplayColorTableEXT = (fp_wglLoadDisplayColorTableEXT)load("wglLoadDisplayColorTableEXT");
 	wglBindDisplayColorTableEXT = (fp_wglBindDisplayColorTableEXT)load("wglBindDisplayColorTableEXT");
 	wglDestroyDisplayColorTableEXT = (fp_wglDestroyDisplayColorTableEXT)load("wglDestroyDisplayColorTableEXT");
-	return 1;
 }
-static int load_WGL_NV_video_output(LOADER load) {
-	if(!WGL_NV_video_output) return 0;
+static void load_WGL_NV_video_output(LOADER load) {
 	wglGetVideoDeviceNV = (fp_wglGetVideoDeviceNV)load("wglGetVideoDeviceNV");
 	wglReleaseVideoDeviceNV = (fp_wglReleaseVideoDeviceNV)load("wglReleaseVideoDeviceNV");
 	wglBindVideoImageNV = (fp_wglBindVideoImageNV)load("wglBindVideoImageNV");
 	wglReleaseVideoImageNV = (fp_wglReleaseVideoImageNV)load("wglReleaseVideoImageNV");
 	wglSendPbufferToVideoNV = (fp_wglSendPbufferToVideoNV)load("wglSendPbufferToVideoNV");
 	wglGetVideoInfoNV = (fp_wglGetVideoInfoNV)load("wglGetVideoInfoNV");
-	return 1;
 }
-static int load_WGL_I3D_gamma(LOADER load) {
-	if(!WGL_I3D_gamma) return 0;
+static void load_WGL_I3D_gamma(LOADER load) {
 	wglGetGammaTableParametersI3D = (fp_wglGetGammaTableParametersI3D)load("wglGetGammaTableParametersI3D");
 	wglSetGammaTableParametersI3D = (fp_wglSetGammaTableParametersI3D)load("wglSetGammaTableParametersI3D");
 	wglGetGammaTableI3D = (fp_wglGetGammaTableI3D)load("wglGetGammaTableI3D");
 	wglSetGammaTableI3D = (fp_wglSetGammaTableI3D)load("wglSetGammaTableI3D");
-	return 1;
 }
-static int load_WGL_NV_copy_image(LOADER load) {
-	if(!WGL_NV_copy_image) return 0;
+static void load_WGL_NV_copy_image(LOADER load) {
 	wglCopyImageSubDataNV = (fp_wglCopyImageSubDataNV)load("wglCopyImageSubDataNV");
-	return 1;
 }
-static int load_WGL_NV_present_video(LOADER load) {
-	if(!WGL_NV_present_video) return 0;
+static void load_WGL_NV_present_video(LOADER load) {
 	wglEnumerateVideoDevicesNV = (fp_wglEnumerateVideoDevicesNV)load("wglEnumerateVideoDevicesNV");
 	wglBindVideoDeviceNV = (fp_wglBindVideoDeviceNV)load("wglBindVideoDeviceNV");
 	wglQueryCurrentContextNV = (fp_wglQueryCurrentContextNV)load("wglQueryCurrentContextNV");
-	return 1;
 }
-static int load_WGL_ARB_make_current_read(LOADER load) {
-	if(!WGL_ARB_make_current_read) return 0;
+static void load_WGL_ARB_make_current_read(LOADER load) {
 	wglMakeContextCurrentARB = (fp_wglMakeContextCurrentARB)load("wglMakeContextCurrentARB");
 	wglGetCurrentReadDCARB = (fp_wglGetCurrentReadDCARB)load("wglGetCurrentReadDCARB");
-	return 1;
 }
-static int load_WGL_EXT_extensions_string(LOADER load) {
-	if(!WGL_EXT_extensions_string) return 0;
+static void load_WGL_EXT_extensions_string(LOADER load) {
 	wglGetExtensionsStringEXT = (fp_wglGetExtensionsStringEXT)load("wglGetExtensionsStringEXT");
-	return 1;
 }
-static int load_WGL_EXT_swap_control(LOADER load) {
-	if(!WGL_EXT_swap_control) return 0;
+static void load_WGL_EXT_swap_control(LOADER load) {
 	wglSwapIntervalEXT = (fp_wglSwapIntervalEXT)load("wglSwapIntervalEXT");
 	wglGetSwapIntervalEXT = (fp_wglGetSwapIntervalEXT)load("wglGetSwapIntervalEXT");
-	return 1;
 }
-static int load_WGL_I3D_digital_video_control(LOADER load) {
-	if(!WGL_I3D_digital_video_control) return 0;
+static void load_WGL_I3D_digital_video_control(LOADER load) {
 	wglGetDigitalVideoParametersI3D = (fp_wglGetDigitalVideoParametersI3D)load("wglGetDigitalVideoParametersI3D");
 	wglSetDigitalVideoParametersI3D = (fp_wglSetDigitalVideoParametersI3D)load("wglSetDigitalVideoParametersI3D");
-	return 1;
 }
-static int load_WGL_ARB_pbuffer(LOADER load) {
-	if(!WGL_ARB_pbuffer) return 0;
+static void load_WGL_ARB_pbuffer(LOADER load) {
 	wglCreatePbufferARB = (fp_wglCreatePbufferARB)load("wglCreatePbufferARB");
 	wglGetPbufferDCARB = (fp_wglGetPbufferDCARB)load("wglGetPbufferDCARB");
 	wglReleasePbufferDCARB = (fp_wglReleasePbufferDCARB)load("wglReleasePbufferDCARB");
 	wglDestroyPbufferARB = (fp_wglDestroyPbufferARB)load("wglDestroyPbufferARB");
 	wglQueryPbufferARB = (fp_wglQueryPbufferARB)load("wglQueryPbufferARB");
-	return 1;
 }
-static int load_WGL_NV_vertex_array_range(LOADER load) {
-	if(!WGL_NV_vertex_array_range) return 0;
+static void load_WGL_NV_vertex_array_range(LOADER load) {
 	wglAllocateMemoryNV = (fp_wglAllocateMemoryNV)load("wglAllocateMemoryNV");
 	wglFreeMemoryNV = (fp_wglFreeMemoryNV)load("wglFreeMemoryNV");
-	return 1;
 }
-static int load_WGL_AMD_gpu_association(LOADER load) {
-	if(!WGL_AMD_gpu_association) return 0;
+static void load_WGL_AMD_gpu_association(LOADER load) {
 	wglGetGPUIDsAMD = (fp_wglGetGPUIDsAMD)load("wglGetGPUIDsAMD");
 	wglGetGPUInfoAMD = (fp_wglGetGPUInfoAMD)load("wglGetGPUInfoAMD");
 	wglGetContextGPUIDAMD = (fp_wglGetContextGPUIDAMD)load("wglGetContextGPUIDAMD");
@@ -471,88 +415,29 @@ static int load_WGL_AMD_gpu_association(LOADER load) {
 	wglMakeAssociatedContextCurrentAMD = (fp_wglMakeAssociatedContextCurrentAMD)load("wglMakeAssociatedContextCurrentAMD");
 	wglGetCurrentAssociatedContextAMD = (fp_wglGetCurrentAssociatedContextAMD)load("wglGetCurrentAssociatedContextAMD");
 	wglBlitContextFramebufferAMD = (fp_wglBlitContextFramebufferAMD)load("wglBlitContextFramebufferAMD");
-	return 1;
 }
-static int load_WGL_EXT_make_current_read(LOADER load) {
-	if(!WGL_EXT_make_current_read) return 0;
+static void load_WGL_EXT_make_current_read(LOADER load) {
 	wglMakeContextCurrentEXT = (fp_wglMakeContextCurrentEXT)load("wglMakeContextCurrentEXT");
 	wglGetCurrentReadDCEXT = (fp_wglGetCurrentReadDCEXT)load("wglGetCurrentReadDCEXT");
-	return 1;
 }
-static int load_WGL_I3D_swap_frame_lock(LOADER load) {
-	if(!WGL_I3D_swap_frame_lock) return 0;
+static void load_WGL_I3D_swap_frame_lock(LOADER load) {
 	wglEnableFrameLockI3D = (fp_wglEnableFrameLockI3D)load("wglEnableFrameLockI3D");
 	wglDisableFrameLockI3D = (fp_wglDisableFrameLockI3D)load("wglDisableFrameLockI3D");
 	wglIsEnabledFrameLockI3D = (fp_wglIsEnabledFrameLockI3D)load("wglIsEnabledFrameLockI3D");
 	wglQueryFrameLockMasterI3D = (fp_wglQueryFrameLockMasterI3D)load("wglQueryFrameLockMasterI3D");
-	return 1;
 }
-static int load_WGL_ARB_buffer_region(LOADER load) {
-	if(!WGL_ARB_buffer_region) return 0;
+static void load_WGL_ARB_buffer_region(LOADER load) {
 	wglCreateBufferRegionARB = (fp_wglCreateBufferRegionARB)load("wglCreateBufferRegionARB");
 	wglDeleteBufferRegionARB = (fp_wglDeleteBufferRegionARB)load("wglDeleteBufferRegionARB");
 	wglSaveBufferRegionARB = (fp_wglSaveBufferRegionARB)load("wglSaveBufferRegionARB");
 	wglRestoreBufferRegionARB = (fp_wglRestoreBufferRegionARB)load("wglRestoreBufferRegionARB");
-	return 1;
 }
 static void find_extensions(void) {
-	WGL_NV_multisample_coverage = has_ext("WGL_NV_multisample_coverage");
-	WGL_I3D_image_buffer = has_ext("WGL_I3D_image_buffer");
-	WGL_I3D_swap_frame_usage = has_ext("WGL_I3D_swap_frame_usage");
-	WGL_NV_DX_interop2 = has_ext("WGL_NV_DX_interop2");
-	WGL_NV_float_buffer = has_ext("WGL_NV_float_buffer");
-	WGL_OML_sync_control = has_ext("WGL_OML_sync_control");
-	WGL_ARB_pixel_format_float = has_ext("WGL_ARB_pixel_format_float");
-	WGL_ARB_create_context = has_ext("WGL_ARB_create_context");
-	WGL_NV_swap_group = has_ext("WGL_NV_swap_group");
-	WGL_NV_gpu_affinity = has_ext("WGL_NV_gpu_affinity");
-	WGL_EXT_pixel_format = has_ext("WGL_EXT_pixel_format");
-	WGL_ARB_extensions_string = has_ext("WGL_ARB_extensions_string");
-	WGL_NV_video_capture = has_ext("WGL_NV_video_capture");
-	WGL_NV_render_texture_rectangle = has_ext("WGL_NV_render_texture_rectangle");
-	WGL_EXT_create_context_es_profile = has_ext("WGL_EXT_create_context_es_profile");
-	WGL_ARB_robustness_share_group_isolation = has_ext("WGL_ARB_robustness_share_group_isolation");
-	WGL_ARB_render_texture = has_ext("WGL_ARB_render_texture");
-	WGL_EXT_depth_float = has_ext("WGL_EXT_depth_float");
-	WGL_EXT_swap_control_tear = has_ext("WGL_EXT_swap_control_tear");
-	WGL_ARB_pixel_format = has_ext("WGL_ARB_pixel_format");
-	WGL_ARB_multisample = has_ext("WGL_ARB_multisample");
-	WGL_I3D_genlock = has_ext("WGL_I3D_genlock");
-	WGL_NV_DX_interop = has_ext("WGL_NV_DX_interop");
-	WGL_3DL_stereo_control = has_ext("WGL_3DL_stereo_control");
-	WGL_EXT_pbuffer = has_ext("WGL_EXT_pbuffer");
-	WGL_EXT_display_color_table = has_ext("WGL_EXT_display_color_table");
-	WGL_NV_video_output = has_ext("WGL_NV_video_output");
-	WGL_ARB_robustness_application_isolation = has_ext("WGL_ARB_robustness_application_isolation");
-	WGL_3DFX_multisample = has_ext("WGL_3DFX_multisample");
-	WGL_I3D_gamma = has_ext("WGL_I3D_gamma");
-	WGL_ARB_framebuffer_sRGB = has_ext("WGL_ARB_framebuffer_sRGB");
-	WGL_NV_copy_image = has_ext("WGL_NV_copy_image");
-	WGL_EXT_framebuffer_sRGB = has_ext("WGL_EXT_framebuffer_sRGB");
-	WGL_NV_present_video = has_ext("WGL_NV_present_video");
-	WGL_EXT_create_context_es2_profile = has_ext("WGL_EXT_create_context_es2_profile");
-	WGL_ARB_create_context_robustness = has_ext("WGL_ARB_create_context_robustness");
-	WGL_ARB_make_current_read = has_ext("WGL_ARB_make_current_read");
-	WGL_EXT_multisample = has_ext("WGL_EXT_multisample");
-	WGL_EXT_extensions_string = has_ext("WGL_EXT_extensions_string");
-	WGL_NV_render_depth_texture = has_ext("WGL_NV_render_depth_texture");
-	WGL_ATI_pixel_format_float = has_ext("WGL_ATI_pixel_format_float");
-	WGL_ARB_create_context_profile = has_ext("WGL_ARB_create_context_profile");
-	WGL_EXT_swap_control = has_ext("WGL_EXT_swap_control");
-	WGL_I3D_digital_video_control = has_ext("WGL_I3D_digital_video_control");
-	WGL_ARB_pbuffer = has_ext("WGL_ARB_pbuffer");
-	WGL_NV_vertex_array_range = has_ext("WGL_NV_vertex_array_range");
-	WGL_AMD_gpu_association = has_ext("WGL_AMD_gpu_association");
-	WGL_EXT_pixel_format_packed_float = has_ext("WGL_EXT_pixel_format_packed_float");
-	WGL_EXT_make_current_read = has_ext("WGL_EXT_make_current_read");
-	WGL_I3D_swap_frame_lock = has_ext("WGL_I3D_swap_frame_lock");
-	WGL_ARB_buffer_region = has_ext("WGL_ARB_buffer_region");
 }
 
 static void find_core(void) {
 	int major = 9;
 	int minor = 9;
-	WGL_VERSION_1_0 = (major == 1 && minor >= 0) || major > 1;
 }
 
 void gladLoadWGLLoader(LOADER load) {

@@ -8,6 +8,16 @@
 #define __glad_egl_h_
 #define __egl_h_
 
+#ifndef APIENTRY
+#define APIENTRY
+#endif
+#ifndef APIENTRYP
+#define APIENTRYP APIENTRY *
+#endif
+#ifndef GLAPI
+#define GLAPI extern
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -258,196 +268,306 @@ EGLContext eglGetCurrentContext();
 #define EGL_VG_PARENT_IMAGE_KHR 0x30BA
 #define EGL_NATIVE_BUFFER_ANDROID 0x3140
 #define EGL_BUFFER_AGE_EXT 0x313D
-int EGL_KHR_lock_surface;
-typedef EGLBoolean (* fp_eglLockSurfaceKHR)(EGLDisplay, EGLSurface, const EGLint*);
-extern fp_eglLockSurfaceKHR gladeglLockSurfaceKHR;
+#ifndef EGL_KHR_lock_surface
+#define EGL_KHR_lock_surface 1
+typedef EGLBoolean (APIENTRYP fp_eglLockSurfaceKHR)(EGLDisplay, EGLSurface, const EGLint*);
+GLAPI fp_eglLockSurfaceKHR gladeglLockSurfaceKHR;
 #define eglLockSurfaceKHR gladeglLockSurfaceKHR
-typedef EGLBoolean (* fp_eglUnlockSurfaceKHR)(EGLDisplay, EGLSurface);
-extern fp_eglUnlockSurfaceKHR gladeglUnlockSurfaceKHR;
+typedef EGLBoolean (APIENTRYP fp_eglUnlockSurfaceKHR)(EGLDisplay, EGLSurface);
+GLAPI fp_eglUnlockSurfaceKHR gladeglUnlockSurfaceKHR;
 #define eglUnlockSurfaceKHR gladeglUnlockSurfaceKHR
-int EGL_KHR_stream_fifo;
-typedef EGLBoolean (* fp_eglQueryStreamTimeKHR)(EGLDisplay, EGLStreamKHR, EGLenum, EGLTimeKHR*);
-extern fp_eglQueryStreamTimeKHR gladeglQueryStreamTimeKHR;
+#endif
+#ifndef EGL_KHR_stream_fifo
+#define EGL_KHR_stream_fifo 1
+typedef EGLBoolean (APIENTRYP fp_eglQueryStreamTimeKHR)(EGLDisplay, EGLStreamKHR, EGLenum, EGLTimeKHR*);
+GLAPI fp_eglQueryStreamTimeKHR gladeglQueryStreamTimeKHR;
 #define eglQueryStreamTimeKHR gladeglQueryStreamTimeKHR
-int EGL_EXT_client_extensions;
-int EGL_KHR_surfaceless_context;
-int EGL_ANGLE_d3d_share_handle_client_buffer;
-int EGL_NV_native_query;
-typedef EGLBoolean (* fp_eglQueryNativeDisplayNV)(EGLDisplay, EGLNativeDisplayType*);
-extern fp_eglQueryNativeDisplayNV gladeglQueryNativeDisplayNV;
+#endif
+#ifndef EGL_EXT_client_extensions
+#define EGL_EXT_client_extensions 1
+#endif
+#ifndef EGL_KHR_surfaceless_context
+#define EGL_KHR_surfaceless_context 1
+#endif
+#ifndef EGL_ANGLE_d3d_share_handle_client_buffer
+#define EGL_ANGLE_d3d_share_handle_client_buffer 1
+#endif
+#ifndef EGL_NV_native_query
+#define EGL_NV_native_query 1
+typedef EGLBoolean (APIENTRYP fp_eglQueryNativeDisplayNV)(EGLDisplay, EGLNativeDisplayType*);
+GLAPI fp_eglQueryNativeDisplayNV gladeglQueryNativeDisplayNV;
 #define eglQueryNativeDisplayNV gladeglQueryNativeDisplayNV
-typedef EGLBoolean (* fp_eglQueryNativeWindowNV)(EGLDisplay, EGLSurface, EGLNativeWindowType*);
-extern fp_eglQueryNativeWindowNV gladeglQueryNativeWindowNV;
+typedef EGLBoolean (APIENTRYP fp_eglQueryNativeWindowNV)(EGLDisplay, EGLSurface, EGLNativeWindowType*);
+GLAPI fp_eglQueryNativeWindowNV gladeglQueryNativeWindowNV;
 #define eglQueryNativeWindowNV gladeglQueryNativeWindowNV
-typedef EGLBoolean (* fp_eglQueryNativePixmapNV)(EGLDisplay, EGLSurface, EGLNativePixmapType*);
-extern fp_eglQueryNativePixmapNV gladeglQueryNativePixmapNV;
+typedef EGLBoolean (APIENTRYP fp_eglQueryNativePixmapNV)(EGLDisplay, EGLSurface, EGLNativePixmapType*);
+GLAPI fp_eglQueryNativePixmapNV gladeglQueryNativePixmapNV;
 #define eglQueryNativePixmapNV gladeglQueryNativePixmapNV
-int EGL_MESA_drm_image;
-typedef EGLImageKHR (* fp_eglCreateDRMImageMESA)(EGLDisplay, const EGLint*);
-extern fp_eglCreateDRMImageMESA gladeglCreateDRMImageMESA;
+#endif
+#ifndef EGL_MESA_drm_image
+#define EGL_MESA_drm_image 1
+typedef EGLImageKHR (APIENTRYP fp_eglCreateDRMImageMESA)(EGLDisplay, const EGLint*);
+GLAPI fp_eglCreateDRMImageMESA gladeglCreateDRMImageMESA;
 #define eglCreateDRMImageMESA gladeglCreateDRMImageMESA
-typedef EGLBoolean (* fp_eglExportDRMImageMESA)(EGLDisplay, EGLImageKHR, EGLint*, EGLint*, EGLint*);
-extern fp_eglExportDRMImageMESA gladeglExportDRMImageMESA;
+typedef EGLBoolean (APIENTRYP fp_eglExportDRMImageMESA)(EGLDisplay, EGLImageKHR, EGLint*, EGLint*, EGLint*);
+GLAPI fp_eglExportDRMImageMESA gladeglExportDRMImageMESA;
 #define eglExportDRMImageMESA gladeglExportDRMImageMESA
-int EGL_KHR_stream_producer_eglsurface;
-typedef EGLSurface (* fp_eglCreateStreamProducerSurfaceKHR)(EGLDisplay, EGLConfig, EGLStreamKHR, const EGLint*);
-extern fp_eglCreateStreamProducerSurfaceKHR gladeglCreateStreamProducerSurfaceKHR;
+#endif
+#ifndef EGL_KHR_stream_producer_eglsurface
+#define EGL_KHR_stream_producer_eglsurface 1
+typedef EGLSurface (APIENTRYP fp_eglCreateStreamProducerSurfaceKHR)(EGLDisplay, EGLConfig, EGLStreamKHR, const EGLint*);
+GLAPI fp_eglCreateStreamProducerSurfaceKHR gladeglCreateStreamProducerSurfaceKHR;
 #define eglCreateStreamProducerSurfaceKHR gladeglCreateStreamProducerSurfaceKHR
-int EGL_KHR_gl_texture_3D_image;
-int EGL_KHR_stream_consumer_gltexture;
-typedef EGLBoolean (* fp_eglStreamConsumerGLTextureExternalKHR)(EGLDisplay, EGLStreamKHR);
-extern fp_eglStreamConsumerGLTextureExternalKHR gladeglStreamConsumerGLTextureExternalKHR;
+#endif
+#ifndef EGL_KHR_gl_texture_3D_image
+#define EGL_KHR_gl_texture_3D_image 1
+#endif
+#ifndef EGL_KHR_stream_consumer_gltexture
+#define EGL_KHR_stream_consumer_gltexture 1
+typedef EGLBoolean (APIENTRYP fp_eglStreamConsumerGLTextureExternalKHR)(EGLDisplay, EGLStreamKHR);
+GLAPI fp_eglStreamConsumerGLTextureExternalKHR gladeglStreamConsumerGLTextureExternalKHR;
 #define eglStreamConsumerGLTextureExternalKHR gladeglStreamConsumerGLTextureExternalKHR
-typedef EGLBoolean (* fp_eglStreamConsumerAcquireKHR)(EGLDisplay, EGLStreamKHR);
-extern fp_eglStreamConsumerAcquireKHR gladeglStreamConsumerAcquireKHR;
+typedef EGLBoolean (APIENTRYP fp_eglStreamConsumerAcquireKHR)(EGLDisplay, EGLStreamKHR);
+GLAPI fp_eglStreamConsumerAcquireKHR gladeglStreamConsumerAcquireKHR;
 #define eglStreamConsumerAcquireKHR gladeglStreamConsumerAcquireKHR
-typedef EGLBoolean (* fp_eglStreamConsumerReleaseKHR)(EGLDisplay, EGLStreamKHR);
-extern fp_eglStreamConsumerReleaseKHR gladeglStreamConsumerReleaseKHR;
+typedef EGLBoolean (APIENTRYP fp_eglStreamConsumerReleaseKHR)(EGLDisplay, EGLStreamKHR);
+GLAPI fp_eglStreamConsumerReleaseKHR gladeglStreamConsumerReleaseKHR;
 #define eglStreamConsumerReleaseKHR gladeglStreamConsumerReleaseKHR
-int EGL_EXT_platform_x11;
-int EGL_ANGLE_surface_d3d_texture_2d_share_handle;
-int EGL_NV_post_convert_rounding;
-int EGL_KHR_gl_texture_cubemap_image;
-int EGL_NV_stream_sync;
-typedef EGLSyncKHR (* fp_eglCreateStreamSyncNV)(EGLDisplay, EGLStreamKHR, EGLenum, const EGLint*);
-extern fp_eglCreateStreamSyncNV gladeglCreateStreamSyncNV;
+#endif
+#ifndef EGL_EXT_platform_x11
+#define EGL_EXT_platform_x11 1
+#endif
+#ifndef EGL_ANGLE_surface_d3d_texture_2d_share_handle
+#define EGL_ANGLE_surface_d3d_texture_2d_share_handle 1
+#endif
+#ifndef EGL_NV_post_convert_rounding
+#define EGL_NV_post_convert_rounding 1
+#endif
+#ifndef EGL_KHR_gl_texture_cubemap_image
+#define EGL_KHR_gl_texture_cubemap_image 1
+#endif
+#ifndef EGL_NV_stream_sync
+#define EGL_NV_stream_sync 1
+typedef EGLSyncKHR (APIENTRYP fp_eglCreateStreamSyncNV)(EGLDisplay, EGLStreamKHR, EGLenum, const EGLint*);
+GLAPI fp_eglCreateStreamSyncNV gladeglCreateStreamSyncNV;
 #define eglCreateStreamSyncNV gladeglCreateStreamSyncNV
-int EGL_KHR_get_all_proc_addresses;
-int EGL_KHR_create_context;
-int EGL_KHR_cl_event;
-int EGL_NV_coverage_sample;
-int EGL_KHR_gl_renderbuffer_image;
-int EGL_EXT_swap_buffers_with_damage;
-typedef EGLBoolean (* fp_eglSwapBuffersWithDamageEXT)(EGLDisplay, EGLSurface, EGLint*, EGLint);
-extern fp_eglSwapBuffersWithDamageEXT gladeglSwapBuffersWithDamageEXT;
+#endif
+#ifndef EGL_KHR_get_all_proc_addresses
+#define EGL_KHR_get_all_proc_addresses 1
+#endif
+#ifndef EGL_KHR_create_context
+#define EGL_KHR_create_context 1
+#endif
+#ifndef EGL_KHR_cl_event
+#define EGL_KHR_cl_event 1
+#endif
+#ifndef EGL_NV_coverage_sample
+#define EGL_NV_coverage_sample 1
+#endif
+#ifndef EGL_KHR_gl_renderbuffer_image
+#define EGL_KHR_gl_renderbuffer_image 1
+#endif
+#ifndef EGL_EXT_swap_buffers_with_damage
+#define EGL_EXT_swap_buffers_with_damage 1
+typedef EGLBoolean (APIENTRYP fp_eglSwapBuffersWithDamageEXT)(EGLDisplay, EGLSurface, EGLint*, EGLint);
+GLAPI fp_eglSwapBuffersWithDamageEXT gladeglSwapBuffersWithDamageEXT;
 #define eglSwapBuffersWithDamageEXT gladeglSwapBuffersWithDamageEXT
-int EGL_EXT_image_dma_buf_import;
-int EGL_NV_post_sub_buffer;
-typedef EGLBoolean (* fp_eglPostSubBufferNV)(EGLDisplay, EGLSurface, EGLint, EGLint, EGLint, EGLint);
-extern fp_eglPostSubBufferNV gladeglPostSubBufferNV;
+#endif
+#ifndef EGL_EXT_image_dma_buf_import
+#define EGL_EXT_image_dma_buf_import 1
+#endif
+#ifndef EGL_NV_post_sub_buffer
+#define EGL_NV_post_sub_buffer 1
+typedef EGLBoolean (APIENTRYP fp_eglPostSubBufferNV)(EGLDisplay, EGLSurface, EGLint, EGLint, EGLint, EGLint);
+GLAPI fp_eglPostSubBufferNV gladeglPostSubBufferNV;
 #define eglPostSubBufferNV gladeglPostSubBufferNV
-int EGL_KHR_stream_producer_aldatalocator;
-int EGL_ARM_pixmap_multisample_discard;
-int EGL_HI_colorformats;
-int EGL_ANDROID_recordable;
-int EGL_NV_system_time;
-typedef EGLuint64NV (* fp_eglGetSystemTimeFrequencyNV)();
-extern fp_eglGetSystemTimeFrequencyNV gladeglGetSystemTimeFrequencyNV;
+#endif
+#ifndef EGL_KHR_stream_producer_aldatalocator
+#define EGL_KHR_stream_producer_aldatalocator 1
+#endif
+#ifndef EGL_ARM_pixmap_multisample_discard
+#define EGL_ARM_pixmap_multisample_discard 1
+#endif
+#ifndef EGL_HI_colorformats
+#define EGL_HI_colorformats 1
+#endif
+#ifndef EGL_ANDROID_recordable
+#define EGL_ANDROID_recordable 1
+#endif
+#ifndef EGL_NV_system_time
+#define EGL_NV_system_time 1
+typedef EGLuint64NV (APIENTRYP fp_eglGetSystemTimeFrequencyNV)();
+GLAPI fp_eglGetSystemTimeFrequencyNV gladeglGetSystemTimeFrequencyNV;
 #define eglGetSystemTimeFrequencyNV gladeglGetSystemTimeFrequencyNV
-typedef EGLuint64NV (* fp_eglGetSystemTimeNV)();
-extern fp_eglGetSystemTimeNV gladeglGetSystemTimeNV;
+typedef EGLuint64NV (APIENTRYP fp_eglGetSystemTimeNV)();
+GLAPI fp_eglGetSystemTimeNV gladeglGetSystemTimeNV;
 #define eglGetSystemTimeNV gladeglGetSystemTimeNV
-int EGL_KHR_gl_texture_2D_image;
-int EGL_NV_depth_nonlinear;
-int EGL_NV_sync;
-typedef EGLSyncNV (* fp_eglCreateFenceSyncNV)(EGLDisplay, EGLenum, const EGLint*);
-extern fp_eglCreateFenceSyncNV gladeglCreateFenceSyncNV;
+#endif
+#ifndef EGL_KHR_gl_texture_2D_image
+#define EGL_KHR_gl_texture_2D_image 1
+#endif
+#ifndef EGL_NV_depth_nonlinear
+#define EGL_NV_depth_nonlinear 1
+#endif
+#ifndef EGL_NV_sync
+#define EGL_NV_sync 1
+typedef EGLSyncNV (APIENTRYP fp_eglCreateFenceSyncNV)(EGLDisplay, EGLenum, const EGLint*);
+GLAPI fp_eglCreateFenceSyncNV gladeglCreateFenceSyncNV;
 #define eglCreateFenceSyncNV gladeglCreateFenceSyncNV
-typedef EGLBoolean (* fp_eglDestroySyncNV)(EGLSyncNV);
-extern fp_eglDestroySyncNV gladeglDestroySyncNV;
+typedef EGLBoolean (APIENTRYP fp_eglDestroySyncNV)(EGLSyncNV);
+GLAPI fp_eglDestroySyncNV gladeglDestroySyncNV;
 #define eglDestroySyncNV gladeglDestroySyncNV
-typedef EGLBoolean (* fp_eglFenceNV)(EGLSyncNV);
-extern fp_eglFenceNV gladeglFenceNV;
+typedef EGLBoolean (APIENTRYP fp_eglFenceNV)(EGLSyncNV);
+GLAPI fp_eglFenceNV gladeglFenceNV;
 #define eglFenceNV gladeglFenceNV
-typedef EGLint (* fp_eglClientWaitSyncNV)(EGLSyncNV, EGLint, EGLTimeNV);
-extern fp_eglClientWaitSyncNV gladeglClientWaitSyncNV;
+typedef EGLint (APIENTRYP fp_eglClientWaitSyncNV)(EGLSyncNV, EGLint, EGLTimeNV);
+GLAPI fp_eglClientWaitSyncNV gladeglClientWaitSyncNV;
 #define eglClientWaitSyncNV gladeglClientWaitSyncNV
-typedef EGLBoolean (* fp_eglSignalSyncNV)(EGLSyncNV, EGLenum);
-extern fp_eglSignalSyncNV gladeglSignalSyncNV;
+typedef EGLBoolean (APIENTRYP fp_eglSignalSyncNV)(EGLSyncNV, EGLenum);
+GLAPI fp_eglSignalSyncNV gladeglSignalSyncNV;
 #define eglSignalSyncNV gladeglSignalSyncNV
-typedef EGLBoolean (* fp_eglGetSyncAttribNV)(EGLSyncNV, EGLint, EGLint*);
-extern fp_eglGetSyncAttribNV gladeglGetSyncAttribNV;
+typedef EGLBoolean (APIENTRYP fp_eglGetSyncAttribNV)(EGLSyncNV, EGLint, EGLint*);
+GLAPI fp_eglGetSyncAttribNV gladeglGetSyncAttribNV;
 #define eglGetSyncAttribNV gladeglGetSyncAttribNV
-int EGL_KHR_wait_sync;
-typedef EGLint (* fp_eglWaitSyncKHR)(EGLDisplay, EGLSyncKHR, EGLint);
-extern fp_eglWaitSyncKHR gladeglWaitSyncKHR;
+#endif
+#ifndef EGL_KHR_wait_sync
+#define EGL_KHR_wait_sync 1
+typedef EGLint (APIENTRYP fp_eglWaitSyncKHR)(EGLDisplay, EGLSyncKHR, EGLint);
+GLAPI fp_eglWaitSyncKHR gladeglWaitSyncKHR;
 #define eglWaitSyncKHR gladeglWaitSyncKHR
-int EGL_ANDROID_native_fence_sync;
-typedef EGLint (* fp_eglDupNativeFenceFDANDROID)(EGLDisplay, EGLSyncKHR);
-extern fp_eglDupNativeFenceFDANDROID gladeglDupNativeFenceFDANDROID;
+#endif
+#ifndef EGL_ANDROID_native_fence_sync
+#define EGL_ANDROID_native_fence_sync 1
+typedef EGLint (APIENTRYP fp_eglDupNativeFenceFDANDROID)(EGLDisplay, EGLSyncKHR);
+GLAPI fp_eglDupNativeFenceFDANDROID gladeglDupNativeFenceFDANDROID;
 #define eglDupNativeFenceFDANDROID gladeglDupNativeFenceFDANDROID
-int EGL_NV_coverage_sample_resolve;
-int EGL_KHR_fence_sync;
-int EGL_HI_clientpixmap;
-typedef EGLSurface (* fp_eglCreatePixmapSurfaceHI)(EGLDisplay, EGLConfig, struct EGLClientPixmapHI*);
-extern fp_eglCreatePixmapSurfaceHI gladeglCreatePixmapSurfaceHI;
+#endif
+#ifndef EGL_NV_coverage_sample_resolve
+#define EGL_NV_coverage_sample_resolve 1
+#endif
+#ifndef EGL_KHR_fence_sync
+#define EGL_KHR_fence_sync 1
+#endif
+#ifndef EGL_HI_clientpixmap
+#define EGL_HI_clientpixmap 1
+typedef EGLSurface (APIENTRYP fp_eglCreatePixmapSurfaceHI)(EGLDisplay, EGLConfig, struct EGLClientPixmapHI*);
+GLAPI fp_eglCreatePixmapSurfaceHI gladeglCreatePixmapSurfaceHI;
 #define eglCreatePixmapSurfaceHI gladeglCreatePixmapSurfaceHI
-int EGL_KHR_stream;
-typedef EGLStreamKHR (* fp_eglCreateStreamKHR)(EGLDisplay, const EGLint*);
-extern fp_eglCreateStreamKHR gladeglCreateStreamKHR;
+#endif
+#ifndef EGL_KHR_stream
+#define EGL_KHR_stream 1
+typedef EGLStreamKHR (APIENTRYP fp_eglCreateStreamKHR)(EGLDisplay, const EGLint*);
+GLAPI fp_eglCreateStreamKHR gladeglCreateStreamKHR;
 #define eglCreateStreamKHR gladeglCreateStreamKHR
-typedef EGLBoolean (* fp_eglDestroyStreamKHR)(EGLDisplay, EGLStreamKHR);
-extern fp_eglDestroyStreamKHR gladeglDestroyStreamKHR;
+typedef EGLBoolean (APIENTRYP fp_eglDestroyStreamKHR)(EGLDisplay, EGLStreamKHR);
+GLAPI fp_eglDestroyStreamKHR gladeglDestroyStreamKHR;
 #define eglDestroyStreamKHR gladeglDestroyStreamKHR
-typedef EGLBoolean (* fp_eglStreamAttribKHR)(EGLDisplay, EGLStreamKHR, EGLenum, EGLint);
-extern fp_eglStreamAttribKHR gladeglStreamAttribKHR;
+typedef EGLBoolean (APIENTRYP fp_eglStreamAttribKHR)(EGLDisplay, EGLStreamKHR, EGLenum, EGLint);
+GLAPI fp_eglStreamAttribKHR gladeglStreamAttribKHR;
 #define eglStreamAttribKHR gladeglStreamAttribKHR
-typedef EGLBoolean (* fp_eglQueryStreamKHR)(EGLDisplay, EGLStreamKHR, EGLenum, EGLint*);
-extern fp_eglQueryStreamKHR gladeglQueryStreamKHR;
+typedef EGLBoolean (APIENTRYP fp_eglQueryStreamKHR)(EGLDisplay, EGLStreamKHR, EGLenum, EGLint*);
+GLAPI fp_eglQueryStreamKHR gladeglQueryStreamKHR;
 #define eglQueryStreamKHR gladeglQueryStreamKHR
-typedef EGLBoolean (* fp_eglQueryStreamu64KHR)(EGLDisplay, EGLStreamKHR, EGLenum, EGLuint64KHR*);
-extern fp_eglQueryStreamu64KHR gladeglQueryStreamu64KHR;
+typedef EGLBoolean (APIENTRYP fp_eglQueryStreamu64KHR)(EGLDisplay, EGLStreamKHR, EGLenum, EGLuint64KHR*);
+GLAPI fp_eglQueryStreamu64KHR gladeglQueryStreamu64KHR;
 #define eglQueryStreamu64KHR gladeglQueryStreamu64KHR
-int EGL_KHR_image;
-typedef EGLImageKHR (* fp_eglCreateImageKHR)(EGLDisplay, EGLContext, EGLenum, EGLClientBuffer, const EGLint*);
-extern fp_eglCreateImageKHR gladeglCreateImageKHR;
+#endif
+#ifndef EGL_KHR_image
+#define EGL_KHR_image 1
+typedef EGLImageKHR (APIENTRYP fp_eglCreateImageKHR)(EGLDisplay, EGLContext, EGLenum, EGLClientBuffer, const EGLint*);
+GLAPI fp_eglCreateImageKHR gladeglCreateImageKHR;
 #define eglCreateImageKHR gladeglCreateImageKHR
-typedef EGLBoolean (* fp_eglDestroyImageKHR)(EGLDisplay, EGLImageKHR);
-extern fp_eglDestroyImageKHR gladeglDestroyImageKHR;
+typedef EGLBoolean (APIENTRYP fp_eglDestroyImageKHR)(EGLDisplay, EGLImageKHR);
+GLAPI fp_eglDestroyImageKHR gladeglDestroyImageKHR;
 #define eglDestroyImageKHR gladeglDestroyImageKHR
-int EGL_NV_3dvision_surface;
-int EGL_ANDROID_framebuffer_target;
-int EGL_ANGLE_query_surface_pointer;
-typedef EGLBoolean (* fp_eglQuerySurfacePointerANGLE)(EGLDisplay, EGLSurface, EGLint, void**);
-extern fp_eglQuerySurfacePointerANGLE gladeglQuerySurfacePointerANGLE;
+#endif
+#ifndef EGL_NV_3dvision_surface
+#define EGL_NV_3dvision_surface 1
+#endif
+#ifndef EGL_ANDROID_framebuffer_target
+#define EGL_ANDROID_framebuffer_target 1
+#endif
+#ifndef EGL_ANGLE_query_surface_pointer
+#define EGL_ANGLE_query_surface_pointer 1
+typedef EGLBoolean (APIENTRYP fp_eglQuerySurfacePointerANGLE)(EGLDisplay, EGLSurface, EGLint, void**);
+GLAPI fp_eglQuerySurfacePointerANGLE gladeglQuerySurfacePointerANGLE;
 #define eglQuerySurfacePointerANGLE gladeglQuerySurfacePointerANGLE
-int EGL_EXT_create_context_robustness;
-int EGL_KHR_image_pixmap;
-int EGL_KHR_lock_surface2;
-int EGL_KHR_reusable_sync;
-typedef EGLSyncKHR (* fp_eglCreateSyncKHR)(EGLDisplay, EGLenum, const EGLint*);
-extern fp_eglCreateSyncKHR gladeglCreateSyncKHR;
+#endif
+#ifndef EGL_EXT_create_context_robustness
+#define EGL_EXT_create_context_robustness 1
+#endif
+#ifndef EGL_KHR_image_pixmap
+#define EGL_KHR_image_pixmap 1
+#endif
+#ifndef EGL_KHR_lock_surface2
+#define EGL_KHR_lock_surface2 1
+#endif
+#ifndef EGL_KHR_reusable_sync
+#define EGL_KHR_reusable_sync 1
+typedef EGLSyncKHR (APIENTRYP fp_eglCreateSyncKHR)(EGLDisplay, EGLenum, const EGLint*);
+GLAPI fp_eglCreateSyncKHR gladeglCreateSyncKHR;
 #define eglCreateSyncKHR gladeglCreateSyncKHR
-typedef EGLBoolean (* fp_eglDestroySyncKHR)(EGLDisplay, EGLSyncKHR);
-extern fp_eglDestroySyncKHR gladeglDestroySyncKHR;
+typedef EGLBoolean (APIENTRYP fp_eglDestroySyncKHR)(EGLDisplay, EGLSyncKHR);
+GLAPI fp_eglDestroySyncKHR gladeglDestroySyncKHR;
 #define eglDestroySyncKHR gladeglDestroySyncKHR
-typedef EGLint (* fp_eglClientWaitSyncKHR)(EGLDisplay, EGLSyncKHR, EGLint, EGLTimeKHR);
-extern fp_eglClientWaitSyncKHR gladeglClientWaitSyncKHR;
+typedef EGLint (APIENTRYP fp_eglClientWaitSyncKHR)(EGLDisplay, EGLSyncKHR, EGLint, EGLTimeKHR);
+GLAPI fp_eglClientWaitSyncKHR gladeglClientWaitSyncKHR;
 #define eglClientWaitSyncKHR gladeglClientWaitSyncKHR
-typedef EGLBoolean (* fp_eglSignalSyncKHR)(EGLDisplay, EGLSyncKHR, EGLenum);
-extern fp_eglSignalSyncKHR gladeglSignalSyncKHR;
+typedef EGLBoolean (APIENTRYP fp_eglSignalSyncKHR)(EGLDisplay, EGLSyncKHR, EGLenum);
+GLAPI fp_eglSignalSyncKHR gladeglSignalSyncKHR;
 #define eglSignalSyncKHR gladeglSignalSyncKHR
-typedef EGLBoolean (* fp_eglGetSyncAttribKHR)(EGLDisplay, EGLSyncKHR, EGLint, EGLint*);
-extern fp_eglGetSyncAttribKHR gladeglGetSyncAttribKHR;
+typedef EGLBoolean (APIENTRYP fp_eglGetSyncAttribKHR)(EGLDisplay, EGLSyncKHR, EGLint, EGLint*);
+GLAPI fp_eglGetSyncAttribKHR gladeglGetSyncAttribKHR;
 #define eglGetSyncAttribKHR gladeglGetSyncAttribKHR
-int EGL_KHR_config_attribs;
-int EGL_IMG_context_priority;
-int EGL_EXT_multiview_window;
-int EGL_KHR_stream_cross_process_fd;
-typedef EGLNativeFileDescriptorKHR (* fp_eglGetStreamFileDescriptorKHR)(EGLDisplay, EGLStreamKHR);
-extern fp_eglGetStreamFileDescriptorKHR gladeglGetStreamFileDescriptorKHR;
+#endif
+#ifndef EGL_KHR_config_attribs
+#define EGL_KHR_config_attribs 1
+#endif
+#ifndef EGL_IMG_context_priority
+#define EGL_IMG_context_priority 1
+#endif
+#ifndef EGL_EXT_multiview_window
+#define EGL_EXT_multiview_window 1
+#endif
+#ifndef EGL_KHR_stream_cross_process_fd
+#define EGL_KHR_stream_cross_process_fd 1
+typedef EGLNativeFileDescriptorKHR (APIENTRYP fp_eglGetStreamFileDescriptorKHR)(EGLDisplay, EGLStreamKHR);
+GLAPI fp_eglGetStreamFileDescriptorKHR gladeglGetStreamFileDescriptorKHR;
 #define eglGetStreamFileDescriptorKHR gladeglGetStreamFileDescriptorKHR
-typedef EGLStreamKHR (* fp_eglCreateStreamFromFileDescriptorKHR)(EGLDisplay, EGLNativeFileDescriptorKHR);
-extern fp_eglCreateStreamFromFileDescriptorKHR gladeglCreateStreamFromFileDescriptorKHR;
+typedef EGLStreamKHR (APIENTRYP fp_eglCreateStreamFromFileDescriptorKHR)(EGLDisplay, EGLNativeFileDescriptorKHR);
+GLAPI fp_eglCreateStreamFromFileDescriptorKHR gladeglCreateStreamFromFileDescriptorKHR;
 #define eglCreateStreamFromFileDescriptorKHR gladeglCreateStreamFromFileDescriptorKHR
-int EGL_EXT_platform_base;
-typedef EGLDisplay (* fp_eglGetPlatformDisplayEXT)(EGLenum, void*, const EGLint*);
-extern fp_eglGetPlatformDisplayEXT gladeglGetPlatformDisplayEXT;
+#endif
+#ifndef EGL_EXT_platform_base
+#define EGL_EXT_platform_base 1
+typedef EGLDisplay (APIENTRYP fp_eglGetPlatformDisplayEXT)(EGLenum, void*, const EGLint*);
+GLAPI fp_eglGetPlatformDisplayEXT gladeglGetPlatformDisplayEXT;
 #define eglGetPlatformDisplayEXT gladeglGetPlatformDisplayEXT
-typedef EGLSurface (* fp_eglCreatePlatformWindowSurfaceEXT)(EGLDisplay, EGLConfig, void*, const EGLint*);
-extern fp_eglCreatePlatformWindowSurfaceEXT gladeglCreatePlatformWindowSurfaceEXT;
+typedef EGLSurface (APIENTRYP fp_eglCreatePlatformWindowSurfaceEXT)(EGLDisplay, EGLConfig, void*, const EGLint*);
+GLAPI fp_eglCreatePlatformWindowSurfaceEXT gladeglCreatePlatformWindowSurfaceEXT;
 #define eglCreatePlatformWindowSurfaceEXT gladeglCreatePlatformWindowSurfaceEXT
-typedef EGLSurface (* fp_eglCreatePlatformPixmapSurfaceEXT)(EGLDisplay, EGLConfig, void*, const EGLint*);
-extern fp_eglCreatePlatformPixmapSurfaceEXT gladeglCreatePlatformPixmapSurfaceEXT;
+typedef EGLSurface (APIENTRYP fp_eglCreatePlatformPixmapSurfaceEXT)(EGLDisplay, EGLConfig, void*, const EGLint*);
+GLAPI fp_eglCreatePlatformPixmapSurfaceEXT gladeglCreatePlatformPixmapSurfaceEXT;
 #define eglCreatePlatformPixmapSurfaceEXT gladeglCreatePlatformPixmapSurfaceEXT
-int EGL_KHR_image_base;
-int EGL_ANDROID_blob_cache;
-typedef void (* fp_eglSetBlobCacheFuncsANDROID)(EGLDisplay, EGLSetBlobFuncANDROID, EGLGetBlobFuncANDROID);
-extern fp_eglSetBlobCacheFuncsANDROID gladeglSetBlobCacheFuncsANDROID;
+#endif
+#ifndef EGL_KHR_image_base
+#define EGL_KHR_image_base 1
+#endif
+#ifndef EGL_ANDROID_blob_cache
+#define EGL_ANDROID_blob_cache 1
+typedef void (APIENTRYP fp_eglSetBlobCacheFuncsANDROID)(EGLDisplay, EGLSetBlobFuncANDROID, EGLGetBlobFuncANDROID);
+GLAPI fp_eglSetBlobCacheFuncsANDROID gladeglSetBlobCacheFuncsANDROID;
 #define eglSetBlobCacheFuncsANDROID gladeglSetBlobCacheFuncsANDROID
-int EGL_KHR_vg_parent_image;
-int EGL_ANDROID_image_native_buffer;
-int EGL_EXT_buffer_age;
+#endif
+#ifndef EGL_KHR_vg_parent_image
+#define EGL_KHR_vg_parent_image 1
+#endif
+#ifndef EGL_ANDROID_image_native_buffer
+#define EGL_ANDROID_image_native_buffer 1
+#endif
+#ifndef EGL_EXT_buffer_age
+#define EGL_EXT_buffer_age 1
+#endif
 
 #ifdef __cplusplus
 }
