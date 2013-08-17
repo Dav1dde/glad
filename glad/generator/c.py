@@ -54,7 +54,7 @@ class CGenerator(Generator):
             f.write('static void load_{}(LOADER load) {{\n'
                 .format(ext.name))
             if self.api == 'gl':
-                f.write('\tif(!{}) return;\n'.format(ext.name))
+                f.write('\tif(!GLAD_{}) return;\n'.format(ext.name))
             if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
             if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
             for func in ext.functions:
