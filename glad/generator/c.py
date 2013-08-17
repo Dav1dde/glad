@@ -149,7 +149,7 @@ class CGenerator(Generator):
                 written.add(enum.name)
 
         for ext in extensions:
-            f.write('#ifndef {0}\n#define {0} 1\n#endif\n'.format(ext.name))
+            f.write('#ifndef {0}\n#define {0} 1\n'.format(ext.name))
             if self.api == 'gl':
                 f.write('int GLAD_{};\n'.format(ext.name))
             if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
@@ -160,6 +160,7 @@ class CGenerator(Generator):
                     write.add(func)
                 written.add(func.proto.name)
             if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'): f.write('#endif\n')
+            f.write('#endif\n')
 
     def write_extern(self, fobj):
         fobj.write('#ifdef __cplusplus\nextern "C" {\n#endif\n')
@@ -173,10 +174,10 @@ class CGenerator(Generator):
         fobj.write(');\n')
 
     def write_function_prototype(self, fobj, func):
-        fobj.write('typedef {} (* fp_{})({});\n'.format(func.proto.ret.to_c(),
+        fobj.write('typedef {} (APIENTRYP fp_{})({});\n'.format(func.proto.ret.to_c(),
                                                       func.proto.name,
                         ', '.join(param.type.to_c() for param in func.params)))
-        fobj.write('extern fp_{0} glad{0};\n'.format(func.proto.name))
+        fobj.write('GLAPI fp_{0} glad{0};\n'.format(func.proto.name))
         fobj.write('#define {0} glad{0}\n'.format(func.proto.name))
 
     def write_function(self, fobj, func):

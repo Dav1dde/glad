@@ -82,6 +82,16 @@ _OPENGL_HEADER = '''
 #define __glad_h_
 #define __gl_h_
 
+#ifndef APIENTRY
+#define APIENTRY
+#endif
+#ifndef APIENTRYP
+#define APIENTRYP APIENTRY *
+#endif
+#ifndef GLAPI
+#define GLAPI extern
+#endif
+
 struct {
     int major;
     int minor;

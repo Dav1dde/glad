@@ -16,6 +16,16 @@ _EGL_HEADER = '''
 #define __glad_egl_h_
 #define __egl_h_
 
+#ifndef APIENTRY
+#define APIENTRY
+#endif
+#ifndef APIENTRYP
+#define APIENTRYP APIENTRY *
+#endif
+#ifndef GLAPI
+#define GLAPI extern
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
