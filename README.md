@@ -124,8 +124,8 @@ void gladLoadGLLoader(LOADER);
 
     if(!gladLoadGL()) { exit(-1) };
     printf("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
-    if(GL_EXT_gpu_shader4) { /* GL_EXT_gpu_shader4 is supported */ }
-    if(GL_VERSION_3_0) { /* We support at least OpenGL version 3 */ }
+    if(GLAD_GL_EXT_gpu_shader4) { /* GL_EXT_gpu_shader4 is supported */ }
+    if(GLAD_GL_VERSION_3_0) { /* We support at least OpenGL version 3 */ }
 
 On non-Windows platforms `glad` requires `libdl`, make sure to link with it (`-ldl` for gcc)!
 
@@ -141,3 +141,14 @@ the functions needed to initialize `glad` and load the OpenGL functions.
     if(GL_VERSION_3_0) { /* We support at least OpenGL version 3 */ }
 
 On non-Windows platforms `glad` requires `libdl`, make sure to link with it (`L-ldl` for dmd)!
+
+## Contribute ##
+
+Contributing is easy! Found a bug? Message me or make a pull request! Added a new generator backend?
+Make a pull request!
+
+People contributed sofar (special thanks):
+
+* [Slime](https://github.com/slime73/)
+* [GLWT team](https://github.com/rikusalminen/glwt)
+* #OpenGL on Freenode
