@@ -33,15 +33,6 @@ typedef void* (* LOADER)(const char *name);
 void gladLoadWGLLoader(LOADER);
 int gladLoadWGL(void);
 
-#ifdef _WIN32
-typedef void* (*WGLGETPROCADDRESS)(const char*);
-WGLGETPROCADDRESS gladGetProcAddressPtr;
-#else
-#ifndef __APPLE__
-typedef void* (*WGLGETPROCADDRESS)(const char*);
-WGLGETPROCADDRESS gladGetProcAddressPtr;
-#endif
-#endif
 
 
 

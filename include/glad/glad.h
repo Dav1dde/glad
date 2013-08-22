@@ -39,15 +39,6 @@ void gladLoadGLLoader(LOADER);
 
 int gladLoadGL(void);
 
-#ifdef _WIN32
-typedef void* (*WGLGETPROCADDRESS)(const char*);
-WGLGETPROCADDRESS gladGetProcAddressPtr;
-#else
-#ifndef __APPLE__
-typedef void* (*GLXGETPROCADDRESS)(const char*);
-GLXGETPROCADDRESS gladGetProcAddressPtr;
-#endif
-#endif
 #include <stddef.h>
 #ifndef GLEXT_64_TYPES_DEFINED
 /* This code block is duplicated in glxext.h, so must be protected */
