@@ -4,6 +4,9 @@ LOAD_OPENGL_DLL = '''
 #include <windows.h>
 static HMODULE libGL;
 
+typedef void* (*WGLGETPROCADDRESS)(const char*);
+WGLGETPROCADDRESS gladGetProcAddressPtr;
+
 %(pre)s
 int %(init)s(void) {
     libGL = LoadLibraryA("opengl32.dll");
@@ -26,6 +29,11 @@ void %(terminate)s(void) {
 #else
 #include <dlfcn.h>
 static void* libGL;
+
+#ifndef __APPLE__
+typedef void* (*GLXGETPROCADDRESS)(const char*);
+GLXGETPROCADDRESS gladGetProcAddressPtr;
+#endif
 
 %(pre)s
 int %(init)s(void) {
@@ -69,13 +77,4 @@ void %(terminate)s() {
 '''
 
 LOAD_OPENGL_DLL_H = '''
-#ifdef _WIN32
-typedef void* (*WGLGETPROCADDRESS)(const char*);
-WGLGETPROCADDRESS gladGetProcAddressPtr;
-#else
-#ifndef __APPLE__
-typedef void* (*GLXGETPROCADDRESS)(const char*);
-GLXGETPROCADDRESS gladGetProcAddressPtr;
-#endif
-#endif
 '''
