@@ -121,6 +121,9 @@ class CGenerator(Generator):
         self.loader.write(f)
         self.loader.write_has_ext(f)
 
+        for feature in features:
+            f.write('int GLAD_{};\n'.format(feature.name))
+
         for func in write:
             self.write_function(f, func)
 
@@ -133,6 +136,9 @@ class CGenerator(Generator):
         self.write_functions(f, write, written, extensions)
 
         f = self._f_c
+        for ext in extensions:
+            f.write('int GLAD_{};\n'.format(ext.name))
+
         for ext in extensions:
             if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
             if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
@@ -151,7 +157,7 @@ class CGenerator(Generator):
         for ext in extensions:
             f.write('#ifndef {0}\n#define {0} 1\n'.format(ext.name))
             if self.api == 'gl':
-                f.write('int GLAD_{};\n'.format(ext.name))
+                f.write('extern int GLAD_{};\n'.format(ext.name))
             if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
             if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
             for func in ext.functions:
