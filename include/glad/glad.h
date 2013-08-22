@@ -1851,7 +1851,7 @@ typedef GLintptr GLvdpauSurfaceNV;
 #define GL_MIRROR_CLAMP_TO_EDGE 0x8743
 #ifndef GL_VERSION_1_0
 #define GL_VERSION_1_0 1
-int GLAD_GL_VERSION_1_0;
+extern int GLAD_GL_VERSION_1_0;
 typedef void (APIENTRYP fp_glCullFace)(GLenum);
 GLAPI fp_glCullFace gladglCullFace;
 #define glCullFace gladglCullFace
@@ -2773,7 +2773,7 @@ GLAPI fp_glTranslatef gladglTranslatef;
 #endif
 #ifndef GL_VERSION_1_1
 #define GL_VERSION_1_1 1
-int GLAD_GL_VERSION_1_1;
+extern int GLAD_GL_VERSION_1_1;
 typedef void (APIENTRYP fp_glDrawArrays)(GLenum, GLint, GLsizei);
 GLAPI fp_glDrawArrays gladglDrawArrays;
 #define glDrawArrays gladglDrawArrays
@@ -2867,7 +2867,7 @@ GLAPI fp_glPushClientAttrib gladglPushClientAttrib;
 #endif
 #ifndef GL_VERSION_1_2
 #define GL_VERSION_1_2 1
-int GLAD_GL_VERSION_1_2;
+extern int GLAD_GL_VERSION_1_2;
 typedef void (APIENTRYP fp_glBlendColor)(GLfloat, GLfloat, GLfloat, GLfloat);
 GLAPI fp_glBlendColor gladglBlendColor;
 #define glBlendColor gladglBlendColor
@@ -2889,7 +2889,7 @@ GLAPI fp_glCopyTexSubImage3D gladglCopyTexSubImage3D;
 #endif
 #ifndef GL_VERSION_1_3
 #define GL_VERSION_1_3 1
-int GLAD_GL_VERSION_1_3;
+extern int GLAD_GL_VERSION_1_3;
 typedef void (APIENTRYP fp_glActiveTexture)(GLenum);
 GLAPI fp_glActiveTexture gladglActiveTexture;
 #define glActiveTexture gladglActiveTexture
@@ -3031,7 +3031,7 @@ GLAPI fp_glMultTransposeMatrixd gladglMultTransposeMatrixd;
 #endif
 #ifndef GL_VERSION_1_4
 #define GL_VERSION_1_4 1
-int GLAD_GL_VERSION_1_4;
+extern int GLAD_GL_VERSION_1_4;
 typedef void (APIENTRYP fp_glBlendFuncSeparate)(GLenum, GLenum, GLenum, GLenum);
 GLAPI fp_glBlendFuncSeparate gladglBlendFuncSeparate;
 #define glBlendFuncSeparate gladglBlendFuncSeparate
@@ -3170,7 +3170,7 @@ GLAPI fp_glWindowPos3sv gladglWindowPos3sv;
 #endif
 #ifndef GL_VERSION_1_5
 #define GL_VERSION_1_5 1
-int GLAD_GL_VERSION_1_5;
+extern int GLAD_GL_VERSION_1_5;
 typedef void (APIENTRYP fp_glGenQueries)(GLsizei, GLuint*);
 GLAPI fp_glGenQueries gladglGenQueries;
 #define glGenQueries gladglGenQueries
@@ -3231,7 +3231,7 @@ GLAPI fp_glGetBufferPointerv gladglGetBufferPointerv;
 #endif
 #ifndef GL_VERSION_2_0
 #define GL_VERSION_2_0 1
-int GLAD_GL_VERSION_2_0;
+extern int GLAD_GL_VERSION_2_0;
 typedef void (APIENTRYP fp_glBlendEquationSeparate)(GLenum, GLenum);
 GLAPI fp_glBlendEquationSeparate gladglBlendEquationSeparate;
 #define glBlendEquationSeparate gladglBlendEquationSeparate
@@ -3514,7 +3514,7 @@ GLAPI fp_glVertexAttribPointer gladglVertexAttribPointer;
 #endif
 #ifndef GL_VERSION_2_1
 #define GL_VERSION_2_1 1
-int GLAD_GL_VERSION_2_1;
+extern int GLAD_GL_VERSION_2_1;
 typedef void (APIENTRYP fp_glUniformMatrix2x3fv)(GLint, GLsizei, GLboolean, const GLfloat*);
 GLAPI fp_glUniformMatrix2x3fv gladglUniformMatrix2x3fv;
 #define glUniformMatrix2x3fv gladglUniformMatrix2x3fv
@@ -3536,7 +3536,7 @@ GLAPI fp_glUniformMatrix4x3fv gladglUniformMatrix4x3fv;
 #endif
 #ifndef GL_VERSION_3_0
 #define GL_VERSION_3_0 1
-int GLAD_GL_VERSION_3_0;
+extern int GLAD_GL_VERSION_3_0;
 typedef void (APIENTRYP fp_glColorMaski)(GLuint, GLboolean, GLboolean, GLboolean, GLboolean);
 GLAPI fp_glColorMaski gladglColorMaski;
 #define glColorMaski gladglColorMaski
@@ -3792,7 +3792,7 @@ GLAPI fp_glIsVertexArray gladglIsVertexArray;
 #endif
 #ifndef GL_VERSION_3_1
 #define GL_VERSION_3_1 1
-int GLAD_GL_VERSION_3_1;
+extern int GLAD_GL_VERSION_3_1;
 typedef void (APIENTRYP fp_glDrawArraysInstanced)(GLenum, GLint, GLsizei, GLsizei);
 GLAPI fp_glDrawArraysInstanced gladglDrawArraysInstanced;
 #define glDrawArraysInstanced gladglDrawArraysInstanced
@@ -3832,7 +3832,7 @@ GLAPI fp_glUniformBlockBinding gladglUniformBlockBinding;
 #endif
 #ifndef GL_VERSION_3_2
 #define GL_VERSION_3_2 1
-int GLAD_GL_VERSION_3_2;
+extern int GLAD_GL_VERSION_3_2;
 typedef void (APIENTRYP fp_glDrawElementsBaseVertex)(GLenum, GLsizei, GLenum, const GLvoid*, GLint);
 GLAPI fp_glDrawElementsBaseVertex gladglDrawElementsBaseVertex;
 #define glDrawElementsBaseVertex gladglDrawElementsBaseVertex
@@ -3893,7 +3893,7 @@ GLAPI fp_glSampleMaski gladglSampleMaski;
 #endif
 #ifndef GL_VERSION_3_3
 #define GL_VERSION_3_3 1
-int GLAD_GL_VERSION_3_3;
+extern int GLAD_GL_VERSION_3_3;
 typedef void (APIENTRYP fp_glBindFragDataLocationIndexed)(GLuint, GLuint, GLuint, const GLchar*);
 GLAPI fp_glBindFragDataLocationIndexed gladglBindFragDataLocationIndexed;
 #define glBindFragDataLocationIndexed gladglBindFragDataLocationIndexed
@@ -4071,7 +4071,7 @@ GLAPI fp_glSecondaryColorP3uiv gladglSecondaryColorP3uiv;
 #endif
 #ifndef GL_VERSION_4_0
 #define GL_VERSION_4_0 1
-int GLAD_GL_VERSION_4_0;
+extern int GLAD_GL_VERSION_4_0;
 typedef void (APIENTRYP fp_glMinSampleShading)(GLfloat);
 GLAPI fp_glMinSampleShading gladglMinSampleShading;
 #define glMinSampleShading gladglMinSampleShading
@@ -4213,7 +4213,7 @@ GLAPI fp_glGetQueryIndexediv gladglGetQueryIndexediv;
 #endif
 #ifndef GL_VERSION_4_1
 #define GL_VERSION_4_1 1
-int GLAD_GL_VERSION_4_1;
+extern int GLAD_GL_VERSION_4_1;
 typedef void (APIENTRYP fp_glReleaseShaderCompiler)();
 GLAPI fp_glReleaseShaderCompiler gladglReleaseShaderCompiler;
 #define glReleaseShaderCompiler gladglReleaseShaderCompiler
@@ -4481,7 +4481,7 @@ GLAPI fp_glGetDoublei_v gladglGetDoublei_v;
 #endif
 #ifndef GL_VERSION_4_2
 #define GL_VERSION_4_2 1
-int GLAD_GL_VERSION_4_2;
+extern int GLAD_GL_VERSION_4_2;
 typedef void (APIENTRYP fp_glDrawArraysInstancedBaseInstance)(GLenum, GLint, GLsizei, GLsizei, GLuint);
 GLAPI fp_glDrawArraysInstancedBaseInstance gladglDrawArraysInstancedBaseInstance;
 #define glDrawArraysInstancedBaseInstance gladglDrawArraysInstancedBaseInstance
@@ -4521,7 +4521,7 @@ GLAPI fp_glDrawTransformFeedbackStreamInstanced gladglDrawTransformFeedbackStrea
 #endif
 #ifndef GL_VERSION_4_3
 #define GL_VERSION_4_3 1
-int GLAD_GL_VERSION_4_3;
+extern int GLAD_GL_VERSION_4_3;
 typedef void (APIENTRYP fp_glClearBufferData)(GLenum, GLenum, GLenum, GLenum, const void*);
 GLAPI fp_glClearBufferData gladglClearBufferData;
 #define glClearBufferData gladglClearBufferData
@@ -4651,7 +4651,7 @@ GLAPI fp_glGetObjectPtrLabel gladglGetObjectPtrLabel;
 #endif
 #ifndef GL_VERSION_4_4
 #define GL_VERSION_4_4 1
-int GLAD_GL_VERSION_4_4;
+extern int GLAD_GL_VERSION_4_4;
 typedef void (APIENTRYP fp_glBufferStorage)(GLenum, GLsizeiptr, const void*, GLbitfield);
 GLAPI fp_glBufferStorage gladglBufferStorage;
 #define glBufferStorage gladglBufferStorage
@@ -7489,11 +7489,11 @@ GLAPI fp_glBindVertexBuffers gladglBindVertexBuffers;
 #define GL_ALPHA_MAX_SGIX 0x8321
 #ifndef GL_SGIX_pixel_tiles
 #define GL_SGIX_pixel_tiles 1
-int GLAD_GL_SGIX_pixel_tiles;
+extern int GLAD_GL_SGIX_pixel_tiles;
 #endif
 #ifndef GL_NV_point_sprite
 #define GL_NV_point_sprite 1
-int GLAD_GL_NV_point_sprite;
+extern int GLAD_GL_NV_point_sprite;
 typedef void (APIENTRYP fp_glPointParameteriNV)(GLenum, GLint);
 GLAPI fp_glPointParameteriNV gladglPointParameteriNV;
 #define glPointParameteriNV gladglPointParameteriNV
@@ -7503,7 +7503,7 @@ GLAPI fp_glPointParameterivNV gladglPointParameterivNV;
 #endif
 #ifndef GL_APPLE_element_array
 #define GL_APPLE_element_array 1
-int GLAD_GL_APPLE_element_array;
+extern int GLAD_GL_APPLE_element_array;
 typedef void (APIENTRYP fp_glElementPointerAPPLE)(GLenum, const GLvoid*);
 GLAPI fp_glElementPointerAPPLE gladglElementPointerAPPLE;
 #define glElementPointerAPPLE gladglElementPointerAPPLE
@@ -7522,7 +7522,7 @@ GLAPI fp_glMultiDrawRangeElementArrayAPPLE gladglMultiDrawRangeElementArrayAPPLE
 #endif
 #ifndef GL_AMD_multi_draw_indirect
 #define GL_AMD_multi_draw_indirect 1
-int GLAD_GL_AMD_multi_draw_indirect;
+extern int GLAD_GL_AMD_multi_draw_indirect;
 typedef void (APIENTRYP fp_glMultiDrawArraysIndirectAMD)(GLenum, const GLvoid*, GLsizei, GLsizei);
 GLAPI fp_glMultiDrawArraysIndirectAMD gladglMultiDrawArraysIndirectAMD;
 #define glMultiDrawArraysIndirectAMD gladglMultiDrawArraysIndirectAMD
@@ -7532,26 +7532,26 @@ GLAPI fp_glMultiDrawElementsIndirectAMD gladglMultiDrawElementsIndirectAMD;
 #endif
 #ifndef GL_EXT_blend_subtract
 #define GL_EXT_blend_subtract 1
-int GLAD_GL_EXT_blend_subtract;
+extern int GLAD_GL_EXT_blend_subtract;
 #endif
 #ifndef GL_SGIX_tag_sample_buffer
 #define GL_SGIX_tag_sample_buffer 1
-int GLAD_GL_SGIX_tag_sample_buffer;
+extern int GLAD_GL_SGIX_tag_sample_buffer;
 typedef void (APIENTRYP fp_glTagSampleBufferSGIX)();
 GLAPI fp_glTagSampleBufferSGIX gladglTagSampleBufferSGIX;
 #define glTagSampleBufferSGIX gladglTagSampleBufferSGIX
 #endif
 #ifndef GL_IBM_texture_mirrored_repeat
 #define GL_IBM_texture_mirrored_repeat 1
-int GLAD_GL_IBM_texture_mirrored_repeat;
+extern int GLAD_GL_IBM_texture_mirrored_repeat;
 #endif
 #ifndef GL_APPLE_transform_hint
 #define GL_APPLE_transform_hint 1
-int GLAD_GL_APPLE_transform_hint;
+extern int GLAD_GL_APPLE_transform_hint;
 #endif
 #ifndef GL_ATI_separate_stencil
 #define GL_ATI_separate_stencil 1
-int GLAD_GL_ATI_separate_stencil;
+extern int GLAD_GL_ATI_separate_stencil;
 typedef void (APIENTRYP fp_glStencilOpSeparateATI)(GLenum, GLenum, GLenum, GLenum);
 GLAPI fp_glStencilOpSeparateATI gladglStencilOpSeparateATI;
 #define glStencilOpSeparateATI gladglStencilOpSeparateATI
@@ -7561,18 +7561,18 @@ GLAPI fp_glStencilFuncSeparateATI gladglStencilFuncSeparateATI;
 #endif
 #ifndef GL_NV_vertex_program2_option
 #define GL_NV_vertex_program2_option 1
-int GLAD_GL_NV_vertex_program2_option;
+extern int GLAD_GL_NV_vertex_program2_option;
 #endif
 #ifndef GL_EXT_texture_buffer_object
 #define GL_EXT_texture_buffer_object 1
-int GLAD_GL_EXT_texture_buffer_object;
+extern int GLAD_GL_EXT_texture_buffer_object;
 typedef void (APIENTRYP fp_glTexBufferEXT)(GLenum, GLenum, GLuint);
 GLAPI fp_glTexBufferEXT gladglTexBufferEXT;
 #define glTexBufferEXT gladglTexBufferEXT
 #endif
 #ifndef GL_ARB_vertex_blend
 #define GL_ARB_vertex_blend 1
-int GLAD_GL_ARB_vertex_blend;
+extern int GLAD_GL_ARB_vertex_blend;
 typedef void (APIENTRYP fp_glWeightbvARB)(GLint, const GLbyte*);
 GLAPI fp_glWeightbvARB gladglWeightbvARB;
 #define glWeightbvARB gladglWeightbvARB
@@ -7606,50 +7606,50 @@ GLAPI fp_glVertexBlendARB gladglVertexBlendARB;
 #endif
 #ifndef GL_NV_vertex_program2
 #define GL_NV_vertex_program2 1
-int GLAD_GL_NV_vertex_program2;
+extern int GLAD_GL_NV_vertex_program2;
 #endif
 #ifndef GL_ARB_program_interface_query
 #define GL_ARB_program_interface_query 1
-int GLAD_GL_ARB_program_interface_query;
+extern int GLAD_GL_ARB_program_interface_query;
 #endif
 #ifndef GL_EXT_misc_attribute
 #define GL_EXT_misc_attribute 1
-int GLAD_GL_EXT_misc_attribute;
+extern int GLAD_GL_EXT_misc_attribute;
 #endif
 #ifndef GL_NV_multisample_coverage
 #define GL_NV_multisample_coverage 1
-int GLAD_GL_NV_multisample_coverage;
+extern int GLAD_GL_NV_multisample_coverage;
 #endif
 #ifndef GL_ARB_shading_language_packing
 #define GL_ARB_shading_language_packing 1
-int GLAD_GL_ARB_shading_language_packing;
+extern int GLAD_GL_ARB_shading_language_packing;
 #endif
 #ifndef GL_EXT_texture_cube_map
 #define GL_EXT_texture_cube_map 1
-int GLAD_GL_EXT_texture_cube_map;
+extern int GLAD_GL_EXT_texture_cube_map;
 #endif
 #ifndef GL_ARB_texture_stencil8
 #define GL_ARB_texture_stencil8 1
-int GLAD_GL_ARB_texture_stencil8;
+extern int GLAD_GL_ARB_texture_stencil8;
 #endif
 #ifndef GL_EXT_index_func
 #define GL_EXT_index_func 1
-int GLAD_GL_EXT_index_func;
+extern int GLAD_GL_EXT_index_func;
 typedef void (APIENTRYP fp_glIndexFuncEXT)(GLenum, GLclampf);
 GLAPI fp_glIndexFuncEXT gladglIndexFuncEXT;
 #define glIndexFuncEXT gladglIndexFuncEXT
 #endif
 #ifndef GL_OES_compressed_paletted_texture
 #define GL_OES_compressed_paletted_texture 1
-int GLAD_GL_OES_compressed_paletted_texture;
+extern int GLAD_GL_OES_compressed_paletted_texture;
 #endif
 #ifndef GL_NV_depth_clamp
 #define GL_NV_depth_clamp 1
-int GLAD_GL_NV_depth_clamp;
+extern int GLAD_GL_NV_depth_clamp;
 #endif
 #ifndef GL_NV_shader_buffer_load
 #define GL_NV_shader_buffer_load 1
-int GLAD_GL_NV_shader_buffer_load;
+extern int GLAD_GL_NV_shader_buffer_load;
 typedef void (APIENTRYP fp_glMakeBufferResidentNV)(GLenum, GLenum);
 GLAPI fp_glMakeBufferResidentNV gladglMakeBufferResidentNV;
 #define glMakeBufferResidentNV gladglMakeBufferResidentNV
@@ -7695,7 +7695,7 @@ GLAPI fp_glProgramUniformui64vNV gladglProgramUniformui64vNV;
 #endif
 #ifndef GL_EXT_color_subtable
 #define GL_EXT_color_subtable 1
-int GLAD_GL_EXT_color_subtable;
+extern int GLAD_GL_EXT_color_subtable;
 typedef void (APIENTRYP fp_glColorSubTableEXT)(GLenum, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*);
 GLAPI fp_glColorSubTableEXT gladglColorSubTableEXT;
 #define glColorSubTableEXT gladglColorSubTableEXT
@@ -7705,14 +7705,14 @@ GLAPI fp_glCopyColorSubTableEXT gladglCopyColorSubTableEXT;
 #endif
 #ifndef GL_SUNX_constant_data
 #define GL_SUNX_constant_data 1
-int GLAD_GL_SUNX_constant_data;
+extern int GLAD_GL_SUNX_constant_data;
 typedef void (APIENTRYP fp_glFinishTextureSUNX)();
 GLAPI fp_glFinishTextureSUNX gladglFinishTextureSUNX;
 #define glFinishTextureSUNX gladglFinishTextureSUNX
 #endif
 #ifndef GL_EXT_multi_draw_arrays
 #define GL_EXT_multi_draw_arrays 1
-int GLAD_GL_EXT_multi_draw_arrays;
+extern int GLAD_GL_EXT_multi_draw_arrays;
 typedef void (APIENTRYP fp_glMultiDrawArraysEXT)(GLenum, const GLint*, const GLsizei*, GLsizei);
 GLAPI fp_glMultiDrawArraysEXT gladglMultiDrawArraysEXT;
 #define glMultiDrawArraysEXT gladglMultiDrawArraysEXT
@@ -7722,15 +7722,15 @@ GLAPI fp_glMultiDrawElementsEXT gladglMultiDrawElementsEXT;
 #endif
 #ifndef GL_ARB_shader_atomic_counters
 #define GL_ARB_shader_atomic_counters 1
-int GLAD_GL_ARB_shader_atomic_counters;
+extern int GLAD_GL_ARB_shader_atomic_counters;
 #endif
 #ifndef GL_ARB_arrays_of_arrays
 #define GL_ARB_arrays_of_arrays 1
-int GLAD_GL_ARB_arrays_of_arrays;
+extern int GLAD_GL_ARB_arrays_of_arrays;
 #endif
 #ifndef GL_NV_conditional_render
 #define GL_NV_conditional_render 1
-int GLAD_GL_NV_conditional_render;
+extern int GLAD_GL_NV_conditional_render;
 typedef void (APIENTRYP fp_glBeginConditionalRenderNV)(GLuint, GLenum);
 GLAPI fp_glBeginConditionalRenderNV gladglBeginConditionalRenderNV;
 #define glBeginConditionalRenderNV gladglBeginConditionalRenderNV
@@ -7740,46 +7740,46 @@ GLAPI fp_glEndConditionalRenderNV gladglEndConditionalRenderNV;
 #endif
 #ifndef GL_EXT_texture_env_combine
 #define GL_EXT_texture_env_combine 1
-int GLAD_GL_EXT_texture_env_combine;
+extern int GLAD_GL_EXT_texture_env_combine;
 #endif
 #ifndef GL_NV_fog_distance
 #define GL_NV_fog_distance 1
-int GLAD_GL_NV_fog_distance;
+extern int GLAD_GL_NV_fog_distance;
 #endif
 #ifndef GL_SGIX_async_histogram
 #define GL_SGIX_async_histogram 1
-int GLAD_GL_SGIX_async_histogram;
+extern int GLAD_GL_SGIX_async_histogram;
 #endif
 #ifndef GL_MESA_resize_buffers
 #define GL_MESA_resize_buffers 1
-int GLAD_GL_MESA_resize_buffers;
+extern int GLAD_GL_MESA_resize_buffers;
 typedef void (APIENTRYP fp_glResizeBuffersMESA)();
 GLAPI fp_glResizeBuffersMESA gladglResizeBuffersMESA;
 #define glResizeBuffersMESA gladglResizeBuffersMESA
 #endif
 #ifndef GL_NV_light_max_exponent
 #define GL_NV_light_max_exponent 1
-int GLAD_GL_NV_light_max_exponent;
+extern int GLAD_GL_NV_light_max_exponent;
 #endif
 #ifndef GL_NV_texture_env_combine4
 #define GL_NV_texture_env_combine4 1
-int GLAD_GL_NV_texture_env_combine4;
+extern int GLAD_GL_NV_texture_env_combine4;
 #endif
 #ifndef GL_ARB_texture_view
 #define GL_ARB_texture_view 1
-int GLAD_GL_ARB_texture_view;
+extern int GLAD_GL_ARB_texture_view;
 #endif
 #ifndef GL_ARB_texture_env_combine
 #define GL_ARB_texture_env_combine 1
-int GLAD_GL_ARB_texture_env_combine;
+extern int GLAD_GL_ARB_texture_env_combine;
 #endif
 #ifndef GL_ARB_map_buffer_range
 #define GL_ARB_map_buffer_range 1
-int GLAD_GL_ARB_map_buffer_range;
+extern int GLAD_GL_ARB_map_buffer_range;
 #endif
 #ifndef GL_EXT_convolution
 #define GL_EXT_convolution 1
-int GLAD_GL_EXT_convolution;
+extern int GLAD_GL_EXT_convolution;
 typedef void (APIENTRYP fp_glConvolutionFilter1DEXT)(GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid*);
 GLAPI fp_glConvolutionFilter1DEXT gladglConvolutionFilter1DEXT;
 #define glConvolutionFilter1DEXT gladglConvolutionFilter1DEXT
@@ -7822,11 +7822,11 @@ GLAPI fp_glSeparableFilter2DEXT gladglSeparableFilter2DEXT;
 #endif
 #ifndef GL_NV_compute_program5
 #define GL_NV_compute_program5 1
-int GLAD_GL_NV_compute_program5;
+extern int GLAD_GL_NV_compute_program5;
 #endif
 #ifndef GL_NV_vertex_attrib_integer_64bit
 #define GL_NV_vertex_attrib_integer_64bit 1
-int GLAD_GL_NV_vertex_attrib_integer_64bit;
+extern int GLAD_GL_NV_vertex_attrib_integer_64bit;
 typedef void (APIENTRYP fp_glVertexAttribL1i64NV)(GLuint, GLint64EXT);
 GLAPI fp_glVertexAttribL1i64NV gladglVertexAttribL1i64NV;
 #define glVertexAttribL1i64NV gladglVertexAttribL1i64NV
@@ -7887,7 +7887,7 @@ GLAPI fp_glVertexAttribLFormatNV gladglVertexAttribLFormatNV;
 #endif
 #ifndef GL_EXT_paletted_texture
 #define GL_EXT_paletted_texture 1
-int GLAD_GL_EXT_paletted_texture;
+extern int GLAD_GL_EXT_paletted_texture;
 typedef void (APIENTRYP fp_glColorTableEXT)(GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid*);
 GLAPI fp_glColorTableEXT gladglColorTableEXT;
 #define glColorTableEXT gladglColorTableEXT
@@ -7903,14 +7903,14 @@ GLAPI fp_glGetColorTableParameterfvEXT gladglGetColorTableParameterfvEXT;
 #endif
 #ifndef GL_ARB_texture_buffer_object
 #define GL_ARB_texture_buffer_object 1
-int GLAD_GL_ARB_texture_buffer_object;
+extern int GLAD_GL_ARB_texture_buffer_object;
 typedef void (APIENTRYP fp_glTexBufferARB)(GLenum, GLenum, GLuint);
 GLAPI fp_glTexBufferARB gladglTexBufferARB;
 #define glTexBufferARB gladglTexBufferARB
 #endif
 #ifndef GL_ATI_pn_triangles
 #define GL_ATI_pn_triangles 1
-int GLAD_GL_ATI_pn_triangles;
+extern int GLAD_GL_ATI_pn_triangles;
 typedef void (APIENTRYP fp_glPNTrianglesiATI)(GLenum, GLint);
 GLAPI fp_glPNTrianglesiATI gladglPNTrianglesiATI;
 #define glPNTrianglesiATI gladglPNTrianglesiATI
@@ -7920,18 +7920,18 @@ GLAPI fp_glPNTrianglesfATI gladglPNTrianglesfATI;
 #endif
 #ifndef GL_SGIX_resample
 #define GL_SGIX_resample 1
-int GLAD_GL_SGIX_resample;
+extern int GLAD_GL_SGIX_resample;
 #endif
 #ifndef GL_SGIX_flush_raster
 #define GL_SGIX_flush_raster 1
-int GLAD_GL_SGIX_flush_raster;
+extern int GLAD_GL_SGIX_flush_raster;
 typedef void (APIENTRYP fp_glFlushRasterSGIX)();
 GLAPI fp_glFlushRasterSGIX gladglFlushRasterSGIX;
 #define glFlushRasterSGIX gladglFlushRasterSGIX
 #endif
 #ifndef GL_EXT_light_texture
 #define GL_EXT_light_texture 1
-int GLAD_GL_EXT_light_texture;
+extern int GLAD_GL_EXT_light_texture;
 typedef void (APIENTRYP fp_glApplyTextureEXT)(GLenum);
 GLAPI fp_glApplyTextureEXT gladglApplyTextureEXT;
 #define glApplyTextureEXT gladglApplyTextureEXT
@@ -7944,43 +7944,43 @@ GLAPI fp_glTextureMaterialEXT gladglTextureMaterialEXT;
 #endif
 #ifndef GL_ARB_point_sprite
 #define GL_ARB_point_sprite 1
-int GLAD_GL_ARB_point_sprite;
+extern int GLAD_GL_ARB_point_sprite;
 #endif
 #ifndef GL_ARB_half_float_pixel
 #define GL_ARB_half_float_pixel 1
-int GLAD_GL_ARB_half_float_pixel;
+extern int GLAD_GL_ARB_half_float_pixel;
 #endif
 #ifndef GL_NV_tessellation_program5
 #define GL_NV_tessellation_program5 1
-int GLAD_GL_NV_tessellation_program5;
+extern int GLAD_GL_NV_tessellation_program5;
 #endif
 #ifndef GL_REND_screen_coordinates
 #define GL_REND_screen_coordinates 1
-int GLAD_GL_REND_screen_coordinates;
+extern int GLAD_GL_REND_screen_coordinates;
 #endif
 #ifndef GL_EXT_shared_texture_palette
 #define GL_EXT_shared_texture_palette 1
-int GLAD_GL_EXT_shared_texture_palette;
+extern int GLAD_GL_EXT_shared_texture_palette;
 #endif
 #ifndef GL_EXT_packed_float
 #define GL_EXT_packed_float 1
-int GLAD_GL_EXT_packed_float;
+extern int GLAD_GL_EXT_packed_float;
 #endif
 #ifndef GL_OML_subsample
 #define GL_OML_subsample 1
-int GLAD_GL_OML_subsample;
+extern int GLAD_GL_OML_subsample;
 #endif
 #ifndef GL_SGIX_vertex_preclip
 #define GL_SGIX_vertex_preclip 1
-int GLAD_GL_SGIX_vertex_preclip;
+extern int GLAD_GL_SGIX_vertex_preclip;
 #endif
 #ifndef GL_SGIX_texture_scale_bias
 #define GL_SGIX_texture_scale_bias 1
-int GLAD_GL_SGIX_texture_scale_bias;
+extern int GLAD_GL_SGIX_texture_scale_bias;
 #endif
 #ifndef GL_AMD_draw_buffers_blend
 #define GL_AMD_draw_buffers_blend 1
-int GLAD_GL_AMD_draw_buffers_blend;
+extern int GLAD_GL_AMD_draw_buffers_blend;
 typedef void (APIENTRYP fp_glBlendFuncIndexedAMD)(GLuint, GLenum, GLenum);
 GLAPI fp_glBlendFuncIndexedAMD gladglBlendFuncIndexedAMD;
 #define glBlendFuncIndexedAMD gladglBlendFuncIndexedAMD
@@ -7996,7 +7996,7 @@ GLAPI fp_glBlendEquationSeparateIndexedAMD gladglBlendEquationSeparateIndexedAMD
 #endif
 #ifndef GL_MESA_window_pos
 #define GL_MESA_window_pos 1
-int GLAD_GL_MESA_window_pos;
+extern int GLAD_GL_MESA_window_pos;
 typedef void (APIENTRYP fp_glWindowPos2dMESA)(GLdouble, GLdouble);
 GLAPI fp_glWindowPos2dMESA gladglWindowPos2dMESA;
 #define glWindowPos2dMESA gladglWindowPos2dMESA
@@ -8072,60 +8072,60 @@ GLAPI fp_glWindowPos4svMESA gladglWindowPos4svMESA;
 #endif
 #ifndef GL_EXT_texture_array
 #define GL_EXT_texture_array 1
-int GLAD_GL_EXT_texture_array;
+extern int GLAD_GL_EXT_texture_array;
 #endif
 #ifndef GL_NV_texture_barrier
 #define GL_NV_texture_barrier 1
-int GLAD_GL_NV_texture_barrier;
+extern int GLAD_GL_NV_texture_barrier;
 typedef void (APIENTRYP fp_glTextureBarrierNV)();
 GLAPI fp_glTextureBarrierNV gladglTextureBarrierNV;
 #define glTextureBarrierNV gladglTextureBarrierNV
 #endif
 #ifndef GL_ARB_texture_query_levels
 #define GL_ARB_texture_query_levels 1
-int GLAD_GL_ARB_texture_query_levels;
+extern int GLAD_GL_ARB_texture_query_levels;
 #endif
 #ifndef GL_NV_texgen_emboss
 #define GL_NV_texgen_emboss 1
-int GLAD_GL_NV_texgen_emboss;
+extern int GLAD_GL_NV_texgen_emboss;
 #endif
 #ifndef GL_EXT_texture_swizzle
 #define GL_EXT_texture_swizzle 1
-int GLAD_GL_EXT_texture_swizzle;
+extern int GLAD_GL_EXT_texture_swizzle;
 #endif
 #ifndef GL_ARB_texture_rg
 #define GL_ARB_texture_rg 1
-int GLAD_GL_ARB_texture_rg;
+extern int GLAD_GL_ARB_texture_rg;
 #endif
 #ifndef GL_ARB_vertex_type_2_10_10_10_rev
 #define GL_ARB_vertex_type_2_10_10_10_rev 1
-int GLAD_GL_ARB_vertex_type_2_10_10_10_rev;
+extern int GLAD_GL_ARB_vertex_type_2_10_10_10_rev;
 #endif
 #ifndef GL_ARB_fragment_shader
 #define GL_ARB_fragment_shader 1
-int GLAD_GL_ARB_fragment_shader;
+extern int GLAD_GL_ARB_fragment_shader;
 #endif
 #ifndef GL_3DFX_tbuffer
 #define GL_3DFX_tbuffer 1
-int GLAD_GL_3DFX_tbuffer;
+extern int GLAD_GL_3DFX_tbuffer;
 typedef void (APIENTRYP fp_glTbufferMask3DFX)(GLuint);
 GLAPI fp_glTbufferMask3DFX gladglTbufferMask3DFX;
 #define glTbufferMask3DFX gladglTbufferMask3DFX
 #endif
 #ifndef GL_GREMEDY_frame_terminator
 #define GL_GREMEDY_frame_terminator 1
-int GLAD_GL_GREMEDY_frame_terminator;
+extern int GLAD_GL_GREMEDY_frame_terminator;
 typedef void (APIENTRYP fp_glFrameTerminatorGREMEDY)();
 GLAPI fp_glFrameTerminatorGREMEDY gladglFrameTerminatorGREMEDY;
 #define glFrameTerminatorGREMEDY gladglFrameTerminatorGREMEDY
 #endif
 #ifndef GL_ARB_blend_func_extended
 #define GL_ARB_blend_func_extended 1
-int GLAD_GL_ARB_blend_func_extended;
+extern int GLAD_GL_ARB_blend_func_extended;
 #endif
 #ifndef GL_EXT_separate_shader_objects
 #define GL_EXT_separate_shader_objects 1
-int GLAD_GL_EXT_separate_shader_objects;
+extern int GLAD_GL_EXT_separate_shader_objects;
 typedef void (APIENTRYP fp_glUseShaderProgramEXT)(GLenum, GLuint);
 GLAPI fp_glUseShaderProgramEXT gladglUseShaderProgramEXT;
 #define glUseShaderProgramEXT gladglUseShaderProgramEXT
@@ -8228,7 +8228,7 @@ GLAPI fp_glValidateProgramPipelineEXT gladglValidateProgramPipelineEXT;
 #endif
 #ifndef GL_NV_texture_multisample
 #define GL_NV_texture_multisample 1
-int GLAD_GL_NV_texture_multisample;
+extern int GLAD_GL_NV_texture_multisample;
 typedef void (APIENTRYP fp_glTexImage2DMultisampleCoverageNV)(GLenum, GLsizei, GLsizei, GLint, GLsizei, GLsizei, GLboolean);
 GLAPI fp_glTexImage2DMultisampleCoverageNV gladglTexImage2DMultisampleCoverageNV;
 #define glTexImage2DMultisampleCoverageNV gladglTexImage2DMultisampleCoverageNV
@@ -8250,7 +8250,7 @@ GLAPI fp_glTextureImage3DMultisampleCoverageNV gladglTextureImage3DMultisampleCo
 #endif
 #ifndef GL_ARB_shader_objects
 #define GL_ARB_shader_objects 1
-int GLAD_GL_ARB_shader_objects;
+extern int GLAD_GL_ARB_shader_objects;
 typedef void (APIENTRYP fp_glDeleteObjectARB)(GLhandleARB);
 GLAPI fp_glDeleteObjectARB gladglDeleteObjectARB;
 #define glDeleteObjectARB gladglDeleteObjectARB
@@ -8371,11 +8371,11 @@ GLAPI fp_glGetShaderSourceARB gladglGetShaderSourceARB;
 #endif
 #ifndef GL_ARB_framebuffer_object
 #define GL_ARB_framebuffer_object 1
-int GLAD_GL_ARB_framebuffer_object;
+extern int GLAD_GL_ARB_framebuffer_object;
 #endif
 #ifndef GL_ATI_envmap_bumpmap
 #define GL_ATI_envmap_bumpmap 1
-int GLAD_GL_ATI_envmap_bumpmap;
+extern int GLAD_GL_ATI_envmap_bumpmap;
 typedef void (APIENTRYP fp_glTexBumpParameterivATI)(GLenum, const GLint*);
 GLAPI fp_glTexBumpParameterivATI gladglTexBumpParameterivATI;
 #define glTexBumpParameterivATI gladglTexBumpParameterivATI
@@ -8391,31 +8391,31 @@ GLAPI fp_glGetTexBumpParameterfvATI gladglGetTexBumpParameterfvATI;
 #endif
 #ifndef GL_ARB_robust_buffer_access_behavior
 #define GL_ARB_robust_buffer_access_behavior 1
-int GLAD_GL_ARB_robust_buffer_access_behavior;
+extern int GLAD_GL_ARB_robust_buffer_access_behavior;
 #endif
 #ifndef GL_ARB_shader_stencil_export
 #define GL_ARB_shader_stencil_export 1
-int GLAD_GL_ARB_shader_stencil_export;
+extern int GLAD_GL_ARB_shader_stencil_export;
 #endif
 #ifndef GL_NV_texture_rectangle
 #define GL_NV_texture_rectangle 1
-int GLAD_GL_NV_texture_rectangle;
+extern int GLAD_GL_NV_texture_rectangle;
 #endif
 #ifndef GL_ARB_enhanced_layouts
 #define GL_ARB_enhanced_layouts 1
-int GLAD_GL_ARB_enhanced_layouts;
+extern int GLAD_GL_ARB_enhanced_layouts;
 #endif
 #ifndef GL_ARB_texture_rectangle
 #define GL_ARB_texture_rectangle 1
-int GLAD_GL_ARB_texture_rectangle;
+extern int GLAD_GL_ARB_texture_rectangle;
 #endif
 #ifndef GL_SGI_texture_color_table
 #define GL_SGI_texture_color_table 1
-int GLAD_GL_SGI_texture_color_table;
+extern int GLAD_GL_SGI_texture_color_table;
 #endif
 #ifndef GL_ATI_map_object_buffer
 #define GL_ATI_map_object_buffer 1
-int GLAD_GL_ATI_map_object_buffer;
+extern int GLAD_GL_ATI_map_object_buffer;
 typedef void* (APIENTRYP fp_glMapObjectBufferATI)(GLuint);
 GLAPI fp_glMapObjectBufferATI gladglMapObjectBufferATI;
 #define glMapObjectBufferATI gladglMapObjectBufferATI
@@ -8425,7 +8425,7 @@ GLAPI fp_glUnmapObjectBufferATI gladglUnmapObjectBufferATI;
 #endif
 #ifndef GL_ARB_robustness
 #define GL_ARB_robustness 1
-int GLAD_GL_ARB_robustness;
+extern int GLAD_GL_ARB_robustness;
 typedef GLenum (APIENTRYP fp_glGetGraphicsResetStatusARB)();
 GLAPI fp_glGetGraphicsResetStatusARB gladglGetGraphicsResetStatusARB;
 #define glGetGraphicsResetStatusARB gladglGetGraphicsResetStatusARB
@@ -8489,7 +8489,7 @@ GLAPI fp_glGetnMinmaxARB gladglGetnMinmaxARB;
 #endif
 #ifndef GL_NV_pixel_data_range
 #define GL_NV_pixel_data_range 1
-int GLAD_GL_NV_pixel_data_range;
+extern int GLAD_GL_NV_pixel_data_range;
 typedef void (APIENTRYP fp_glPixelDataRangeNV)(GLenum, GLsizei, const GLvoid*);
 GLAPI fp_glPixelDataRangeNV gladglPixelDataRangeNV;
 #define glPixelDataRangeNV gladglPixelDataRangeNV
@@ -8499,22 +8499,22 @@ GLAPI fp_glFlushPixelDataRangeNV gladglFlushPixelDataRangeNV;
 #endif
 #ifndef GL_EXT_framebuffer_blit
 #define GL_EXT_framebuffer_blit 1
-int GLAD_GL_EXT_framebuffer_blit;
+extern int GLAD_GL_EXT_framebuffer_blit;
 typedef void (APIENTRYP fp_glBlitFramebufferEXT)(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
 GLAPI fp_glBlitFramebufferEXT gladglBlitFramebufferEXT;
 #define glBlitFramebufferEXT gladglBlitFramebufferEXT
 #endif
 #ifndef GL_ARB_gpu_shader_fp64
 #define GL_ARB_gpu_shader_fp64 1
-int GLAD_GL_ARB_gpu_shader_fp64;
+extern int GLAD_GL_ARB_gpu_shader_fp64;
 #endif
 #ifndef GL_SGIX_depth_texture
 #define GL_SGIX_depth_texture 1
-int GLAD_GL_SGIX_depth_texture;
+extern int GLAD_GL_SGIX_depth_texture;
 #endif
 #ifndef GL_EXT_vertex_weighting
 #define GL_EXT_vertex_weighting 1
-int GLAD_GL_EXT_vertex_weighting;
+extern int GLAD_GL_EXT_vertex_weighting;
 typedef void (APIENTRYP fp_glVertexWeightfEXT)(GLfloat);
 GLAPI fp_glVertexWeightfEXT gladglVertexWeightfEXT;
 #define glVertexWeightfEXT gladglVertexWeightfEXT
@@ -8527,18 +8527,18 @@ GLAPI fp_glVertexWeightPointerEXT gladglVertexWeightPointerEXT;
 #endif
 #ifndef GL_GREMEDY_string_marker
 #define GL_GREMEDY_string_marker 1
-int GLAD_GL_GREMEDY_string_marker;
+extern int GLAD_GL_GREMEDY_string_marker;
 typedef void (APIENTRYP fp_glStringMarkerGREMEDY)(GLsizei, const GLvoid*);
 GLAPI fp_glStringMarkerGREMEDY gladglStringMarkerGREMEDY;
 #define glStringMarkerGREMEDY gladglStringMarkerGREMEDY
 #endif
 #ifndef GL_ARB_texture_compression_bptc
 #define GL_ARB_texture_compression_bptc 1
-int GLAD_GL_ARB_texture_compression_bptc;
+extern int GLAD_GL_ARB_texture_compression_bptc;
 #endif
 #ifndef GL_EXT_subtexture
 #define GL_EXT_subtexture 1
-int GLAD_GL_EXT_subtexture;
+extern int GLAD_GL_EXT_subtexture;
 typedef void (APIENTRYP fp_glTexSubImage1DEXT)(GLenum, GLint, GLint, GLsizei, GLenum, GLenum, const GLvoid*);
 GLAPI fp_glTexSubImage1DEXT gladglTexSubImage1DEXT;
 #define glTexSubImage1DEXT gladglTexSubImage1DEXT
@@ -8548,23 +8548,23 @@ GLAPI fp_glTexSubImage2DEXT gladglTexSubImage2DEXT;
 #endif
 #ifndef GL_EXT_pixel_transform_color_table
 #define GL_EXT_pixel_transform_color_table 1
-int GLAD_GL_EXT_pixel_transform_color_table;
+extern int GLAD_GL_EXT_pixel_transform_color_table;
 #endif
 #ifndef GL_EXT_texture_compression_rgtc
 #define GL_EXT_texture_compression_rgtc 1
-int GLAD_GL_EXT_texture_compression_rgtc;
+extern int GLAD_GL_EXT_texture_compression_rgtc;
 #endif
 #ifndef GL_SGIX_depth_pass_instrument
 #define GL_SGIX_depth_pass_instrument 1
-int GLAD_GL_SGIX_depth_pass_instrument;
+extern int GLAD_GL_SGIX_depth_pass_instrument;
 #endif
 #ifndef GL_ARB_shader_precision
 #define GL_ARB_shader_precision 1
-int GLAD_GL_ARB_shader_precision;
+extern int GLAD_GL_ARB_shader_precision;
 #endif
 #ifndef GL_NV_evaluators
 #define GL_NV_evaluators 1
-int GLAD_GL_NV_evaluators;
+extern int GLAD_GL_NV_evaluators;
 typedef void (APIENTRYP fp_glMapControlPointsNV)(GLenum, GLuint, GLenum, GLsizei, GLsizei, GLint, GLint, GLboolean, const GLvoid*);
 GLAPI fp_glMapControlPointsNV gladglMapControlPointsNV;
 #define glMapControlPointsNV gladglMapControlPointsNV
@@ -8595,7 +8595,7 @@ GLAPI fp_glEvalMapsNV gladglEvalMapsNV;
 #endif
 #ifndef GL_SGIS_texture_filter4
 #define GL_SGIS_texture_filter4 1
-int GLAD_GL_SGIS_texture_filter4;
+extern int GLAD_GL_SGIS_texture_filter4;
 typedef void (APIENTRYP fp_glGetTexFilterFuncSGIS)(GLenum, GLenum, GLfloat*);
 GLAPI fp_glGetTexFilterFuncSGIS gladglGetTexFilterFuncSGIS;
 #define glGetTexFilterFuncSGIS gladglGetTexFilterFuncSGIS
@@ -8605,7 +8605,7 @@ GLAPI fp_glTexFilterFuncSGIS gladglTexFilterFuncSGIS;
 #endif
 #ifndef GL_AMD_performance_monitor
 #define GL_AMD_performance_monitor 1
-int GLAD_GL_AMD_performance_monitor;
+extern int GLAD_GL_AMD_performance_monitor;
 typedef void (APIENTRYP fp_glGetPerfMonitorGroupsAMD)(GLint*, GLsizei, GLuint*);
 GLAPI fp_glGetPerfMonitorGroupsAMD gladglGetPerfMonitorGroupsAMD;
 #define glGetPerfMonitorGroupsAMD gladglGetPerfMonitorGroupsAMD
@@ -8642,22 +8642,22 @@ GLAPI fp_glGetPerfMonitorCounterDataAMD gladglGetPerfMonitorCounterDataAMD;
 #endif
 #ifndef GL_NV_geometry_shader4
 #define GL_NV_geometry_shader4 1
-int GLAD_GL_NV_geometry_shader4;
+extern int GLAD_GL_NV_geometry_shader4;
 #endif
 #ifndef GL_EXT_stencil_clear_tag
 #define GL_EXT_stencil_clear_tag 1
-int GLAD_GL_EXT_stencil_clear_tag;
+extern int GLAD_GL_EXT_stencil_clear_tag;
 typedef void (APIENTRYP fp_glStencilClearTagEXT)(GLsizei, GLuint);
 GLAPI fp_glStencilClearTagEXT gladglStencilClearTagEXT;
 #define glStencilClearTagEXT gladglStencilClearTagEXT
 #endif
 #ifndef GL_NV_vertex_program1_1
 #define GL_NV_vertex_program1_1 1
-int GLAD_GL_NV_vertex_program1_1;
+extern int GLAD_GL_NV_vertex_program1_1;
 #endif
 #ifndef GL_NV_present_video
 #define GL_NV_present_video 1
-int GLAD_GL_NV_present_video;
+extern int GLAD_GL_NV_present_video;
 typedef void (APIENTRYP fp_glPresentFrameKeyedNV)(GLuint, GLuint64EXT, GLuint, GLuint, GLenum, GLenum, GLuint, GLuint, GLenum, GLuint, GLuint);
 GLAPI fp_glPresentFrameKeyedNV gladglPresentFrameKeyedNV;
 #define glPresentFrameKeyedNV gladglPresentFrameKeyedNV
@@ -8679,15 +8679,15 @@ GLAPI fp_glGetVideoui64vNV gladglGetVideoui64vNV;
 #endif
 #ifndef GL_ARB_texture_compression_rgtc
 #define GL_ARB_texture_compression_rgtc 1
-int GLAD_GL_ARB_texture_compression_rgtc;
+extern int GLAD_GL_ARB_texture_compression_rgtc;
 #endif
 #ifndef GL_HP_convolution_border_modes
 #define GL_HP_convolution_border_modes 1
-int GLAD_GL_HP_convolution_border_modes;
+extern int GLAD_GL_HP_convolution_border_modes;
 #endif
 #ifndef GL_EXT_gpu_program_parameters
 #define GL_EXT_gpu_program_parameters 1
-int GLAD_GL_EXT_gpu_program_parameters;
+extern int GLAD_GL_EXT_gpu_program_parameters;
 typedef void (APIENTRYP fp_glProgramEnvParameters4fvEXT)(GLenum, GLuint, GLsizei, const GLfloat*);
 GLAPI fp_glProgramEnvParameters4fvEXT gladglProgramEnvParameters4fvEXT;
 #define glProgramEnvParameters4fvEXT gladglProgramEnvParameters4fvEXT
@@ -8697,7 +8697,7 @@ GLAPI fp_glProgramLocalParameters4fvEXT gladglProgramLocalParameters4fvEXT;
 #endif
 #ifndef GL_SGIX_list_priority
 #define GL_SGIX_list_priority 1
-int GLAD_GL_SGIX_list_priority;
+extern int GLAD_GL_SGIX_list_priority;
 typedef void (APIENTRYP fp_glGetListParameterfvSGIX)(GLuint, GLenum, GLfloat*);
 GLAPI fp_glGetListParameterfvSGIX gladglGetListParameterfvSGIX;
 #define glGetListParameterfvSGIX gladglGetListParameterfvSGIX
@@ -8719,23 +8719,23 @@ GLAPI fp_glListParameterivSGIX gladglListParameterivSGIX;
 #endif
 #ifndef GL_ARB_stencil_texturing
 #define GL_ARB_stencil_texturing 1
-int GLAD_GL_ARB_stencil_texturing;
+extern int GLAD_GL_ARB_stencil_texturing;
 #endif
 #ifndef GL_SGIX_fog_offset
 #define GL_SGIX_fog_offset 1
-int GLAD_GL_SGIX_fog_offset;
+extern int GLAD_GL_SGIX_fog_offset;
 #endif
 #ifndef GL_ARB_draw_elements_base_vertex
 #define GL_ARB_draw_elements_base_vertex 1
-int GLAD_GL_ARB_draw_elements_base_vertex;
+extern int GLAD_GL_ARB_draw_elements_base_vertex;
 #endif
 #ifndef GL_INGR_interlace_read
 #define GL_INGR_interlace_read 1
-int GLAD_GL_INGR_interlace_read;
+extern int GLAD_GL_INGR_interlace_read;
 #endif
 #ifndef GL_NV_transform_feedback
 #define GL_NV_transform_feedback 1
-int GLAD_GL_NV_transform_feedback;
+extern int GLAD_GL_NV_transform_feedback;
 typedef void (APIENTRYP fp_glBeginTransformFeedbackNV)(GLenum);
 GLAPI fp_glBeginTransformFeedbackNV gladglBeginTransformFeedbackNV;
 #define glBeginTransformFeedbackNV gladglBeginTransformFeedbackNV
@@ -8775,7 +8775,7 @@ GLAPI fp_glTransformFeedbackStreamAttribsNV gladglTransformFeedbackStreamAttribs
 #endif
 #ifndef GL_NV_fragment_program
 #define GL_NV_fragment_program 1
-int GLAD_GL_NV_fragment_program;
+extern int GLAD_GL_NV_fragment_program;
 typedef void (APIENTRYP fp_glProgramNamedParameter4fNV)(GLuint, GLsizei, const GLubyte*, GLfloat, GLfloat, GLfloat, GLfloat);
 GLAPI fp_glProgramNamedParameter4fNV gladglProgramNamedParameter4fNV;
 #define glProgramNamedParameter4fNV gladglProgramNamedParameter4fNV
@@ -8797,36 +8797,36 @@ GLAPI fp_glGetProgramNamedParameterdvNV gladglGetProgramNamedParameterdvNV;
 #endif
 #ifndef GL_AMD_stencil_operation_extended
 #define GL_AMD_stencil_operation_extended 1
-int GLAD_GL_AMD_stencil_operation_extended;
+extern int GLAD_GL_AMD_stencil_operation_extended;
 typedef void (APIENTRYP fp_glStencilOpValueAMD)(GLenum, GLuint);
 GLAPI fp_glStencilOpValueAMD gladglStencilOpValueAMD;
 #define glStencilOpValueAMD gladglStencilOpValueAMD
 #endif
 #ifndef GL_ARB_seamless_cubemap_per_texture
 #define GL_ARB_seamless_cubemap_per_texture 1
-int GLAD_GL_ARB_seamless_cubemap_per_texture;
+extern int GLAD_GL_ARB_seamless_cubemap_per_texture;
 #endif
 #ifndef GL_ARB_instanced_arrays
 #define GL_ARB_instanced_arrays 1
-int GLAD_GL_ARB_instanced_arrays;
+extern int GLAD_GL_ARB_instanced_arrays;
 typedef void (APIENTRYP fp_glVertexAttribDivisorARB)(GLuint, GLuint);
 GLAPI fp_glVertexAttribDivisorARB gladglVertexAttribDivisorARB;
 #define glVertexAttribDivisorARB gladglVertexAttribDivisorARB
 #endif
 #ifndef GL_EXT_polygon_offset
 #define GL_EXT_polygon_offset 1
-int GLAD_GL_EXT_polygon_offset;
+extern int GLAD_GL_EXT_polygon_offset;
 typedef void (APIENTRYP fp_glPolygonOffsetEXT)(GLfloat, GLfloat);
 GLAPI fp_glPolygonOffsetEXT gladglPolygonOffsetEXT;
 #define glPolygonOffsetEXT gladglPolygonOffsetEXT
 #endif
 #ifndef GL_NV_vertex_array_range2
 #define GL_NV_vertex_array_range2 1
-int GLAD_GL_NV_vertex_array_range2;
+extern int GLAD_GL_NV_vertex_array_range2;
 #endif
 #ifndef GL_AMD_sparse_texture
 #define GL_AMD_sparse_texture 1
-int GLAD_GL_AMD_sparse_texture;
+extern int GLAD_GL_AMD_sparse_texture;
 typedef void (APIENTRYP fp_glTexStorageSparseAMD)(GLenum, GLenum, GLsizei, GLsizei, GLsizei, GLsizei, GLbitfield);
 GLAPI fp_glTexStorageSparseAMD gladglTexStorageSparseAMD;
 #define glTexStorageSparseAMD gladglTexStorageSparseAMD
@@ -8836,7 +8836,7 @@ GLAPI fp_glTextureStorageSparseAMD gladglTextureStorageSparseAMD;
 #endif
 #ifndef GL_NV_fence
 #define GL_NV_fence 1
-int GLAD_GL_NV_fence;
+extern int GLAD_GL_NV_fence;
 typedef void (APIENTRYP fp_glDeleteFencesNV)(GLsizei, const GLuint*);
 GLAPI fp_glDeleteFencesNV gladglDeleteFencesNV;
 #define glDeleteFencesNV gladglDeleteFencesNV
@@ -8861,37 +8861,37 @@ GLAPI fp_glSetFenceNV gladglSetFenceNV;
 #endif
 #ifndef GL_ARB_texture_buffer_range
 #define GL_ARB_texture_buffer_range 1
-int GLAD_GL_ARB_texture_buffer_range;
+extern int GLAD_GL_ARB_texture_buffer_range;
 #endif
 #ifndef GL_SUN_mesh_array
 #define GL_SUN_mesh_array 1
-int GLAD_GL_SUN_mesh_array;
+extern int GLAD_GL_SUN_mesh_array;
 typedef void (APIENTRYP fp_glDrawMeshArraysSUN)(GLenum, GLint, GLsizei, GLsizei);
 GLAPI fp_glDrawMeshArraysSUN gladglDrawMeshArraysSUN;
 #define glDrawMeshArraysSUN gladglDrawMeshArraysSUN
 #endif
 #ifndef GL_ARB_vertex_attrib_binding
 #define GL_ARB_vertex_attrib_binding 1
-int GLAD_GL_ARB_vertex_attrib_binding;
+extern int GLAD_GL_ARB_vertex_attrib_binding;
 #endif
 #ifndef GL_ARB_framebuffer_no_attachments
 #define GL_ARB_framebuffer_no_attachments 1
-int GLAD_GL_ARB_framebuffer_no_attachments;
+extern int GLAD_GL_ARB_framebuffer_no_attachments;
 #endif
 #ifndef GL_ARB_cl_event
 #define GL_ARB_cl_event 1
-int GLAD_GL_ARB_cl_event;
+extern int GLAD_GL_ARB_cl_event;
 typedef GLsync (APIENTRYP fp_glCreateSyncFromCLeventARB)(struct _cl_context*, struct _cl_event*, GLbitfield);
 GLAPI fp_glCreateSyncFromCLeventARB gladglCreateSyncFromCLeventARB;
 #define glCreateSyncFromCLeventARB gladglCreateSyncFromCLeventARB
 #endif
 #ifndef GL_NV_packed_depth_stencil
 #define GL_NV_packed_depth_stencil 1
-int GLAD_GL_NV_packed_depth_stencil;
+extern int GLAD_GL_NV_packed_depth_stencil;
 #endif
 #ifndef GL_OES_single_precision
 #define GL_OES_single_precision 1
-int GLAD_GL_OES_single_precision;
+extern int GLAD_GL_OES_single_precision;
 typedef void (APIENTRYP fp_glClearDepthfOES)(GLclampf);
 GLAPI fp_glClearDepthfOES gladglClearDepthfOES;
 #define glClearDepthfOES gladglClearDepthfOES
@@ -8913,7 +8913,7 @@ GLAPI fp_glOrthofOES gladglOrthofOES;
 #endif
 #ifndef GL_NV_primitive_restart
 #define GL_NV_primitive_restart 1
-int GLAD_GL_NV_primitive_restart;
+extern int GLAD_GL_NV_primitive_restart;
 typedef void (APIENTRYP fp_glPrimitiveRestartNV)();
 GLAPI fp_glPrimitiveRestartNV gladglPrimitiveRestartNV;
 #define glPrimitiveRestartNV gladglPrimitiveRestartNV
@@ -8923,7 +8923,7 @@ GLAPI fp_glPrimitiveRestartIndexNV gladglPrimitiveRestartIndexNV;
 #endif
 #ifndef GL_SUN_global_alpha
 #define GL_SUN_global_alpha 1
-int GLAD_GL_SUN_global_alpha;
+extern int GLAD_GL_SUN_global_alpha;
 typedef void (APIENTRYP fp_glGlobalAlphaFactorbSUN)(GLbyte);
 GLAPI fp_glGlobalAlphaFactorbSUN gladglGlobalAlphaFactorbSUN;
 #define glGlobalAlphaFactorbSUN gladglGlobalAlphaFactorbSUN
@@ -8951,7 +8951,7 @@ GLAPI fp_glGlobalAlphaFactoruiSUN gladglGlobalAlphaFactoruiSUN;
 #endif
 #ifndef GL_EXT_texture_object
 #define GL_EXT_texture_object 1
-int GLAD_GL_EXT_texture_object;
+extern int GLAD_GL_EXT_texture_object;
 typedef GLboolean (APIENTRYP fp_glAreTexturesResidentEXT)(GLsizei, const GLuint*, GLboolean*);
 GLAPI fp_glAreTexturesResidentEXT gladglAreTexturesResidentEXT;
 #define glAreTexturesResidentEXT gladglAreTexturesResidentEXT
@@ -8973,7 +8973,7 @@ GLAPI fp_glPrioritizeTexturesEXT gladglPrioritizeTexturesEXT;
 #endif
 #ifndef GL_AMD_name_gen_delete
 #define GL_AMD_name_gen_delete 1
-int GLAD_GL_AMD_name_gen_delete;
+extern int GLAD_GL_AMD_name_gen_delete;
 typedef void (APIENTRYP fp_glGenNamesAMD)(GLenum, GLuint, GLuint*);
 GLAPI fp_glGenNamesAMD gladglGenNamesAMD;
 #define glGenNamesAMD gladglGenNamesAMD
@@ -8986,35 +8986,35 @@ GLAPI fp_glIsNameAMD gladglIsNameAMD;
 #endif
 #ifndef GL_NV_texture_compression_vtc
 #define GL_NV_texture_compression_vtc 1
-int GLAD_GL_NV_texture_compression_vtc;
+extern int GLAD_GL_NV_texture_compression_vtc;
 #endif
 #ifndef GL_SGIX_ycrcb_subsample
 #define GL_SGIX_ycrcb_subsample 1
-int GLAD_GL_SGIX_ycrcb_subsample;
+extern int GLAD_GL_SGIX_ycrcb_subsample;
 #endif
 #ifndef GL_NV_texture_shader3
 #define GL_NV_texture_shader3 1
-int GLAD_GL_NV_texture_shader3;
+extern int GLAD_GL_NV_texture_shader3;
 #endif
 #ifndef GL_NV_texture_shader2
 #define GL_NV_texture_shader2 1
-int GLAD_GL_NV_texture_shader2;
+extern int GLAD_GL_NV_texture_shader2;
 #endif
 #ifndef GL_EXT_texture
 #define GL_EXT_texture 1
-int GLAD_GL_EXT_texture;
+extern int GLAD_GL_EXT_texture;
 #endif
 #ifndef GL_ARB_buffer_storage
 #define GL_ARB_buffer_storage 1
-int GLAD_GL_ARB_buffer_storage;
+extern int GLAD_GL_ARB_buffer_storage;
 #endif
 #ifndef GL_AMD_shader_atomic_counter_ops
 #define GL_AMD_shader_atomic_counter_ops 1
-int GLAD_GL_AMD_shader_atomic_counter_ops;
+extern int GLAD_GL_AMD_shader_atomic_counter_ops;
 #endif
 #ifndef GL_APPLE_vertex_program_evaluators
 #define GL_APPLE_vertex_program_evaluators 1
-int GLAD_GL_APPLE_vertex_program_evaluators;
+extern int GLAD_GL_APPLE_vertex_program_evaluators;
 typedef void (APIENTRYP fp_glEnableVertexAttribAPPLE)(GLuint, GLenum);
 GLAPI fp_glEnableVertexAttribAPPLE gladglEnableVertexAttribAPPLE;
 #define glEnableVertexAttribAPPLE gladglEnableVertexAttribAPPLE
@@ -9039,31 +9039,31 @@ GLAPI fp_glMapVertexAttrib2fAPPLE gladglMapVertexAttrib2fAPPLE;
 #endif
 #ifndef GL_ARB_multi_bind
 #define GL_ARB_multi_bind 1
-int GLAD_GL_ARB_multi_bind;
+extern int GLAD_GL_ARB_multi_bind;
 #endif
 #ifndef GL_ARB_explicit_uniform_location
 #define GL_ARB_explicit_uniform_location 1
-int GLAD_GL_ARB_explicit_uniform_location;
+extern int GLAD_GL_ARB_explicit_uniform_location;
 #endif
 #ifndef GL_ARB_depth_buffer_float
 #define GL_ARB_depth_buffer_float 1
-int GLAD_GL_ARB_depth_buffer_float;
+extern int GLAD_GL_ARB_depth_buffer_float;
 #endif
 #ifndef GL_SGIX_shadow_ambient
 #define GL_SGIX_shadow_ambient 1
-int GLAD_GL_SGIX_shadow_ambient;
+extern int GLAD_GL_SGIX_shadow_ambient;
 #endif
 #ifndef GL_ARB_texture_cube_map
 #define GL_ARB_texture_cube_map 1
-int GLAD_GL_ARB_texture_cube_map;
+extern int GLAD_GL_ARB_texture_cube_map;
 #endif
 #ifndef GL_AMD_vertex_shader_viewport_index
 #define GL_AMD_vertex_shader_viewport_index 1
-int GLAD_GL_AMD_vertex_shader_viewport_index;
+extern int GLAD_GL_AMD_vertex_shader_viewport_index;
 #endif
 #ifndef GL_NV_vertex_buffer_unified_memory
 #define GL_NV_vertex_buffer_unified_memory 1
-int GLAD_GL_NV_vertex_buffer_unified_memory;
+extern int GLAD_GL_NV_vertex_buffer_unified_memory;
 typedef void (APIENTRYP fp_glBufferAddressRangeNV)(GLenum, GLuint, GLuint64EXT, GLsizeiptr);
 GLAPI fp_glBufferAddressRangeNV gladglBufferAddressRangeNV;
 #define glBufferAddressRangeNV gladglBufferAddressRangeNV
@@ -9103,19 +9103,19 @@ GLAPI fp_glGetIntegerui64i_vNV gladglGetIntegerui64i_vNV;
 #endif
 #ifndef GL_EXT_texture_env_dot3
 #define GL_EXT_texture_env_dot3 1
-int GLAD_GL_EXT_texture_env_dot3;
+extern int GLAD_GL_EXT_texture_env_dot3;
 #endif
 #ifndef GL_ATI_texture_env_combine3
 #define GL_ATI_texture_env_combine3 1
-int GLAD_GL_ATI_texture_env_combine3;
+extern int GLAD_GL_ATI_texture_env_combine3;
 #endif
 #ifndef GL_ARB_map_buffer_alignment
 #define GL_ARB_map_buffer_alignment 1
-int GLAD_GL_ARB_map_buffer_alignment;
+extern int GLAD_GL_ARB_map_buffer_alignment;
 #endif
 #ifndef GL_NV_blend_equation_advanced
 #define GL_NV_blend_equation_advanced 1
-int GLAD_GL_NV_blend_equation_advanced;
+extern int GLAD_GL_NV_blend_equation_advanced;
 typedef void (APIENTRYP fp_glBlendParameteriNV)(GLenum, GLint);
 GLAPI fp_glBlendParameteriNV gladglBlendParameteriNV;
 #define glBlendParameteriNV gladglBlendParameteriNV
@@ -9125,7 +9125,7 @@ GLAPI fp_glBlendBarrierNV gladglBlendBarrierNV;
 #endif
 #ifndef GL_SGIS_sharpen_texture
 #define GL_SGIS_sharpen_texture 1
-int GLAD_GL_SGIS_sharpen_texture;
+extern int GLAD_GL_SGIS_sharpen_texture;
 typedef void (APIENTRYP fp_glSharpenTexFuncSGIS)(GLenum, GLsizei, const GLfloat*);
 GLAPI fp_glSharpenTexFuncSGIS gladglSharpenTexFuncSGIS;
 #define glSharpenTexFuncSGIS gladglSharpenTexFuncSGIS
@@ -9135,7 +9135,7 @@ GLAPI fp_glGetSharpenTexFuncSGIS gladglGetSharpenTexFuncSGIS;
 #endif
 #ifndef GL_ARB_vertex_program
 #define GL_ARB_vertex_program 1
-int GLAD_GL_ARB_vertex_program;
+extern int GLAD_GL_ARB_vertex_program;
 typedef void (APIENTRYP fp_glVertexAttrib1dARB)(GLuint, GLdouble);
 GLAPI fp_glVertexAttrib1dARB gladglVertexAttrib1dARB;
 #define glVertexAttrib1dARB gladglVertexAttrib1dARB
@@ -9325,19 +9325,19 @@ GLAPI fp_glIsProgramARB gladglIsProgramARB;
 #endif
 #ifndef GL_ARB_texture_rgb10_a2ui
 #define GL_ARB_texture_rgb10_a2ui 1
-int GLAD_GL_ARB_texture_rgb10_a2ui;
+extern int GLAD_GL_ARB_texture_rgb10_a2ui;
 #endif
 #ifndef GL_OML_interlace
 #define GL_OML_interlace 1
-int GLAD_GL_OML_interlace;
+extern int GLAD_GL_OML_interlace;
 #endif
 #ifndef GL_ATI_pixel_format_float
 #define GL_ATI_pixel_format_float 1
-int GLAD_GL_ATI_pixel_format_float;
+extern int GLAD_GL_ATI_pixel_format_float;
 #endif
 #ifndef GL_ARB_vertex_buffer_object
 #define GL_ARB_vertex_buffer_object 1
-int GLAD_GL_ARB_vertex_buffer_object;
+extern int GLAD_GL_ARB_vertex_buffer_object;
 typedef void (APIENTRYP fp_glBindBufferARB)(GLenum, GLuint);
 GLAPI fp_glBindBufferARB gladglBindBufferARB;
 #define glBindBufferARB gladglBindBufferARB
@@ -9374,15 +9374,15 @@ GLAPI fp_glGetBufferPointervARB gladglGetBufferPointervARB;
 #endif
 #ifndef GL_EXT_shadow_funcs
 #define GL_EXT_shadow_funcs 1
-int GLAD_GL_EXT_shadow_funcs;
+extern int GLAD_GL_EXT_shadow_funcs;
 #endif
 #ifndef GL_ATI_text_fragment_shader
 #define GL_ATI_text_fragment_shader 1
-int GLAD_GL_ATI_text_fragment_shader;
+extern int GLAD_GL_ATI_text_fragment_shader;
 #endif
 #ifndef GL_NV_vertex_array_range
 #define GL_NV_vertex_array_range 1
-int GLAD_GL_NV_vertex_array_range;
+extern int GLAD_GL_NV_vertex_array_range;
 typedef void (APIENTRYP fp_glFlushVertexArrayRangeNV)();
 GLAPI fp_glFlushVertexArrayRangeNV gladglFlushVertexArrayRangeNV;
 #define glFlushVertexArrayRangeNV gladglFlushVertexArrayRangeNV
@@ -9392,7 +9392,7 @@ GLAPI fp_glVertexArrayRangeNV gladglVertexArrayRangeNV;
 #endif
 #ifndef GL_SGIX_fragment_lighting
 #define GL_SGIX_fragment_lighting 1
-int GLAD_GL_SGIX_fragment_lighting;
+extern int GLAD_GL_SGIX_fragment_lighting;
 typedef void (APIENTRYP fp_glFragmentColorMaterialSGIX)(GLenum, GLenum);
 GLAPI fp_glFragmentColorMaterialSGIX gladglFragmentColorMaterialSGIX;
 #define glFragmentColorMaterialSGIX gladglFragmentColorMaterialSGIX
@@ -9450,18 +9450,18 @@ GLAPI fp_glLightEnviSGIX gladglLightEnviSGIX;
 #endif
 #ifndef GL_NV_texture_expand_normal
 #define GL_NV_texture_expand_normal 1
-int GLAD_GL_NV_texture_expand_normal;
+extern int GLAD_GL_NV_texture_expand_normal;
 #endif
 #ifndef GL_NV_framebuffer_multisample_coverage
 #define GL_NV_framebuffer_multisample_coverage 1
-int GLAD_GL_NV_framebuffer_multisample_coverage;
+extern int GLAD_GL_NV_framebuffer_multisample_coverage;
 typedef void (APIENTRYP fp_glRenderbufferStorageMultisampleCoverageNV)(GLenum, GLsizei, GLsizei, GLenum, GLsizei, GLsizei);
 GLAPI fp_glRenderbufferStorageMultisampleCoverageNV gladglRenderbufferStorageMultisampleCoverageNV;
 #define glRenderbufferStorageMultisampleCoverageNV gladglRenderbufferStorageMultisampleCoverageNV
 #endif
 #ifndef GL_EXT_timer_query
 #define GL_EXT_timer_query 1
-int GLAD_GL_EXT_timer_query;
+extern int GLAD_GL_EXT_timer_query;
 typedef void (APIENTRYP fp_glGetQueryObjecti64vEXT)(GLuint, GLenum, GLint64*);
 GLAPI fp_glGetQueryObjecti64vEXT gladglGetQueryObjecti64vEXT;
 #define glGetQueryObjecti64vEXT gladglGetQueryObjecti64vEXT
@@ -9471,11 +9471,11 @@ GLAPI fp_glGetQueryObjectui64vEXT gladglGetQueryObjectui64vEXT;
 #endif
 #ifndef GL_EXT_vertex_array_bgra
 #define GL_EXT_vertex_array_bgra 1
-int GLAD_GL_EXT_vertex_array_bgra;
+extern int GLAD_GL_EXT_vertex_array_bgra;
 #endif
 #ifndef GL_NV_bindless_texture
 #define GL_NV_bindless_texture 1
-int GLAD_GL_NV_bindless_texture;
+extern int GLAD_GL_NV_bindless_texture;
 typedef GLuint64 (APIENTRYP fp_glGetTextureHandleNV)(GLuint);
 GLAPI fp_glGetTextureHandleNV gladglGetTextureHandleNV;
 #define glGetTextureHandleNV gladglGetTextureHandleNV
@@ -9518,7 +9518,7 @@ GLAPI fp_glIsImageHandleResidentNV gladglIsImageHandleResidentNV;
 #endif
 #ifndef GL_KHR_debug
 #define GL_KHR_debug 1
-int GLAD_GL_KHR_debug;
+extern int GLAD_GL_KHR_debug;
 typedef void (APIENTRYP fp_glDebugMessageControlKHR)(GLenum, GLenum, GLenum, GLsizei, const GLuint*, GLboolean);
 GLAPI fp_glDebugMessageControlKHR gladglDebugMessageControlKHR;
 #define glDebugMessageControlKHR gladglDebugMessageControlKHR
@@ -9555,11 +9555,11 @@ GLAPI fp_glGetPointervKHR gladglGetPointervKHR;
 #endif
 #ifndef GL_SGIS_texture_border_clamp
 #define GL_SGIS_texture_border_clamp 1
-int GLAD_GL_SGIS_texture_border_clamp;
+extern int GLAD_GL_SGIS_texture_border_clamp;
 #endif
 #ifndef GL_ATI_vertex_attrib_array_object
 #define GL_ATI_vertex_attrib_array_object 1
-int GLAD_GL_ATI_vertex_attrib_array_object;
+extern int GLAD_GL_ATI_vertex_attrib_array_object;
 typedef void (APIENTRYP fp_glVertexAttribArrayObjectATI)(GLuint, GLint, GLenum, GLboolean, GLsizei, GLuint, GLuint);
 GLAPI fp_glVertexAttribArrayObjectATI gladglVertexAttribArrayObjectATI;
 #define glVertexAttribArrayObjectATI gladglVertexAttribArrayObjectATI
@@ -9572,27 +9572,27 @@ GLAPI fp_glGetVertexAttribArrayObjectivATI gladglGetVertexAttribArrayObjectivATI
 #endif
 #ifndef GL_SGIX_clipmap
 #define GL_SGIX_clipmap 1
-int GLAD_GL_SGIX_clipmap;
+extern int GLAD_GL_SGIX_clipmap;
 #endif
 #ifndef GL_EXT_geometry_shader4
 #define GL_EXT_geometry_shader4 1
-int GLAD_GL_EXT_geometry_shader4;
+extern int GLAD_GL_EXT_geometry_shader4;
 #endif
 #ifndef GL_MESA_ycbcr_texture
 #define GL_MESA_ycbcr_texture 1
-int GLAD_GL_MESA_ycbcr_texture;
+extern int GLAD_GL_MESA_ycbcr_texture;
 #endif
 #ifndef GL_MESAX_texture_stack
 #define GL_MESAX_texture_stack 1
-int GLAD_GL_MESAX_texture_stack;
+extern int GLAD_GL_MESAX_texture_stack;
 #endif
 #ifndef GL_AMD_seamless_cubemap_per_texture
 #define GL_AMD_seamless_cubemap_per_texture 1
-int GLAD_GL_AMD_seamless_cubemap_per_texture;
+extern int GLAD_GL_AMD_seamless_cubemap_per_texture;
 #endif
 #ifndef GL_EXT_bindable_uniform
 #define GL_EXT_bindable_uniform 1
-int GLAD_GL_EXT_bindable_uniform;
+extern int GLAD_GL_EXT_bindable_uniform;
 typedef void (APIENTRYP fp_glUniformBufferEXT)(GLuint, GLint, GLuint);
 GLAPI fp_glUniformBufferEXT gladglUniformBufferEXT;
 #define glUniformBufferEXT gladglUniformBufferEXT
@@ -9605,11 +9605,11 @@ GLAPI fp_glGetUniformOffsetEXT gladglGetUniformOffsetEXT;
 #endif
 #ifndef GL_ARB_fragment_program_shadow
 #define GL_ARB_fragment_program_shadow 1
-int GLAD_GL_ARB_fragment_program_shadow;
+extern int GLAD_GL_ARB_fragment_program_shadow;
 #endif
 #ifndef GL_ATI_element_array
 #define GL_ATI_element_array 1
-int GLAD_GL_ATI_element_array;
+extern int GLAD_GL_ATI_element_array;
 typedef void (APIENTRYP fp_glElementPointerATI)(GLenum, const GLvoid*);
 GLAPI fp_glElementPointerATI gladglElementPointerATI;
 #define glElementPointerATI gladglElementPointerATI
@@ -9622,29 +9622,29 @@ GLAPI fp_glDrawRangeElementArrayATI gladglDrawRangeElementArrayATI;
 #endif
 #ifndef GL_AMD_texture_texture4
 #define GL_AMD_texture_texture4 1
-int GLAD_GL_AMD_texture_texture4;
+extern int GLAD_GL_AMD_texture_texture4;
 #endif
 #ifndef GL_SGIX_reference_plane
 #define GL_SGIX_reference_plane 1
-int GLAD_GL_SGIX_reference_plane;
+extern int GLAD_GL_SGIX_reference_plane;
 typedef void (APIENTRYP fp_glReferencePlaneSGIX)(const GLdouble*);
 GLAPI fp_glReferencePlaneSGIX gladglReferencePlaneSGIX;
 #define glReferencePlaneSGIX gladglReferencePlaneSGIX
 #endif
 #ifndef GL_EXT_stencil_two_side
 #define GL_EXT_stencil_two_side 1
-int GLAD_GL_EXT_stencil_two_side;
+extern int GLAD_GL_EXT_stencil_two_side;
 typedef void (APIENTRYP fp_glActiveStencilFaceEXT)(GLenum);
 GLAPI fp_glActiveStencilFaceEXT gladglActiveStencilFaceEXT;
 #define glActiveStencilFaceEXT gladglActiveStencilFaceEXT
 #endif
 #ifndef GL_SGIX_texture_lod_bias
 #define GL_SGIX_texture_lod_bias 1
-int GLAD_GL_SGIX_texture_lod_bias;
+extern int GLAD_GL_SGIX_texture_lod_bias;
 #endif
 #ifndef GL_NV_explicit_multisample
 #define GL_NV_explicit_multisample 1
-int GLAD_GL_NV_explicit_multisample;
+extern int GLAD_GL_NV_explicit_multisample;
 typedef void (APIENTRYP fp_glGetMultisamplefvNV)(GLenum, GLuint, GLfloat*);
 GLAPI fp_glGetMultisamplefvNV gladglGetMultisamplefvNV;
 #define glGetMultisamplefvNV gladglGetMultisamplefvNV
@@ -9657,33 +9657,33 @@ GLAPI fp_glTexRenderbufferNV gladglTexRenderbufferNV;
 #endif
 #ifndef GL_IBM_static_data
 #define GL_IBM_static_data 1
-int GLAD_GL_IBM_static_data;
+extern int GLAD_GL_IBM_static_data;
 typedef void (APIENTRYP fp_glFlushStaticDataIBM)(GLenum);
 GLAPI fp_glFlushStaticDataIBM gladglFlushStaticDataIBM;
 #define glFlushStaticDataIBM gladglFlushStaticDataIBM
 #endif
 #ifndef GL_EXT_clip_volume_hint
 #define GL_EXT_clip_volume_hint 1
-int GLAD_GL_EXT_clip_volume_hint;
+extern int GLAD_GL_EXT_clip_volume_hint;
 #endif
 #ifndef GL_EXT_texture_perturb_normal
 #define GL_EXT_texture_perturb_normal 1
-int GLAD_GL_EXT_texture_perturb_normal;
+extern int GLAD_GL_EXT_texture_perturb_normal;
 typedef void (APIENTRYP fp_glTextureNormalEXT)(GLenum);
 GLAPI fp_glTextureNormalEXT gladglTextureNormalEXT;
 #define glTextureNormalEXT gladglTextureNormalEXT
 #endif
 #ifndef GL_NV_fragment_program2
 #define GL_NV_fragment_program2 1
-int GLAD_GL_NV_fragment_program2;
+extern int GLAD_GL_NV_fragment_program2;
 #endif
 #ifndef GL_NV_fragment_program4
 #define GL_NV_fragment_program4 1
-int GLAD_GL_NV_fragment_program4;
+extern int GLAD_GL_NV_fragment_program4;
 #endif
 #ifndef GL_EXT_point_parameters
 #define GL_EXT_point_parameters 1
-int GLAD_GL_EXT_point_parameters;
+extern int GLAD_GL_EXT_point_parameters;
 typedef void (APIENTRYP fp_glPointParameterfEXT)(GLenum, GLfloat);
 GLAPI fp_glPointParameterfEXT gladglPointParameterfEXT;
 #define glPointParameterfEXT gladglPointParameterfEXT
@@ -9693,26 +9693,26 @@ GLAPI fp_glPointParameterfvEXT gladglPointParameterfvEXT;
 #endif
 #ifndef GL_PGI_misc_hints
 #define GL_PGI_misc_hints 1
-int GLAD_GL_PGI_misc_hints;
+extern int GLAD_GL_PGI_misc_hints;
 typedef void (APIENTRYP fp_glHintPGI)(GLenum, GLint);
 GLAPI fp_glHintPGI gladglHintPGI;
 #define glHintPGI gladglHintPGI
 #endif
 #ifndef GL_SGIX_subsample
 #define GL_SGIX_subsample 1
-int GLAD_GL_SGIX_subsample;
+extern int GLAD_GL_SGIX_subsample;
 #endif
 #ifndef GL_AMD_shader_stencil_export
 #define GL_AMD_shader_stencil_export 1
-int GLAD_GL_AMD_shader_stencil_export;
+extern int GLAD_GL_AMD_shader_stencil_export;
 #endif
 #ifndef GL_ARB_shader_texture_lod
 #define GL_ARB_shader_texture_lod 1
-int GLAD_GL_ARB_shader_texture_lod;
+extern int GLAD_GL_ARB_shader_texture_lod;
 #endif
 #ifndef GL_ARB_vertex_shader
 #define GL_ARB_vertex_shader 1
-int GLAD_GL_ARB_vertex_shader;
+extern int GLAD_GL_ARB_vertex_shader;
 typedef void (APIENTRYP fp_glBindAttribLocationARB)(GLhandleARB, GLuint, const GLcharARB*);
 GLAPI fp_glBindAttribLocationARB gladglBindAttribLocationARB;
 #define glBindAttribLocationARB gladglBindAttribLocationARB
@@ -9725,23 +9725,23 @@ GLAPI fp_glGetAttribLocationARB gladglGetAttribLocationARB;
 #endif
 #ifndef GL_ARB_depth_clamp
 #define GL_ARB_depth_clamp 1
-int GLAD_GL_ARB_depth_clamp;
+extern int GLAD_GL_ARB_depth_clamp;
 #endif
 #ifndef GL_SGIS_texture_select
 #define GL_SGIS_texture_select 1
-int GLAD_GL_SGIS_texture_select;
+extern int GLAD_GL_SGIS_texture_select;
 #endif
 #ifndef GL_NV_texture_shader
 #define GL_NV_texture_shader 1
-int GLAD_GL_NV_texture_shader;
+extern int GLAD_GL_NV_texture_shader;
 #endif
 #ifndef GL_ARB_tessellation_shader
 #define GL_ARB_tessellation_shader 1
-int GLAD_GL_ARB_tessellation_shader;
+extern int GLAD_GL_ARB_tessellation_shader;
 #endif
 #ifndef GL_EXT_draw_buffers2
 #define GL_EXT_draw_buffers2 1
-int GLAD_GL_EXT_draw_buffers2;
+extern int GLAD_GL_EXT_draw_buffers2;
 typedef void (APIENTRYP fp_glColorMaskIndexedEXT)(GLuint, GLboolean, GLboolean, GLboolean, GLboolean);
 GLAPI fp_glColorMaskIndexedEXT gladglColorMaskIndexedEXT;
 #define glColorMaskIndexedEXT gladglColorMaskIndexedEXT
@@ -9763,54 +9763,54 @@ GLAPI fp_glIsEnabledIndexedEXT gladglIsEnabledIndexedEXT;
 #endif
 #ifndef GL_ARB_vertex_attrib_64bit
 #define GL_ARB_vertex_attrib_64bit 1
-int GLAD_GL_ARB_vertex_attrib_64bit;
+extern int GLAD_GL_ARB_vertex_attrib_64bit;
 #endif
 #ifndef GL_WIN_specular_fog
 #define GL_WIN_specular_fog 1
-int GLAD_GL_WIN_specular_fog;
+extern int GLAD_GL_WIN_specular_fog;
 #endif
 #ifndef GL_AMD_interleaved_elements
 #define GL_AMD_interleaved_elements 1
-int GLAD_GL_AMD_interleaved_elements;
+extern int GLAD_GL_AMD_interleaved_elements;
 typedef void (APIENTRYP fp_glVertexAttribParameteriAMD)(GLuint, GLenum, GLint);
 GLAPI fp_glVertexAttribParameteriAMD gladglVertexAttribParameteriAMD;
 #define glVertexAttribParameteriAMD gladglVertexAttribParameteriAMD
 #endif
 #ifndef GL_ARB_fragment_program
 #define GL_ARB_fragment_program 1
-int GLAD_GL_ARB_fragment_program;
+extern int GLAD_GL_ARB_fragment_program;
 #endif
 #ifndef GL_OML_resample
 #define GL_OML_resample 1
-int GLAD_GL_OML_resample;
+extern int GLAD_GL_OML_resample;
 #endif
 #ifndef GL_APPLE_ycbcr_422
 #define GL_APPLE_ycbcr_422 1
-int GLAD_GL_APPLE_ycbcr_422;
+extern int GLAD_GL_APPLE_ycbcr_422;
 #endif
 #ifndef GL_SGIX_texture_add_env
 #define GL_SGIX_texture_add_env 1
-int GLAD_GL_SGIX_texture_add_env;
+extern int GLAD_GL_SGIX_texture_add_env;
 #endif
 #ifndef GL_ARB_shadow_ambient
 #define GL_ARB_shadow_ambient 1
-int GLAD_GL_ARB_shadow_ambient;
+extern int GLAD_GL_ARB_shadow_ambient;
 #endif
 #ifndef GL_ARB_texture_storage
 #define GL_ARB_texture_storage 1
-int GLAD_GL_ARB_texture_storage;
+extern int GLAD_GL_ARB_texture_storage;
 #endif
 #ifndef GL_EXT_pixel_buffer_object
 #define GL_EXT_pixel_buffer_object 1
-int GLAD_GL_EXT_pixel_buffer_object;
+extern int GLAD_GL_EXT_pixel_buffer_object;
 #endif
 #ifndef GL_ARB_copy_image
 #define GL_ARB_copy_image 1
-int GLAD_GL_ARB_copy_image;
+extern int GLAD_GL_ARB_copy_image;
 #endif
 #ifndef GL_SGIS_pixel_texture
 #define GL_SGIS_pixel_texture 1
-int GLAD_GL_SGIS_pixel_texture;
+extern int GLAD_GL_SGIS_pixel_texture;
 typedef void (APIENTRYP fp_glPixelTexGenParameteriSGIS)(GLenum, GLint);
 GLAPI fp_glPixelTexGenParameteriSGIS gladglPixelTexGenParameteriSGIS;
 #define glPixelTexGenParameteriSGIS gladglPixelTexGenParameteriSGIS
@@ -9832,11 +9832,11 @@ GLAPI fp_glGetPixelTexGenParameterfvSGIS gladglGetPixelTexGenParameterfvSGIS;
 #endif
 #ifndef GL_SGIS_generate_mipmap
 #define GL_SGIS_generate_mipmap 1
-int GLAD_GL_SGIS_generate_mipmap;
+extern int GLAD_GL_SGIS_generate_mipmap;
 #endif
 #ifndef GL_SGIX_instruments
 #define GL_SGIX_instruments 1
-int GLAD_GL_SGIX_instruments;
+extern int GLAD_GL_SGIX_instruments;
 typedef GLint (APIENTRYP fp_glGetInstrumentsSGIX)();
 GLAPI fp_glGetInstrumentsSGIX gladglGetInstrumentsSGIX;
 #define glGetInstrumentsSGIX gladglGetInstrumentsSGIX
@@ -9858,38 +9858,38 @@ GLAPI fp_glStopInstrumentsSGIX gladglStopInstrumentsSGIX;
 #endif
 #ifndef GL_HP_texture_lighting
 #define GL_HP_texture_lighting 1
-int GLAD_GL_HP_texture_lighting;
+extern int GLAD_GL_HP_texture_lighting;
 #endif
 #ifndef GL_ARB_shader_storage_buffer_object
 #define GL_ARB_shader_storage_buffer_object 1
-int GLAD_GL_ARB_shader_storage_buffer_object;
+extern int GLAD_GL_ARB_shader_storage_buffer_object;
 #endif
 #ifndef GL_EXT_blend_minmax
 #define GL_EXT_blend_minmax 1
-int GLAD_GL_EXT_blend_minmax;
+extern int GLAD_GL_EXT_blend_minmax;
 typedef void (APIENTRYP fp_glBlendEquationEXT)(GLenum);
 GLAPI fp_glBlendEquationEXT gladglBlendEquationEXT;
 #define glBlendEquationEXT gladglBlendEquationEXT
 #endif
 #ifndef GL_MESA_pack_invert
 #define GL_MESA_pack_invert 1
-int GLAD_GL_MESA_pack_invert;
+extern int GLAD_GL_MESA_pack_invert;
 #endif
 #ifndef GL_ARB_base_instance
 #define GL_ARB_base_instance 1
-int GLAD_GL_ARB_base_instance;
+extern int GLAD_GL_ARB_base_instance;
 #endif
 #ifndef GL_SGIX_convolution_accuracy
 #define GL_SGIX_convolution_accuracy 1
-int GLAD_GL_SGIX_convolution_accuracy;
+extern int GLAD_GL_SGIX_convolution_accuracy;
 #endif
 #ifndef GL_PGI_vertex_hints
 #define GL_PGI_vertex_hints 1
-int GLAD_GL_PGI_vertex_hints;
+extern int GLAD_GL_PGI_vertex_hints;
 #endif
 #ifndef GL_EXT_texture_integer
 #define GL_EXT_texture_integer 1
-int GLAD_GL_EXT_texture_integer;
+extern int GLAD_GL_EXT_texture_integer;
 typedef void (APIENTRYP fp_glTexParameterIivEXT)(GLenum, GLenum, const GLint*);
 GLAPI fp_glTexParameterIivEXT gladglTexParameterIivEXT;
 #define glTexParameterIivEXT gladglTexParameterIivEXT
@@ -9911,19 +9911,19 @@ GLAPI fp_glClearColorIuiEXT gladglClearColorIuiEXT;
 #endif
 #ifndef GL_ARB_texture_multisample
 #define GL_ARB_texture_multisample 1
-int GLAD_GL_ARB_texture_multisample;
+extern int GLAD_GL_ARB_texture_multisample;
 #endif
 #ifndef GL_S3_s3tc
 #define GL_S3_s3tc 1
-int GLAD_GL_S3_s3tc;
+extern int GLAD_GL_S3_s3tc;
 #endif
 #ifndef GL_ARB_query_buffer_object
 #define GL_ARB_query_buffer_object 1
-int GLAD_GL_ARB_query_buffer_object;
+extern int GLAD_GL_ARB_query_buffer_object;
 #endif
 #ifndef GL_AMD_vertex_shader_tessellator
 #define GL_AMD_vertex_shader_tessellator 1
-int GLAD_GL_AMD_vertex_shader_tessellator;
+extern int GLAD_GL_AMD_vertex_shader_tessellator;
 typedef void (APIENTRYP fp_glTessellationFactorAMD)(GLfloat);
 GLAPI fp_glTessellationFactorAMD gladglTessellationFactorAMD;
 #define glTessellationFactorAMD gladglTessellationFactorAMD
@@ -9933,22 +9933,22 @@ GLAPI fp_glTessellationModeAMD gladglTessellationModeAMD;
 #endif
 #ifndef GL_ARB_invalidate_subdata
 #define GL_ARB_invalidate_subdata 1
-int GLAD_GL_ARB_invalidate_subdata;
+extern int GLAD_GL_ARB_invalidate_subdata;
 #endif
 #ifndef GL_EXT_index_material
 #define GL_EXT_index_material 1
-int GLAD_GL_EXT_index_material;
+extern int GLAD_GL_EXT_index_material;
 typedef void (APIENTRYP fp_glIndexMaterialEXT)(GLenum, GLenum);
 GLAPI fp_glIndexMaterialEXT gladglIndexMaterialEXT;
 #define glIndexMaterialEXT gladglIndexMaterialEXT
 #endif
 #ifndef GL_NV_blend_equation_advanced_coherent
 #define GL_NV_blend_equation_advanced_coherent 1
-int GLAD_GL_NV_blend_equation_advanced_coherent;
+extern int GLAD_GL_NV_blend_equation_advanced_coherent;
 #endif
 #ifndef GL_INTEL_parallel_arrays
 #define GL_INTEL_parallel_arrays 1
-int GLAD_GL_INTEL_parallel_arrays;
+extern int GLAD_GL_INTEL_parallel_arrays;
 typedef void (APIENTRYP fp_glVertexPointervINTEL)(GLint, GLenum, const GLvoid**);
 GLAPI fp_glVertexPointervINTEL gladglVertexPointervINTEL;
 #define glVertexPointervINTEL gladglVertexPointervINTEL
@@ -9964,41 +9964,41 @@ GLAPI fp_glTexCoordPointervINTEL gladglTexCoordPointervINTEL;
 #endif
 #ifndef GL_ATI_draw_buffers
 #define GL_ATI_draw_buffers 1
-int GLAD_GL_ATI_draw_buffers;
+extern int GLAD_GL_ATI_draw_buffers;
 typedef void (APIENTRYP fp_glDrawBuffersATI)(GLsizei, const GLenum*);
 GLAPI fp_glDrawBuffersATI gladglDrawBuffersATI;
 #define glDrawBuffersATI gladglDrawBuffersATI
 #endif
 #ifndef GL_EXT_cmyka
 #define GL_EXT_cmyka 1
-int GLAD_GL_EXT_cmyka;
+extern int GLAD_GL_EXT_cmyka;
 #endif
 #ifndef GL_SGIX_pixel_texture
 #define GL_SGIX_pixel_texture 1
-int GLAD_GL_SGIX_pixel_texture;
+extern int GLAD_GL_SGIX_pixel_texture;
 typedef void (APIENTRYP fp_glPixelTexGenSGIX)(GLenum);
 GLAPI fp_glPixelTexGenSGIX gladglPixelTexGenSGIX;
 #define glPixelTexGenSGIX gladglPixelTexGenSGIX
 #endif
 #ifndef GL_APPLE_specular_vector
 #define GL_APPLE_specular_vector 1
-int GLAD_GL_APPLE_specular_vector;
+extern int GLAD_GL_APPLE_specular_vector;
 #endif
 #ifndef GL_ARB_compatibility
 #define GL_ARB_compatibility 1
-int GLAD_GL_ARB_compatibility;
+extern int GLAD_GL_ARB_compatibility;
 #endif
 #ifndef GL_ARB_timer_query
 #define GL_ARB_timer_query 1
-int GLAD_GL_ARB_timer_query;
+extern int GLAD_GL_ARB_timer_query;
 #endif
 #ifndef GL_SGIX_interlace
 #define GL_SGIX_interlace 1
-int GLAD_GL_SGIX_interlace;
+extern int GLAD_GL_SGIX_interlace;
 #endif
 #ifndef GL_NV_parameter_buffer_object
 #define GL_NV_parameter_buffer_object 1
-int GLAD_GL_NV_parameter_buffer_object;
+extern int GLAD_GL_NV_parameter_buffer_object;
 typedef void (APIENTRYP fp_glProgramBufferParametersfvNV)(GLenum, GLuint, GLuint, GLsizei, const GLfloat*);
 GLAPI fp_glProgramBufferParametersfvNV gladglProgramBufferParametersfvNV;
 #define glProgramBufferParametersfvNV gladglProgramBufferParametersfvNV
@@ -10011,31 +10011,31 @@ GLAPI fp_glProgramBufferParametersIuivNV gladglProgramBufferParametersIuivNV;
 #endif
 #ifndef GL_AMD_shader_trinary_minmax
 #define GL_AMD_shader_trinary_minmax 1
-int GLAD_GL_AMD_shader_trinary_minmax;
+extern int GLAD_GL_AMD_shader_trinary_minmax;
 #endif
 #ifndef GL_EXT_rescale_normal
 #define GL_EXT_rescale_normal 1
-int GLAD_GL_EXT_rescale_normal;
+extern int GLAD_GL_EXT_rescale_normal;
 #endif
 #ifndef GL_ARB_pixel_buffer_object
 #define GL_ARB_pixel_buffer_object 1
-int GLAD_GL_ARB_pixel_buffer_object;
+extern int GLAD_GL_ARB_pixel_buffer_object;
 #endif
 #ifndef GL_ARB_uniform_buffer_object
 #define GL_ARB_uniform_buffer_object 1
-int GLAD_GL_ARB_uniform_buffer_object;
+extern int GLAD_GL_ARB_uniform_buffer_object;
 #endif
 #ifndef GL_ARB_vertex_type_10f_11f_11f_rev
 #define GL_ARB_vertex_type_10f_11f_11f_rev 1
-int GLAD_GL_ARB_vertex_type_10f_11f_11f_rev;
+extern int GLAD_GL_ARB_vertex_type_10f_11f_11f_rev;
 #endif
 #ifndef GL_ARB_texture_swizzle
 #define GL_ARB_texture_swizzle 1
-int GLAD_GL_ARB_texture_swizzle;
+extern int GLAD_GL_ARB_texture_swizzle;
 #endif
 #ifndef GL_NV_transform_feedback2
 #define GL_NV_transform_feedback2 1
-int GLAD_GL_NV_transform_feedback2;
+extern int GLAD_GL_NV_transform_feedback2;
 typedef void (APIENTRYP fp_glBindTransformFeedbackNV)(GLenum, GLuint);
 GLAPI fp_glBindTransformFeedbackNV gladglBindTransformFeedbackNV;
 #define glBindTransformFeedbackNV gladglBindTransformFeedbackNV
@@ -10060,34 +10060,34 @@ GLAPI fp_glDrawTransformFeedbackNV gladglDrawTransformFeedbackNV;
 #endif
 #ifndef GL_SGIX_async_pixel
 #define GL_SGIX_async_pixel 1
-int GLAD_GL_SGIX_async_pixel;
+extern int GLAD_GL_SGIX_async_pixel;
 #endif
 #ifndef GL_NV_fragment_program_option
 #define GL_NV_fragment_program_option 1
-int GLAD_GL_NV_fragment_program_option;
+extern int GLAD_GL_NV_fragment_program_option;
 #endif
 #ifndef GL_ARB_explicit_attrib_location
 #define GL_ARB_explicit_attrib_location 1
-int GLAD_GL_ARB_explicit_attrib_location;
+extern int GLAD_GL_ARB_explicit_attrib_location;
 #endif
 #ifndef GL_EXT_blend_color
 #define GL_EXT_blend_color 1
-int GLAD_GL_EXT_blend_color;
+extern int GLAD_GL_EXT_blend_color;
 typedef void (APIENTRYP fp_glBlendColorEXT)(GLfloat, GLfloat, GLfloat, GLfloat);
 GLAPI fp_glBlendColorEXT gladglBlendColorEXT;
 #define glBlendColorEXT gladglBlendColorEXT
 #endif
 #ifndef GL_EXT_stencil_wrap
 #define GL_EXT_stencil_wrap 1
-int GLAD_GL_EXT_stencil_wrap;
+extern int GLAD_GL_EXT_stencil_wrap;
 #endif
 #ifndef GL_EXT_index_array_formats
 #define GL_EXT_index_array_formats 1
-int GLAD_GL_EXT_index_array_formats;
+extern int GLAD_GL_EXT_index_array_formats;
 #endif
 #ifndef GL_EXT_histogram
 #define GL_EXT_histogram 1
-int GLAD_GL_EXT_histogram;
+extern int GLAD_GL_EXT_histogram;
 typedef void (APIENTRYP fp_glGetHistogramEXT)(GLenum, GLboolean, GLenum, GLenum, GLvoid*);
 GLAPI fp_glGetHistogramEXT gladglGetHistogramEXT;
 #define glGetHistogramEXT gladglGetHistogramEXT
@@ -10121,7 +10121,7 @@ GLAPI fp_glResetMinmaxEXT gladglResetMinmaxEXT;
 #endif
 #ifndef GL_SGIS_point_parameters
 #define GL_SGIS_point_parameters 1
-int GLAD_GL_SGIS_point_parameters;
+extern int GLAD_GL_SGIS_point_parameters;
 typedef void (APIENTRYP fp_glPointParameterfSGIS)(GLenum, GLfloat);
 GLAPI fp_glPointParameterfSGIS gladglPointParameterfSGIS;
 #define glPointParameterfSGIS gladglPointParameterfSGIS
@@ -10131,7 +10131,7 @@ GLAPI fp_glPointParameterfvSGIS gladglPointParameterfvSGIS;
 #endif
 #ifndef GL_EXT_direct_state_access
 #define GL_EXT_direct_state_access 1
-int GLAD_GL_EXT_direct_state_access;
+extern int GLAD_GL_EXT_direct_state_access;
 typedef void (APIENTRYP fp_glMatrixLoadfEXT)(GLenum, const GLfloat*);
 GLAPI fp_glMatrixLoadfEXT gladglMatrixLoadfEXT;
 #define glMatrixLoadfEXT gladglMatrixLoadfEXT
@@ -10822,14 +10822,14 @@ GLAPI fp_glTexturePageCommitmentEXT gladglTexturePageCommitmentEXT;
 #endif
 #ifndef GL_AMD_sample_positions
 #define GL_AMD_sample_positions 1
-int GLAD_GL_AMD_sample_positions;
+extern int GLAD_GL_AMD_sample_positions;
 typedef void (APIENTRYP fp_glSetMultisamplefvAMD)(GLenum, GLuint, const GLfloat*);
 GLAPI fp_glSetMultisamplefvAMD gladglSetMultisamplefvAMD;
 #define glSetMultisamplefvAMD gladglSetMultisamplefvAMD
 #endif
 #ifndef GL_NV_vertex_program
 #define GL_NV_vertex_program 1
-int GLAD_GL_NV_vertex_program;
+extern int GLAD_GL_NV_vertex_program;
 typedef GLboolean (APIENTRYP fp_glAreProgramsResidentNV)(GLsizei, const GLuint*, GLboolean*);
 GLAPI fp_glAreProgramsResidentNV gladglAreProgramsResidentNV;
 #define glAreProgramsResidentNV gladglAreProgramsResidentNV
@@ -11025,7 +11025,7 @@ GLAPI fp_glVertexAttribs4ubvNV gladglVertexAttribs4ubvNV;
 #endif
 #ifndef GL_NVX_conditional_render
 #define GL_NVX_conditional_render 1
-int GLAD_GL_NVX_conditional_render;
+extern int GLAD_GL_NVX_conditional_render;
 typedef void (APIENTRYP fp_glBeginConditionalRenderNVX)(GLuint);
 GLAPI fp_glBeginConditionalRenderNVX gladglBeginConditionalRenderNVX;
 #define glBeginConditionalRenderNVX gladglBeginConditionalRenderNVX
@@ -11035,7 +11035,7 @@ GLAPI fp_glEndConditionalRenderNVX gladglEndConditionalRenderNVX;
 #endif
 #ifndef GL_EXT_vertex_shader
 #define GL_EXT_vertex_shader 1
-int GLAD_GL_EXT_vertex_shader;
+extern int GLAD_GL_EXT_vertex_shader;
 typedef void (APIENTRYP fp_glBeginVertexShaderEXT)();
 GLAPI fp_glBeginVertexShaderEXT gladglBeginVertexShaderEXT;
 #define glBeginVertexShaderEXT gladglBeginVertexShaderEXT
@@ -11165,14 +11165,14 @@ GLAPI fp_glGetLocalConstantFloatvEXT gladglGetLocalConstantFloatvEXT;
 #endif
 #ifndef GL_EXT_blend_func_separate
 #define GL_EXT_blend_func_separate 1
-int GLAD_GL_EXT_blend_func_separate;
+extern int GLAD_GL_EXT_blend_func_separate;
 typedef void (APIENTRYP fp_glBlendFuncSeparateEXT)(GLenum, GLenum, GLenum, GLenum);
 GLAPI fp_glBlendFuncSeparateEXT gladglBlendFuncSeparateEXT;
 #define glBlendFuncSeparateEXT gladglBlendFuncSeparateEXT
 #endif
 #ifndef GL_APPLE_fence
 #define GL_APPLE_fence 1
-int GLAD_GL_APPLE_fence;
+extern int GLAD_GL_APPLE_fence;
 typedef void (APIENTRYP fp_glGenFencesAPPLE)(GLsizei, GLuint*);
 GLAPI fp_glGenFencesAPPLE gladglGenFencesAPPLE;
 #define glGenFencesAPPLE gladglGenFencesAPPLE
@@ -11200,7 +11200,7 @@ GLAPI fp_glFinishObjectAPPLE gladglFinishObjectAPPLE;
 #endif
 #ifndef GL_OES_byte_coordinates
 #define GL_OES_byte_coordinates 1
-int GLAD_GL_OES_byte_coordinates;
+extern int GLAD_GL_OES_byte_coordinates;
 typedef void (APIENTRYP fp_glMultiTexCoord1bOES)(GLenum, GLbyte);
 GLAPI fp_glMultiTexCoord1bOES gladglMultiTexCoord1bOES;
 #define glMultiTexCoord1bOES gladglMultiTexCoord1bOES
@@ -11270,7 +11270,7 @@ GLAPI fp_glVertex4bvOES gladglVertex4bvOES;
 #endif
 #ifndef GL_ARB_transpose_matrix
 #define GL_ARB_transpose_matrix 1
-int GLAD_GL_ARB_transpose_matrix;
+extern int GLAD_GL_ARB_transpose_matrix;
 typedef void (APIENTRYP fp_glLoadTransposeMatrixfARB)(const GLfloat*);
 GLAPI fp_glLoadTransposeMatrixfARB gladglLoadTransposeMatrixfARB;
 #define glLoadTransposeMatrixfARB gladglLoadTransposeMatrixfARB
@@ -11286,11 +11286,11 @@ GLAPI fp_glMultTransposeMatrixdARB gladglMultTransposeMatrixdARB;
 #endif
 #ifndef GL_ARB_provoking_vertex
 #define GL_ARB_provoking_vertex 1
-int GLAD_GL_ARB_provoking_vertex;
+extern int GLAD_GL_ARB_provoking_vertex;
 #endif
 #ifndef GL_EXT_fog_coord
 #define GL_EXT_fog_coord 1
-int GLAD_GL_EXT_fog_coord;
+extern int GLAD_GL_EXT_fog_coord;
 typedef void (APIENTRYP fp_glFogCoordfEXT)(GLfloat);
 GLAPI fp_glFogCoordfEXT gladglFogCoordfEXT;
 #define glFogCoordfEXT gladglFogCoordfEXT
@@ -11309,7 +11309,7 @@ GLAPI fp_glFogCoordPointerEXT gladglFogCoordPointerEXT;
 #endif
 #ifndef GL_EXT_vertex_array
 #define GL_EXT_vertex_array 1
-int GLAD_GL_EXT_vertex_array;
+extern int GLAD_GL_EXT_vertex_array;
 typedef void (APIENTRYP fp_glArrayElementEXT)(GLint);
 GLAPI fp_glArrayElementEXT gladglArrayElementEXT;
 #define glArrayElementEXT gladglArrayElementEXT
@@ -11340,53 +11340,53 @@ GLAPI fp_glVertexPointerEXT gladglVertexPointerEXT;
 #endif
 #ifndef GL_ARB_half_float_vertex
 #define GL_ARB_half_float_vertex 1
-int GLAD_GL_ARB_half_float_vertex;
+extern int GLAD_GL_ARB_half_float_vertex;
 #endif
 #ifndef GL_EXT_blend_equation_separate
 #define GL_EXT_blend_equation_separate 1
-int GLAD_GL_EXT_blend_equation_separate;
+extern int GLAD_GL_EXT_blend_equation_separate;
 typedef void (APIENTRYP fp_glBlendEquationSeparateEXT)(GLenum, GLenum);
 GLAPI fp_glBlendEquationSeparateEXT gladglBlendEquationSeparateEXT;
 #define glBlendEquationSeparateEXT gladglBlendEquationSeparateEXT
 #endif
 #ifndef GL_ARB_multi_draw_indirect
 #define GL_ARB_multi_draw_indirect 1
-int GLAD_GL_ARB_multi_draw_indirect;
+extern int GLAD_GL_ARB_multi_draw_indirect;
 #endif
 #ifndef GL_NV_copy_image
 #define GL_NV_copy_image 1
-int GLAD_GL_NV_copy_image;
+extern int GLAD_GL_NV_copy_image;
 typedef void (APIENTRYP fp_glCopyImageSubDataNV)(GLuint, GLenum, GLint, GLint, GLint, GLint, GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei);
 GLAPI fp_glCopyImageSubDataNV gladglCopyImageSubDataNV;
 #define glCopyImageSubDataNV gladglCopyImageSubDataNV
 #endif
 #ifndef GL_ARB_fragment_layer_viewport
 #define GL_ARB_fragment_layer_viewport 1
-int GLAD_GL_ARB_fragment_layer_viewport;
+extern int GLAD_GL_ARB_fragment_layer_viewport;
 #endif
 #ifndef GL_ARB_transform_feedback2
 #define GL_ARB_transform_feedback2 1
-int GLAD_GL_ARB_transform_feedback2;
+extern int GLAD_GL_ARB_transform_feedback2;
 #endif
 #ifndef GL_ARB_transform_feedback3
 #define GL_ARB_transform_feedback3 1
-int GLAD_GL_ARB_transform_feedback3;
+extern int GLAD_GL_ARB_transform_feedback3;
 #endif
 #ifndef GL_SGIX_ycrcba
 #define GL_SGIX_ycrcba 1
-int GLAD_GL_SGIX_ycrcba;
+extern int GLAD_GL_SGIX_ycrcba;
 #endif
 #ifndef GL_EXT_bgra
 #define GL_EXT_bgra 1
-int GLAD_GL_EXT_bgra;
+extern int GLAD_GL_EXT_bgra;
 #endif
 #ifndef GL_EXT_texture_compression_s3tc
 #define GL_EXT_texture_compression_s3tc 1
-int GLAD_GL_EXT_texture_compression_s3tc;
+extern int GLAD_GL_EXT_texture_compression_s3tc;
 #endif
 #ifndef GL_EXT_pixel_transform
 #define GL_EXT_pixel_transform 1
-int GLAD_GL_EXT_pixel_transform;
+extern int GLAD_GL_EXT_pixel_transform;
 typedef void (APIENTRYP fp_glPixelTransformParameteriEXT)(GLenum, GLenum, GLint);
 GLAPI fp_glPixelTransformParameteriEXT gladglPixelTransformParameteriEXT;
 #define glPixelTransformParameteriEXT gladglPixelTransformParameteriEXT
@@ -11408,11 +11408,11 @@ GLAPI fp_glGetPixelTransformParameterfvEXT gladglGetPixelTransformParameterfvEXT
 #endif
 #ifndef GL_ARB_conservative_depth
 #define GL_ARB_conservative_depth 1
-int GLAD_GL_ARB_conservative_depth;
+extern int GLAD_GL_ARB_conservative_depth;
 #endif
 #ifndef GL_ATI_fragment_shader
 #define GL_ATI_fragment_shader 1
-int GLAD_GL_ATI_fragment_shader;
+extern int GLAD_GL_ATI_fragment_shader;
 typedef GLuint (APIENTRYP fp_glGenFragmentShadersATI)(GLuint);
 GLAPI fp_glGenFragmentShadersATI gladglGenFragmentShadersATI;
 #define glGenFragmentShadersATI gladglGenFragmentShadersATI
@@ -11458,11 +11458,11 @@ GLAPI fp_glSetFragmentShaderConstantATI gladglSetFragmentShaderConstantATI;
 #endif
 #ifndef GL_ARB_vertex_array_object
 #define GL_ARB_vertex_array_object 1
-int GLAD_GL_ARB_vertex_array_object;
+extern int GLAD_GL_ARB_vertex_array_object;
 #endif
 #ifndef GL_SUN_triangle_list
 #define GL_SUN_triangle_list 1
-int GLAD_GL_SUN_triangle_list;
+extern int GLAD_GL_SUN_triangle_list;
 typedef void (APIENTRYP fp_glReplacementCodeuiSUN)(GLuint);
 GLAPI fp_glReplacementCodeuiSUN gladglReplacementCodeuiSUN;
 #define glReplacementCodeuiSUN gladglReplacementCodeuiSUN
@@ -11487,31 +11487,31 @@ GLAPI fp_glReplacementCodePointerSUN gladglReplacementCodePointerSUN;
 #endif
 #ifndef GL_EXT_texture_env_add
 #define GL_EXT_texture_env_add 1
-int GLAD_GL_EXT_texture_env_add;
+extern int GLAD_GL_EXT_texture_env_add;
 #endif
 #ifndef GL_EXT_packed_depth_stencil
 #define GL_EXT_packed_depth_stencil 1
-int GLAD_GL_EXT_packed_depth_stencil;
+extern int GLAD_GL_EXT_packed_depth_stencil;
 #endif
 #ifndef GL_EXT_texture_mirror_clamp
 #define GL_EXT_texture_mirror_clamp 1
-int GLAD_GL_EXT_texture_mirror_clamp;
+extern int GLAD_GL_EXT_texture_mirror_clamp;
 #endif
 #ifndef GL_NV_multisample_filter_hint
 #define GL_NV_multisample_filter_hint 1
-int GLAD_GL_NV_multisample_filter_hint;
+extern int GLAD_GL_NV_multisample_filter_hint;
 #endif
 #ifndef GL_APPLE_float_pixels
 #define GL_APPLE_float_pixels 1
-int GLAD_GL_APPLE_float_pixels;
+extern int GLAD_GL_APPLE_float_pixels;
 #endif
 #ifndef GL_ARB_transform_feedback_instanced
 #define GL_ARB_transform_feedback_instanced 1
-int GLAD_GL_ARB_transform_feedback_instanced;
+extern int GLAD_GL_ARB_transform_feedback_instanced;
 #endif
 #ifndef GL_SGIX_async
 #define GL_SGIX_async 1
-int GLAD_GL_SGIX_async;
+extern int GLAD_GL_SGIX_async;
 typedef void (APIENTRYP fp_glAsyncMarkerSGIX)(GLuint);
 GLAPI fp_glAsyncMarkerSGIX gladglAsyncMarkerSGIX;
 #define glAsyncMarkerSGIX gladglAsyncMarkerSGIX
@@ -11533,23 +11533,23 @@ GLAPI fp_glIsAsyncMarkerSGIX gladglIsAsyncMarkerSGIX;
 #endif
 #ifndef GL_EXT_texture_compression_latc
 #define GL_EXT_texture_compression_latc 1
-int GLAD_GL_EXT_texture_compression_latc;
+extern int GLAD_GL_EXT_texture_compression_latc;
 #endif
 #ifndef GL_NV_shader_atomic_float
 #define GL_NV_shader_atomic_float 1
-int GLAD_GL_NV_shader_atomic_float;
+extern int GLAD_GL_NV_shader_atomic_float;
 #endif
 #ifndef GL_ARB_shading_language_100
 #define GL_ARB_shading_language_100 1
-int GLAD_GL_ARB_shading_language_100;
+extern int GLAD_GL_ARB_shading_language_100;
 #endif
 #ifndef GL_ARB_texture_mirror_clamp_to_edge
 #define GL_ARB_texture_mirror_clamp_to_edge 1
-int GLAD_GL_ARB_texture_mirror_clamp_to_edge;
+extern int GLAD_GL_ARB_texture_mirror_clamp_to_edge;
 #endif
 #ifndef GL_NV_gpu_shader5
 #define GL_NV_gpu_shader5 1
-int GLAD_GL_NV_gpu_shader5;
+extern int GLAD_GL_NV_gpu_shader5;
 typedef void (APIENTRYP fp_glUniform1i64NV)(GLint, GLint64EXT);
 GLAPI fp_glUniform1i64NV gladglUniform1i64NV;
 #define glUniform1i64NV gladglUniform1i64NV
@@ -11652,11 +11652,11 @@ GLAPI fp_glProgramUniform4ui64vNV gladglProgramUniform4ui64vNV;
 #endif
 #ifndef GL_ARB_ES2_compatibility
 #define GL_ARB_ES2_compatibility 1
-int GLAD_GL_ARB_ES2_compatibility;
+extern int GLAD_GL_ARB_ES2_compatibility;
 #endif
 #ifndef GL_ARB_indirect_parameters
 #define GL_ARB_indirect_parameters 1
-int GLAD_GL_ARB_indirect_parameters;
+extern int GLAD_GL_ARB_indirect_parameters;
 typedef void (APIENTRYP fp_glMultiDrawArraysIndirectCountARB)(GLenum, GLintptr, GLintptr, GLsizei, GLsizei);
 GLAPI fp_glMultiDrawArraysIndirectCountARB gladglMultiDrawArraysIndirectCountARB;
 #define glMultiDrawArraysIndirectCountARB gladglMultiDrawArraysIndirectCountARB
@@ -11666,7 +11666,7 @@ GLAPI fp_glMultiDrawElementsIndirectCountARB gladglMultiDrawElementsIndirectCoun
 #endif
 #ifndef GL_NV_half_float
 #define GL_NV_half_float 1
-int GLAD_GL_NV_half_float;
+extern int GLAD_GL_NV_half_float;
 typedef void (APIENTRYP fp_glVertex2hNV)(GLhalfNV, GLhalfNV);
 GLAPI fp_glVertex2hNV gladglVertex2hNV;
 #define glVertex2hNV gladglVertex2hNV
@@ -11808,7 +11808,7 @@ GLAPI fp_glVertexAttribs4hvNV gladglVertexAttribs4hvNV;
 #endif
 #ifndef GL_EXT_coordinate_frame
 #define GL_EXT_coordinate_frame 1
-int GLAD_GL_EXT_coordinate_frame;
+extern int GLAD_GL_EXT_coordinate_frame;
 typedef void (APIENTRYP fp_glTangent3bEXT)(GLbyte, GLbyte, GLbyte);
 GLAPI fp_glTangent3bEXT gladglTangent3bEXT;
 #define glTangent3bEXT gladglTangent3bEXT
@@ -11878,35 +11878,35 @@ GLAPI fp_glBinormalPointerEXT gladglBinormalPointerEXT;
 #endif
 #ifndef GL_ATI_texture_mirror_once
 #define GL_ATI_texture_mirror_once 1
-int GLAD_GL_ATI_texture_mirror_once;
+extern int GLAD_GL_ATI_texture_mirror_once;
 #endif
 #ifndef GL_IBM_rasterpos_clip
 #define GL_IBM_rasterpos_clip 1
-int GLAD_GL_IBM_rasterpos_clip;
+extern int GLAD_GL_IBM_rasterpos_clip;
 #endif
 #ifndef GL_SGIX_shadow
 #define GL_SGIX_shadow 1
-int GLAD_GL_SGIX_shadow;
+extern int GLAD_GL_SGIX_shadow;
 #endif
 #ifndef GL_NV_deep_texture3D
 #define GL_NV_deep_texture3D 1
-int GLAD_GL_NV_deep_texture3D;
+extern int GLAD_GL_NV_deep_texture3D;
 #endif
 #ifndef GL_ARB_shader_draw_parameters
 #define GL_ARB_shader_draw_parameters 1
-int GLAD_GL_ARB_shader_draw_parameters;
+extern int GLAD_GL_ARB_shader_draw_parameters;
 #endif
 #ifndef GL_SGIX_calligraphic_fragment
 #define GL_SGIX_calligraphic_fragment 1
-int GLAD_GL_SGIX_calligraphic_fragment;
+extern int GLAD_GL_SGIX_calligraphic_fragment;
 #endif
 #ifndef GL_ARB_shader_bit_encoding
 #define GL_ARB_shader_bit_encoding 1
-int GLAD_GL_ARB_shader_bit_encoding;
+extern int GLAD_GL_ARB_shader_bit_encoding;
 #endif
 #ifndef GL_EXT_compiled_vertex_array
 #define GL_EXT_compiled_vertex_array 1
-int GLAD_GL_EXT_compiled_vertex_array;
+extern int GLAD_GL_EXT_compiled_vertex_array;
 typedef void (APIENTRYP fp_glLockArraysEXT)(GLint, GLsizei);
 GLAPI fp_glLockArraysEXT gladglLockArraysEXT;
 #define glLockArraysEXT gladglLockArraysEXT
@@ -11916,7 +11916,7 @@ GLAPI fp_glUnlockArraysEXT gladglUnlockArraysEXT;
 #endif
 #ifndef GL_NV_depth_buffer_float
 #define GL_NV_depth_buffer_float 1
-int GLAD_GL_NV_depth_buffer_float;
+extern int GLAD_GL_NV_depth_buffer_float;
 typedef void (APIENTRYP fp_glDepthRangedNV)(GLdouble, GLdouble);
 GLAPI fp_glDepthRangedNV gladglDepthRangedNV;
 #define glDepthRangedNV gladglDepthRangedNV
@@ -11929,7 +11929,7 @@ GLAPI fp_glDepthBoundsdNV gladglDepthBoundsdNV;
 #endif
 #ifndef GL_NV_occlusion_query
 #define GL_NV_occlusion_query 1
-int GLAD_GL_NV_occlusion_query;
+extern int GLAD_GL_NV_occlusion_query;
 typedef void (APIENTRYP fp_glGenOcclusionQueriesNV)(GLsizei, GLuint*);
 GLAPI fp_glGenOcclusionQueriesNV gladglGenOcclusionQueriesNV;
 #define glGenOcclusionQueriesNV gladglGenOcclusionQueriesNV
@@ -11954,7 +11954,7 @@ GLAPI fp_glGetOcclusionQueryuivNV gladglGetOcclusionQueryuivNV;
 #endif
 #ifndef GL_APPLE_flush_buffer_range
 #define GL_APPLE_flush_buffer_range 1
-int GLAD_GL_APPLE_flush_buffer_range;
+extern int GLAD_GL_APPLE_flush_buffer_range;
 typedef void (APIENTRYP fp_glBufferParameteriAPPLE)(GLenum, GLenum, GLint);
 GLAPI fp_glBufferParameteriAPPLE gladglBufferParameteriAPPLE;
 #define glBufferParameteriAPPLE gladglBufferParameteriAPPLE
@@ -11964,7 +11964,7 @@ GLAPI fp_glFlushMappedBufferRangeAPPLE gladglFlushMappedBufferRangeAPPLE;
 #endif
 #ifndef GL_ARB_imaging
 #define GL_ARB_imaging 1
-int GLAD_GL_ARB_imaging;
+extern int GLAD_GL_ARB_imaging;
 typedef void (APIENTRYP fp_glColorTable)(GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid*);
 GLAPI fp_glColorTable gladglColorTable;
 #define glColorTable gladglColorTable
@@ -12064,7 +12064,7 @@ GLAPI fp_glResetMinmax gladglResetMinmax;
 #endif
 #ifndef GL_ARB_draw_buffers_blend
 #define GL_ARB_draw_buffers_blend 1
-int GLAD_GL_ARB_draw_buffers_blend;
+extern int GLAD_GL_ARB_draw_buffers_blend;
 typedef void (APIENTRYP fp_glBlendEquationiARB)(GLuint, GLenum);
 GLAPI fp_glBlendEquationiARB gladglBlendEquationiARB;
 #define glBlendEquationiARB gladglBlendEquationiARB
@@ -12080,61 +12080,61 @@ GLAPI fp_glBlendFuncSeparateiARB gladglBlendFuncSeparateiARB;
 #endif
 #ifndef GL_NV_blend_square
 #define GL_NV_blend_square 1
-int GLAD_GL_NV_blend_square;
+extern int GLAD_GL_NV_blend_square;
 #endif
 #ifndef GL_AMD_blend_minmax_factor
 #define GL_AMD_blend_minmax_factor 1
-int GLAD_GL_AMD_blend_minmax_factor;
+extern int GLAD_GL_AMD_blend_minmax_factor;
 #endif
 #ifndef GL_EXT_texture_sRGB_decode
 #define GL_EXT_texture_sRGB_decode 1
-int GLAD_GL_EXT_texture_sRGB_decode;
+extern int GLAD_GL_EXT_texture_sRGB_decode;
 #endif
 #ifndef GL_ARB_shading_language_420pack
 #define GL_ARB_shading_language_420pack 1
-int GLAD_GL_ARB_shading_language_420pack;
+extern int GLAD_GL_ARB_shading_language_420pack;
 #endif
 #ifndef GL_ATI_meminfo
 #define GL_ATI_meminfo 1
-int GLAD_GL_ATI_meminfo;
+extern int GLAD_GL_ATI_meminfo;
 #endif
 #ifndef GL_EXT_abgr
 #define GL_EXT_abgr 1
-int GLAD_GL_EXT_abgr;
+extern int GLAD_GL_EXT_abgr;
 #endif
 #ifndef GL_AMD_pinned_memory
 #define GL_AMD_pinned_memory 1
-int GLAD_GL_AMD_pinned_memory;
+extern int GLAD_GL_AMD_pinned_memory;
 #endif
 #ifndef GL_EXT_texture_snorm
 #define GL_EXT_texture_snorm 1
-int GLAD_GL_EXT_texture_snorm;
+extern int GLAD_GL_EXT_texture_snorm;
 #endif
 #ifndef GL_SGIX_texture_coordinate_clamp
 #define GL_SGIX_texture_coordinate_clamp 1
-int GLAD_GL_SGIX_texture_coordinate_clamp;
+extern int GLAD_GL_SGIX_texture_coordinate_clamp;
 #endif
 #ifndef GL_ARB_clear_buffer_object
 #define GL_ARB_clear_buffer_object 1
-int GLAD_GL_ARB_clear_buffer_object;
+extern int GLAD_GL_ARB_clear_buffer_object;
 #endif
 #ifndef GL_ARB_multisample
 #define GL_ARB_multisample 1
-int GLAD_GL_ARB_multisample;
+extern int GLAD_GL_ARB_multisample;
 typedef void (APIENTRYP fp_glSampleCoverageARB)(GLfloat, GLboolean);
 GLAPI fp_glSampleCoverageARB gladglSampleCoverageARB;
 #define glSampleCoverageARB gladglSampleCoverageARB
 #endif
 #ifndef GL_ARB_sample_shading
 #define GL_ARB_sample_shading 1
-int GLAD_GL_ARB_sample_shading;
+extern int GLAD_GL_ARB_sample_shading;
 typedef void (APIENTRYP fp_glMinSampleShadingARB)(GLfloat);
 GLAPI fp_glMinSampleShadingARB gladglMinSampleShadingARB;
 #define glMinSampleShadingARB gladglMinSampleShadingARB
 #endif
 #ifndef GL_INTEL_map_texture
 #define GL_INTEL_map_texture 1
-int GLAD_GL_INTEL_map_texture;
+extern int GLAD_GL_INTEL_map_texture;
 typedef void (APIENTRYP fp_glSyncTextureINTEL)(GLuint);
 GLAPI fp_glSyncTextureINTEL gladglSyncTextureINTEL;
 #define glSyncTextureINTEL gladglSyncTextureINTEL
@@ -12147,27 +12147,27 @@ GLAPI fp_glMapTexture2DINTEL gladglMapTexture2DINTEL;
 #endif
 #ifndef GL_ARB_texture_env_crossbar
 #define GL_ARB_texture_env_crossbar 1
-int GLAD_GL_ARB_texture_env_crossbar;
+extern int GLAD_GL_ARB_texture_env_crossbar;
 #endif
 #ifndef GL_EXT_422_pixels
 #define GL_EXT_422_pixels 1
-int GLAD_GL_EXT_422_pixels;
+extern int GLAD_GL_EXT_422_pixels;
 #endif
 #ifndef GL_ARB_compute_shader
 #define GL_ARB_compute_shader 1
-int GLAD_GL_ARB_compute_shader;
+extern int GLAD_GL_ARB_compute_shader;
 #endif
 #ifndef GL_EXT_blend_logic_op
 #define GL_EXT_blend_logic_op 1
-int GLAD_GL_EXT_blend_logic_op;
+extern int GLAD_GL_EXT_blend_logic_op;
 #endif
 #ifndef GL_IBM_cull_vertex
 #define GL_IBM_cull_vertex 1
-int GLAD_GL_IBM_cull_vertex;
+extern int GLAD_GL_IBM_cull_vertex;
 #endif
 #ifndef GL_IBM_vertex_array_lists
 #define GL_IBM_vertex_array_lists 1
-int GLAD_GL_IBM_vertex_array_lists;
+extern int GLAD_GL_IBM_vertex_array_lists;
 typedef void (APIENTRYP fp_glColorPointerListIBM)(GLint, GLenum, GLint, const GLvoid**, GLint);
 GLAPI fp_glColorPointerListIBM gladglColorPointerListIBM;
 #define glColorPointerListIBM gladglColorPointerListIBM
@@ -12195,14 +12195,14 @@ GLAPI fp_glVertexPointerListIBM gladglVertexPointerListIBM;
 #endif
 #ifndef GL_ARB_color_buffer_float
 #define GL_ARB_color_buffer_float 1
-int GLAD_GL_ARB_color_buffer_float;
+extern int GLAD_GL_ARB_color_buffer_float;
 typedef void (APIENTRYP fp_glClampColorARB)(GLenum, GLenum);
 GLAPI fp_glClampColorARB gladglClampColorARB;
 #define glClampColorARB gladglClampColorARB
 #endif
 #ifndef GL_ARB_bindless_texture
 #define GL_ARB_bindless_texture 1
-int GLAD_GL_ARB_bindless_texture;
+extern int GLAD_GL_ARB_bindless_texture;
 typedef GLuint64 (APIENTRYP fp_glGetTextureHandleARB)(GLuint);
 GLAPI fp_glGetTextureHandleARB gladglGetTextureHandleARB;
 #define glGetTextureHandleARB gladglGetTextureHandleARB
@@ -12254,7 +12254,7 @@ GLAPI fp_glGetVertexAttribLui64vARB gladglGetVertexAttribLui64vARB;
 #endif
 #ifndef GL_ARB_window_pos
 #define GL_ARB_window_pos 1
-int GLAD_GL_ARB_window_pos;
+extern int GLAD_GL_ARB_window_pos;
 typedef void (APIENTRYP fp_glWindowPos2dARB)(GLdouble, GLdouble);
 GLAPI fp_glWindowPos2dARB gladglWindowPos2dARB;
 #define glWindowPos2dARB gladglWindowPos2dARB
@@ -12306,22 +12306,22 @@ GLAPI fp_glWindowPos3svARB gladglWindowPos3svARB;
 #endif
 #ifndef GL_ARB_internalformat_query
 #define GL_ARB_internalformat_query 1
-int GLAD_GL_ARB_internalformat_query;
+extern int GLAD_GL_ARB_internalformat_query;
 typedef void (APIENTRYP fp_glGetInternalformativ)(GLenum, GLenum, GLenum, GLsizei, GLint*);
 GLAPI fp_glGetInternalformativ gladglGetInternalformativ;
 #define glGetInternalformativ gladglGetInternalformativ
 #endif
 #ifndef GL_ARB_shadow
 #define GL_ARB_shadow 1
-int GLAD_GL_ARB_shadow;
+extern int GLAD_GL_ARB_shadow;
 #endif
 #ifndef GL_ARB_texture_mirrored_repeat
 #define GL_ARB_texture_mirrored_repeat 1
-int GLAD_GL_ARB_texture_mirrored_repeat;
+extern int GLAD_GL_ARB_texture_mirrored_repeat;
 #endif
 #ifndef GL_EXT_shader_image_load_store
 #define GL_EXT_shader_image_load_store 1
-int GLAD_GL_EXT_shader_image_load_store;
+extern int GLAD_GL_EXT_shader_image_load_store;
 typedef void (APIENTRYP fp_glBindImageTextureEXT)(GLuint, GLuint, GLint, GLboolean, GLint, GLenum, GLint);
 GLAPI fp_glBindImageTextureEXT gladglBindImageTextureEXT;
 #define glBindImageTextureEXT gladglBindImageTextureEXT
@@ -12331,7 +12331,7 @@ GLAPI fp_glMemoryBarrierEXT gladglMemoryBarrierEXT;
 #endif
 #ifndef GL_EXT_copy_texture
 #define GL_EXT_copy_texture 1
-int GLAD_GL_EXT_copy_texture;
+extern int GLAD_GL_EXT_copy_texture;
 typedef void (APIENTRYP fp_glCopyTexImage1DEXT)(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLint);
 GLAPI fp_glCopyTexImage1DEXT gladglCopyTexImage1DEXT;
 #define glCopyTexImage1DEXT gladglCopyTexImage1DEXT
@@ -12350,7 +12350,7 @@ GLAPI fp_glCopyTexSubImage3DEXT gladglCopyTexSubImage3DEXT;
 #endif
 #ifndef GL_NV_register_combiners2
 #define GL_NV_register_combiners2 1
-int GLAD_GL_NV_register_combiners2;
+extern int GLAD_GL_NV_register_combiners2;
 typedef void (APIENTRYP fp_glCombinerStageParameterfvNV)(GLenum, GLenum, const GLfloat*);
 GLAPI fp_glCombinerStageParameterfvNV gladglCombinerStageParameterfvNV;
 #define glCombinerStageParameterfvNV gladglCombinerStageParameterfvNV
@@ -12360,22 +12360,22 @@ GLAPI fp_glGetCombinerStageParameterfvNV gladglGetCombinerStageParameterfvNV;
 #endif
 #ifndef GL_SGIX_ir_instrument1
 #define GL_SGIX_ir_instrument1 1
-int GLAD_GL_SGIX_ir_instrument1;
+extern int GLAD_GL_SGIX_ir_instrument1;
 #endif
 #ifndef GL_NV_draw_texture
 #define GL_NV_draw_texture 1
-int GLAD_GL_NV_draw_texture;
+extern int GLAD_GL_NV_draw_texture;
 typedef void (APIENTRYP fp_glDrawTextureNV)(GLuint, GLuint, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
 GLAPI fp_glDrawTextureNV gladglDrawTextureNV;
 #define glDrawTextureNV gladglDrawTextureNV
 #endif
 #ifndef GL_EXT_texture_shared_exponent
 #define GL_EXT_texture_shared_exponent 1
-int GLAD_GL_EXT_texture_shared_exponent;
+extern int GLAD_GL_EXT_texture_shared_exponent;
 #endif
 #ifndef GL_EXT_draw_instanced
 #define GL_EXT_draw_instanced 1
-int GLAD_GL_EXT_draw_instanced;
+extern int GLAD_GL_EXT_draw_instanced;
 typedef void (APIENTRYP fp_glDrawArraysInstancedEXT)(GLenum, GLint, GLsizei, GLsizei);
 GLAPI fp_glDrawArraysInstancedEXT gladglDrawArraysInstancedEXT;
 #define glDrawArraysInstancedEXT gladglDrawArraysInstancedEXT
@@ -12385,26 +12385,26 @@ GLAPI fp_glDrawElementsInstancedEXT gladglDrawElementsInstancedEXT;
 #endif
 #ifndef GL_NV_copy_depth_to_color
 #define GL_NV_copy_depth_to_color 1
-int GLAD_GL_NV_copy_depth_to_color;
+extern int GLAD_GL_NV_copy_depth_to_color;
 #endif
 #ifndef GL_ARB_viewport_array
 #define GL_ARB_viewport_array 1
-int GLAD_GL_ARB_viewport_array;
+extern int GLAD_GL_ARB_viewport_array;
 #endif
 #ifndef GL_ARB_separate_shader_objects
 #define GL_ARB_separate_shader_objects 1
-int GLAD_GL_ARB_separate_shader_objects;
+extern int GLAD_GL_ARB_separate_shader_objects;
 #endif
 #ifndef GL_EXT_depth_bounds_test
 #define GL_EXT_depth_bounds_test 1
-int GLAD_GL_EXT_depth_bounds_test;
+extern int GLAD_GL_EXT_depth_bounds_test;
 typedef void (APIENTRYP fp_glDepthBoundsEXT)(GLclampd, GLclampd);
 GLAPI fp_glDepthBoundsEXT gladglDepthBoundsEXT;
 #define glDepthBoundsEXT gladglDepthBoundsEXT
 #endif
 #ifndef GL_HP_image_transform
 #define GL_HP_image_transform 1
-int GLAD_GL_HP_image_transform;
+extern int GLAD_GL_HP_image_transform;
 typedef void (APIENTRYP fp_glImageTransformParameteriHP)(GLenum, GLenum, GLint);
 GLAPI fp_glImageTransformParameteriHP gladglImageTransformParameteriHP;
 #define glImageTransformParameteriHP gladglImageTransformParameteriHP
@@ -12426,11 +12426,11 @@ GLAPI fp_glGetImageTransformParameterfvHP gladglGetImageTransformParameterfvHP;
 #endif
 #ifndef GL_ARB_texture_env_add
 #define GL_ARB_texture_env_add 1
-int GLAD_GL_ARB_texture_env_add;
+extern int GLAD_GL_ARB_texture_env_add;
 #endif
 #ifndef GL_NV_video_capture
 #define GL_NV_video_capture 1
-int GLAD_GL_NV_video_capture;
+extern int GLAD_GL_NV_video_capture;
 typedef void (APIENTRYP fp_glBeginVideoCaptureNV)(GLuint);
 GLAPI fp_glBeginVideoCaptureNV gladglBeginVideoCaptureNV;
 #define glBeginVideoCaptureNV gladglBeginVideoCaptureNV
@@ -12470,11 +12470,11 @@ GLAPI fp_glVideoCaptureStreamParameterdvNV gladglVideoCaptureStreamParameterdvNV
 #endif
 #ifndef GL_ARB_sampler_objects
 #define GL_ARB_sampler_objects 1
-int GLAD_GL_ARB_sampler_objects;
+extern int GLAD_GL_ARB_sampler_objects;
 #endif
 #ifndef GL_ARB_matrix_palette
 #define GL_ARB_matrix_palette 1
-int GLAD_GL_ARB_matrix_palette;
+extern int GLAD_GL_ARB_matrix_palette;
 typedef void (APIENTRYP fp_glCurrentPaletteMatrixARB)(GLint);
 GLAPI fp_glCurrentPaletteMatrixARB gladglCurrentPaletteMatrixARB;
 #define glCurrentPaletteMatrixARB gladglCurrentPaletteMatrixARB
@@ -12493,18 +12493,18 @@ GLAPI fp_glMatrixIndexPointerARB gladglMatrixIndexPointerARB;
 #endif
 #ifndef GL_SGIS_texture_color_mask
 #define GL_SGIS_texture_color_mask 1
-int GLAD_GL_SGIS_texture_color_mask;
+extern int GLAD_GL_SGIS_texture_color_mask;
 typedef void (APIENTRYP fp_glTextureColorMaskSGIS)(GLboolean, GLboolean, GLboolean, GLboolean);
 GLAPI fp_glTextureColorMaskSGIS gladglTextureColorMaskSGIS;
 #define glTextureColorMaskSGIS gladglTextureColorMaskSGIS
 #endif
 #ifndef GL_EXT_packed_pixels
 #define GL_EXT_packed_pixels 1
-int GLAD_GL_EXT_packed_pixels;
+extern int GLAD_GL_EXT_packed_pixels;
 #endif
 #ifndef GL_ARB_texture_compression
 #define GL_ARB_texture_compression 1
-int GLAD_GL_ARB_texture_compression;
+extern int GLAD_GL_ARB_texture_compression;
 typedef void (APIENTRYP fp_glCompressedTexImage3DARB)(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, const GLvoid*);
 GLAPI fp_glCompressedTexImage3DARB gladglCompressedTexImage3DARB;
 #define glCompressedTexImage3DARB gladglCompressedTexImage3DARB
@@ -12529,23 +12529,23 @@ GLAPI fp_glGetCompressedTexImageARB gladglGetCompressedTexImageARB;
 #endif
 #ifndef GL_APPLE_aux_depth_stencil
 #define GL_APPLE_aux_depth_stencil 1
-int GLAD_GL_APPLE_aux_depth_stencil;
+extern int GLAD_GL_APPLE_aux_depth_stencil;
 #endif
 #ifndef GL_ARB_shader_subroutine
 #define GL_ARB_shader_subroutine 1
-int GLAD_GL_ARB_shader_subroutine;
+extern int GLAD_GL_ARB_shader_subroutine;
 #endif
 #ifndef GL_EXT_framebuffer_sRGB
 #define GL_EXT_framebuffer_sRGB 1
-int GLAD_GL_EXT_framebuffer_sRGB;
+extern int GLAD_GL_EXT_framebuffer_sRGB;
 #endif
 #ifndef GL_ARB_texture_storage_multisample
 #define GL_ARB_texture_storage_multisample 1
-int GLAD_GL_ARB_texture_storage_multisample;
+extern int GLAD_GL_ARB_texture_storage_multisample;
 #endif
 #ifndef GL_EXT_vertex_attrib_64bit
 #define GL_EXT_vertex_attrib_64bit 1
-int GLAD_GL_EXT_vertex_attrib_64bit;
+extern int GLAD_GL_EXT_vertex_attrib_64bit;
 typedef void (APIENTRYP fp_glVertexAttribL1dEXT)(GLuint, GLdouble);
 GLAPI fp_glVertexAttribL1dEXT gladglVertexAttribL1dEXT;
 #define glVertexAttribL1dEXT gladglVertexAttribL1dEXT
@@ -12579,22 +12579,22 @@ GLAPI fp_glGetVertexAttribLdvEXT gladglGetVertexAttribLdvEXT;
 #endif
 #ifndef GL_ARB_depth_texture
 #define GL_ARB_depth_texture 1
-int GLAD_GL_ARB_depth_texture;
+extern int GLAD_GL_ARB_depth_texture;
 #endif
 #ifndef GL_NV_shader_buffer_store
 #define GL_NV_shader_buffer_store 1
-int GLAD_GL_NV_shader_buffer_store;
+extern int GLAD_GL_NV_shader_buffer_store;
 #endif
 #ifndef GL_OES_query_matrix
 #define GL_OES_query_matrix 1
-int GLAD_GL_OES_query_matrix;
+extern int GLAD_GL_OES_query_matrix;
 typedef GLbitfield (APIENTRYP fp_glQueryMatrixxOES)(GLfixed*, GLint*);
 GLAPI fp_glQueryMatrixxOES gladglQueryMatrixxOES;
 #define glQueryMatrixxOES gladglQueryMatrixxOES
 #endif
 #ifndef GL_APPLE_texture_range
 #define GL_APPLE_texture_range 1
-int GLAD_GL_APPLE_texture_range;
+extern int GLAD_GL_APPLE_texture_range;
 typedef void (APIENTRYP fp_glTextureRangeAPPLE)(GLenum, GLsizei, const GLvoid*);
 GLAPI fp_glTextureRangeAPPLE gladglTextureRangeAPPLE;
 #define glTextureRangeAPPLE gladglTextureRangeAPPLE
@@ -12604,27 +12604,27 @@ GLAPI fp_glGetTexParameterPointervAPPLE gladglGetTexParameterPointervAPPLE;
 #endif
 #ifndef GL_NV_shader_storage_buffer_object
 #define GL_NV_shader_storage_buffer_object 1
-int GLAD_GL_NV_shader_storage_buffer_object;
+extern int GLAD_GL_NV_shader_storage_buffer_object;
 #endif
 #ifndef GL_ARB_texture_query_lod
 #define GL_ARB_texture_query_lod 1
-int GLAD_GL_ARB_texture_query_lod;
+extern int GLAD_GL_ARB_texture_query_lod;
 #endif
 #ifndef GL_ARB_copy_buffer
 #define GL_ARB_copy_buffer 1
-int GLAD_GL_ARB_copy_buffer;
+extern int GLAD_GL_ARB_copy_buffer;
 #endif
 #ifndef GL_ARB_shader_image_size
 #define GL_ARB_shader_image_size 1
-int GLAD_GL_ARB_shader_image_size;
+extern int GLAD_GL_ARB_shader_image_size;
 #endif
 #ifndef GL_NV_shader_atomic_counters
 #define GL_NV_shader_atomic_counters 1
-int GLAD_GL_NV_shader_atomic_counters;
+extern int GLAD_GL_NV_shader_atomic_counters;
 #endif
 #ifndef GL_APPLE_object_purgeable
 #define GL_APPLE_object_purgeable 1
-int GLAD_GL_APPLE_object_purgeable;
+extern int GLAD_GL_APPLE_object_purgeable;
 typedef GLenum (APIENTRYP fp_glObjectPurgeableAPPLE)(GLenum, GLuint, GLenum);
 GLAPI fp_glObjectPurgeableAPPLE gladglObjectPurgeableAPPLE;
 #define glObjectPurgeableAPPLE gladglObjectPurgeableAPPLE
@@ -12637,7 +12637,7 @@ GLAPI fp_glGetObjectParameterivAPPLE gladglGetObjectParameterivAPPLE;
 #endif
 #ifndef GL_ARB_occlusion_query
 #define GL_ARB_occlusion_query 1
-int GLAD_GL_ARB_occlusion_query;
+extern int GLAD_GL_ARB_occlusion_query;
 typedef void (APIENTRYP fp_glGenQueriesARB)(GLsizei, GLuint*);
 GLAPI fp_glGenQueriesARB gladglGenQueriesARB;
 #define glGenQueriesARB gladglGenQueriesARB
@@ -12665,11 +12665,11 @@ GLAPI fp_glGetQueryObjectuivARB gladglGetQueryObjectuivARB;
 #endif
 #ifndef GL_INGR_color_clamp
 #define GL_INGR_color_clamp 1
-int GLAD_GL_INGR_color_clamp;
+extern int GLAD_GL_INGR_color_clamp;
 #endif
 #ifndef GL_SGI_color_table
 #define GL_SGI_color_table 1
-int GLAD_GL_SGI_color_table;
+extern int GLAD_GL_SGI_color_table;
 typedef void (APIENTRYP fp_glColorTableSGI)(GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid*);
 GLAPI fp_glColorTableSGI gladglColorTableSGI;
 #define glColorTableSGI gladglColorTableSGI
@@ -12694,19 +12694,19 @@ GLAPI fp_glGetColorTableParameterivSGI gladglGetColorTableParameterivSGI;
 #endif
 #ifndef GL_NV_gpu_program5_mem_extended
 #define GL_NV_gpu_program5_mem_extended 1
-int GLAD_GL_NV_gpu_program5_mem_extended;
+extern int GLAD_GL_NV_gpu_program5_mem_extended;
 #endif
 #ifndef GL_ARB_texture_cube_map_array
 #define GL_ARB_texture_cube_map_array 1
-int GLAD_GL_ARB_texture_cube_map_array;
+extern int GLAD_GL_ARB_texture_cube_map_array;
 #endif
 #ifndef GL_SGIX_scalebias_hint
 #define GL_SGIX_scalebias_hint 1
-int GLAD_GL_SGIX_scalebias_hint;
+extern int GLAD_GL_SGIX_scalebias_hint;
 #endif
 #ifndef GL_EXT_gpu_shader4
 #define GL_EXT_gpu_shader4 1
-int GLAD_GL_EXT_gpu_shader4;
+extern int GLAD_GL_EXT_gpu_shader4;
 typedef void (APIENTRYP fp_glGetUniformuivEXT)(GLuint, GLint, GLuint*);
 GLAPI fp_glGetUniformuivEXT gladglGetUniformuivEXT;
 #define glGetUniformuivEXT gladglGetUniformuivEXT
@@ -12743,7 +12743,7 @@ GLAPI fp_glUniform4uivEXT gladglUniform4uivEXT;
 #endif
 #ifndef GL_NV_geometry_program4
 #define GL_NV_geometry_program4 1
-int GLAD_GL_NV_geometry_program4;
+extern int GLAD_GL_NV_geometry_program4;
 typedef void (APIENTRYP fp_glProgramVertexLimitNV)(GLenum, GLint);
 GLAPI fp_glProgramVertexLimitNV gladglProgramVertexLimitNV;
 #define glProgramVertexLimitNV gladglProgramVertexLimitNV
@@ -12759,11 +12759,11 @@ GLAPI fp_glFramebufferTextureFaceEXT gladglFramebufferTextureFaceEXT;
 #endif
 #ifndef GL_EXT_framebuffer_multisample_blit_scaled
 #define GL_EXT_framebuffer_multisample_blit_scaled 1
-int GLAD_GL_EXT_framebuffer_multisample_blit_scaled;
+extern int GLAD_GL_EXT_framebuffer_multisample_blit_scaled;
 #endif
 #ifndef GL_AMD_debug_output
 #define GL_AMD_debug_output 1
-int GLAD_GL_AMD_debug_output;
+extern int GLAD_GL_AMD_debug_output;
 typedef void (APIENTRYP fp_glDebugMessageEnableAMD)(GLenum, GLenum, GLsizei, const GLuint*, GLboolean);
 GLAPI fp_glDebugMessageEnableAMD gladglDebugMessageEnableAMD;
 #define glDebugMessageEnableAMD gladglDebugMessageEnableAMD
@@ -12779,15 +12779,15 @@ GLAPI fp_glGetDebugMessageLogAMD gladglGetDebugMessageLogAMD;
 #endif
 #ifndef GL_ARB_texture_border_clamp
 #define GL_ARB_texture_border_clamp 1
-int GLAD_GL_ARB_texture_border_clamp;
+extern int GLAD_GL_ARB_texture_border_clamp;
 #endif
 #ifndef GL_ARB_fragment_coord_conventions
 #define GL_ARB_fragment_coord_conventions 1
-int GLAD_GL_ARB_fragment_coord_conventions;
+extern int GLAD_GL_ARB_fragment_coord_conventions;
 #endif
 #ifndef GL_ARB_multitexture
 #define GL_ARB_multitexture 1
-int GLAD_GL_ARB_multitexture;
+extern int GLAD_GL_ARB_multitexture;
 typedef void (APIENTRYP fp_glActiveTextureARB)(GLenum);
 GLAPI fp_glActiveTextureARB gladglActiveTextureARB;
 #define glActiveTextureARB gladglActiveTextureARB
@@ -12893,7 +12893,7 @@ GLAPI fp_glMultiTexCoord4svARB gladglMultiTexCoord4svARB;
 #endif
 #ifndef GL_SGIX_polynomial_ffd
 #define GL_SGIX_polynomial_ffd 1
-int GLAD_GL_SGIX_polynomial_ffd;
+extern int GLAD_GL_SGIX_polynomial_ffd;
 typedef void (APIENTRYP fp_glDeformationMap3dSGIX)(GLenum, GLdouble, GLdouble, GLint, GLint, GLdouble, GLdouble, GLint, GLint, GLdouble, GLdouble, GLint, GLint, const GLdouble*);
 GLAPI fp_glDeformationMap3dSGIX gladglDeformationMap3dSGIX;
 #define glDeformationMap3dSGIX gladglDeformationMap3dSGIX
@@ -12909,14 +12909,14 @@ GLAPI fp_glLoadIdentityDeformationMapSGIX gladglLoadIdentityDeformationMapSGIX;
 #endif
 #ifndef GL_EXT_provoking_vertex
 #define GL_EXT_provoking_vertex 1
-int GLAD_GL_EXT_provoking_vertex;
+extern int GLAD_GL_EXT_provoking_vertex;
 typedef void (APIENTRYP fp_glProvokingVertexEXT)(GLenum);
 GLAPI fp_glProvokingVertexEXT gladglProvokingVertexEXT;
 #define glProvokingVertexEXT gladglProvokingVertexEXT
 #endif
 #ifndef GL_ARB_point_parameters
 #define GL_ARB_point_parameters 1
-int GLAD_GL_ARB_point_parameters;
+extern int GLAD_GL_ARB_point_parameters;
 typedef void (APIENTRYP fp_glPointParameterfARB)(GLenum, GLfloat);
 GLAPI fp_glPointParameterfARB gladglPointParameterfARB;
 #define glPointParameterfARB gladglPointParameterfARB
@@ -12926,30 +12926,30 @@ GLAPI fp_glPointParameterfvARB gladglPointParameterfvARB;
 #endif
 #ifndef GL_ARB_shader_image_load_store
 #define GL_ARB_shader_image_load_store 1
-int GLAD_GL_ARB_shader_image_load_store;
+extern int GLAD_GL_ARB_shader_image_load_store;
 #endif
 #ifndef GL_HP_occlusion_test
 #define GL_HP_occlusion_test 1
-int GLAD_GL_HP_occlusion_test;
+extern int GLAD_GL_HP_occlusion_test;
 #endif
 #ifndef GL_ARB_ES3_compatibility
 #define GL_ARB_ES3_compatibility 1
-int GLAD_GL_ARB_ES3_compatibility;
+extern int GLAD_GL_ARB_ES3_compatibility;
 #endif
 #ifndef GL_SGIX_framezoom
 #define GL_SGIX_framezoom 1
-int GLAD_GL_SGIX_framezoom;
+extern int GLAD_GL_SGIX_framezoom;
 typedef void (APIENTRYP fp_glFrameZoomSGIX)(GLint);
 GLAPI fp_glFrameZoomSGIX gladglFrameZoomSGIX;
 #define glFrameZoomSGIX gladglFrameZoomSGIX
 #endif
 #ifndef GL_ARB_texture_buffer_object_rgb32
 #define GL_ARB_texture_buffer_object_rgb32 1
-int GLAD_GL_ARB_texture_buffer_object_rgb32;
+extern int GLAD_GL_ARB_texture_buffer_object_rgb32;
 #endif
 #ifndef GL_NV_bindless_multi_draw_indirect
 #define GL_NV_bindless_multi_draw_indirect 1
-int GLAD_GL_NV_bindless_multi_draw_indirect;
+extern int GLAD_GL_NV_bindless_multi_draw_indirect;
 typedef void (APIENTRYP fp_glMultiDrawArraysIndirectBindlessNV)(GLenum, const GLvoid*, GLsizei, GLsizei, GLint);
 GLAPI fp_glMultiDrawArraysIndirectBindlessNV gladglMultiDrawArraysIndirectBindlessNV;
 #define glMultiDrawArraysIndirectBindlessNV gladglMultiDrawArraysIndirectBindlessNV
@@ -12959,11 +12959,11 @@ GLAPI fp_glMultiDrawElementsIndirectBindlessNV gladglMultiDrawElementsIndirectBi
 #endif
 #ifndef GL_SGIX_texture_multi_buffer
 #define GL_SGIX_texture_multi_buffer 1
-int GLAD_GL_SGIX_texture_multi_buffer;
+extern int GLAD_GL_SGIX_texture_multi_buffer;
 #endif
 #ifndef GL_EXT_transform_feedback
 #define GL_EXT_transform_feedback 1
-int GLAD_GL_EXT_transform_feedback;
+extern int GLAD_GL_EXT_transform_feedback;
 typedef void (APIENTRYP fp_glBeginTransformFeedbackEXT)(GLenum);
 GLAPI fp_glBeginTransformFeedbackEXT gladglBeginTransformFeedbackEXT;
 #define glBeginTransformFeedbackEXT gladglBeginTransformFeedbackEXT
@@ -12988,19 +12988,19 @@ GLAPI fp_glGetTransformFeedbackVaryingEXT gladglGetTransformFeedbackVaryingEXT;
 #endif
 #ifndef GL_KHR_texture_compression_astc_ldr
 #define GL_KHR_texture_compression_astc_ldr 1
-int GLAD_GL_KHR_texture_compression_astc_ldr;
+extern int GLAD_GL_KHR_texture_compression_astc_ldr;
 #endif
 #ifndef GL_3DFX_multisample
 #define GL_3DFX_multisample 1
-int GLAD_GL_3DFX_multisample;
+extern int GLAD_GL_3DFX_multisample;
 #endif
 #ifndef GL_ARB_texture_env_dot3
 #define GL_ARB_texture_env_dot3 1
-int GLAD_GL_ARB_texture_env_dot3;
+extern int GLAD_GL_ARB_texture_env_dot3;
 #endif
 #ifndef GL_NV_gpu_program4
 #define GL_NV_gpu_program4 1
-int GLAD_GL_NV_gpu_program4;
+extern int GLAD_GL_NV_gpu_program4;
 typedef void (APIENTRYP fp_glProgramLocalParameterI4iNV)(GLenum, GLuint, GLint, GLint, GLint, GLint);
 GLAPI fp_glProgramLocalParameterI4iNV gladglProgramLocalParameterI4iNV;
 #define glProgramLocalParameterI4iNV gladglProgramLocalParameterI4iNV
@@ -13052,7 +13052,7 @@ GLAPI fp_glGetProgramEnvParameterIuivNV gladglGetProgramEnvParameterIuivNV;
 #endif
 #ifndef GL_NV_gpu_program5
 #define GL_NV_gpu_program5 1
-int GLAD_GL_NV_gpu_program5;
+extern int GLAD_GL_NV_gpu_program5;
 typedef void (APIENTRYP fp_glProgramSubroutineParametersuivNV)(GLenum, GLsizei, const GLuint*);
 GLAPI fp_glProgramSubroutineParametersuivNV gladglProgramSubroutineParametersuivNV;
 #define glProgramSubroutineParametersuivNV gladglProgramSubroutineParametersuivNV
@@ -13062,27 +13062,27 @@ GLAPI fp_glGetProgramSubroutineParameteruivNV gladglGetProgramSubroutineParamete
 #endif
 #ifndef GL_NV_float_buffer
 #define GL_NV_float_buffer 1
-int GLAD_GL_NV_float_buffer;
+extern int GLAD_GL_NV_float_buffer;
 #endif
 #ifndef GL_SGIS_texture_edge_clamp
 #define GL_SGIS_texture_edge_clamp 1
-int GLAD_GL_SGIS_texture_edge_clamp;
+extern int GLAD_GL_SGIS_texture_edge_clamp;
 #endif
 #ifndef GL_ARB_framebuffer_sRGB
 #define GL_ARB_framebuffer_sRGB 1
-int GLAD_GL_ARB_framebuffer_sRGB;
+extern int GLAD_GL_ARB_framebuffer_sRGB;
 #endif
 #ifndef GL_SUN_slice_accum
 #define GL_SUN_slice_accum 1
-int GLAD_GL_SUN_slice_accum;
+extern int GLAD_GL_SUN_slice_accum;
 #endif
 #ifndef GL_EXT_index_texture
 #define GL_EXT_index_texture 1
-int GLAD_GL_EXT_index_texture;
+extern int GLAD_GL_EXT_index_texture;
 #endif
 #ifndef GL_ARB_geometry_shader4
 #define GL_ARB_geometry_shader4 1
-int GLAD_GL_ARB_geometry_shader4;
+extern int GLAD_GL_ARB_geometry_shader4;
 typedef void (APIENTRYP fp_glProgramParameteriARB)(GLuint, GLenum, GLint);
 GLAPI fp_glProgramParameteriARB gladglProgramParameteriARB;
 #define glProgramParameteriARB gladglProgramParameteriARB
@@ -13098,19 +13098,19 @@ GLAPI fp_glFramebufferTextureFaceARB gladglFramebufferTextureFaceARB;
 #endif
 #ifndef GL_EXT_separate_specular_color
 #define GL_EXT_separate_specular_color 1
-int GLAD_GL_EXT_separate_specular_color;
+extern int GLAD_GL_EXT_separate_specular_color;
 #endif
 #ifndef GL_AMD_depth_clamp_separate
 #define GL_AMD_depth_clamp_separate 1
-int GLAD_GL_AMD_depth_clamp_separate;
+extern int GLAD_GL_AMD_depth_clamp_separate;
 #endif
 #ifndef GL_SUN_convolution_border_modes
 #define GL_SUN_convolution_border_modes 1
-int GLAD_GL_SUN_convolution_border_modes;
+extern int GLAD_GL_SUN_convolution_border_modes;
 #endif
 #ifndef GL_SGIX_sprite
 #define GL_SGIX_sprite 1
-int GLAD_GL_SGIX_sprite;
+extern int GLAD_GL_SGIX_sprite;
 typedef void (APIENTRYP fp_glSpriteParameterfSGIX)(GLenum, GLfloat);
 GLAPI fp_glSpriteParameterfSGIX gladglSpriteParameterfSGIX;
 #define glSpriteParameterfSGIX gladglSpriteParameterfSGIX
@@ -13126,11 +13126,11 @@ GLAPI fp_glSpriteParameterivSGIX gladglSpriteParameterivSGIX;
 #endif
 #ifndef GL_ARB_get_program_binary
 #define GL_ARB_get_program_binary 1
-int GLAD_GL_ARB_get_program_binary;
+extern int GLAD_GL_ARB_get_program_binary;
 #endif
 #ifndef GL_SGIS_multisample
 #define GL_SGIS_multisample 1
-int GLAD_GL_SGIS_multisample;
+extern int GLAD_GL_SGIS_multisample;
 typedef void (APIENTRYP fp_glSampleMaskSGIS)(GLclampf, GLboolean);
 GLAPI fp_glSampleMaskSGIS gladglSampleMaskSGIS;
 #define glSampleMaskSGIS gladglSampleMaskSGIS
@@ -13140,7 +13140,7 @@ GLAPI fp_glSamplePatternSGIS gladglSamplePatternSGIS;
 #endif
 #ifndef GL_EXT_framebuffer_object
 #define GL_EXT_framebuffer_object 1
-int GLAD_GL_EXT_framebuffer_object;
+extern int GLAD_GL_EXT_framebuffer_object;
 typedef GLboolean (APIENTRYP fp_glIsRenderbufferEXT)(GLuint);
 GLAPI fp_glIsRenderbufferEXT gladglIsRenderbufferEXT;
 #define glIsRenderbufferEXT gladglIsRenderbufferEXT
@@ -13195,15 +13195,15 @@ GLAPI fp_glGenerateMipmapEXT gladglGenerateMipmapEXT;
 #endif
 #ifndef GL_ARB_robustness_isolation
 #define GL_ARB_robustness_isolation 1
-int GLAD_GL_ARB_robustness_isolation;
+extern int GLAD_GL_ARB_robustness_isolation;
 #endif
 #ifndef GL_ARB_vertex_array_bgra
 #define GL_ARB_vertex_array_bgra 1
-int GLAD_GL_ARB_vertex_array_bgra;
+extern int GLAD_GL_ARB_vertex_array_bgra;
 #endif
 #ifndef GL_APPLE_vertex_array_range
 #define GL_APPLE_vertex_array_range 1
-int GLAD_GL_APPLE_vertex_array_range;
+extern int GLAD_GL_APPLE_vertex_array_range;
 typedef void (APIENTRYP fp_glVertexArrayRangeAPPLE)(GLsizei, GLvoid*);
 GLAPI fp_glVertexArrayRangeAPPLE gladglVertexArrayRangeAPPLE;
 #define glVertexArrayRangeAPPLE gladglVertexArrayRangeAPPLE
@@ -13216,11 +13216,11 @@ GLAPI fp_glVertexArrayParameteriAPPLE gladglVertexArrayParameteriAPPLE;
 #endif
 #ifndef GL_AMD_query_buffer_object
 #define GL_AMD_query_buffer_object 1
-int GLAD_GL_AMD_query_buffer_object;
+extern int GLAD_GL_AMD_query_buffer_object;
 #endif
 #ifndef GL_NV_register_combiners
 #define GL_NV_register_combiners 1
-int GLAD_GL_NV_register_combiners;
+extern int GLAD_GL_NV_register_combiners;
 typedef void (APIENTRYP fp_glCombinerParameterfvNV)(GLenum, const GLfloat*);
 GLAPI fp_glCombinerParameterfvNV gladglCombinerParameterfvNV;
 #define glCombinerParameterfvNV gladglCombinerParameterfvNV
@@ -13263,18 +13263,18 @@ GLAPI fp_glGetFinalCombinerInputParameterivNV gladglGetFinalCombinerInputParamet
 #endif
 #ifndef GL_ARB_draw_buffers
 #define GL_ARB_draw_buffers 1
-int GLAD_GL_ARB_draw_buffers;
+extern int GLAD_GL_ARB_draw_buffers;
 typedef void (APIENTRYP fp_glDrawBuffersARB)(GLsizei, const GLenum*);
 GLAPI fp_glDrawBuffersARB gladglDrawBuffersARB;
 #define glDrawBuffersARB gladglDrawBuffersARB
 #endif
 #ifndef GL_ARB_clear_texture
 #define GL_ARB_clear_texture 1
-int GLAD_GL_ARB_clear_texture;
+extern int GLAD_GL_ARB_clear_texture;
 #endif
 #ifndef GL_ARB_debug_output
 #define GL_ARB_debug_output 1
-int GLAD_GL_ARB_debug_output;
+extern int GLAD_GL_ARB_debug_output;
 typedef void (APIENTRYP fp_glDebugMessageControlARB)(GLenum, GLenum, GLenum, GLsizei, const GLuint*, GLboolean);
 GLAPI fp_glDebugMessageControlARB gladglDebugMessageControlARB;
 #define glDebugMessageControlARB gladglDebugMessageControlARB
@@ -13290,11 +13290,11 @@ GLAPI fp_glGetDebugMessageLogARB gladglGetDebugMessageLogARB;
 #endif
 #ifndef GL_SGI_color_matrix
 #define GL_SGI_color_matrix 1
-int GLAD_GL_SGI_color_matrix;
+extern int GLAD_GL_SGI_color_matrix;
 #endif
 #ifndef GL_EXT_cull_vertex
 #define GL_EXT_cull_vertex 1
-int GLAD_GL_EXT_cull_vertex;
+extern int GLAD_GL_EXT_cull_vertex;
 typedef void (APIENTRYP fp_glCullParameterdvEXT)(GLenum, GLdouble*);
 GLAPI fp_glCullParameterdvEXT gladglCullParameterdvEXT;
 #define glCullParameterdvEXT gladglCullParameterdvEXT
@@ -13304,19 +13304,19 @@ GLAPI fp_glCullParameterfvEXT gladglCullParameterfvEXT;
 #endif
 #ifndef GL_EXT_texture_sRGB
 #define GL_EXT_texture_sRGB 1
-int GLAD_GL_EXT_texture_sRGB;
+extern int GLAD_GL_EXT_texture_sRGB;
 #endif
 #ifndef GL_APPLE_row_bytes
 #define GL_APPLE_row_bytes 1
-int GLAD_GL_APPLE_row_bytes;
+extern int GLAD_GL_APPLE_row_bytes;
 #endif
 #ifndef GL_NV_texgen_reflection
 #define GL_NV_texgen_reflection 1
-int GLAD_GL_NV_texgen_reflection;
+extern int GLAD_GL_NV_texgen_reflection;
 #endif
 #ifndef GL_IBM_multimode_draw_arrays
 #define GL_IBM_multimode_draw_arrays 1
-int GLAD_GL_IBM_multimode_draw_arrays;
+extern int GLAD_GL_IBM_multimode_draw_arrays;
 typedef void (APIENTRYP fp_glMultiModeDrawArraysIBM)(const GLenum*, const GLint*, const GLsizei*, GLsizei, GLint);
 GLAPI fp_glMultiModeDrawArraysIBM gladglMultiModeDrawArraysIBM;
 #define glMultiModeDrawArraysIBM gladglMultiModeDrawArraysIBM
@@ -13326,7 +13326,7 @@ GLAPI fp_glMultiModeDrawElementsIBM gladglMultiModeDrawElementsIBM;
 #endif
 #ifndef GL_APPLE_vertex_array_object
 #define GL_APPLE_vertex_array_object 1
-int GLAD_GL_APPLE_vertex_array_object;
+extern int GLAD_GL_APPLE_vertex_array_object;
 typedef void (APIENTRYP fp_glBindVertexArrayAPPLE)(GLuint);
 GLAPI fp_glBindVertexArrayAPPLE gladglBindVertexArrayAPPLE;
 #define glBindVertexArrayAPPLE gladglBindVertexArrayAPPLE
@@ -13342,27 +13342,27 @@ GLAPI fp_glIsVertexArrayAPPLE gladglIsVertexArrayAPPLE;
 #endif
 #ifndef GL_3DFX_texture_compression_FXT1
 #define GL_3DFX_texture_compression_FXT1 1
-int GLAD_GL_3DFX_texture_compression_FXT1;
+extern int GLAD_GL_3DFX_texture_compression_FXT1;
 #endif
 #ifndef GL_SGIX_ycrcb
 #define GL_SGIX_ycrcb 1
-int GLAD_GL_SGIX_ycrcb;
+extern int GLAD_GL_SGIX_ycrcb;
 #endif
 #ifndef GL_AMD_conservative_depth
 #define GL_AMD_conservative_depth 1
-int GLAD_GL_AMD_conservative_depth;
+extern int GLAD_GL_AMD_conservative_depth;
 #endif
 #ifndef GL_ARB_texture_float
 #define GL_ARB_texture_float 1
-int GLAD_GL_ARB_texture_float;
+extern int GLAD_GL_ARB_texture_float;
 #endif
 #ifndef GL_ARB_compressed_texture_pixel_storage
 #define GL_ARB_compressed_texture_pixel_storage 1
-int GLAD_GL_ARB_compressed_texture_pixel_storage;
+extern int GLAD_GL_ARB_compressed_texture_pixel_storage;
 #endif
 #ifndef GL_SGIS_detail_texture
 #define GL_SGIS_detail_texture 1
-int GLAD_GL_SGIS_detail_texture;
+extern int GLAD_GL_SGIS_detail_texture;
 typedef void (APIENTRYP fp_glDetailTexFuncSGIS)(GLenum, GLsizei, const GLfloat*);
 GLAPI fp_glDetailTexFuncSGIS gladglDetailTexFuncSGIS;
 #define glDetailTexFuncSGIS gladglDetailTexFuncSGIS
@@ -13372,7 +13372,7 @@ GLAPI fp_glGetDetailTexFuncSGIS gladglGetDetailTexFuncSGIS;
 #endif
 #ifndef GL_ARB_draw_instanced
 #define GL_ARB_draw_instanced 1
-int GLAD_GL_ARB_draw_instanced;
+extern int GLAD_GL_ARB_draw_instanced;
 typedef void (APIENTRYP fp_glDrawArraysInstancedARB)(GLenum, GLint, GLsizei, GLsizei);
 GLAPI fp_glDrawArraysInstancedARB gladglDrawArraysInstancedARB;
 #define glDrawArraysInstancedARB gladglDrawArraysInstancedARB
@@ -13382,23 +13382,23 @@ GLAPI fp_glDrawElementsInstancedARB gladglDrawElementsInstancedARB;
 #endif
 #ifndef GL_OES_read_format
 #define GL_OES_read_format 1
-int GLAD_GL_OES_read_format;
+extern int GLAD_GL_OES_read_format;
 #endif
 #ifndef GL_ATI_texture_float
 #define GL_ATI_texture_float 1
-int GLAD_GL_ATI_texture_float;
+extern int GLAD_GL_ATI_texture_float;
 #endif
 #ifndef GL_ARB_texture_gather
 #define GL_ARB_texture_gather 1
-int GLAD_GL_ARB_texture_gather;
+extern int GLAD_GL_ARB_texture_gather;
 #endif
 #ifndef GL_AMD_vertex_shader_layer
 #define GL_AMD_vertex_shader_layer 1
-int GLAD_GL_AMD_vertex_shader_layer;
+extern int GLAD_GL_AMD_vertex_shader_layer;
 #endif
 #ifndef GL_ARB_shading_language_include
 #define GL_ARB_shading_language_include 1
-int GLAD_GL_ARB_shading_language_include;
+extern int GLAD_GL_ARB_shading_language_include;
 typedef void (APIENTRYP fp_glNamedStringARB)(GLenum, GLint, const GLchar*, GLint, const GLchar*);
 GLAPI fp_glNamedStringARB gladglNamedStringARB;
 #define glNamedStringARB gladglNamedStringARB
@@ -13420,22 +13420,22 @@ GLAPI fp_glGetNamedStringivARB gladglGetNamedStringivARB;
 #endif
 #ifndef GL_APPLE_client_storage
 #define GL_APPLE_client_storage 1
-int GLAD_GL_APPLE_client_storage;
+extern int GLAD_GL_APPLE_client_storage;
 #endif
 #ifndef GL_WIN_phong_shading
 #define GL_WIN_phong_shading 1
-int GLAD_GL_WIN_phong_shading;
+extern int GLAD_GL_WIN_phong_shading;
 #endif
 #ifndef GL_INGR_blend_func_separate
 #define GL_INGR_blend_func_separate 1
-int GLAD_GL_INGR_blend_func_separate;
+extern int GLAD_GL_INGR_blend_func_separate;
 typedef void (APIENTRYP fp_glBlendFuncSeparateINGR)(GLenum, GLenum, GLenum, GLenum);
 GLAPI fp_glBlendFuncSeparateINGR gladglBlendFuncSeparateINGR;
 #define glBlendFuncSeparateINGR gladglBlendFuncSeparateINGR
 #endif
 #ifndef GL_NV_path_rendering
 #define GL_NV_path_rendering 1
-int GLAD_GL_NV_path_rendering;
+extern int GLAD_GL_NV_path_rendering;
 typedef GLuint (APIENTRYP fp_glGenPathsNV)(GLsizei);
 GLAPI fp_glGenPathsNV gladglGenPathsNV;
 #define glGenPathsNV gladglGenPathsNV
@@ -13586,7 +13586,7 @@ GLAPI fp_glPointAlongPathNV gladglPointAlongPathNV;
 #endif
 #ifndef GL_ATI_vertex_streams
 #define GL_ATI_vertex_streams 1
-int GLAD_GL_ATI_vertex_streams;
+extern int GLAD_GL_ATI_vertex_streams;
 typedef void (APIENTRYP fp_glVertexStream1sATI)(GLenum, GLshort);
 GLAPI fp_glVertexStream1sATI gladglVertexStream1sATI;
 #define glVertexStream1sATI gladglVertexStream1sATI
@@ -13725,27 +13725,27 @@ GLAPI fp_glVertexBlendEnvfATI gladglVertexBlendEnvfATI;
 #endif
 #ifndef GL_ARB_texture_non_power_of_two
 #define GL_ARB_texture_non_power_of_two 1
-int GLAD_GL_ARB_texture_non_power_of_two;
+extern int GLAD_GL_ARB_texture_non_power_of_two;
 #endif
 #ifndef GL_APPLE_rgb_422
 #define GL_APPLE_rgb_422 1
-int GLAD_GL_APPLE_rgb_422;
+extern int GLAD_GL_APPLE_rgb_422;
 #endif
 #ifndef GL_EXT_texture_lod_bias
 #define GL_EXT_texture_lod_bias 1
-int GLAD_GL_EXT_texture_lod_bias;
+extern int GLAD_GL_EXT_texture_lod_bias;
 #endif
 #ifndef GL_ARB_seamless_cube_map
 #define GL_ARB_seamless_cube_map 1
-int GLAD_GL_ARB_seamless_cube_map;
+extern int GLAD_GL_ARB_seamless_cube_map;
 #endif
 #ifndef GL_ARB_shader_group_vote
 #define GL_ARB_shader_group_vote 1
-int GLAD_GL_ARB_shader_group_vote;
+extern int GLAD_GL_ARB_shader_group_vote;
 #endif
 #ifndef GL_NV_vdpau_interop
 #define GL_NV_vdpau_interop 1
-int GLAD_GL_NV_vdpau_interop;
+extern int GLAD_GL_NV_vdpau_interop;
 typedef void (APIENTRYP fp_glVDPAUInitNV)(const GLvoid*, const GLvoid*);
 GLAPI fp_glVDPAUInitNV gladglVDPAUInitNV;
 #define glVDPAUInitNV gladglVDPAUInitNV
@@ -13779,19 +13779,19 @@ GLAPI fp_glVDPAUUnmapSurfacesNV gladglVDPAUUnmapSurfacesNV;
 #endif
 #ifndef GL_ARB_occlusion_query2
 #define GL_ARB_occlusion_query2 1
-int GLAD_GL_ARB_occlusion_query2;
+extern int GLAD_GL_ARB_occlusion_query2;
 #endif
 #ifndef GL_ARB_internalformat_query2
 #define GL_ARB_internalformat_query2 1
-int GLAD_GL_ARB_internalformat_query2;
+extern int GLAD_GL_ARB_internalformat_query2;
 #endif
 #ifndef GL_EXT_texture_filter_anisotropic
 #define GL_EXT_texture_filter_anisotropic 1
-int GLAD_GL_EXT_texture_filter_anisotropic;
+extern int GLAD_GL_EXT_texture_filter_anisotropic;
 #endif
 #ifndef GL_SUN_vertex
 #define GL_SUN_vertex 1
-int GLAD_GL_SUN_vertex;
+extern int GLAD_GL_SUN_vertex;
 typedef void (APIENTRYP fp_glColor4ubVertex2fSUN)(GLubyte, GLubyte, GLubyte, GLubyte, GLfloat, GLfloat);
 GLAPI fp_glColor4ubVertex2fSUN gladglColor4ubVertex2fSUN;
 #define glColor4ubVertex2fSUN gladglColor4ubVertex2fSUN
@@ -13915,26 +13915,26 @@ GLAPI fp_glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN gladglReplacem
 #endif
 #ifndef GL_SGIX_igloo_interface
 #define GL_SGIX_igloo_interface 1
-int GLAD_GL_SGIX_igloo_interface;
+extern int GLAD_GL_SGIX_igloo_interface;
 typedef void (APIENTRYP fp_glIglooInterfaceSGIX)(GLenum, const GLvoid*);
 GLAPI fp_glIglooInterfaceSGIX gladglIglooInterfaceSGIX;
 #define glIglooInterfaceSGIX gladglIglooInterfaceSGIX
 #endif
 #ifndef GL_SGIS_texture_lod
 #define GL_SGIS_texture_lod 1
-int GLAD_GL_SGIS_texture_lod;
+extern int GLAD_GL_SGIS_texture_lod;
 #endif
 #ifndef GL_NV_vertex_program3
 #define GL_NV_vertex_program3 1
-int GLAD_GL_NV_vertex_program3;
+extern int GLAD_GL_NV_vertex_program3;
 #endif
 #ifndef GL_ARB_draw_indirect
 #define GL_ARB_draw_indirect 1
-int GLAD_GL_ARB_draw_indirect;
+extern int GLAD_GL_ARB_draw_indirect;
 #endif
 #ifndef GL_NV_vertex_program4
 #define GL_NV_vertex_program4 1
-int GLAD_GL_NV_vertex_program4;
+extern int GLAD_GL_NV_vertex_program4;
 typedef void (APIENTRYP fp_glVertexAttribI1iEXT)(GLuint, GLint);
 GLAPI fp_glVertexAttribI1iEXT gladglVertexAttribI1iEXT;
 #define glVertexAttribI1iEXT gladglVertexAttribI1iEXT
@@ -14007,11 +14007,11 @@ GLAPI fp_glGetVertexAttribIuivEXT gladglGetVertexAttribIuivEXT;
 #endif
 #ifndef GL_AMD_transform_feedback3_lines_triangles
 #define GL_AMD_transform_feedback3_lines_triangles 1
-int GLAD_GL_AMD_transform_feedback3_lines_triangles;
+extern int GLAD_GL_AMD_transform_feedback3_lines_triangles;
 #endif
 #ifndef GL_SGIS_fog_function
 #define GL_SGIS_fog_function 1
-int GLAD_GL_SGIS_fog_function;
+extern int GLAD_GL_SGIS_fog_function;
 typedef void (APIENTRYP fp_glFogFuncSGIS)(GLsizei, const GLfloat*);
 GLAPI fp_glFogFuncSGIS gladglFogFuncSGIS;
 #define glFogFuncSGIS gladglFogFuncSGIS
@@ -14021,25 +14021,25 @@ GLAPI fp_glGetFogFuncSGIS gladglGetFogFuncSGIS;
 #endif
 #ifndef GL_EXT_x11_sync_object
 #define GL_EXT_x11_sync_object 1
-int GLAD_GL_EXT_x11_sync_object;
+extern int GLAD_GL_EXT_x11_sync_object;
 typedef GLsync (APIENTRYP fp_glImportSyncEXT)(GLenum, GLintptr, GLbitfield);
 GLAPI fp_glImportSyncEXT gladglImportSyncEXT;
 #define glImportSyncEXT gladglImportSyncEXT
 #endif
 #ifndef GL_ARB_sync
 #define GL_ARB_sync 1
-int GLAD_GL_ARB_sync;
+extern int GLAD_GL_ARB_sync;
 #endif
 #ifndef GL_ARB_compute_variable_group_size
 #define GL_ARB_compute_variable_group_size 1
-int GLAD_GL_ARB_compute_variable_group_size;
+extern int GLAD_GL_ARB_compute_variable_group_size;
 typedef void (APIENTRYP fp_glDispatchComputeGroupSizeARB)(GLuint, GLuint, GLuint, GLuint, GLuint, GLuint);
 GLAPI fp_glDispatchComputeGroupSizeARB gladglDispatchComputeGroupSizeARB;
 #define glDispatchComputeGroupSizeARB gladglDispatchComputeGroupSizeARB
 #endif
 #ifndef GL_OES_fixed_point
 #define GL_OES_fixed_point 1
-int GLAD_GL_OES_fixed_point;
+extern int GLAD_GL_OES_fixed_point;
 typedef void (APIENTRYP fp_glAlphaFuncxOES)(GLenum, GLfixed);
 GLAPI fp_glAlphaFuncxOES gladglAlphaFuncxOES;
 #define glAlphaFuncxOES gladglAlphaFuncxOES
@@ -14367,18 +14367,18 @@ GLAPI fp_glVertex4xvOES gladglVertex4xvOES;
 #endif
 #ifndef GL_EXT_framebuffer_multisample
 #define GL_EXT_framebuffer_multisample 1
-int GLAD_GL_EXT_framebuffer_multisample;
+extern int GLAD_GL_EXT_framebuffer_multisample;
 typedef void (APIENTRYP fp_glRenderbufferStorageMultisampleEXT)(GLenum, GLsizei, GLenum, GLsizei, GLsizei);
 GLAPI fp_glRenderbufferStorageMultisampleEXT gladglRenderbufferStorageMultisampleEXT;
 #define glRenderbufferStorageMultisampleEXT gladglRenderbufferStorageMultisampleEXT
 #endif
 #ifndef GL_ARB_gpu_shader5
 #define GL_ARB_gpu_shader5 1
-int GLAD_GL_ARB_gpu_shader5;
+extern int GLAD_GL_ARB_gpu_shader5;
 #endif
 #ifndef GL_SGIS_texture4D
 #define GL_SGIS_texture4D 1
-int GLAD_GL_SGIS_texture4D;
+extern int GLAD_GL_SGIS_texture4D;
 typedef void (APIENTRYP fp_glTexImage4DSGIS)(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*);
 GLAPI fp_glTexImage4DSGIS gladglTexImage4DSGIS;
 #define glTexImage4DSGIS gladglTexImage4DSGIS
@@ -14388,7 +14388,7 @@ GLAPI fp_glTexSubImage4DSGIS gladglTexSubImage4DSGIS;
 #endif
 #ifndef GL_EXT_texture3D
 #define GL_EXT_texture3D 1
-int GLAD_GL_EXT_texture3D;
+extern int GLAD_GL_EXT_texture3D;
 typedef void (APIENTRYP fp_glTexImage3DEXT)(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*);
 GLAPI fp_glTexImage3DEXT gladglTexImage3DEXT;
 #define glTexImage3DEXT gladglTexImage3DEXT
@@ -14398,7 +14398,7 @@ GLAPI fp_glTexSubImage3DEXT gladglTexSubImage3DEXT;
 #endif
 #ifndef GL_EXT_multisample
 #define GL_EXT_multisample 1
-int GLAD_GL_EXT_multisample;
+extern int GLAD_GL_EXT_multisample;
 typedef void (APIENTRYP fp_glSampleMaskEXT)(GLclampf, GLboolean);
 GLAPI fp_glSampleMaskEXT gladglSampleMaskEXT;
 #define glSampleMaskEXT gladglSampleMaskEXT
@@ -14408,7 +14408,7 @@ GLAPI fp_glSamplePatternEXT gladglSamplePatternEXT;
 #endif
 #ifndef GL_EXT_secondary_color
 #define GL_EXT_secondary_color 1
-int GLAD_GL_EXT_secondary_color;
+extern int GLAD_GL_EXT_secondary_color;
 typedef void (APIENTRYP fp_glSecondaryColor3bEXT)(GLbyte, GLbyte, GLbyte);
 GLAPI fp_glSecondaryColor3bEXT gladglSecondaryColor3bEXT;
 #define glSecondaryColor3bEXT gladglSecondaryColor3bEXT
@@ -14463,11 +14463,11 @@ GLAPI fp_glSecondaryColorPointerEXT gladglSecondaryColorPointerEXT;
 #endif
 #ifndef GL_NV_parameter_buffer_object2
 #define GL_NV_parameter_buffer_object2 1
-int GLAD_GL_NV_parameter_buffer_object2;
+extern int GLAD_GL_NV_parameter_buffer_object2;
 #endif
 #ifndef GL_ATI_vertex_array_object
 #define GL_ATI_vertex_array_object 1
-int GLAD_GL_ATI_vertex_array_object;
+extern int GLAD_GL_ATI_vertex_array_object;
 typedef GLuint (APIENTRYP fp_glNewObjectBufferATI)(GLsizei, const GLvoid*, GLenum);
 GLAPI fp_glNewObjectBufferATI gladglNewObjectBufferATI;
 #define glNewObjectBufferATI gladglNewObjectBufferATI
@@ -14507,25 +14507,25 @@ GLAPI fp_glGetVariantArrayObjectivATI gladglGetVariantArrayObjectivATI;
 #endif
 #ifndef GL_ARB_sparse_texture
 #define GL_ARB_sparse_texture 1
-int GLAD_GL_ARB_sparse_texture;
+extern int GLAD_GL_ARB_sparse_texture;
 typedef void (APIENTRYP fp_glTexPageCommitmentARB)(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLboolean);
 GLAPI fp_glTexPageCommitmentARB gladglTexPageCommitmentARB;
 #define glTexPageCommitmentARB gladglTexPageCommitmentARB
 #endif
 #ifndef GL_SGIS_point_line_texgen
 #define GL_SGIS_point_line_texgen 1
-int GLAD_GL_SGIS_point_line_texgen;
+extern int GLAD_GL_SGIS_point_line_texgen;
 #endif
 #ifndef GL_EXT_draw_range_elements
 #define GL_EXT_draw_range_elements 1
-int GLAD_GL_EXT_draw_range_elements;
+extern int GLAD_GL_EXT_draw_range_elements;
 typedef void (APIENTRYP fp_glDrawRangeElementsEXT)(GLenum, GLuint, GLuint, GLsizei, GLenum, const GLvoid*);
 GLAPI fp_glDrawRangeElementsEXT gladglDrawRangeElementsEXT;
 #define glDrawRangeElementsEXT gladglDrawRangeElementsEXT
 #endif
 #ifndef GL_SGIX_blend_alpha_minmax
 #define GL_SGIX_blend_alpha_minmax 1
-int GLAD_GL_SGIX_blend_alpha_minmax;
+extern int GLAD_GL_SGIX_blend_alpha_minmax;
 #endif
 
 #ifdef __cplusplus
