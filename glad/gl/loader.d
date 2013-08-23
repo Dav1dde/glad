@@ -107,10 +107,30 @@ bool gladLoadGL() {
 static struct GLVersion { static int major = 0; static int minor = 0; }
 private extern(C) char* strstr(const(char)*, const(char)*);
 private extern(C) int strcmp(const(char)*, const(char)*);
+private extern(C) size_t strlen(const(char)*);
 private bool has_ext(const(char)* ext) {
     if(GLVersion.major < 3) {
         const(char)* extensions = cast(const(char)*)glGetString(GL_EXTENSIONS);
-        return extensions !is null && ext !is null && strstr(extensions, ext) !is null;
+        const(char)* loc;
+        const(char)* terminator;
+
+        if(extensions is null || ext is null) {
+            return 0;
+        }
+
+        while(1) {
+            loc = strstr(extensions, ext);
+            if(loc is null) {
+                return 0;
+            }
+
+            terminator = loc + strlen(ext);
+            if((loc is extensions || *(loc - 1) == ' ') &&
+                (*terminator == ' ' || *terminator == '\0')) {
+                return 1;
+            }
+            extensions = terminator;
+        }
     } else {
         int num;
         glGetIntegerv(GL_NUM_EXTENSIONS, &num);
