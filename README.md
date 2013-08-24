@@ -129,6 +129,12 @@ void gladLoadGLLoader(LOADER);
 
 On non-Windows platforms `glad` requires `libdl`, make sure to link with it (`-ldl` for gcc)!
 
+Note, there are two kinds of extension/version symbols, e.g. `GL_VERSION_3_0` and
+`GLAD_VERSION_3_0`. Latter is a runtime boolean (represented as integer), whereas
+the first (not prefixed with `GLAD_`) is a compiletime-constant, indicating that this
+header supports this version (as the official headers define these symbols).
+The runtime booleans are only valid *after* a succesful call to `gladLoadGL` or `gladLoadGLLoader`.
+
 
 #### D ####
 
