@@ -56,20 +56,19 @@ interpreter.
 Possible commandline options:
 
     usage: main.py [-h] [--profile {core,compatibility}] --out-path OUT
-                [--api API] [--version VERSION] [--generator {c,d,volt}]
-                [--extensions EXTENSIONS] [--spec {gl,egl,glx,wgl}]
-                [--no-loader]
+                [--api API] [--generator {c,d,volt}] [--extensions EXTENSIONS]
+                [--spec {gl,egl,glx,wgl}] [--no-loader]
 
-    Uses the offcial OpenGL spec (gl.xml) to generate an OpenGL loader made for
-    your needs. glad currently supports the languages C, D and Volt.
+    Uses the offcial Khronos-XML specs to generate a GL/GLES/EGL/GLX/WGL Loader
+    made for your needs. Glad currently supports the languages C, D and Volt.
 
     optional arguments:
-    -h, --help              show this help message and exit
+    -h, --help            show this help message and exit
     --profile {core,compatibility}
                             OpenGL profile (defaults to compatibility)
-    --out-path OUT          Output path for loader
-    --api API               API type
-    --version VERSION       OpenGL version (defaults to latest)
+    --out-path OUT        Output path for loader
+    --api API             API type/version pairs, like "gl=3.2,gles=", no
+                            version means latest
     --generator {c,d,volt}
                             Language (defaults to d)
     --extensions EXTENSIONS
@@ -78,6 +77,7 @@ Possible commandline options:
     --spec {gl,egl,glx,wgl}
                             Name of spec
     --no-loader
+
 
 
 By default a loader for the D programming language will be generated. To generate
@@ -104,6 +104,8 @@ typedef void* (* LOADER)(const char *name);
 /*
  * Load OpenGL using the internal loader.
  * Returns the true/1 if loading succeeded.
+ *
+ * Substitute GL with the API you generated
  *
  */
 int gladLoadGL(void);

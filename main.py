@@ -1,5 +1,5 @@
-'''Uses the offcial OpenGL spec (gl.xml) to generate an
-OpenGL loader made for your needs. glad currently supports
+'''Uses the offcial Khronos-XML specs to generate a
+GL/GLES/EGL/GLX/WGL Loader made for your needs. Glad currently supports
 the languages C, D and Volt.'''
 
 from glad.gl import OpenGLSpec
