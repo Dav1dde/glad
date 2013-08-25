@@ -1,17 +1,18 @@
 from glad.parse import Enum, Command
-import os.path
-
 from glad.generator.util import enforce
 from glad.loader import NullLoader
+from collections import defaultdict
+from itertools import chain
+import os.path
 
 
 class Generator(object):
-    def __init__(self, path, spec, api, loader):
+    def __init__(self, path, spec, api, loader=None):
         self.path = os.path.abspath(path)
 
         self.spec = spec
+        enforce(all(a in self.spec.features for a in api), 'Unknown API', ValueError)
         self.api = api
-        enforce(self.api in self.spec.features, 'Unknown API', ValueError)
         self.loader = loader
         if self.loader is None:
             self.loader = NullLoader
@@ -23,31 +24,48 @@ class Generator(object):
     def __exit__(self, exc_type, exc_value, traceback):
         self.close()
 
-    def generate(self, version=None, extensions=None):
-        if version is None:
-            version = self.spec.features[self.api].keys()[-1]
-        enforce(version in self.spec.features[self.api],
-                'Unknown version', ValueError)
+    def generate(self, extension_names=None):
+        features = list()
+        for api, version in self.api.iteritems():
+            features.extend(self.spec.features[api])
 
-        if extensions is None:
-            extensions = self.spec.extensions[self.api]
+            if version is None:
+                version = self.api[api] = self.spec.features[api].keys()[-1]
+            enforce(version in self.spec.features[api],
+                    'Unknown version', ValueError)
 
-        for ext in extensions:
-            enforce(ext in self.spec.extensions[self.api],
-                    'Invalid extension "{}"'.format(ext), ValueError)
+        if extension_names is None:
+            extension_names = list(chain.from_iterable(self.spec.extensions[a]
+                                                       for a in self.api))
 
-        types = [t for t in self.spec.types if t.api in (None, self.api)]
+        e = chain.from_iterable(self.spec.extensions[a] for a in self.api)
+        for ext in extension_names:
+            enforce(ext in e, 'Invalid extension "{}"'.format(ext), ValueError)
+
+        types = [t for t in self.spec.types if t.api is None or t.api in self.api]
         self.generate_types(types)
 
-        f = [value for key, value in self.spec.features[self.api].items()
-             if key <= version]
+        f = list()
+        for api, version in self.api.iteritems():
+            f.extend([value for key, value in self.spec.features[api].items()
+                        if key <= version])
         enums, functions = merge(f)
         self.generate_features(f)
 
-        extensions = [self.spec.extensions[self.api][ext] for ext in extensions]
+        extensions = list()
+        for api in self.api:
+            extensions.extend(self.spec.extensions[api][ext]
+                              for ext in extension_names if ext
+                              in self.spec.extensions[api])
         self.generate_extensions(extensions, enums, functions)
 
-        self.generate_loader(f, extensions)
+        fs = defaultdict(list)
+        es = defaultdict(list)
+        for api, version in self.api.iteritems():
+            fs[api].extend([value for key, value in self.spec.features[api].items()
+                        if key <= version])
+            es[api].extend(self.spec.extensions[api].values())
+        self.generate_loader(fs, es)
 
     def generate_loader(self, features, extensions):
         raise NotImplementedError

@@ -378,6 +378,7 @@ DTYPES = {
              'GLcharARB' : 'byte', 'GLhandleARB' : 'uint', 'GLhalfARB' : 'ushort',
              'GLhalfNV' : 'ushort', 'GLint64EXT' : 'long', 'GLuint64EXT' : 'ulong',
              'GLint64' : 'long', 'GLuint64' : 'ulong', 'GLvdpauSurfaceNV' : 'ptrdiff_t',
+             'GLeglImageOES' : 'void*'
     },
     'egl' : { 'EGLBoolean' : 'uint', 'EGLenum' : 'uint', 'EGLConfig' : 'void*',
               'EGLContext' : 'void*', 'EGLDisplay' : 'void*', 'EGLSurface' : 'void*',
@@ -445,13 +446,13 @@ class BaseDGenerator(Generator):
 
     @property
     def PACKAGE(self):
-        return self.api
+        return 'all'
 
     def generate_loader(self, features, extensions):
         f = self._f_loader
 
-        if self.api == 'egl':
-            features = []
+        if self.spec.NAME == 'egl':
+            features = {'egl' : []}
 
         self.write_module(f, self.LOADER)
         self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES])
@@ -459,79 +460,104 @@ class BaseDGenerator(Generator):
         self.loader.write(f)
         self.loader.write_has_ext(f)
 
-        f.write('void {}{}(void* function(const(char)* name) load) {{\n'
-                .format(self.LOAD_GL_NAME, self.api.upper()))
-        self.loader.write_begin_load(f)
-        f.write('\tfind_core();\n')
-        for feature in features:
-            f.write('\tload_{}(load);\n'.format(feature.name))
-        f.write('\n\tfind_extensions();\n')
-        for ext in extensions:
-            if len(list(ext.functions)) == 0:
-                continue
-            f.write('\tload_{}(load);\n'.format(ext.name))
-        f.write('\n\treturn;\n}\n\n')
+        written = set()
+        for api, version in self.api.iteritems():
+            loadername = 'Load' if self.LOAD_GL_PREFIX else 'load'
+            f.write('void {}{}{}(void* function(const(char)* name) load) {{\n'
+                    .format(self.LOAD_GL_PREFIX, loadername, api.upper()))
+            self.loader.write_begin_load(f)
+            f.write('\tfind_core{}();\n'.format(api.upper()))
+            for feature in features[api]:
+                f.write('\tload_{}(load);\n'.format(feature.name))
+            f.write('\n\tfind_extensions{}();\n'.format(api.upper()))
+            for ext in extensions[api]:
+                if len(list(ext.functions)) == 0:
+                    continue
+                f.write('\tload_{}(load);\n'.format(ext.name))
+            f.write('\n\treturn;\n}\n\n')
 
-        f.write('private:\n\n')
+            f.write('private:\n\n')
 
-        f.write('void find_core() {\n')
-        self.loader.write_find_core(f)
-        if self.api == 'gl':
-            for feature in features:
-                f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
-                    ' major > {num[0]};\n'.format(feature.name, num=feature.number))
-        f.write('\treturn;\n')
-        f.write('}\n\n')
-
-        f.write('void find_extensions() {\n')
-        if self.api == 'gl':
-            for ext in extensions:
-                f.write('\t{0} = has_ext("{0}");\n'.format(ext.name))
-        f.write('\treturn;\n')
-        f.write('}\n\n')
-
-
-        for feature in features:
-            f.write('void load_{}(void* function(const(char)* name) load) {{\n'
-                        .format(feature.name))
-            if self.api == 'gl':
-                f.write('\tif(!{}) return;\n'.format(feature.name))
-            for func in feature.functions:
-                f.write('\t{name} = cast(typeof({name}))load("{name}");\n'
-                    .format(name=func.proto.name))
-            f.write('\treturn;\n}\n\n')
-
-        for ext in extensions:
-            if len(list(ext.functions)) == 0:
-                continue
-
-            f.write('void load_{}(void* function(const(char)* name) load) {{\n'
-                .format(ext.name))
-            if self.api == 'gl':
-                f.write('\tif(!{}) return;\n'.format(ext.name))
-            for func in ext.functions:
-                # even if they were in written we need to load it
-                f.write('\t{name} = cast(typeof({name}))load("{name}");\n'
-                    .format(name=func.proto.name))
+            f.write('void find_core{}() {{\n'.format(api.upper()))
+            self.loader.write_find_core(f)
+            if self.spec.NAME == 'gl':
+                for feature in features[api]:
+                    f.write('\t{} = (major == {num[0]} && minor >= {num[1]}) ||'
+                        ' major > {num[0]};\n'.format(feature.name, num=feature.number))
             f.write('\treturn;\n')
-            f.write('}\n')
+            f.write('}\n\n')
 
-        self.write_package()
+            f.write('void find_extensions{}() {{\n'.format(api.upper()))
+            if self.spec.NAME == 'gl':
+                for ext in extensions[api]:
+                    f.write('\t{0} = has_ext("{0}");\n'.format(ext.name))
+            f.write('\treturn;\n')
+            f.write('}\n\n')
 
-    def write_package(self):
+            for feature in features[api]:
+                f.write('void load_{}(void* function(const(char)* name) load) {{\n'
+                            .format(feature.name))
+                if self.spec.NAME == 'gl':
+                    f.write('\tif(!{}) return;\n'.format(feature.name))
+                for func in feature.functions:
+                    f.write('\t{name} = cast(typeof({name}))load("{name}");\n'
+                        .format(name=func.proto.name))
+                f.write('\treturn;\n}\n\n')
+
+            for ext in extensions[api]:
+                if len(list(ext.functions)) == 0 or ext.name in written:
+                    continue
+
+                f.write('void load_{}(void* function(const(char)* name) load) {{\n'
+                    .format(ext.name))
+                if self.spec.NAME == 'gl':
+                    f.write('\tif(!{}) return;\n'.format(ext.name))
+                for func in ext.functions:
+                    # even if they were in written we need to load it
+                    f.write('\t{name} = cast(typeof({name}))load("{name}");\n'
+                        .format(name=func.proto.name))
+                f.write('\treturn;\n')
+                f.write('}\n')
+
+                written.add(ext.name)
+
+        self.write_packages(features, extensions)
+
+    def write_packages(self, allfeatures, allextensions):
         f = self._f_gl
 
         self.write_module(f, self.PACKAGE)
         self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES], False)
+
+        for api, features in allfeatures.iteritems():
+            extensions = allextensions[api]
+            with open(self.make_path(api), 'w') as f:
+                self.write_module(f, api)
+
+                extenums = chain.from_iterable(ext.enums for ext in extensions)
+                funcenums = chain.from_iterable(ext.enums for ext in extensions)
+                enums = set(enum.name for enum in extenums) | \
+                        set(enum.name for enum in funcenums)
+
+                featfuncs = set(func.proto.name for func in
+                        chain.from_iterable(feat.functions for feat in features))
+                extfuncs = set(func.proto.name for func in
+                        chain.from_iterable(ext.functions for ext in extensions))
+                extfuncs = extfuncs - featfuncs
+
+                self.write_selective_import(f, self.FUNCS, featfuncs)
+                self.write_selective_import(f, self.EXT, extfuncs)
+                self.write_selective_import(f, self.ENUMS, enums)
+
 
     def generate_types(self, types):
         f = self._f_types
 
         self.write_module(f, self.TYPES)
 
-        for ogl, d in self.TYPE_DICT[self.api].items():
+        for ogl, d in self.TYPE_DICT[self.spec.NAME].items():
             self.write_alias(f, ogl, d)
-        self.TYPE_DICT['__other'][self.api](self, f)
+        self.TYPE_DICT['__other'][self.spec.NAME](self, f)
 
     def generate_features(self, features):
         self.write_enums(features)
@@ -543,7 +569,7 @@ class BaseDGenerator(Generator):
         self.write_module(e, self.ENUMS)
         self.write_imports(e, [self.TYPES])
 
-        for v in self.TYPE_DICT['SpecialNumbers'][self.api]:
+        for v in self.TYPE_DICT['SpecialNumbers'][self.spec.NAME]:
             self.write_enum(e, *v)
 
         written = set()
@@ -562,11 +588,11 @@ class BaseDGenerator(Generator):
         self.write_module(f, self.FUNCS)
         self.write_imports(f, [self.TYPES])
 
-        if self.api == 'gl':
+        if self.spec.NAME == 'gl':
             for feature in features:
                 self.write_boolean(f, feature.name)
 
-        if self.api == 'egl':
+        if self.spec.NAME == 'egl':
             self.write_extern(f)
             for feature in features:
                 for func in feature.functions:
@@ -585,12 +611,13 @@ class BaseDGenerator(Generator):
         written = set(enum.name for enum in enums) | \
                     set(function.proto.name for function in functions)
         for ext in extensions:
-            if self.api == 'gl':
+            if self.spec.NAME == 'gl' and not ext.name in written:
                 self.write_boolean(f, ext.name)
             for enum in ext.enums:
                 if not enum.name in written and not enum.group == 'SpecialNumbers':
-                    self.write_enum(f, enum.name, enum.value)
+                    self.write_enum(self._f_enums, enum.name, enum.value)
                 written.add(enum.name)
+            written.add(ext.name)
 
         self.write_functions(f, write, written, extensions)
 
@@ -612,11 +639,14 @@ class BaseDGenerator(Generator):
 
     def make_path(self, name):
         path = os.path.join(self.path, self.MODULE.split('.')[-1],
-                            self.api, name.split('.')[-1] + self.FILE_EXTENSION)
+                            self.spec.NAME, name.split('.')[-1] + self.FILE_EXTENSION)
         makefiledir(path)
         return path
 
     def write_imports(self, fobj, modules, private=True):
+        raise NotImplementedError
+
+    def write_selective_import(self, fobj, imports):
         raise NotImplementedError
 
     def write_module(self, fobj, name):
@@ -678,7 +708,7 @@ class DGenerator(BaseDGenerator):
     FILE_EXTENSION = '.d'
     TYPE_DICT = DTYPES
 
-    LOAD_GL_NAME = 'gladLoad'
+    LOAD_GL_PREFIX = 'glad'
 
     def write_imports(self, fobj, modules, private=True):
         for mod in modules:
@@ -687,10 +717,22 @@ class DGenerator(BaseDGenerator):
             else:
                 fobj.write('public ')
 
-            fobj.write('import {}.{}.{};\n'.format(self.MODULE, self.api, mod))
+            fobj.write('import {}.{}.{};\n'.format(self.MODULE, self.spec.NAME, mod))
+
+    def write_selective_import(self, fobj, mod, imports):
+        fobj.write('import {}.{}.{} :\n'.format(self.MODULE, self.spec.NAME, mod))
+        imports = set(imports)
+        last = len(imports)
+        for i, im in enumerate(imports, 1):
+            fobj.write(im)
+            if not i == last:
+                fobj.write(', ')
+            if (i % 5) == 0:
+                fobj.write('\n')
+        fobj.write(';\n\n')
 
     def write_module(self, fobj, name):
-        fobj.write('module {}.{}.{};\n\n\n'.format(self.MODULE, self.api, name))
+        fobj.write('module {}.{}.{};\n\n\n'.format(self.MODULE, self.spec.NAME, name))
 
     def write_prototype_pre(self, fobj):
         fobj.write('nothrow ')

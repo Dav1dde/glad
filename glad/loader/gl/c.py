@@ -109,7 +109,6 @@ extern "C" {
 #endif
 
 typedef void* (* LOADER)(const char *name);
-void gladLoadGLLoader(LOADER);
 '''
 
 _OPENGL_HEADER_LOADER = '''

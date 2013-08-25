@@ -9,12 +9,16 @@ from glad.wgl import WGLSpec
 from glad.generator import get_generator
 from glad.loader import NullLoader, get_loader
 
+from collections import namedtuple
+
 SPECS = {
     'gl' : OpenGLSpec,
     'egl' : EGLSpec,
     'glx' : GLXSpec,
     'wgl' : WGLSpec
 }
+
+Version = namedtuple('Version', ['major', 'minor'])
 
 def main():
     import os.path
@@ -46,18 +50,30 @@ def main():
 
         raise argparse.ArgumentTypeError(msg)
 
-    def opengl_version(value):
-        if value is None:
-            return value
+    def version(value):
+        if value is None or len(value.strip()) == 0:
+            return None
+
+        if not '.' in value:
+            value = '{}.0'.format(value)
 
         try:
-            v = tuple(map(int, value.split('.')))
-            if len(v) == 2:
-                return v
-        except:
+            v = Version(*map(int, value.split('.')))
+            return v
+        except Exception, e:
             pass
 
-        raise argparse.ArgumentTypeError('Invalid OpenGL version')
+        raise argparse.ArgumentTypeError('Invalid version: "{}"'.format(value))
+
+    def cmdapi(value):
+        try:
+            return dict((p[0], version(p[1])) for p in
+                            (map(str.strip, e.split('=')) for e in
+                                filter(bool, map(str.strip, value.split(',')))))
+        except Exception:
+            pass
+
+        raise argparse.ArgumentTypeError('Invalid api-string: "{}"'.format(value))
 
     description = __doc__
     parser = ArgumentParser(description=description)
@@ -67,9 +83,9 @@ def main():
                         help='OpenGL profile (defaults to compatibility)')
     parser.add_argument('--out-path', dest='out', required=True,
                         help='Output path for loader')
-    parser.add_argument('--api', dest='api', help='API type')
-    parser.add_argument('--version', dest='version', type=opengl_version,
-                        default=None, help='OpenGL version (defaults to latest)')
+    parser.add_argument('--api', dest='api', type=cmdapi, help='API type')
+    #parser.add_argument('--version', dest='version', type=opengl_version,
+                        #default=None, help='OpenGL version (defaults to latest)')
     parser.add_argument('--generator', dest='generator', default='d',
                         choices=['c', 'd', 'volt'], help='Language (defaults to d)')
     parser.add_argument('--extensions', dest='extensions', default=None,
@@ -86,11 +102,11 @@ def main():
         spec.profile = ns.profile
 
     api = ns.api
-    if api is None:
-        api = spec.NAME
+    if api is None or len(api.keys()) == 0:
+        api = {spec.NAME : None}
 
     try:
-        loader = get_loader(ns.generator, api)
+        loader = get_loader(ns.generator, spec.NAME)
         loader.disabled = ns.no_loader
     except KeyError:
         return parser.error('API/Spec not yet supported')
@@ -99,7 +115,7 @@ def main():
 
     with Generator(ns.out, spec, api, loader) as generator:
         #try:
-        generator.generate(ns.version, ns.extensions)
+        generator.generate(ns.extensions)
         #except Exception, e:
             #parser.error(e.message)
 

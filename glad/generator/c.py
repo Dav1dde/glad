@@ -9,8 +9,8 @@ KHRPLATFORM = 'https://www.khronos.org/registry/egl/api/KHR/khrplatform.h'
 class CGenerator(Generator):
     def open(self):
         suffix = ''
-        if not self.api == 'gl':
-            suffix = '_{}'.format(self.api)
+        if not self.spec.NAME == 'gl':
+            suffix = '_{}'.format(self.spec.NAME)
 
         self.h_include = '<glad/glad{}.h>'.format(suffix)
         self._f_c = open(make_path(self.path, 'src',
@@ -34,63 +34,67 @@ class CGenerator(Generator):
     def generate_loader(self, features, extensions):
         f = self._f_c
 
-        if self.api == 'egl':
-            features = []
+        if self.spec.NAME == 'egl':
+            features = {'egl' : []}
 
-        for feature in features:
-            f.write('static void load_{}(LOADER load) {{\n'
-                    .format(feature.name))
-            if self.api == 'gl':
-                f.write('\tif(!GLAD_{}) return;\n'.format(feature.name))
-            for func in feature.functions:
-                f.write('\t{name} = (fp_{name})load("{name}");\n'
-                    .format(name=func.proto.name))
-            f.write('}\n')
+        written = set()
+        for api, version in self.api.iteritems():
+            for feature in features[api]:
+                f.write('static void load_{}(LOADER load) {{\n'
+                        .format(feature.name))
+                if self.spec.NAME == 'gl':
+                    f.write('\tif(!GLAD_{}) return;\n'.format(feature.name))
+                for func in feature.functions:
+                    f.write('\t{name} = (fp_{name})load("{name}");\n'
+                        .format(name=func.proto.name))
+                f.write('}\n')
 
-        for ext in extensions:
-            if len(list(ext.functions)) == 0:
-                continue
+            for ext in extensions[api]:
+                if len(list(ext.functions)) == 0 or ext.name in written:
+                    continue
 
-            f.write('static void load_{}(LOADER load) {{\n'
-                .format(ext.name))
-            if self.api == 'gl':
-                f.write('\tif(!GLAD_{}) return;\n'.format(ext.name))
-            if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
-            if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
-            for func in ext.functions:
-                # even if they were in written we need to load it
-                f.write('\t{name} = (fp_{name})load("{name}");\n'
-                    .format(name=func.proto.name))
-            if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'): f.write('#endif\n')
-            f.write('}\n')
+                f.write('static void load_{}(LOADER load) {{\n'
+                    .format(ext.name))
+                if self.spec.NAME == 'gl':
+                    f.write('\tif(!GLAD_{}) return;\n'.format(ext.name))
+                if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
+                if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
+                for func in ext.functions:
+                    # even if they were in written we need to load it
+                    f.write('\t{name} = (fp_{name})load("{name}");\n'
+                        .format(name=func.proto.name))
+                if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'): f.write('#endif\n')
+                f.write('}\n')
 
-        f.write('static void find_extensions(void) {\n')
-        if self.api == 'gl':
-            for ext in extensions:
-                f.write('\tGLAD_{0} = has_ext("{0}");\n'.format(ext.name))
-        f.write('}\n\n')
+                written.add(ext.name)
 
-        f.write('static void find_core(void) {\n')
-        self.loader.write_find_core(f)
-        if self.api == 'gl':
-            for feature in features:
-                f.write('\tGLAD_{} = (major == {num[0]} && minor >= {num[1]}) ||'
-                    ' major > {num[0]};\n'.format(feature.name, num=feature.number))
-        f.write('}\n\n')
+            f.write('static void find_extensions{}(void) {{\n'.format(api.upper()))
+            if self.spec.NAME == 'gl':
+                for ext in extensions[api]:
+                    f.write('\tGLAD_{0} = has_ext("{0}");\n'.format(ext.name))
+            f.write('}\n\n')
 
-        f.write('void gladLoad{}Loader(LOADER load) {{\n'.format(self.api.upper()))
+            f.write('static void find_core{}(void) {{\n'.format(api.upper()))
+            self.loader.write_find_core(f)
+            if self.spec.NAME == 'gl':
+                for feature in features[api]:
+                    f.write('\tGLAD_{} = (major == {num[0]} && minor >= {num[1]}) ||'
+                        ' major > {num[0]};\n'.format(feature.name, num=feature.number))
+            f.write('}\n\n')
 
-        self.loader.write_begin_load(f)
-        f.write('\tfind_core();\n')
+            f.write('void gladLoad{}Loader(LOADER load) {{\n'.format(api.upper()))
 
-        for feature in features:
-            f.write('\tload_{}(load);\n'.format(feature.name))
-        f.write('\n\tfind_extensions();\n')
-        for ext in extensions:
-            if len(list(ext.functions)) == 0:
-                continue
-            f.write('\tload_{}(load);\n'.format(ext.name))
-        f.write('\n\treturn;\n}\n\n')
+            self.loader.write_begin_load(f)
+            f.write('\tfind_core{}();\n'.format(api.upper()))
+
+            for feature in features[api]:
+                f.write('\tload_{}(load);\n'.format(feature.name))
+            f.write('\n\tfind_extensions{}();\n'.format(api.upper()))
+            for ext in extensions[api]:
+                if len(list(ext.functions)) == 0:
+                    continue
+                f.write('\tload_{}(load);\n'.format(ext.name))
+            f.write('\n\treturn;\n}\n\n')
 
         self.loader.write_header_end(self._f_h)
 
@@ -99,17 +103,17 @@ class CGenerator(Generator):
 
         self.loader.write_header(f)
 
-        for type in types:
-            if self.api == 'gl' and 'khrplatform' in type.raw:
-                continue
+        for api in self.api:
+            f.write('void gladLoad{}Loader(LOADER);\n'.format(api.upper()))
 
+        for type in types:
             f.write(type.raw.lstrip().replace('        ', ''))
             f.write('\n')
 
     def generate_features(self, features):
         f = self._f_h
         write = set()
-        if self.api == 'egl':
+        if self.spec.NAME == 'egl':
             for feature in features:
                 for func in feature.functions:
                     self.write_function_def(f, func)
@@ -121,7 +125,7 @@ class CGenerator(Generator):
         self.loader.write(f)
         self.loader.write_has_ext(f)
 
-        if self.api == 'gl':
+        if self.spec.NAME == 'gl':
             for feature in features:
                 f.write('int GLAD_{};\n'.format(feature.name))
 
@@ -137,7 +141,7 @@ class CGenerator(Generator):
         self.write_functions(f, write, written, extensions)
 
         f = self._f_c
-        if self.api == 'gl':
+        if self.spec.NAME == 'gl':
             for ext in extensions:
                 f.write('int GLAD_{};\n'.format(ext.name))
 
@@ -158,7 +162,7 @@ class CGenerator(Generator):
 
         for ext in extensions:
             f.write('#ifndef {0}\n#define {0} 1\n'.format(ext.name))
-            if self.api == 'gl':
+            if self.spec.NAME == 'gl':
                 f.write('extern int GLAD_{};\n'.format(ext.name))
             if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
             if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
