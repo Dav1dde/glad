@@ -45,19 +45,19 @@ private bool has_ext(const(char)* ext) {
         const(char)* terminator;
 
         if(extensions is null || ext is null) {
-            return 0;
+            return false;
         }
 
         while(1) {
             loc = strstr(extensions, ext);
             if(loc is null) {
-                return 0;
+                return false;
             }
 
             terminator = loc + strlen(ext);
             if((loc is extensions || *(loc - 1) == ' ') &&
                 (*terminator == ' ' || *terminator == '\\0')) {
-                return 1;
+                return true;
             }
             extensions = terminator;
         }
