@@ -1,18 +1,38 @@
-module amp.gl.gl.loader;
+module amp.gl.loader;
 
 
-private import amp.gl.gl.funcs;
-private import amp.gl.gl.ext;
-private import amp.gl.gl.enums;
-private import amp.gl.gl.types;
-
-static struct GLVersion { static int major = 0; static int minor = 0; }
+private import amp.gl.funcs;
+private import amp.gl.ext;
+private import amp.gl.enums;
+private import amp.gl.types;
+global int GL_MAJOR = 0;
+global int GL_MINOR = 0;
 private extern(C) char* strstr(const(char)*, const(char)*);
 private extern(C) int strcmp(const(char)*, const(char)*);
+private extern(C) size_t strlen(const(char)*);
 private bool has_ext(const(char)* ext) {
-    if(GLVersion.major < 3) {
+    if(GL_MAJOR < 3) {
         const(char)* extensions = cast(const(char)*)glGetString(GL_EXTENSIONS);
-        return extensions !is null && ext !is null && strstr(extensions, ext) !is null;
+        const(char)* loc;
+        const(char)* terminator;
+
+        if(extensions is null || ext is null) {
+            return false;
+        }
+
+        while(1) {
+            loc = strstr(extensions, ext);
+            if(loc is null) {
+                return false;
+            }
+
+            terminator = loc + strlen(ext);
+            if((loc is extensions || *(loc - 1) == ' ') &&
+                (*terminator == ' ' || *terminator == '\0')) {
+                return true;
+            }
+            extensions = terminator;
+        }
     } else {
         int num;
         glGetIntegerv(GL_NUM_EXTENSIONS, &num);
@@ -26,6 +46,7 @@ private bool has_ext(const(char)* ext) {
 
     return false;
 }
+
 void loadGL(void* function(const(char)* name) load) {
 	glGetString = cast(typeof(glGetString))load("glGetString");
 	if(glGetString is null) { return; }
@@ -301,7 +322,7 @@ void find_core() {
 	const(char)* v = cast(const(char)*)glGetString(GL_VERSION);
 	int major = v[0] - '0';
 	int minor = v[2] - '0';
-	GLVersion.major = major; GLVersion.minor = minor;
+	GL_MAJOR = major; GL_MINOR = minor;
 	GL_VERSION_1_0 = (major == 1 && minor >= 0) || major > 1;
 	GL_VERSION_1_1 = (major == 1 && minor >= 1) || major > 1;
 	GL_VERSION_1_2 = (major == 1 && minor >= 2) || major > 1;

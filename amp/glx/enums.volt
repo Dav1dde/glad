@@ -1,7 +1,7 @@
-module amp.gl.glx.enums;
+module amp.glx.enums;
 
 
-private import amp.gl.glx.types;
+private import amp.glx.types;
 enum uint GLX_DONT_CARE = 0xFFFFFFFFU;
 enum const(char)* GLX_EXTENSION_NAME = "GLX";
 enum uint GLX_PbufferClobber = 0;

@@ -1,9 +1,9 @@
-module amp.gl.egl.ext;
+module amp.egl.ext;
 
 
-private import amp.gl.egl.types;
-private import amp.gl.egl.enums;
-private import amp.gl.egl.funcs;
+private import amp.egl.types;
+private import amp.egl.enums;
+private import amp.egl.funcs;
 enum uint EGL_READ_SURFACE_BIT_KHR = 0x0001U;
 enum uint EGL_WRITE_SURFACE_BIT_KHR = 0x0002U;
 enum uint EGL_LOCK_SURFACE_BIT_KHR = 0x0080U;

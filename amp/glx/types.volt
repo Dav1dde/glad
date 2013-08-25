@@ -1,4 +1,4 @@
-module amp.gl.glx.types;
+module amp.glx.types;
 
 
 alias GLenum = uint;
@@ -66,9 +66,9 @@ alias VLNode = void*;
 alias VLPath = void*;
 alias VLServer = void*;
 
-alias long int64_t;
-alias ulong uint64_t;
-alias int int32_t;
+alias int64_t = long;
+alias uint64_t = ulong;
+alias int32_t = int;
 
 alias GLXContextID = uint;
 alias GLXPixmap = uint;
@@ -137,10 +137,10 @@ extern(System) {
     }
 
     struct GLXHyperpipeConfigSGIX {
-        char[80] pipeName[80]; /* Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX] */
+        char[80] pipeName; /* Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX] */
         int      channel;
         uint     participationType;
-        int     timeSlice;
+        int      timeSlice;
     }
 
     struct GLXPipeRect {

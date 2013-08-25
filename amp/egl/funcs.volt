@@ -1,7 +1,7 @@
-module amp.gl.egl.funcs;
+module amp.egl.funcs;
 
 
-private import amp.gl.egl.types;
+private import amp.egl.types;
 extern(System) {
 EGLBoolean eglChooseConfig(EGLDisplay, const(EGLint)*, EGLConfig*, EGLint, EGLint*);
 EGLBoolean eglCopyBuffers(EGLDisplay, EGLSurface, EGLNativePixmapType);

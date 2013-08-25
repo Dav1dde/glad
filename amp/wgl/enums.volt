@@ -1,7 +1,7 @@
-module amp.gl.wgl.enums;
+module amp.wgl.enums;
 
 
-private import amp.gl.wgl.types;
+private import amp.wgl.types;
 enum uint WGL_FONT_LINES = 0;
 enum uint WGL_FONT_POLYGONS = 1;
 enum uint WGL_SWAP_MAIN_PLANE = 0x00000001U;

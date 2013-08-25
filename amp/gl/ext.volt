@@ -1,9 +1,9 @@
-module amp.gl.gl.ext;
+module amp.gl.ext;
 
 
-private import amp.gl.gl.types;
-private import amp.gl.gl.enums;
-private import amp.gl.gl.funcs;
+private import amp.gl.types;
+private import amp.gl.enums;
+private import amp.gl.funcs;
 global bool GL_SGIX_pixel_tiles;
 enum uint GL_PIXEL_TILE_BEST_ALIGNMENT_SGIX = 0x813EU;
 enum uint GL_PIXEL_TILE_CACHE_INCREMENT_SGIX = 0x813FU;

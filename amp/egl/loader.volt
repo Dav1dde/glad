@@ -1,10 +1,10 @@
-module amp.gl.egl.loader;
+module amp.egl.loader;
 
 
-private import amp.gl.egl.funcs;
-private import amp.gl.egl.ext;
-private import amp.gl.egl.enums;
-private import amp.gl.egl.types;
+private import amp.egl.funcs;
+private import amp.egl.ext;
+private import amp.egl.enums;
+private import amp.egl.types;
 
 private bool has_ext(const(char)* ext) {
     return true;

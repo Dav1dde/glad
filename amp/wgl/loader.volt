@@ -1,10 +1,10 @@
-module amp.gl.wgl.loader;
+module amp.wgl.loader;
 
 
-private import amp.gl.wgl.funcs;
-private import amp.gl.wgl.ext;
-private import amp.gl.wgl.enums;
-private import amp.gl.wgl.types;
+private import amp.wgl.funcs;
+private import amp.wgl.ext;
+private import amp.wgl.enums;
+private import amp.wgl.types;
 
 private bool has_ext(const(char)* name) {
     return true;

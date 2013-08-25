@@ -1,4 +1,4 @@
-module amp.gl.wgl.types;
+module amp.wgl.types;
 
 
 alias GLenum = uint;
@@ -116,11 +116,11 @@ extern(System) {
     alias LPGLYPHMETRICSFLOAT = GLYPHMETRICSFLOAT;
 
     struct GPU_DEVICE {
-        DWORD  cb;
-        CHAR   DeviceName[32];
-        CHAR   DeviceString[128];
-        DWORD  Flags;
-        RECT   rcVirtualScreen;
+        DWORD      cb;
+        CHAR[32]   DeviceName;
+        CHAR[128]  DeviceString;
+        DWORD      Flags;
+        RECT       rcVirtualScreen;
     }
 
     alias PGPU_DEVICE = GPU_DEVICE;

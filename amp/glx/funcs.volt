@@ -1,7 +1,7 @@
-module amp.gl.glx.funcs;
+module amp.glx.funcs;
 
 
-private import amp.gl.glx.types;
+private import amp.glx.types;
 extern(System) @loadDynamic {
 XVisualInfo* glXChooseVisual(Display*, int, int*);
 GLXContext glXCreateContext(Display*, XVisualInfo*, GLXContext, Bool);

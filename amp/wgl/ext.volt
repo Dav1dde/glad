@@ -1,9 +1,9 @@
-module amp.gl.wgl.ext;
+module amp.wgl.ext;
 
 
-private import amp.gl.wgl.types;
-private import amp.gl.wgl.enums;
-private import amp.gl.wgl.funcs;
+private import amp.wgl.types;
+private import amp.wgl.enums;
+private import amp.wgl.funcs;
 enum uint WGL_COVERAGE_SAMPLES_NV = 0x2042U;
 enum uint WGL_COLOR_SAMPLES_NV = 0x20B9U;
 enum uint WGL_IMAGE_BUFFER_MIN_ACCESS_I3D = 0x00000001U;

@@ -1,7 +1,7 @@
-module amp.gl.gl.enums;
+module amp.gl.enums;
 
 
-private import amp.gl.gl.types;
+private import amp.gl.types;
 enum ubyte GL_FALSE = 0;
 enum ubyte GL_TRUE = 1;
 enum uint GL_NO_ERROR = 0;

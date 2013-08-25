@@ -1,7 +1,7 @@
-module amp.gl.wgl.funcs;
+module amp.wgl.funcs;
 
 
-private import amp.gl.wgl.types;
+private import amp.wgl.types;
 extern(System) @loadDynamic {
 int ChoosePixelFormat(HDC, const(PIXELFORMATDESCRIPTOR)*);
 int DescribePixelFormat(HDC, int, UINT, const(PIXELFORMATDESCRIPTOR)*);

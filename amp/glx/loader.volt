@@ -1,10 +1,10 @@
-module amp.gl.glx.loader;
+module amp.glx.loader;
 
 
-private import amp.gl.glx.funcs;
-private import amp.gl.glx.ext;
-private import amp.gl.glx.enums;
-private import amp.gl.glx.types;
+private import amp.glx.funcs;
+private import amp.glx.ext;
+private import amp.glx.enums;
+private import amp.glx.types;
 
 void loadGLX(void* function(const(char)* name) load) {
 	find_core();

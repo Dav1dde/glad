@@ -1,7 +1,7 @@
-module amp.gl.egl.enums;
+module amp.egl.enums;
 
 
-private import amp.gl.egl.types;
+private import amp.egl.types;
 enum int EGL_DONT_CARE = -1;
 enum int EGL_UNKNOWN = -1;
 enum int EGL_NO_NATIVE_FENCE_FD_ANDROID = -1;

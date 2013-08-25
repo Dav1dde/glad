@@ -1,9 +1,9 @@
-module amp.gl.glx.ext;
+module amp.glx.ext;
 
 
-private import amp.gl.glx.types;
-private import amp.gl.glx.enums;
-private import amp.gl.glx.funcs;
+private import amp.glx.types;
+private import amp.glx.enums;
+private import amp.glx.funcs;
 enum uint GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB = 0x20B2U;
 enum uint GLX_SHARE_CONTEXT_EXT = 0x800AU;
 enum uint GLX_VISUAL_ID_EXT = 0x800BU;
