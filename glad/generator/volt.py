@@ -20,7 +20,7 @@ class VoltGenerator(DGenerator):
 
     def write_module(self, fobj, name):
         if name == 'package':
-            fobj.write('module {};\n\n'.format(self.MODULE))
+            fobj.write('module {}.{};\n\n'.format(self.MODULE, self.spec.NAME))
         else:
             DGenerator.write_module(self, fobj, name)
 
