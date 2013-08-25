@@ -16,6 +16,7 @@ alias GLdouble = double;
 alias GLhandleARB = uint;
 alias GLint64 = long;
 alias GLenum = uint;
+alias GLeglImageOES = void*;
 alias GLintptrARB = ptrdiff_t;
 alias GLsizeiptr = ptrdiff_t;
 alias GLint = int;

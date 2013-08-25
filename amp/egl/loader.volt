@@ -9,10 +9,10 @@ private import amp.egl.types;
 private bool has_ext(const(char)* ext) {
     return true;
 }
-void loadEGL(void* function(const(char)* name) load) {
-	find_core();
+void gladLoadEGL(void* function(const(char)* name) load) {
+	find_coreEGL();
 
-	find_extensions();
+	find_extensionsEGL();
 	load_EGL_KHR_lock_surface(load);
 	load_EGL_KHR_stream_fifo(load);
 	load_EGL_NV_native_query(load);
@@ -40,11 +40,11 @@ void loadEGL(void* function(const(char)* name) load) {
 
 private:
 
-void find_core() {
+void find_coreEGL() {
 	return;
 }
 
-void find_extensions() {
+void find_extensionsEGL() {
 	return;
 }
 
