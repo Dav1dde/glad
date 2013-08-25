@@ -2,6 +2,7 @@ from glad.generator import Generator
 from glad.generator.util import makefiledir
 from glad.loader import NullLoader
 from itertools import chain
+from StringIO import StringIO
 import os.path
 
 def _gl_types(gen, f):
@@ -19,6 +20,9 @@ def _gl_types(gen, f):
     gen.write_extern_end(f)
 
 def _egl_types(gen, f):
+    io = StringIO()
+    gen.write_opaque_struct(io, 'egl_native_pixmap_t')
+
     f.write(
 '''
 // Thanks to @jpf91 (github) for these declarations
@@ -28,28 +32,29 @@ version(Windows) {
     alias EGLNativePixmapType = HBITMAP;
     alias EGLNativeWindowType = HWND;
 } else version(Symbian) {
-    alias int   EGLNativeDisplayType;
-    alias void* EGLNativeWindowType;
-    alias void* EGLNativePixmapType;
+    alias EGLNativeDisplayType = int;
+    alias EGLNativeWindowType = void*;
+    alias EGLNativePixmapType = void*;
 } else version(Android) {
     //import android.native_window;
-    struct egl_native_pixmap_t;
+    //struct egl_native_pixmap_t;
+    ''' + io.getvalue() + '''
     //alias ANativeWindow*           EGLNativeWindowType;
     //alias egl_native_pixmap_t*     EGLNativePixmapType;
-    alias void*           EGLNativeWindowType;
-    alias void*           EGLNativePixmapType;
-    alias void*           EGLNativeDisplayType;
+    alias EGLNativeWindowType = void*;
+    alias EGLNativePixmapType = void*;
+    alias EGLNativeDisplayType = void*;
 } else version(linux) {
     version(Xlib) {
         import X11.Xlib;
         import X11.Xutil;
-        alias Display* EGLNativeDisplayType;
-        alias Pixmap   EGLNativePixmapType;
-        alias Window   EGLNativeWindowType;
+        alias EGLNativeDisplayType = Display*;
+        alias EGLNativePixmapType = Pixmap;
+        alias EGLNativeWindowType = Window;
     } else {
-        alias void* EGLNativeDisplayType;
-        alias uint  EGLNativePixmapType;
-        alias uint  EGLNativeWindowType;
+        alias EGLNativeDisplayType = void*;
+        alias EGLNativePixmapType = uint;
+        alias EGLNativeWindowType = uint;
     }
 }
 
@@ -129,9 +134,9 @@ alias VLNode = void*;
 alias VLPath = void*;
 alias VLServer = void*;
 
-alias long int64_t;
-alias ulong uint64_t;
-alias int int32_t;
+alias int64_t = long;
+alias uint64_t = ulong;
+alias int32_t = int;
 
 alias GLXContextID = uint;
 alias GLXPixmap = uint;
@@ -200,10 +205,10 @@ extern(System) {
     }
 
     struct GLXHyperpipeConfigSGIX {
-        char[80] pipeName[80]; /* Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX] */
+        char[80] pipeName; /* Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX] */
         int      channel;
         uint     participationType;
-        int     timeSlice;
+        int      timeSlice;
     }
 
     struct GLXPipeRect {
@@ -334,11 +339,11 @@ extern(System) {
     alias LPGLYPHMETRICSFLOAT = GLYPHMETRICSFLOAT;
 
     struct GPU_DEVICE {
-        DWORD  cb;
-        CHAR   DeviceName[32];
-        CHAR   DeviceString[128];
-        DWORD  Flags;
-        RECT   rcVirtualScreen;
+        DWORD      cb;
+        CHAR[32]   DeviceName;
+        CHAR[128]  DeviceString;
+        DWORD      Flags;
+        RECT       rcVirtualScreen;
     }
 
     alias PGPU_DEVICE = GPU_DEVICE;
