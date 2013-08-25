@@ -451,6 +451,7 @@ class BaseDGenerator(Generator):
     def generate_loader(self, features, extensions):
         f = self._f_loader
 
+        rfeatures = features
         if self.spec.NAME == 'egl':
             features = {'egl' : []}
 
@@ -521,7 +522,7 @@ class BaseDGenerator(Generator):
 
                 written.add(ext.name)
 
-        self.write_packages(features, extensions)
+        self.write_packages(rfeatures, extensions)
 
     def write_packages(self, allfeatures, allextensions):
         f = self._f_gl
