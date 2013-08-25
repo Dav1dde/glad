@@ -105,12 +105,12 @@ typedef void* (* LOADER)(const char *name);
  * Load OpenGL using the internal loader.
  * Returns the true/1 if loading succeeded.
  *
- * Substitute GL with the API you generated
- *
  */
 int gladLoadGL(void);
 /*
  * Load OpenGL using an external loader like SDL_GL_GetProcAddress.
+ *
+ * Substitute GL with the API you generated
  *
  * Note: in D this function is an overload of gladLoadGL:
  * GLVersion gladLoadGL(void* function(const(char)* name));
