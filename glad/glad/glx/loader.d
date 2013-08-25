@@ -91,14 +91,14 @@ bool gladLoadGLX() {
 }
 
 void gladLoadGLX(void* function(const(char)* name) load) {
-	find_core();
+	find_coreGLX();
 	load_GLX_VERSION_1_0(load);
 	load_GLX_VERSION_1_1(load);
 	load_GLX_VERSION_1_2(load);
 	load_GLX_VERSION_1_3(load);
 	load_GLX_VERSION_1_4(load);
 
-	find_extensions();
+	find_extensionsGLX();
 	load_GLX_EXT_import_context(load);
 	load_GLX_SGIX_pbuffer(load);
 	load_GLX_NV_swap_group(load);
@@ -134,12 +134,13 @@ void gladLoadGLX(void* function(const(char)* name) load) {
 
 private:
 
-void find_core() {
+void find_coreGLX() {
 	return;
 }
 
-void find_extensions() {
-	return;}
+void find_extensionsGLX() {
+	return;
+}
 
 void load_GLX_VERSION_1_0(void* function(const(char)* name) load) {
 	glXChooseVisual = cast(typeof(glXChooseVisual))load("glXChooseVisual");

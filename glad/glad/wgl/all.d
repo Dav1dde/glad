@@ -1,4 +1,4 @@
-module glad.wgl.wgl;
+module glad.wgl.all;
 
 
 public import glad.wgl.funcs;

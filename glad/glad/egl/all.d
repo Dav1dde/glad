@@ -1,4 +1,4 @@
-module glad.egl.egl;
+module glad.egl.all;
 
 
 public import glad.egl.funcs;

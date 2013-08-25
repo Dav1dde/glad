@@ -1,4 +1,4 @@
-module glad.gl.gl;
+module glad.gl.all;
 
 
 public import glad.gl.funcs;

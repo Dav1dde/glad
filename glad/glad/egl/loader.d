@@ -18,9 +18,9 @@ private bool has_ext(const(char)* ext) {
     return true;
 }
 void gladLoadEGL(void* function(const(char)* name) load) {
-	find_core();
+	find_coreEGL();
 
-	find_extensions();
+	find_extensionsEGL();
 	load_EGL_KHR_lock_surface(load);
 	load_EGL_KHR_stream_fifo(load);
 	load_EGL_NV_native_query(load);
@@ -48,11 +48,11 @@ void gladLoadEGL(void* function(const(char)* name) load) {
 
 private:
 
-void find_core() {
+void find_coreEGL() {
 	return;
 }
 
-void find_extensions() {
+void find_extensionsEGL() {
 	return;
 }
 

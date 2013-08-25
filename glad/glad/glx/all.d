@@ -1,4 +1,4 @@
-module glad.glx.glx;
+module glad.glx.all;
 
 
 public import glad.glx.funcs;

@@ -94,10 +94,10 @@ private bool has_ext(const(char)* name) {
     return true;
 }
 void gladLoadWGL(void* function(const(char)* name) load) {
-	find_core();
+	find_coreWGL();
 	load_WGL_VERSION_1_0(load);
 
-	find_extensions();
+	find_extensionsWGL();
 	load_WGL_I3D_image_buffer(load);
 	load_WGL_I3D_swap_frame_usage(load);
 	load_WGL_OML_sync_control(load);
@@ -134,13 +134,13 @@ void gladLoadWGL(void* function(const(char)* name) load) {
 
 private:
 
-void find_core() {
+void find_coreWGL() {
 	int major = 9;
 	int minor = 9;
 	return;
 }
 
-void find_extensions() {
+void find_extensionsWGL() {
 	return;
 }
 

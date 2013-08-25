@@ -28,28 +28,30 @@ version(Windows) {
     alias EGLNativePixmapType = HBITMAP;
     alias EGLNativeWindowType = HWND;
 } else version(Symbian) {
-    alias int   EGLNativeDisplayType;
-    alias void* EGLNativeWindowType;
-    alias void* EGLNativePixmapType;
+    alias EGLNativeDisplayType = int;
+    alias EGLNativeWindowType = void*;
+    alias EGLNativePixmapType = void*;
 } else version(Android) {
     //import android.native_window;
+    //struct egl_native_pixmap_t;
     struct egl_native_pixmap_t;
+
     //alias ANativeWindow*           EGLNativeWindowType;
     //alias egl_native_pixmap_t*     EGLNativePixmapType;
-    alias void*           EGLNativeWindowType;
-    alias void*           EGLNativePixmapType;
-    alias void*           EGLNativeDisplayType;
+    alias EGLNativeWindowType = void*;
+    alias EGLNativePixmapType = void*;
+    alias EGLNativeDisplayType = void*;
 } else version(linux) {
     version(Xlib) {
         import X11.Xlib;
         import X11.Xutil;
-        alias Display* EGLNativeDisplayType;
-        alias Pixmap   EGLNativePixmapType;
-        alias Window   EGLNativeWindowType;
+        alias EGLNativeDisplayType = Display*;
+        alias EGLNativePixmapType = Pixmap;
+        alias EGLNativeWindowType = Window;
     } else {
-        alias void* EGLNativeDisplayType;
-        alias uint  EGLNativePixmapType;
-        alias uint  EGLNativeWindowType;
+        alias EGLNativeDisplayType = void*;
+        alias EGLNativePixmapType = uint;
+        alias EGLNativeWindowType = uint;
     }
 }
 
