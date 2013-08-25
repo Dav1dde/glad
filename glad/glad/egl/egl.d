@@ -2,7 +2,13 @@ module glad.egl.egl;
 
 
 import glad.egl.funcs :
-;
+eglGetConfigAttrib, eglCreatePixmapSurface, eglMakeCurrent, eglTerminate, eglBindTexImage, 
+eglQueryString, eglGetCurrentContext, eglGetProcAddress, eglCreatePbufferSurface, eglDestroySurface, 
+eglWaitClient, eglGetError, eglDestroyContext, eglCreateContext, eglWaitGL, 
+eglSwapInterval, eglSwapBuffers, eglBindAPI, eglCreateWindowSurface, eglReleaseThread, 
+eglSurfaceAttrib, eglGetCurrentSurface, eglInitialize, eglChooseConfig, eglReleaseTexImage, 
+eglQueryAPI, eglQueryContext, eglGetConfigs, eglGetCurrentDisplay, eglGetDisplay, 
+eglCreatePbufferFromClientBuffer, eglCopyBuffers, eglWaitNative, eglQuerySurface;
 
 import glad.egl.ext :
 eglCreateFenceSyncNV, eglStreamAttribKHR, eglCreatePlatformPixmapSurfaceEXT, eglLockSurfaceKHR, eglDupNativeFenceFDANDROID, 
