@@ -83,9 +83,9 @@ def main():
                         help='OpenGL profile (defaults to compatibility)')
     parser.add_argument('--out-path', dest='out', required=True,
                         help='Output path for loader')
-    parser.add_argument('--api', dest='api', type=cmdapi, help='API type')
-    #parser.add_argument('--version', dest='version', type=opengl_version,
-                        #default=None, help='OpenGL version (defaults to latest)')
+    parser.add_argument('--api', dest='api', type=cmdapi,
+                        help='API type/version pairs, like "gl=3.2,gles=", '
+                        'no version means latest')
     parser.add_argument('--generator', dest='generator', default='d',
                         choices=['c', 'd', 'volt'], help='Language (defaults to d)')
     parser.add_argument('--extensions', dest='extensions', default=None,
