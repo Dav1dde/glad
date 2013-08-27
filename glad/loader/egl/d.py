@@ -2,11 +2,7 @@ from glad.loader import BaseLoader
 
 _EGL_LOADER = '''
 void gladLoadEGL() {
-    static void* fun(const(char)* x) {
-        return eglGetProcAddress(x);
-    }
-
-    gladLoadEGL(&fun);
+    gladLoadEGL(x => eglGetProcAddress(x));
 }
 '''
 
@@ -18,6 +14,7 @@ private bool has_ext(const(char)* ext) {
 
 class EGLDLoader(BaseLoader):
     def write(self, fobj):
+        fobj.write('alias Loader = void* delegate(const(char)*);\n')
         if not self.disabled:
             fobj.write(_EGL_LOADER)
 

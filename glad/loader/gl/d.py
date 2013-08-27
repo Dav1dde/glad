@@ -25,7 +25,7 @@ void* get_proc(const(char)* namez) {
 
 bool gladLoadGL() {
     if(open_gl()) {
-        gladLoadGL(&get_proc);
+        gladLoadGL(x => get_proc(x));
         close_gl();
         return true;
     }
@@ -78,6 +78,7 @@ private bool has_ext(const(char)* ext) {
 
 class OpenGLDLoader(BaseLoader):
     def write(self, fobj):
+        fobj.write('alias Loader = void* delegate(const(char)*);\n')
         if not self.disabled:
             fobj.write(_OPENGL_LOADER)
 

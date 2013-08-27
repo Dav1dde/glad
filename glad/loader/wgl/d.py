@@ -12,6 +12,7 @@ private bool has_ext(const(char)* name) {
 
 class WGLDLoader(BaseLoader):
     def write(self, fobj):
+        fobj.write('alias Loader = void* delegate(const(char)*);\n')
         if not self.disabled:
             fobj.write(_WGL_LOADER)
 

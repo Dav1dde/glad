@@ -464,7 +464,7 @@ class BaseDGenerator(Generator):
         written = set()
         for api, version in self.api.iteritems():
             loadername = 'Load' if self.LOAD_GL_PREFIX else 'load'
-            f.write('void {}{}{}(void* function(const(char)* name) load) {{\n'
+            f.write('void {}{}{}(Loader load) {{\n'
                     .format(self.LOAD_GL_PREFIX, loadername, api.upper()))
             self.loader.write_begin_load(f)
             f.write('\tfind_core{}();\n'.format(api.upper()))
@@ -496,7 +496,7 @@ class BaseDGenerator(Generator):
             f.write('}\n\n')
 
             for feature in features[api]:
-                f.write('void load_{}(void* function(const(char)* name) load) {{\n'
+                f.write('void load_{}(Loader load) {{\n'
                             .format(feature.name))
                 if self.spec.NAME == 'gl':
                     f.write('\tif(!{}) return;\n'.format(feature.name))
@@ -509,7 +509,7 @@ class BaseDGenerator(Generator):
                 if len(list(ext.functions)) == 0 or ext.name in written:
                     continue
 
-                f.write('void load_{}(void* function(const(char)* name) load) {{\n'
+                f.write('void load_{}(Loader load) {{\n'
                     .format(ext.name))
                 if self.spec.NAME == 'gl':
                     f.write('\tif(!{}) return;\n'.format(ext.name))
