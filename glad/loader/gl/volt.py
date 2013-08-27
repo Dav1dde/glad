@@ -1,16 +1,34 @@
 from glad.loader import BaseLoader
-from glad.loader.gl.d import _OPENGL_LOADER, _OPENGL_HAS_EXT
+from glad.loader.volt import LOAD_OPENGL_DLL
+from glad.loader.gl.d import _OPENGL_HAS_EXT as _D_OPENGL_HAS_EXT
 
-_VOLT_OPENGL_LOADER = _OPENGL_LOADER.replace('__gshared', 'global')
-_VOLT_OPENGL_HAS_EXT = 'global int GL_MAJOR = 0;\nglobal int GL_MINOR = 0;' + \
-    '\n'.join(l for l in _OPENGL_HAS_EXT.splitlines() if not 'struct' in l) \
+_OPENGL_LOADER = \
+    LOAD_OPENGL_DLL % {'pre':'private', 'init':'open_gl',
+                       'proc':'get_proc', 'terminate':'close_gl'} + '''
+bool gladLoadGL() {
+    StructToDg structToDg;
+    structToDg.func = cast(void*)get_proc;
+    auto dg = *cast(Loader*)&structToDg;
+
+    if(open_gl()) {
+        gladLoadGL(dg);
+        close_gl();
+        return true;
+    }
+    return false;
+}
+'''
+
+_OPENGL_HAS_EXT = 'global int GL_MAJOR = 0;\nglobal int GL_MINOR = 0;' + \
+    '\n'.join(l for l in _D_OPENGL_HAS_EXT.splitlines() if not 'struct' in l) \
     .replace('GLVersion.major', 'GL_MAJOR') + \
     '\n\n'
 
 class OpenGLVoltLoader(BaseLoader):
-    def write(self, fobj):
-        if not self.disabled:
-            fobj.write(_VOLT_OPENGL_LOADER)
+    def write(self, fobj, apis):
+        fobj.write('import watt.library;\n')
+        if not self.disabled and 'gl' in apis:
+            fobj.write(_OPENGL_LOADER)
 
     def write_begin_load(self, fobj):
         fobj.write('\tglGetString = cast(typeof(glGetString))load("glGetString");\n')
@@ -23,4 +41,4 @@ class OpenGLVoltLoader(BaseLoader):
         fobj.write('\tGL_MAJOR = major; GL_MINOR = minor;\n')
 
     def write_has_ext(self, fobj):
-        fobj.write(_VOLT_OPENGL_HAS_EXT)
+        fobj.write(_OPENGL_HAS_EXT)

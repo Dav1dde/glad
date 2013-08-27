@@ -2,25 +2,8 @@ from glad.loader import BaseLoader
 from glad.loader.c import LOAD_OPENGL_DLL, LOAD_OPENGL_DLL_H
 
 _OPENGL_LOADER = \
-LOAD_OPENGL_DLL % {'pre':'static', 'init':'open_gl', 'terminate':'close_gl'} + '''
-static void* get_proc(const char *namez) {
-    if(libGL == NULL) return NULL;
-    void* result = NULL;
-
-#ifndef __APPLE__
-    result = gladGetProcAddressPtr(namez);
-#endif
-    if(result == NULL) {
-#ifdef _WIN32
-        result = GetProcAddress(libGL, namez);
-#else
-        result = dlsym(libGL, namez);
-#endif
-    }
-
-    return result;
-}
-
+    LOAD_OPENGL_DLL % {'pre':'static', 'init':'open_gl',
+                       'proc':'get_proc', 'terminate':'close_gl'} + '''
 int gladLoadGL(void) {
     if(open_gl()) {
         gladLoadGLLoader(&get_proc);
@@ -125,8 +108,8 @@ _OPENGL_HEADER_END = '''
 
 
 class OpenGLCLoader(BaseLoader):
-    def write(self, fobj):
-        if not self.disabled:
+    def write(self, fobj, apis):
+        if not self.disabled and 'gl' in apis:
             fobj.write(_OPENGL_LOADER)
 
     def write_begin_load(self, fobj):

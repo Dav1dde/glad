@@ -13,7 +13,7 @@ private bool has_ext(const(char)* ext) {
 '''
 
 class EGLDLoader(BaseLoader):
-    def write(self, fobj):
+    def write(self, fobj, apis):
         fobj.write('alias Loader = void* delegate(const(char)*);\n')
         if not self.disabled:
             fobj.write(_EGL_LOADER)

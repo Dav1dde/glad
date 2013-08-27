@@ -67,6 +67,25 @@ int %(init)s(void) {
 }
 
 %(pre)s
+void* %(proc)s(const char *namez) {
+    if(libGL == NULL) return NULL;
+    void* result = NULL;
+
+    if(gladGetProcAddressPtr != NULL) {
+        result = gladGetProcAddressPtr(namez);
+    }
+    if(result == NULL) {
+#ifdef _WIN32
+        result = GetProcAddress(libGL, namez);
+#else
+        result = dlsym(libGL, namez);
+#endif
+    }
+
+    return result;
+}
+
+%(pre)s
 void %(terminate)s() {
     if(libGL != NULL) {
         dlclose(libGL);

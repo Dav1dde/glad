@@ -11,7 +11,7 @@ private bool has_ext(const(char)* name) {
 '''
 
 class WGLDLoader(BaseLoader):
-    def write(self, fobj):
+    def write(self, fobj, apis):
         fobj.write('alias Loader = void* delegate(const(char)*);\n')
         if not self.disabled:
             fobj.write(_WGL_LOADER)
@@ -20,7 +20,7 @@ class WGLDLoader(BaseLoader):
         pass
 
     def write_find_core(self, fobj):
-        fobj.write('\tint major = 9;\n\tint minor = 9;\n')
+        pass
 
     def write_has_ext(self, fobj):
         fobj.write(_WGL_HAS_EXT)

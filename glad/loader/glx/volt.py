@@ -1,5 +1,40 @@
-from glad.loader.glx.d import GLXDLoader
+from glad.loader import BaseLoader
+from glad.loader.volt import LOAD_OPENGL_DLL
 
-class GLXVoltLoader(GLXDLoader):
-    def write(self, fobj):
+_GLX_LOADER = \
+    LOAD_OPENGL_DLL % {'pre':'private', 'init':'open_gl',
+                       'proc':'get_proc', 'terminate':'close_gl'} + '''
+bool gladLoadGLX() {
+    StructToDg structToDg;
+    structToDg.func = cast(void*)get_proc;
+    auto dg = *cast(Loader*)&structToDg;
+
+    if(open_gl()) {
+        gladLoadGLX(dg);
+        close_gl();
+        return true;
+    }
+
+    return false;
+}
+'''
+
+_GLX_HAS_EXT = '''
+private bool has_ext(const(char)* name) {
+    return true;
+}
+'''
+class GLXVoltLoader(BaseLoader):
+    def write(self, fobj, apis):
+        fobj.write('import watt.library;\n')
+        if not self.disabled:
+            fobj.write(_GLX_LOADER)
+
+    def write_begin_load(self, fobj):
         pass
+
+    def write_find_core(self, fobj):
+        pass
+
+    def write_has_ext(self, fobj):
+        fobj.write(_GLX_HAS_EXT)

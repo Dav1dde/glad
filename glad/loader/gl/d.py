@@ -2,27 +2,8 @@ from glad.loader import BaseLoader
 from glad.loader.d import LOAD_OPENGL_DLL
 
 _OPENGL_LOADER = \
-LOAD_OPENGL_DLL % {'pre':'private', 'init':'open_gl', 'terminate':'close_gl'} + '''
-void* get_proc(const(char)* namez) {
-    if(libGL is null) return null;
-    void* result;
-
-    if(gladGetProcAddressPtr is null) return null;
-
-    version(OSX) {} else {
-        result = gladGetProcAddressPtr(namez);
-    }
-    if(result is null) {
-        version(Windows) {
-            result = GetProcAddress(libGL, namez);
-        } else {
-            result = dlsym(libGL, namez);
-        }
-    }
-
-    return result;
-}
-
+    LOAD_OPENGL_DLL % {'pre':'private', 'init':'open_gl',
+                       'proc':'get_proc', 'terminate':'close_gl'} + '''
 bool gladLoadGL() {
     if(open_gl()) {
         gladLoadGL(x => get_proc(x));
@@ -77,9 +58,9 @@ private bool has_ext(const(char)* ext) {
 '''
 
 class OpenGLDLoader(BaseLoader):
-    def write(self, fobj):
+    def write(self, fobj, apis):
         fobj.write('alias Loader = void* delegate(const(char)*);\n')
-        if not self.disabled:
+        if not self.disabled and 'gl' in apis:
             fobj.write(_OPENGL_LOADER)
 
     def write_begin_load(self, fobj):

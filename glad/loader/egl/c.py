@@ -61,7 +61,7 @@ static int has_ext(const char *ext) {
 
 
 class EGLCLoader(BaseLoader):
-    def write(self, fobj):
+    def write(self, fobj, apis):
         if not self.disabled:
             fobj.write(_EGL_LOADER)
 

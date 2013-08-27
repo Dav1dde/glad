@@ -20,7 +20,7 @@ bool %(init)s() {
         libGL = LoadLibraryA("opengl32.dll");
         if(libGL !is null) {
             gladGetProcAddressPtr = cast(typeof(gladGetProcAddressPtr))GetProcAddress(
-                libGL, "gladGetProcAddressPtr");
+                libGL, "wglGetProcAddress");
             return gladGetProcAddressPtr !is null;
         }
 
@@ -52,6 +52,25 @@ bool %(init)s() {
 
         return false;
     }
+}
+
+%(pre)s
+void* %(proc)s(const(char)* namez) {
+    if(libGL is null) return null;
+    void* result;
+
+    if(gladGetProcAddressPtr !is null) {
+        result = gladGetProcAddressPtr(namez);
+    }
+    if(result is null) {
+        version(Windows) {
+            result = GetProcAddress(libGL, namez);
+        } else {
+            result = dlsym(libGL, namez);
+        }
+    }
+
+    return result;
 }
 
 %(pre)s

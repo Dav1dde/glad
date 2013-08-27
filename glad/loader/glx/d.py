@@ -1,13 +1,12 @@
 from glad.loader import BaseLoader
 from glad.loader.d import LOAD_OPENGL_DLL
 
-
 _GLX_LOADER = \
-LOAD_OPENGL_DLL % {'pre':'private', 'init':'open_gl', 'terminate':'close_gl'} + '''
-
+    LOAD_OPENGL_DLL % {'pre':'private', 'init':'open_gl',
+                       'proc':'get_proc', 'terminate':'close_gl'} + '''
 bool gladLoadGLX() {
     if(open_gl()) {
-        gladLoadGLX(x => gladGetProcAddressPtr(x));
+        gladLoadGLX(x => get_proc(x));
         close_gl();
         return true;
     }
@@ -17,10 +16,13 @@ bool gladLoadGLX() {
 '''
 
 _GLX_HAS_EXT = '''
+private bool has_ext(const(char)* name) {
+    return true;
+}
 '''
 
 class GLXDLoader(BaseLoader):
-    def write(self, fobj):
+    def write(self, fobj, apis):
         fobj.write('alias Loader = void* delegate(const(char)*);\n')
         if not self.disabled:
             fobj.write(_GLX_LOADER)

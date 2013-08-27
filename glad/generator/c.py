@@ -122,7 +122,7 @@ class CGenerator(Generator):
 
         f = self._f_c
         f.write('#include <string.h>\n#include {}\n'.format(self.h_include))
-        self.loader.write(f)
+        self.loader.write(f, self.api.keys())
         self.loader.write_has_ext(f)
 
         if self.spec.NAME == 'gl':
