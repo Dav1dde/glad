@@ -1,4 +1,4 @@
-module amp;
+module amp.glx;
 
 public import amp.glx.funcs;
 public import amp.glx.ext;

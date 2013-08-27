@@ -1,4 +1,4 @@
-module amp;
+module amp.egl;
 
 public import amp.egl.funcs;
 public import amp.egl.ext;
