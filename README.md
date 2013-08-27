@@ -19,7 +19,7 @@ What a D code using glad (and SDL) could look like:
     import glad.loader : gladLoadGL;
     void main() {
         /* setup OpenGL context with SDL */
-        gladLoadGL(&SDL_GL_GetProcAddress);
+        gladLoadGL(x => SDL_GL_GetProcAddress(x));
         enforce(GLVersion.major >= 3 && GLVersion.minor >= 2);
         /* done, use OpenGL here */
     }
