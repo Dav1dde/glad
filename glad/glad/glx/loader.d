@@ -5,6 +5,7 @@ private import glad.glx.funcs;
 private import glad.glx.ext;
 private import glad.glx.enums;
 private import glad.glx.types;
+alias Loader = void* delegate(const(char)*);
 
 version(Windows) {
     private import std.c.windows.windows;
@@ -26,7 +27,7 @@ bool open_gl() {
         libGL = LoadLibraryA("opengl32.dll");
         if(libGL !is null) {
             gladGetProcAddressPtr = cast(typeof(gladGetProcAddressPtr))GetProcAddress(
-                libGL, "gladGetProcAddressPtr");
+                libGL, "wglGetProcAddress");
             return gladGetProcAddressPtr !is null;
         }
 
@@ -61,6 +62,25 @@ bool open_gl() {
 }
 
 private
+void* get_proc(const(char)* namez) {
+    if(libGL is null) return null;
+    void* result;
+
+    if(gladGetProcAddressPtr !is null) {
+        result = gladGetProcAddressPtr(namez);
+    }
+    if(result is null) {
+        version(Windows) {
+            result = GetProcAddress(libGL, namez);
+        } else {
+            result = dlsym(libGL, namez);
+        }
+    }
+
+    return result;
+}
+
+private
 void close_gl() {
     version(Windows) {
         if(libGL !is null) {
@@ -75,14 +95,9 @@ void close_gl() {
     }
 }
 
-
 bool gladLoadGLX() {
-    static void* fun(const(char)* name) {
-        return gladGetProcAddressPtr(name);
-    }
-
     if(open_gl()) {
-        gladLoadGLX(&fun);
+        gladLoadGLX(x => get_proc(x));
         close_gl();
         return true;
     }
@@ -90,7 +105,10 @@ bool gladLoadGLX() {
     return false;
 }
 
-void gladLoadGLX(void* function(const(char)* name) load) {
+private bool has_ext(const(char)* name) {
+    return true;
+}
+void gladLoadGLX(Loader load) {
 	find_coreGLX();
 	load_GLX_VERSION_1_0(load);
 	load_GLX_VERSION_1_1(load);
@@ -142,7 +160,7 @@ void find_extensionsGLX() {
 	return;
 }
 
-void load_GLX_VERSION_1_0(void* function(const(char)* name) load) {
+void load_GLX_VERSION_1_0(Loader load) {
 	glXChooseVisual = cast(typeof(glXChooseVisual))load("glXChooseVisual");
 	glXCreateContext = cast(typeof(glXCreateContext))load("glXCreateContext");
 	glXDestroyContext = cast(typeof(glXDestroyContext))load("glXDestroyContext");
@@ -163,19 +181,19 @@ void load_GLX_VERSION_1_0(void* function(const(char)* name) load) {
 	return;
 }
 
-void load_GLX_VERSION_1_1(void* function(const(char)* name) load) {
+void load_GLX_VERSION_1_1(Loader load) {
 	glXQueryExtensionsString = cast(typeof(glXQueryExtensionsString))load("glXQueryExtensionsString");
 	glXQueryServerString = cast(typeof(glXQueryServerString))load("glXQueryServerString");
 	glXGetClientString = cast(typeof(glXGetClientString))load("glXGetClientString");
 	return;
 }
 
-void load_GLX_VERSION_1_2(void* function(const(char)* name) load) {
+void load_GLX_VERSION_1_2(Loader load) {
 	glXGetCurrentDisplay = cast(typeof(glXGetCurrentDisplay))load("glXGetCurrentDisplay");
 	return;
 }
 
-void load_GLX_VERSION_1_3(void* function(const(char)* name) load) {
+void load_GLX_VERSION_1_3(Loader load) {
 	glXGetFBConfigs = cast(typeof(glXGetFBConfigs))load("glXGetFBConfigs");
 	glXChooseFBConfig = cast(typeof(glXChooseFBConfig))load("glXChooseFBConfig");
 	glXGetFBConfigAttrib = cast(typeof(glXGetFBConfigAttrib))load("glXGetFBConfigAttrib");
@@ -196,12 +214,12 @@ void load_GLX_VERSION_1_3(void* function(const(char)* name) load) {
 	return;
 }
 
-void load_GLX_VERSION_1_4(void* function(const(char)* name) load) {
+void load_GLX_VERSION_1_4(Loader load) {
 	glXGetProcAddress = cast(typeof(glXGetProcAddress))load("glXGetProcAddress");
 	return;
 }
 
-void load_GLX_EXT_import_context(void* function(const(char)* name) load) {
+void load_GLX_EXT_import_context(Loader load) {
 	glXGetCurrentDisplayEXT = cast(typeof(glXGetCurrentDisplayEXT))load("glXGetCurrentDisplayEXT");
 	glXQueryContextInfoEXT = cast(typeof(glXQueryContextInfoEXT))load("glXQueryContextInfoEXT");
 	glXGetContextIDEXT = cast(typeof(glXGetContextIDEXT))load("glXGetContextIDEXT");
@@ -209,7 +227,7 @@ void load_GLX_EXT_import_context(void* function(const(char)* name) load) {
 	glXFreeContextEXT = cast(typeof(glXFreeContextEXT))load("glXFreeContextEXT");
 	return;
 }
-void load_GLX_SGIX_pbuffer(void* function(const(char)* name) load) {
+void load_GLX_SGIX_pbuffer(Loader load) {
 	glXCreateGLXPbufferSGIX = cast(typeof(glXCreateGLXPbufferSGIX))load("glXCreateGLXPbufferSGIX");
 	glXDestroyGLXPbufferSGIX = cast(typeof(glXDestroyGLXPbufferSGIX))load("glXDestroyGLXPbufferSGIX");
 	glXQueryGLXPbufferSGIX = cast(typeof(glXQueryGLXPbufferSGIX))load("glXQueryGLXPbufferSGIX");
@@ -217,7 +235,7 @@ void load_GLX_SGIX_pbuffer(void* function(const(char)* name) load) {
 	glXGetSelectedEventSGIX = cast(typeof(glXGetSelectedEventSGIX))load("glXGetSelectedEventSGIX");
 	return;
 }
-void load_GLX_NV_swap_group(void* function(const(char)* name) load) {
+void load_GLX_NV_swap_group(Loader load) {
 	glXJoinSwapGroupNV = cast(typeof(glXJoinSwapGroupNV))load("glXJoinSwapGroupNV");
 	glXBindSwapBarrierNV = cast(typeof(glXBindSwapBarrierNV))load("glXBindSwapBarrierNV");
 	glXQuerySwapGroupNV = cast(typeof(glXQuerySwapGroupNV))load("glXQuerySwapGroupNV");
@@ -226,7 +244,7 @@ void load_GLX_NV_swap_group(void* function(const(char)* name) load) {
 	glXResetFrameCountNV = cast(typeof(glXResetFrameCountNV))load("glXResetFrameCountNV");
 	return;
 }
-void load_GLX_SGIX_hyperpipe(void* function(const(char)* name) load) {
+void load_GLX_SGIX_hyperpipe(Loader load) {
 	glXQueryHyperpipeNetworkSGIX = cast(typeof(glXQueryHyperpipeNetworkSGIX))load("glXQueryHyperpipeNetworkSGIX");
 	glXHyperpipeConfigSGIX = cast(typeof(glXHyperpipeConfigSGIX))load("glXHyperpipeConfigSGIX");
 	glXQueryHyperpipeConfigSGIX = cast(typeof(glXQueryHyperpipeConfigSGIX))load("glXQueryHyperpipeConfigSGIX");
@@ -237,7 +255,7 @@ void load_GLX_SGIX_hyperpipe(void* function(const(char)* name) load) {
 	glXQueryHyperpipeAttribSGIX = cast(typeof(glXQueryHyperpipeAttribSGIX))load("glXQueryHyperpipeAttribSGIX");
 	return;
 }
-void load_GLX_SGIX_video_resize(void* function(const(char)* name) load) {
+void load_GLX_SGIX_video_resize(Loader load) {
 	glXBindChannelToWindowSGIX = cast(typeof(glXBindChannelToWindowSGIX))load("glXBindChannelToWindowSGIX");
 	glXChannelRectSGIX = cast(typeof(glXChannelRectSGIX))load("glXChannelRectSGIX");
 	glXQueryChannelRectSGIX = cast(typeof(glXQueryChannelRectSGIX))load("glXQueryChannelRectSGIX");
@@ -245,11 +263,11 @@ void load_GLX_SGIX_video_resize(void* function(const(char)* name) load) {
 	glXChannelRectSyncSGIX = cast(typeof(glXChannelRectSyncSGIX))load("glXChannelRectSyncSGIX");
 	return;
 }
-void load_GLX_NV_copy_image(void* function(const(char)* name) load) {
+void load_GLX_NV_copy_image(Loader load) {
 	glXCopyImageSubDataNV = cast(typeof(glXCopyImageSubDataNV))load("glXCopyImageSubDataNV");
 	return;
 }
-void load_GLX_OML_sync_control(void* function(const(char)* name) load) {
+void load_GLX_OML_sync_control(Loader load) {
 	glXGetSyncValuesOML = cast(typeof(glXGetSyncValuesOML))load("glXGetSyncValuesOML");
 	glXGetMscRateOML = cast(typeof(glXGetMscRateOML))load("glXGetMscRateOML");
 	glXSwapBuffersMscOML = cast(typeof(glXSwapBuffersMscOML))load("glXSwapBuffersMscOML");
@@ -257,34 +275,34 @@ void load_GLX_OML_sync_control(void* function(const(char)* name) load) {
 	glXWaitForSbcOML = cast(typeof(glXWaitForSbcOML))load("glXWaitForSbcOML");
 	return;
 }
-void load_GLX_SGI_make_current_read(void* function(const(char)* name) load) {
+void load_GLX_SGI_make_current_read(Loader load) {
 	glXMakeCurrentReadSGI = cast(typeof(glXMakeCurrentReadSGI))load("glXMakeCurrentReadSGI");
 	glXGetCurrentReadDrawableSGI = cast(typeof(glXGetCurrentReadDrawableSGI))load("glXGetCurrentReadDrawableSGI");
 	return;
 }
-void load_GLX_SGI_swap_control(void* function(const(char)* name) load) {
+void load_GLX_SGI_swap_control(Loader load) {
 	glXSwapIntervalSGI = cast(typeof(glXSwapIntervalSGI))load("glXSwapIntervalSGI");
 	return;
 }
-void load_GLX_SGI_video_sync(void* function(const(char)* name) load) {
+void load_GLX_SGI_video_sync(Loader load) {
 	glXGetVideoSyncSGI = cast(typeof(glXGetVideoSyncSGI))load("glXGetVideoSyncSGI");
 	glXWaitVideoSyncSGI = cast(typeof(glXWaitVideoSyncSGI))load("glXWaitVideoSyncSGI");
 	return;
 }
-void load_GLX_MESA_agp_offset(void* function(const(char)* name) load) {
+void load_GLX_MESA_agp_offset(Loader load) {
 	glXGetAGPOffsetMESA = cast(typeof(glXGetAGPOffsetMESA))load("glXGetAGPOffsetMESA");
 	return;
 }
-void load_GLX_MESA_set_3dfx_mode(void* function(const(char)* name) load) {
+void load_GLX_MESA_set_3dfx_mode(Loader load) {
 	glXSet3DfxModeMESA = cast(typeof(glXSet3DfxModeMESA))load("glXSet3DfxModeMESA");
 	return;
 }
-void load_GLX_EXT_texture_from_pixmap(void* function(const(char)* name) load) {
+void load_GLX_EXT_texture_from_pixmap(Loader load) {
 	glXBindTexImageEXT = cast(typeof(glXBindTexImageEXT))load("glXBindTexImageEXT");
 	glXReleaseTexImageEXT = cast(typeof(glXReleaseTexImageEXT))load("glXReleaseTexImageEXT");
 	return;
 }
-void load_GLX_NV_video_capture(void* function(const(char)* name) load) {
+void load_GLX_NV_video_capture(Loader load) {
 	glXBindVideoCaptureDeviceNV = cast(typeof(glXBindVideoCaptureDeviceNV))load("glXBindVideoCaptureDeviceNV");
 	glXEnumerateVideoCaptureDevicesNV = cast(typeof(glXEnumerateVideoCaptureDevicesNV))load("glXEnumerateVideoCaptureDevicesNV");
 	glXLockVideoCaptureDeviceNV = cast(typeof(glXLockVideoCaptureDeviceNV))load("glXLockVideoCaptureDeviceNV");
@@ -292,24 +310,24 @@ void load_GLX_NV_video_capture(void* function(const(char)* name) load) {
 	glXReleaseVideoCaptureDeviceNV = cast(typeof(glXReleaseVideoCaptureDeviceNV))load("glXReleaseVideoCaptureDeviceNV");
 	return;
 }
-void load_GLX_SGIX_swap_group(void* function(const(char)* name) load) {
+void load_GLX_SGIX_swap_group(Loader load) {
 	glXJoinSwapGroupSGIX = cast(typeof(glXJoinSwapGroupSGIX))load("glXJoinSwapGroupSGIX");
 	return;
 }
-void load_GLX_EXT_swap_control(void* function(const(char)* name) load) {
+void load_GLX_EXT_swap_control(Loader load) {
 	glXSwapIntervalEXT = cast(typeof(glXSwapIntervalEXT))load("glXSwapIntervalEXT");
 	return;
 }
-void load_GLX_SGIX_video_source(void* function(const(char)* name) load) {
+void load_GLX_SGIX_video_source(Loader load) {
 	glXCreateGLXVideoSourceSGIX = cast(typeof(glXCreateGLXVideoSourceSGIX))load("glXCreateGLXVideoSourceSGIX");
 	glXDestroyGLXVideoSourceSGIX = cast(typeof(glXDestroyGLXVideoSourceSGIX))load("glXDestroyGLXVideoSourceSGIX");
 	return;
 }
-void load_GLX_ARB_create_context(void* function(const(char)* name) load) {
+void load_GLX_ARB_create_context(Loader load) {
 	glXCreateContextAttribsARB = cast(typeof(glXCreateContextAttribsARB))load("glXCreateContextAttribsARB");
 	return;
 }
-void load_GLX_SGIX_fbconfig(void* function(const(char)* name) load) {
+void load_GLX_SGIX_fbconfig(Loader load) {
 	glXGetFBConfigAttribSGIX = cast(typeof(glXGetFBConfigAttribSGIX))load("glXGetFBConfigAttribSGIX");
 	glXChooseFBConfigSGIX = cast(typeof(glXChooseFBConfigSGIX))load("glXChooseFBConfigSGIX");
 	glXCreateGLXPixmapWithConfigSGIX = cast(typeof(glXCreateGLXPixmapWithConfigSGIX))load("glXCreateGLXPixmapWithConfigSGIX");
@@ -318,11 +336,11 @@ void load_GLX_SGIX_fbconfig(void* function(const(char)* name) load) {
 	glXGetFBConfigFromVisualSGIX = cast(typeof(glXGetFBConfigFromVisualSGIX))load("glXGetFBConfigFromVisualSGIX");
 	return;
 }
-void load_GLX_MESA_pixmap_colormap(void* function(const(char)* name) load) {
+void load_GLX_MESA_pixmap_colormap(Loader load) {
 	glXCreateGLXPixmapMESA = cast(typeof(glXCreateGLXPixmapMESA))load("glXCreateGLXPixmapMESA");
 	return;
 }
-void load_GLX_NV_video_output(void* function(const(char)* name) load) {
+void load_GLX_NV_video_output(Loader load) {
 	glXGetVideoDeviceNV = cast(typeof(glXGetVideoDeviceNV))load("glXGetVideoDeviceNV");
 	glXReleaseVideoDeviceNV = cast(typeof(glXReleaseVideoDeviceNV))load("glXReleaseVideoDeviceNV");
 	glXBindVideoImageNV = cast(typeof(glXBindVideoImageNV))load("glXBindVideoImageNV");
@@ -331,37 +349,37 @@ void load_GLX_NV_video_output(void* function(const(char)* name) load) {
 	glXGetVideoInfoNV = cast(typeof(glXGetVideoInfoNV))load("glXGetVideoInfoNV");
 	return;
 }
-void load_GLX_SGIX_dmbuffer(void* function(const(char)* name) load) {
+void load_GLX_SGIX_dmbuffer(Loader load) {
 	glXAssociateDMPbufferSGIX = cast(typeof(glXAssociateDMPbufferSGIX))load("glXAssociateDMPbufferSGIX");
 	return;
 }
-void load_GLX_SGIX_swap_barrier(void* function(const(char)* name) load) {
+void load_GLX_SGIX_swap_barrier(Loader load) {
 	glXBindSwapBarrierSGIX = cast(typeof(glXBindSwapBarrierSGIX))load("glXBindSwapBarrierSGIX");
 	glXQueryMaxSwapBarriersSGIX = cast(typeof(glXQueryMaxSwapBarriersSGIX))load("glXQueryMaxSwapBarriersSGIX");
 	return;
 }
-void load_GLX_MESA_release_buffers(void* function(const(char)* name) load) {
+void load_GLX_MESA_release_buffers(Loader load) {
 	glXReleaseBuffersMESA = cast(typeof(glXReleaseBuffersMESA))load("glXReleaseBuffersMESA");
 	return;
 }
-void load_GLX_MESA_copy_sub_buffer(void* function(const(char)* name) load) {
+void load_GLX_MESA_copy_sub_buffer(Loader load) {
 	glXCopySubBufferMESA = cast(typeof(glXCopySubBufferMESA))load("glXCopySubBufferMESA");
 	return;
 }
-void load_GLX_SGI_cushion(void* function(const(char)* name) load) {
+void load_GLX_SGI_cushion(Loader load) {
 	glXCushionSGI = cast(typeof(glXCushionSGI))load("glXCushionSGI");
 	return;
 }
-void load_GLX_NV_present_video(void* function(const(char)* name) load) {
+void load_GLX_NV_present_video(Loader load) {
 	glXEnumerateVideoDevicesNV = cast(typeof(glXEnumerateVideoDevicesNV))load("glXEnumerateVideoDevicesNV");
 	glXBindVideoDeviceNV = cast(typeof(glXBindVideoDeviceNV))load("glXBindVideoDeviceNV");
 	return;
 }
-void load_GLX_SUN_get_transparent_index(void* function(const(char)* name) load) {
+void load_GLX_SUN_get_transparent_index(Loader load) {
 	glXGetTransparentIndexSUN = cast(typeof(glXGetTransparentIndexSUN))load("glXGetTransparentIndexSUN");
 	return;
 }
-void load_GLX_ARB_get_proc_address(void* function(const(char)* name) load) {
+void load_GLX_ARB_get_proc_address(Loader load) {
 	glXGetProcAddressARB = cast(typeof(glXGetProcAddressARB))load("glXGetProcAddressARB");
 	return;
 }
