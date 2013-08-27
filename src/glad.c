@@ -68,21 +68,13 @@ int open_gl(void) {
 }
 
 static
-void close_gl() {
-    if(libGL != NULL) {
-        dlclose(libGL);
-        libGL = NULL;
-    }
-}
-#endif
-
-static void* get_proc(const char *namez) {
+void* get_proc(const char *namez) {
     if(libGL == NULL) return NULL;
     void* result = NULL;
 
-#ifndef __APPLE__
-    result = gladGetProcAddressPtr(namez);
-#endif
+    if(gladGetProcAddressPtr != NULL) {
+        result = gladGetProcAddressPtr(namez);
+    }
     if(result == NULL) {
 #ifdef _WIN32
         result = GetProcAddress(libGL, namez);
@@ -93,6 +85,15 @@ static void* get_proc(const char *namez) {
 
     return result;
 }
+
+static
+void close_gl() {
+    if(libGL != NULL) {
+        dlclose(libGL);
+        libGL = NULL;
+    }
+}
+#endif
 
 int gladLoadGL(void) {
     if(open_gl()) {

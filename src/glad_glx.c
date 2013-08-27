@@ -68,6 +68,25 @@ int open_gl(void) {
 }
 
 static
+void* get_proc(const char *namez) {
+    if(libGL == NULL) return NULL;
+    void* result = NULL;
+
+    if(gladGetProcAddressPtr != NULL) {
+        result = gladGetProcAddressPtr(namez);
+    }
+    if(result == NULL) {
+#ifdef _WIN32
+        result = GetProcAddress(libGL, namez);
+#else
+        result = dlsym(libGL, namez);
+#endif
+    }
+
+    return result;
+}
+
+static
 void close_gl() {
     if(libGL != NULL) {
         dlclose(libGL);
@@ -76,10 +95,9 @@ void close_gl() {
 }
 #endif
 
-
 int gladLoadGLX(void) {
     if(open_gl()) {
-        gladLoadGLXLoader((LOADER)gladGetProcAddressPtr);
+        gladLoadGLXLoader((LOADER)get_proc);
         close_gl();
         return 1;
     }
