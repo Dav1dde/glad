@@ -236,7 +236,7 @@ def _wgl_types(gen, f):
     f.write(
 '''
 version(Windows) {
-    import core.sys.windows;
+    public import core.sys.windows;
 } else {
     alias BOOL = int;
     alias CHAR = char;
@@ -452,8 +452,8 @@ class BaseDGenerator(Generator):
         f = self._f_loader
 
         rfeatures = features
-        if self.spec.NAME == 'egl':
-            features = {'egl' : []}
+        if self.spec.NAME in ('egl', 'wgl'):
+            features = {'egl' : [], 'wgl' : []}
 
         self.write_module(f, self.LOADER)
         self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES])
@@ -593,7 +593,7 @@ class BaseDGenerator(Generator):
             for feature in features:
                 self.write_boolean(f, feature.name)
 
-        if self.spec.NAME == 'egl':
+        if self.spec.NAME in ('egl', 'wgl'):
             self.write_extern(f)
             for feature in features:
                 for func in feature.functions:
