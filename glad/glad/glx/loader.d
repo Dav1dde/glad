@@ -15,11 +15,11 @@ version(Windows) {
 
 version(Windows) {
     private __gshared HMODULE libGL;
-    extern(System) private __gshared void* function(const(char)*) gladGetProcAddressPtr;
 } else {
     private __gshared void* libGL;
-    extern(System) private __gshared void* function(const(char)*) gladGetProcAddressPtr;
 }
+extern(System) private alias gladGetProcAddressPtrType = void* function(const(char)*);
+private __gshared gladGetProcAddressPtrType gladGetProcAddressPtr;
 
 private
 bool open_gl() {

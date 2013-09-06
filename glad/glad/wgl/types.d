@@ -13,7 +13,7 @@ alias GLbitfield = uint;
 alias INT64 = long;
 
 version(Windows) {
-    import core.sys.windows;
+    public import core.sys.windows;
 } else {
     alias BOOL = int;
     alias CHAR = char;
