@@ -108,32 +108,6 @@ int gladLoadWGL(void) {
 static int has_ext(const char *ext) {
     return 1;
 }
-fp_wglCopyContext gladwglCopyContext;
-fp_wglCreateContext gladwglCreateContext;
-fp_wglGetCurrentDC gladwglGetCurrentDC;
-fp_wglUseFontBitmapsW gladwglUseFontBitmapsW;
-fp_wglUseFontOutlinesW gladwglUseFontOutlinesW;
-fp_wglSetLayerPaletteEntries gladwglSetLayerPaletteEntries;
-fp_GetPixelFormat gladGetPixelFormat;
-fp_wglSwapLayerBuffers gladwglSwapLayerBuffers;
-fp_wglUseFontOutlinesA gladwglUseFontOutlinesA;
-fp_wglUseFontOutlines gladwglUseFontOutlines;
-fp_ChoosePixelFormat gladChoosePixelFormat;
-fp_wglUseFontBitmapsA gladwglUseFontBitmapsA;
-fp_wglGetProcAddress gladwglGetProcAddress;
-fp_wglCreateLayerContext gladwglCreateLayerContext;
-fp_wglMakeCurrent gladwglMakeCurrent;
-fp_DescribePixelFormat gladDescribePixelFormat;
-fp_wglRealizeLayerPalette gladwglRealizeLayerPalette;
-fp_wglGetCurrentContext gladwglGetCurrentContext;
-fp_SetPixelFormat gladSetPixelFormat;
-fp_wglUseFontBitmaps gladwglUseFontBitmaps;
-fp_wglShareLists gladwglShareLists;
-fp_wglDeleteContext gladwglDeleteContext;
-fp_SwapBuffers gladSwapBuffers;
-fp_wglDescribeLayerPlane gladwglDescribeLayerPlane;
-fp_GetEnhMetaFilePixelFormat gladGetEnhMetaFilePixelFormat;
-fp_wglGetLayerPaletteEntries gladwglGetLayerPaletteEntries;
 fp_wglCreateImageBufferI3D gladwglCreateImageBufferI3D;
 fp_wglDestroyImageBufferI3D gladwglDestroyImageBufferI3D;
 fp_wglAssociateImageBufferEventsI3D gladwglAssociateImageBufferEventsI3D;
@@ -252,34 +226,6 @@ fp_wglCreateBufferRegionARB gladwglCreateBufferRegionARB;
 fp_wglDeleteBufferRegionARB gladwglDeleteBufferRegionARB;
 fp_wglSaveBufferRegionARB gladwglSaveBufferRegionARB;
 fp_wglRestoreBufferRegionARB gladwglRestoreBufferRegionARB;
-static void load_WGL_VERSION_1_0(LOADER load) {
-	ChoosePixelFormat = (fp_ChoosePixelFormat)load("ChoosePixelFormat");
-	DescribePixelFormat = (fp_DescribePixelFormat)load("DescribePixelFormat");
-	GetEnhMetaFilePixelFormat = (fp_GetEnhMetaFilePixelFormat)load("GetEnhMetaFilePixelFormat");
-	GetPixelFormat = (fp_GetPixelFormat)load("GetPixelFormat");
-	SetPixelFormat = (fp_SetPixelFormat)load("SetPixelFormat");
-	SwapBuffers = (fp_SwapBuffers)load("SwapBuffers");
-	wglCopyContext = (fp_wglCopyContext)load("wglCopyContext");
-	wglCreateContext = (fp_wglCreateContext)load("wglCreateContext");
-	wglCreateLayerContext = (fp_wglCreateLayerContext)load("wglCreateLayerContext");
-	wglDeleteContext = (fp_wglDeleteContext)load("wglDeleteContext");
-	wglDescribeLayerPlane = (fp_wglDescribeLayerPlane)load("wglDescribeLayerPlane");
-	wglGetCurrentContext = (fp_wglGetCurrentContext)load("wglGetCurrentContext");
-	wglGetCurrentDC = (fp_wglGetCurrentDC)load("wglGetCurrentDC");
-	wglGetLayerPaletteEntries = (fp_wglGetLayerPaletteEntries)load("wglGetLayerPaletteEntries");
-	wglGetProcAddress = (fp_wglGetProcAddress)load("wglGetProcAddress");
-	wglMakeCurrent = (fp_wglMakeCurrent)load("wglMakeCurrent");
-	wglRealizeLayerPalette = (fp_wglRealizeLayerPalette)load("wglRealizeLayerPalette");
-	wglSetLayerPaletteEntries = (fp_wglSetLayerPaletteEntries)load("wglSetLayerPaletteEntries");
-	wglShareLists = (fp_wglShareLists)load("wglShareLists");
-	wglSwapLayerBuffers = (fp_wglSwapLayerBuffers)load("wglSwapLayerBuffers");
-	wglUseFontBitmaps = (fp_wglUseFontBitmaps)load("wglUseFontBitmaps");
-	wglUseFontBitmapsA = (fp_wglUseFontBitmapsA)load("wglUseFontBitmapsA");
-	wglUseFontBitmapsW = (fp_wglUseFontBitmapsW)load("wglUseFontBitmapsW");
-	wglUseFontOutlines = (fp_wglUseFontOutlines)load("wglUseFontOutlines");
-	wglUseFontOutlinesA = (fp_wglUseFontOutlinesA)load("wglUseFontOutlinesA");
-	wglUseFontOutlinesW = (fp_wglUseFontOutlinesW)load("wglUseFontOutlinesW");
-}
 static void load_WGL_I3D_image_buffer(LOADER load) {
 	wglCreateImageBufferI3D = (fp_wglCreateImageBufferI3D)load("wglCreateImageBufferI3D");
 	wglDestroyImageBufferI3D = (fp_wglDestroyImageBufferI3D)load("wglDestroyImageBufferI3D");
@@ -468,7 +414,6 @@ static void find_coreWGL(void) {
 
 void gladLoadWGLLoader(LOADER load) {
 	find_coreWGL();
-	load_WGL_VERSION_1_0(load);
 
 	find_extensionsWGL();
 	load_WGL_I3D_image_buffer(load);

@@ -80,120 +80,32 @@ DECLARE_HANDLE(HGPUNV);
 DECLARE_HANDLE(HVIDEOINPUTDEVICENV);
 typedef struct _GPU_DEVICE GPU_DEVICE;
 typedef struct _GPU_DEVICE *PGPU_DEVICE;
-#define WGL_FONT_LINES 0
-#define WGL_FONT_POLYGONS 1
-#define WGL_SWAP_MAIN_PLANE 0x00000001
-#define WGL_SWAP_OVERLAY1 0x00000002
-#define WGL_SWAP_OVERLAY2 0x00000004
-#define WGL_SWAP_OVERLAY3 0x00000008
-#define WGL_SWAP_OVERLAY4 0x00000010
-#define WGL_SWAP_OVERLAY5 0x00000020
-#define WGL_SWAP_OVERLAY6 0x00000040
-#define WGL_SWAP_OVERLAY7 0x00000080
-#define WGL_SWAP_OVERLAY8 0x00000100
-#define WGL_SWAP_OVERLAY9 0x00000200
-#define WGL_SWAP_OVERLAY10 0x00000400
-#define WGL_SWAP_OVERLAY11 0x00000800
-#define WGL_SWAP_OVERLAY12 0x00001000
-#define WGL_SWAP_OVERLAY13 0x00002000
-#define WGL_SWAP_OVERLAY14 0x00004000
-#define WGL_SWAP_OVERLAY15 0x00008000
-#define WGL_SWAP_UNDERLAY1 0x00010000
-#define WGL_SWAP_UNDERLAY2 0x00020000
-#define WGL_SWAP_UNDERLAY3 0x00040000
-#define WGL_SWAP_UNDERLAY4 0x00080000
-#define WGL_SWAP_UNDERLAY5 0x00100000
-#define WGL_SWAP_UNDERLAY6 0x00200000
-#define WGL_SWAP_UNDERLAY7 0x00400000
-#define WGL_SWAP_UNDERLAY8 0x00800000
-#define WGL_SWAP_UNDERLAY9 0x01000000
-#define WGL_SWAP_UNDERLAY10 0x02000000
-#define WGL_SWAP_UNDERLAY11 0x04000000
-#define WGL_SWAP_UNDERLAY12 0x08000000
-#define WGL_SWAP_UNDERLAY13 0x10000000
-#define WGL_SWAP_UNDERLAY14 0x20000000
-#define WGL_SWAP_UNDERLAY15 0x40000000
-#ifndef WGL_VERSION_1_0
-#define WGL_VERSION_1_0 1
-typedef int (APIENTRYP fp_ChoosePixelFormat)(HDC, const PIXELFORMATDESCRIPTOR*);
-GLAPI fp_ChoosePixelFormat gladChoosePixelFormat;
-#define ChoosePixelFormat gladChoosePixelFormat
-typedef int (APIENTRYP fp_DescribePixelFormat)(HDC, int, UINT, const PIXELFORMATDESCRIPTOR*);
-GLAPI fp_DescribePixelFormat gladDescribePixelFormat;
-#define DescribePixelFormat gladDescribePixelFormat
-typedef UINT (APIENTRYP fp_GetEnhMetaFilePixelFormat)(HENHMETAFILE, const PIXELFORMATDESCRIPTOR*);
-GLAPI fp_GetEnhMetaFilePixelFormat gladGetEnhMetaFilePixelFormat;
-#define GetEnhMetaFilePixelFormat gladGetEnhMetaFilePixelFormat
-typedef int (APIENTRYP fp_GetPixelFormat)(HDC);
-GLAPI fp_GetPixelFormat gladGetPixelFormat;
-#define GetPixelFormat gladGetPixelFormat
-typedef BOOL (APIENTRYP fp_SetPixelFormat)(HDC, int, const PIXELFORMATDESCRIPTOR*);
-GLAPI fp_SetPixelFormat gladSetPixelFormat;
-#define SetPixelFormat gladSetPixelFormat
-typedef BOOL (APIENTRYP fp_SwapBuffers)(HDC);
-GLAPI fp_SwapBuffers gladSwapBuffers;
-#define SwapBuffers gladSwapBuffers
-typedef BOOL (APIENTRYP fp_wglCopyContext)(HGLRC, HGLRC, UINT);
-GLAPI fp_wglCopyContext gladwglCopyContext;
-#define wglCopyContext gladwglCopyContext
-typedef HGLRC (APIENTRYP fp_wglCreateContext)(HDC);
-GLAPI fp_wglCreateContext gladwglCreateContext;
-#define wglCreateContext gladwglCreateContext
-typedef HGLRC (APIENTRYP fp_wglCreateLayerContext)(HDC, int);
-GLAPI fp_wglCreateLayerContext gladwglCreateLayerContext;
-#define wglCreateLayerContext gladwglCreateLayerContext
-typedef BOOL (APIENTRYP fp_wglDeleteContext)(HGLRC);
-GLAPI fp_wglDeleteContext gladwglDeleteContext;
-#define wglDeleteContext gladwglDeleteContext
-typedef BOOL (APIENTRYP fp_wglDescribeLayerPlane)(HDC, int, int, UINT, const LAYERPLANEDESCRIPTOR*);
-GLAPI fp_wglDescribeLayerPlane gladwglDescribeLayerPlane;
-#define wglDescribeLayerPlane gladwglDescribeLayerPlane
-typedef HGLRC (APIENTRYP fp_wglGetCurrentContext)();
-GLAPI fp_wglGetCurrentContext gladwglGetCurrentContext;
-#define wglGetCurrentContext gladwglGetCurrentContext
-typedef HDC (APIENTRYP fp_wglGetCurrentDC)();
-GLAPI fp_wglGetCurrentDC gladwglGetCurrentDC;
-#define wglGetCurrentDC gladwglGetCurrentDC
-typedef int (APIENTRYP fp_wglGetLayerPaletteEntries)(HDC, int, int, int, const COLORREF*);
-GLAPI fp_wglGetLayerPaletteEntries gladwglGetLayerPaletteEntries;
-#define wglGetLayerPaletteEntries gladwglGetLayerPaletteEntries
-typedef PROC (APIENTRYP fp_wglGetProcAddress)(LPCSTR);
-GLAPI fp_wglGetProcAddress gladwglGetProcAddress;
-#define wglGetProcAddress gladwglGetProcAddress
-typedef BOOL (APIENTRYP fp_wglMakeCurrent)(HDC, HGLRC);
-GLAPI fp_wglMakeCurrent gladwglMakeCurrent;
-#define wglMakeCurrent gladwglMakeCurrent
-typedef BOOL (APIENTRYP fp_wglRealizeLayerPalette)(HDC, int, BOOL);
-GLAPI fp_wglRealizeLayerPalette gladwglRealizeLayerPalette;
-#define wglRealizeLayerPalette gladwglRealizeLayerPalette
-typedef int (APIENTRYP fp_wglSetLayerPaletteEntries)(HDC, int, int, int, const COLORREF*);
-GLAPI fp_wglSetLayerPaletteEntries gladwglSetLayerPaletteEntries;
-#define wglSetLayerPaletteEntries gladwglSetLayerPaletteEntries
-typedef BOOL (APIENTRYP fp_wglShareLists)(HGLRC, HGLRC);
-GLAPI fp_wglShareLists gladwglShareLists;
-#define wglShareLists gladwglShareLists
-typedef BOOL (APIENTRYP fp_wglSwapLayerBuffers)(HDC, UINT);
-GLAPI fp_wglSwapLayerBuffers gladwglSwapLayerBuffers;
-#define wglSwapLayerBuffers gladwglSwapLayerBuffers
-typedef BOOL (APIENTRYP fp_wglUseFontBitmaps)(HDC, DWORD, DWORD, DWORD);
-GLAPI fp_wglUseFontBitmaps gladwglUseFontBitmaps;
-#define wglUseFontBitmaps gladwglUseFontBitmaps
-typedef BOOL (APIENTRYP fp_wglUseFontBitmapsA)(HDC, DWORD, DWORD, DWORD);
-GLAPI fp_wglUseFontBitmapsA gladwglUseFontBitmapsA;
-#define wglUseFontBitmapsA gladwglUseFontBitmapsA
-typedef BOOL (APIENTRYP fp_wglUseFontBitmapsW)(HDC, DWORD, DWORD, DWORD);
-GLAPI fp_wglUseFontBitmapsW gladwglUseFontBitmapsW;
-#define wglUseFontBitmapsW gladwglUseFontBitmapsW
-typedef BOOL (APIENTRYP fp_wglUseFontOutlines)(HDC, DWORD, DWORD, DWORD, FLOAT, FLOAT, int, LPGLYPHMETRICSFLOAT);
-GLAPI fp_wglUseFontOutlines gladwglUseFontOutlines;
-#define wglUseFontOutlines gladwglUseFontOutlines
-typedef BOOL (APIENTRYP fp_wglUseFontOutlinesA)(HDC, DWORD, DWORD, DWORD, FLOAT, FLOAT, int, LPGLYPHMETRICSFLOAT);
-GLAPI fp_wglUseFontOutlinesA gladwglUseFontOutlinesA;
-#define wglUseFontOutlinesA gladwglUseFontOutlinesA
-typedef BOOL (APIENTRYP fp_wglUseFontOutlinesW)(HDC, DWORD, DWORD, DWORD, FLOAT, FLOAT, int, LPGLYPHMETRICSFLOAT);
-GLAPI fp_wglUseFontOutlinesW gladwglUseFontOutlinesW;
-#define wglUseFontOutlinesW gladwglUseFontOutlinesW
-#endif
+int ChoosePixelFormat(HDC, const PIXELFORMATDESCRIPTOR*);
+int DescribePixelFormat(HDC, int, UINT, const PIXELFORMATDESCRIPTOR*);
+UINT GetEnhMetaFilePixelFormat(HENHMETAFILE, const PIXELFORMATDESCRIPTOR*);
+int GetPixelFormat(HDC);
+BOOL SetPixelFormat(HDC, int, const PIXELFORMATDESCRIPTOR*);
+BOOL SwapBuffers(HDC);
+BOOL wglCopyContext(HGLRC, HGLRC, UINT);
+HGLRC wglCreateContext(HDC);
+HGLRC wglCreateLayerContext(HDC, int);
+BOOL wglDeleteContext(HGLRC);
+BOOL wglDescribeLayerPlane(HDC, int, int, UINT, const LAYERPLANEDESCRIPTOR*);
+HGLRC wglGetCurrentContext();
+HDC wglGetCurrentDC();
+int wglGetLayerPaletteEntries(HDC, int, int, int, const COLORREF*);
+PROC wglGetProcAddress(LPCSTR);
+BOOL wglMakeCurrent(HDC, HGLRC);
+BOOL wglRealizeLayerPalette(HDC, int, BOOL);
+int wglSetLayerPaletteEntries(HDC, int, int, int, const COLORREF*);
+BOOL wglShareLists(HGLRC, HGLRC);
+BOOL wglSwapLayerBuffers(HDC, UINT);
+BOOL wglUseFontBitmaps(HDC, DWORD, DWORD, DWORD);
+BOOL wglUseFontBitmapsA(HDC, DWORD, DWORD, DWORD);
+BOOL wglUseFontBitmapsW(HDC, DWORD, DWORD, DWORD);
+BOOL wglUseFontOutlines(HDC, DWORD, DWORD, DWORD, FLOAT, FLOAT, int, LPGLYPHMETRICSFLOAT);
+BOOL wglUseFontOutlinesA(HDC, DWORD, DWORD, DWORD, FLOAT, FLOAT, int, LPGLYPHMETRICSFLOAT);
+BOOL wglUseFontOutlinesW(HDC, DWORD, DWORD, DWORD, FLOAT, FLOAT, int, LPGLYPHMETRICSFLOAT);
 #define WGL_COVERAGE_SAMPLES_NV 0x2042
 #define WGL_COLOR_SAMPLES_NV 0x20B9
 #define WGL_IMAGE_BUFFER_MIN_ACCESS_I3D 0x00000001
