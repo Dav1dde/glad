@@ -88,7 +88,6 @@ private bool has_ext(const(char)* name) {
 }
 void gladLoadWGL(Loader load) {
 	find_coreWGL();
-	load_WGL_VERSION_1_0(load);
 
 	find_extensionsWGL();
 	load_WGL_I3D_image_buffer(load);
@@ -132,36 +131,6 @@ void find_coreWGL() {
 }
 
 void find_extensionsWGL() {
-	return;
-}
-
-void load_WGL_VERSION_1_0(Loader load) {
-	ChoosePixelFormat = cast(typeof(ChoosePixelFormat))load("ChoosePixelFormat");
-	DescribePixelFormat = cast(typeof(DescribePixelFormat))load("DescribePixelFormat");
-	GetEnhMetaFilePixelFormat = cast(typeof(GetEnhMetaFilePixelFormat))load("GetEnhMetaFilePixelFormat");
-	GetPixelFormat = cast(typeof(GetPixelFormat))load("GetPixelFormat");
-	SetPixelFormat = cast(typeof(SetPixelFormat))load("SetPixelFormat");
-	SwapBuffers = cast(typeof(SwapBuffers))load("SwapBuffers");
-	wglCopyContext = cast(typeof(wglCopyContext))load("wglCopyContext");
-	wglCreateContext = cast(typeof(wglCreateContext))load("wglCreateContext");
-	wglCreateLayerContext = cast(typeof(wglCreateLayerContext))load("wglCreateLayerContext");
-	wglDeleteContext = cast(typeof(wglDeleteContext))load("wglDeleteContext");
-	wglDescribeLayerPlane = cast(typeof(wglDescribeLayerPlane))load("wglDescribeLayerPlane");
-	wglGetCurrentContext = cast(typeof(wglGetCurrentContext))load("wglGetCurrentContext");
-	wglGetCurrentDC = cast(typeof(wglGetCurrentDC))load("wglGetCurrentDC");
-	wglGetLayerPaletteEntries = cast(typeof(wglGetLayerPaletteEntries))load("wglGetLayerPaletteEntries");
-	wglGetProcAddress = cast(typeof(wglGetProcAddress))load("wglGetProcAddress");
-	wglMakeCurrent = cast(typeof(wglMakeCurrent))load("wglMakeCurrent");
-	wglRealizeLayerPalette = cast(typeof(wglRealizeLayerPalette))load("wglRealizeLayerPalette");
-	wglSetLayerPaletteEntries = cast(typeof(wglSetLayerPaletteEntries))load("wglSetLayerPaletteEntries");
-	wglShareLists = cast(typeof(wglShareLists))load("wglShareLists");
-	wglSwapLayerBuffers = cast(typeof(wglSwapLayerBuffers))load("wglSwapLayerBuffers");
-	wglUseFontBitmaps = cast(typeof(wglUseFontBitmaps))load("wglUseFontBitmaps");
-	wglUseFontBitmapsA = cast(typeof(wglUseFontBitmapsA))load("wglUseFontBitmapsA");
-	wglUseFontBitmapsW = cast(typeof(wglUseFontBitmapsW))load("wglUseFontBitmapsW");
-	wglUseFontOutlines = cast(typeof(wglUseFontOutlines))load("wglUseFontOutlines");
-	wglUseFontOutlinesA = cast(typeof(wglUseFontOutlinesA))load("wglUseFontOutlinesA");
-	wglUseFontOutlinesW = cast(typeof(wglUseFontOutlinesW))load("wglUseFontOutlinesW");
 	return;
 }
 

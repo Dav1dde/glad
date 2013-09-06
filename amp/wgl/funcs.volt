@@ -2,7 +2,7 @@ module amp.wgl.funcs;
 
 
 private import amp.wgl.types;
-extern(System) @loadDynamic {
+extern(System) {
 int ChoosePixelFormat(HDC, const(PIXELFORMATDESCRIPTOR)*);
 int DescribePixelFormat(HDC, int, UINT, const(PIXELFORMATDESCRIPTOR)*);
 UINT GetEnhMetaFilePixelFormat(HENHMETAFILE, const(PIXELFORMATDESCRIPTOR)*);
