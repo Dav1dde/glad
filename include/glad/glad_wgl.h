@@ -80,32 +80,6 @@ DECLARE_HANDLE(HGPUNV);
 DECLARE_HANDLE(HVIDEOINPUTDEVICENV);
 typedef struct _GPU_DEVICE GPU_DEVICE;
 typedef struct _GPU_DEVICE *PGPU_DEVICE;
-int ChoosePixelFormat(HDC, const PIXELFORMATDESCRIPTOR*);
-int DescribePixelFormat(HDC, int, UINT, const PIXELFORMATDESCRIPTOR*);
-UINT GetEnhMetaFilePixelFormat(HENHMETAFILE, const PIXELFORMATDESCRIPTOR*);
-int GetPixelFormat(HDC);
-BOOL SetPixelFormat(HDC, int, const PIXELFORMATDESCRIPTOR*);
-BOOL SwapBuffers(HDC);
-BOOL wglCopyContext(HGLRC, HGLRC, UINT);
-HGLRC wglCreateContext(HDC);
-HGLRC wglCreateLayerContext(HDC, int);
-BOOL wglDeleteContext(HGLRC);
-BOOL wglDescribeLayerPlane(HDC, int, int, UINT, const LAYERPLANEDESCRIPTOR*);
-HGLRC wglGetCurrentContext();
-HDC wglGetCurrentDC();
-int wglGetLayerPaletteEntries(HDC, int, int, int, const COLORREF*);
-PROC wglGetProcAddress(LPCSTR);
-BOOL wglMakeCurrent(HDC, HGLRC);
-BOOL wglRealizeLayerPalette(HDC, int, BOOL);
-int wglSetLayerPaletteEntries(HDC, int, int, int, const COLORREF*);
-BOOL wglShareLists(HGLRC, HGLRC);
-BOOL wglSwapLayerBuffers(HDC, UINT);
-BOOL wglUseFontBitmaps(HDC, DWORD, DWORD, DWORD);
-BOOL wglUseFontBitmapsA(HDC, DWORD, DWORD, DWORD);
-BOOL wglUseFontBitmapsW(HDC, DWORD, DWORD, DWORD);
-BOOL wglUseFontOutlines(HDC, DWORD, DWORD, DWORD, FLOAT, FLOAT, int, LPGLYPHMETRICSFLOAT);
-BOOL wglUseFontOutlinesA(HDC, DWORD, DWORD, DWORD, FLOAT, FLOAT, int, LPGLYPHMETRICSFLOAT);
-BOOL wglUseFontOutlinesW(HDC, DWORD, DWORD, DWORD, FLOAT, FLOAT, int, LPGLYPHMETRICSFLOAT);
 #define WGL_COVERAGE_SAMPLES_NV 0x2042
 #define WGL_COLOR_SAMPLES_NV 0x20B9
 #define WGL_IMAGE_BUFFER_MIN_ACCESS_I3D 0x00000001

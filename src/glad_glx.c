@@ -1,6 +1,8 @@
 #include <string.h>
 #include <glad/glad_glx.h>
 
+static void* get_proc(const char *namez);
+
 #ifdef _WIN32
 #include <windows.h>
 static HMODULE libGL;
@@ -68,25 +70,6 @@ int open_gl(void) {
 }
 
 static
-void* get_proc(const char *namez) {
-    if(libGL == NULL) return NULL;
-    void* result = NULL;
-
-    if(gladGetProcAddressPtr != NULL) {
-        result = gladGetProcAddressPtr(namez);
-    }
-    if(result == NULL) {
-#ifdef _WIN32
-        result = GetProcAddress(libGL, namez);
-#else
-        result = dlsym(libGL, namez);
-#endif
-    }
-
-    return result;
-}
-
-static
 void close_gl() {
     if(libGL != NULL) {
         dlclose(libGL);
@@ -94,6 +77,25 @@ void close_gl() {
     }
 }
 #endif
+
+static
+void* get_proc(const char *namez) {
+    void* result = NULL;
+    if(libGL == NULL) return NULL;
+
+    if(gladGetProcAddressPtr != NULL) {
+        result = gladGetProcAddressPtr(namez);
+    }
+    if(result == NULL) {
+#ifdef _WIN32
+        result = (void*)GetProcAddress(libGL, namez);
+#else
+        result = dlsym(libGL, namez);
+#endif
+    }
+
+    return result;
+}
 
 int gladLoadGLX(void) {
     if(open_gl()) {
