@@ -236,7 +236,7 @@ def _wgl_types(gen, f):
     f.write(
 '''
 version(Windows) {
-    public import core.sys.windows;
+    public import core.sys.windows.windows;
 } else {
     alias BOOL = int;
     alias CHAR = char;
