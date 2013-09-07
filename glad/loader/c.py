@@ -1,5 +1,7 @@
 
 LOAD_OPENGL_DLL = '''
+%(pre)s void* %(proc)s(const char *namez);
+
 #ifdef _WIN32
 #include <windows.h>
 static HMODULE libGL;
@@ -67,25 +69,6 @@ int %(init)s(void) {
 }
 
 %(pre)s
-void* %(proc)s(const char *namez) {
-    if(libGL == NULL) return NULL;
-    void* result = NULL;
-
-    if(gladGetProcAddressPtr != NULL) {
-        result = gladGetProcAddressPtr(namez);
-    }
-    if(result == NULL) {
-#ifdef _WIN32
-        result = GetProcAddress(libGL, namez);
-#else
-        result = dlsym(libGL, namez);
-#endif
-    }
-
-    return result;
-}
-
-%(pre)s
 void %(terminate)s() {
     if(libGL != NULL) {
         dlclose(libGL);
@@ -93,6 +76,25 @@ void %(terminate)s() {
     }
 }
 #endif
+
+%(pre)s
+void* %(proc)s(const char *namez) {
+    void* result = NULL;
+    if(libGL == NULL) return NULL;
+
+    if(gladGetProcAddressPtr != NULL) {
+        result = gladGetProcAddressPtr(namez);
+    }
+    if(result == NULL) {
+#ifdef _WIN32
+        result = (void*)GetProcAddress(libGL, namez);
+#else
+        result = dlsym(libGL, namez);
+#endif
+    }
+
+    return result;
+}
 '''
 
 LOAD_OPENGL_DLL_H = '''

@@ -107,13 +107,18 @@ class CGenerator(Generator):
             f.write('void gladLoad{}Loader(LOADER);\n'.format(api.upper()))
 
         for type in types:
+            if not self.spec.NAME in ('egl',) and 'khronos' in type.raw:
+                continue
             f.write(type.raw.lstrip().replace('        ', ''))
             f.write('\n')
 
     def generate_features(self, features):
         f = self._f_h
         write = set()
-        if self.spec.NAME in ('egl', 'wgl'):
+        if self.spec.NAME in ('wgl',):
+            # These are already defined in windows.h
+            pass
+        elif self.spec.NAME in ('egl',):
             for feature in features:
                 for func in feature.functions:
                     self.write_function_def(f, func)
