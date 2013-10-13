@@ -24,7 +24,7 @@ What a D code using glad (and SDL) could look like:
         /* done, use OpenGL here */
     }
 
-Of course you don't need to use SDL, glad provides its own OpenGL loder:
+Of course you don't need to use SDL, glad provides its own OpenGL loader:
 
     void main() {
         /* setup OpenGL context with e.g. glfw */
@@ -59,7 +59,7 @@ Possible commandline options:
                 [--api API] [--generator {c,d,volt}] [--extensions EXTENSIONS]
                 [--spec {gl,egl,glx,wgl}] [--no-loader]
 
-    Uses the offcial Khronos-XML specs to generate a GL/GLES/EGL/GLX/WGL Loader
+    Uses the official Khronos-XML specs to generate a GL/GLES/EGL/GLX/WGL Loader
     made for your needs. Glad currently supports the languages C, D and Volt.
 
     optional arguments:
@@ -81,7 +81,7 @@ Possible commandline options:
 
 
 By default a loader for the D programming language will be generated. To generate
-a loader for C with two extensions, it could look like that:
+a loader for C with two extensions, it could look like this:
 
     python main.py --generator=c --extensions=GL_EXT_framebuffer_multisample,GL_EXT_Cg_shader --out-path=GL
 
@@ -122,7 +122,7 @@ void gladLoadGLLoader(LOADER);
 
 #### C ####
 
-`glad.h` completly replaces any `gl.h` or `gl3.h` only include `glad.h`.
+`glad.h` completely replaces any `gl.h` or `gl3.h` only include `glad.h`.
 
     if(!gladLoadGL()) { exit(-1) };
     printf("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
