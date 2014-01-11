@@ -45,8 +45,8 @@ class CGenerator(Generator):
                 if self.spec.NAME == 'gl':
                     f.write('\tif(!GLAD_{}) return;\n'.format(feature.name))
                 for func in feature.functions:
-                    f.write('\t{name} = (fp_{name})load("{name}");\n'
-                        .format(name=func.proto.name))
+                    f.write('\tglad_{0} = (PFN{1}PROC)load("{0}");\n'
+                        .format(func.proto.name, func.proto.name.upper()))
                 f.write('}\n')
 
             for ext in extensions[api]:
@@ -61,8 +61,8 @@ class CGenerator(Generator):
                 if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
                 for func in ext.functions:
                     # even if they were in written we need to load it
-                    f.write('\t{name} = (fp_{name})load("{name}");\n'
-                        .format(name=func.proto.name))
+                    f.write('\tglad_{0} = (PFN{1}PROC)load("{0}");\n'
+                        .format(func.proto.name, func.proto.name.upper()))
                 if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'): f.write('#endif\n')
                 f.write('}\n')
 
@@ -191,14 +191,16 @@ class CGenerator(Generator):
         fobj.write(');\n')
 
     def write_function_prototype(self, fobj, func):
-        fobj.write('typedef {} (APIENTRYP fp_{})({});\n'.format(func.proto.ret.to_c(),
-                                                      func.proto.name,
+        fobj.write('typedef {} (APIENTRYP PFN{}PROC)({});\n'.format(func.proto.ret.to_c(),
+                        func.proto.name.upper(),
                         ', '.join(param.type.to_c() for param in func.params)))
-        fobj.write('GLAPI fp_{0} glad{0};\n'.format(func.proto.name))
-        fobj.write('#define {0} glad{0}\n'.format(func.proto.name))
+        fobj.write('GLAPI PFN{}PROC glad_{};\n'.format(func.proto.name.upper(),
+                                                        func.proto.name))
+        fobj.write('#define {0} glad_{0}\n'.format(func.proto.name))
 
     def write_function(self, fobj, func):
-        fobj.write('fp_{0} glad{0};\n'.format(func.proto.name))
+        fobj.write('PFN{}PROC glad_{};\n'.format(func.proto.name.upper(),
+                                                 func.proto.name))
 
 
 def make_path(path, *args):
