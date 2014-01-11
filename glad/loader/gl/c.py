@@ -91,7 +91,7 @@ struct {
 extern "C" {
 #endif
 
-typedef void* (* LOADER)(const char *name);
+typedef void* (* GLADloadproc)(const char *name);
 '''
 
 _OPENGL_HEADER_LOADER = '''

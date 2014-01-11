@@ -37,8 +37,8 @@ _EGL_HEADER = '''
 extern "C" {
 #endif
 
-typedef void* (* LOADER)(const char *name);
-void gladLoadEGLLoader(LOADER);
+typedef void* (* GLADloadproc)(const char *name);
+void gladLoadEGLLoader(GLADloadproc);
 '''
 
 _EGL_HEADER_LOADER = '''

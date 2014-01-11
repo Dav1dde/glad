@@ -40,7 +40,7 @@ class CGenerator(Generator):
         written = set()
         for api, version in self.api.iteritems():
             for feature in features[api]:
-                f.write('static void load_{}(LOADER load) {{\n'
+                f.write('static void load_{}(GLADloadproc load) {{\n'
                         .format(feature.name))
                 if self.spec.NAME == 'gl':
                     f.write('\tif(!GLAD_{}) return;\n'.format(feature.name))
@@ -53,7 +53,7 @@ class CGenerator(Generator):
                 if len(list(ext.functions)) == 0 or ext.name in written:
                     continue
 
-                f.write('static void load_{}(LOADER load) {{\n'
+                f.write('static void load_{}(GLADloadproc load) {{\n'
                     .format(ext.name))
                 if self.spec.NAME == 'gl':
                     f.write('\tif(!GLAD_{}) return;\n'.format(ext.name))
@@ -82,7 +82,7 @@ class CGenerator(Generator):
                         ' major > {num[0]};\n'.format(feature.name, num=feature.number))
             f.write('}\n\n')
 
-            f.write('void gladLoad{}Loader(LOADER load) {{\n'.format(api.upper()))
+            f.write('void gladLoad{}Loader(GLADloadproc load) {{\n'.format(api.upper()))
 
             self.loader.write_begin_load(f)
             f.write('\tfind_core{}();\n'.format(api.upper()))
@@ -104,7 +104,7 @@ class CGenerator(Generator):
         self.loader.write_header(f)
 
         for api in self.api:
-            f.write('void gladLoad{}Loader(LOADER);\n'.format(api.upper()))
+            f.write('void gladLoad{}Loader(GLADloadproc);\n'.format(api.upper()))
 
         for type in types:
             if not self.spec.NAME in ('egl',) and 'khronos' in type.raw:

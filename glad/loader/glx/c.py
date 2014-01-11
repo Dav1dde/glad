@@ -6,7 +6,7 @@ _GLX_LOADER = \
                        'proc':'get_proc', 'terminate':'close_gl'} + '''
 int gladLoadGLX(void) {
     if(open_gl()) {
-        gladLoadGLXLoader((LOADER)get_proc);
+        gladLoadGLXLoader((GLADloadproc)get_proc);
         close_gl();
         return 1;
     }
@@ -51,8 +51,8 @@ _GLX_HEADER = '''
 extern "C" {
 #endif
 
-typedef void* (* LOADER)(const char *name);
-void gladLoadGLXLoader(LOADER);
+typedef void* (* GLADloadproc)(const char *name);
+void gladLoadGLXLoader(GLADloadproc);
 '''
 
 _GLX_HEADER_LOADER = '''
