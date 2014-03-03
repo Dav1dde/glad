@@ -1,7 +1,7 @@
 module glad.wgl.all;
 
 
-public import glad.wgl.funcs;
-public import glad.wgl.ext;
-public import glad.wgl.enums;
-public import glad.wgl.types;
+private import glad.wgl.funcs;
+private import glad.wgl.ext;
+private import glad.wgl.enums;
+private import glad.wgl.types;

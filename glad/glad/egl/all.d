@@ -1,7 +1,7 @@
 module glad.egl.all;
 
 
-public import glad.egl.funcs;
-public import glad.egl.ext;
-public import glad.egl.enums;
-public import glad.egl.types;
+private import glad.egl.funcs;
+private import glad.egl.ext;
+private import glad.egl.enums;
+private import glad.egl.types;
