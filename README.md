@@ -99,7 +99,7 @@ struct {
     int minor;
 } GLVersion;
 
-typedef void* (* LOADER)(const char *name);
+typedef void* (* GLADloadproc)(const char *name);
 
 /*
  * Load OpenGL using the internal loader.
@@ -116,7 +116,7 @@ int gladLoadGL(void);
  * GLVersion gladLoadGL(void* function(const(char)* name));
  *
  */
-void gladLoadGLLoader(LOADER);
+void gladLoadGLLoader(GLADloadproc);
 ```
 
 
