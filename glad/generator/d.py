@@ -787,7 +787,7 @@ class DGenerator(BaseDGenerator):
         fobj.write('enum {} {} = {};\n'.format(type, name, value))
 
     def write_opaque_struct(self, fobj, name):
-        fobj.write('struct {};\n'.format(name))
+        fobj.write('struct _{name}; alias {name} = _{name}*;\n'.format(name=name))
 
     def write_alias(self, fobj, newn, decl):
         fobj.write('alias {} = {};\n'.format(newn, decl))
