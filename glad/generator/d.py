@@ -528,12 +528,14 @@ class BaseDGenerator(Generator):
         f = self._f_gl
 
         self.write_module(f, self.PACKAGE)
-        self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES], False)
+        self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES], True)
 
         for api, features in allfeatures.iteritems():
             extensions = allextensions[api]
             with open(self.make_path(api), 'w') as f:
                 self.write_module(f, api)
+
+                self.write_imports(f, [self.TYPES], False)
 
                 extenums = chain.from_iterable(ext.enums for ext in extensions)
                 funcenums = chain.from_iterable(ext.enums for ext in extensions)
@@ -545,6 +547,9 @@ class BaseDGenerator(Generator):
                 extfuncs = set(func.proto.name for func in
                         chain.from_iterable(ext.functions for ext in extensions))
                 extfuncs = extfuncs - featfuncs
+
+                enums |= set(enum.name for enum in
+                        chain.from_iterable(feat.enums for feat in features))
 
                 self.write_selective_import(f, self.FUNCS, featfuncs)
                 self.write_selective_import(f, self.EXT, extfuncs)
@@ -721,7 +726,7 @@ class DGenerator(BaseDGenerator):
             fobj.write('import {}.{}.{};\n'.format(self.MODULE, self.spec.NAME, mod))
 
     def write_selective_import(self, fobj, mod, imports):
-        fobj.write('import {}.{}.{} :\n'.format(self.MODULE, self.spec.NAME, mod))
+        fobj.write('public import {}.{}.{} :\n'.format(self.MODULE, self.spec.NAME, mod))
         imports = set(imports)
         last = len(imports)
         for i, im in enumerate(imports, 1):
