@@ -155,9 +155,9 @@ extern(System) {
     }
 }
 extern(System) {
-struct __GLXcontextRec;
+struct ___GLXcontextRec; alias __GLXcontextRec = ___GLXcontextRec*;
 alias GLXContext = __GLXcontextRec*;
-struct __GLXFBConfigRec;
+struct ___GLXFBConfigRec; alias __GLXFBConfigRec = ___GLXFBConfigRec*;
 alias GLXFBConfig = __GLXFBConfigRec*;
 alias GLXFBConfigSGIX = __GLXFBConfigRec*;
 }

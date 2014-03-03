@@ -34,7 +34,7 @@ version(Windows) {
 } else version(Android) {
     //import android.native_window;
     //struct egl_native_pixmap_t;
-    struct egl_native_pixmap_t;
+    struct _egl_native_pixmap_t; alias egl_native_pixmap_t = _egl_native_pixmap_t*;
 
     //alias ANativeWindow*           EGLNativeWindowType;
     //alias egl_native_pixmap_t*     EGLNativePixmapType;
@@ -66,5 +66,5 @@ struct EGLClientPixmapHI {
 }
 }
 extern(System) {
-struct _cl_event;
+struct __cl_event; alias _cl_event = __cl_event*;
 }
