@@ -64,7 +64,9 @@ class Generator(object):
         for api, version in self.api.iteritems():
             fs[api].extend([value for key, value in self.spec.features[api].items()
                         if key <= version])
-            es[api].extend(self.spec.extensions[api].values())
+            es[api].extend(self.spec.extensions[api][ext]
+                           for ext in extension_names if ext
+                           in self.spec.extensions[api])
         self.generate_loader(fs, es)
 
     def generate_loader(self, features, extensions):

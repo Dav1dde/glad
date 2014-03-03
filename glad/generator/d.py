@@ -726,6 +726,8 @@ class DGenerator(BaseDGenerator):
             fobj.write('import {}.{}.{};\n'.format(self.MODULE, self.spec.NAME, mod))
 
     def write_selective_import(self, fobj, mod, imports):
+        if len(imports) == 0: return
+
         fobj.write('public import {}.{}.{} :\n'.format(self.MODULE, self.spec.NAME, mod))
         imports = set(imports)
         last = len(imports)
