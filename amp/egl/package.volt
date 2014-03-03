@@ -1,6 +1,6 @@
 module amp.egl;
 
-public import amp.egl.funcs;
-public import amp.egl.ext;
-public import amp.egl.enums;
-public import amp.egl.types;
+private import amp.egl.funcs;
+private import amp.egl.ext;
+private import amp.egl.enums;
+private import amp.egl.types;

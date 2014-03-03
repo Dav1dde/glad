@@ -1,6 +1,6 @@
 module amp.glx;
 
-public import amp.glx.funcs;
-public import amp.glx.ext;
-public import amp.glx.enums;
-public import amp.glx.types;
+private import amp.glx.funcs;
+private import amp.glx.ext;
+private import amp.glx.enums;
+private import amp.glx.types;

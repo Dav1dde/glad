@@ -1,6 +1,6 @@
 module amp.wgl;
 
-public import amp.wgl.funcs;
-public import amp.wgl.ext;
-public import amp.wgl.enums;
-public import amp.wgl.types;
+private import amp.wgl.funcs;
+private import amp.wgl.ext;
+private import amp.wgl.enums;
+private import amp.wgl.types;
