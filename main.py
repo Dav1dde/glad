@@ -32,7 +32,9 @@ def main():
         Spec = SPECS[value]
 
         if os.path.exists(value + '.xml'):
+            print 'Using local spec: {}.xml'.format(value)
             return Spec.from_file(value + '.xml')
+        print 'Downloading latest spec from svn...'
         return Spec.from_svn()
 
 
@@ -113,6 +115,7 @@ def main():
 
     Generator = get_generator(ns.generator)
 
+    print 'Generating {spec} bindings...'.format(spec=spec.NAME)
     with Generator(ns.out, spec, api, loader) as generator:
         #try:
         generator.generate(ns.extensions)
