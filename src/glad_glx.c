@@ -7,14 +7,14 @@ static void* get_proc(const char *namez);
 #include <windows.h>
 static HMODULE libGL;
 
-typedef void* (*WGLGETPROCADDRESS)(const char*);
-WGLGETPROCADDRESS gladGetProcAddressPtr;
+typedef void* (*PFNWGLGETPROCADDRESSPROC)(const char*);
+PFNWGLGETPROCADDRESSPROC gladGetProcAddressPtr;
 
 static
 int open_gl(void) {
     libGL = LoadLibraryA("opengl32.dll");
     if(libGL != NULL) {
-        gladGetProcAddressPtr = (WGLGETPROCADDRESS)GetProcAddress(
+        gladGetProcAddressPtr = (PFNWGLGETPROCADDRESSPROC)GetProcAddress(
                 libGL, "wglGetProcAddress");
         return gladGetProcAddressPtr != NULL;
     }
@@ -34,8 +34,8 @@ void close_gl(void) {
 static void* libGL;
 
 #ifndef __APPLE__
-typedef void* (*GLXGETPROCADDRESS)(const char*);
-GLXGETPROCADDRESS gladGetProcAddressPtr;
+typedef void* (*PFNGLXGETPROCADDRESSPROC)(const char*);
+PFNGLXGETPROCADDRESSPROC gladGetProcAddressPtr;
 #endif
 
 static
@@ -59,7 +59,7 @@ int open_gl(void) {
 #ifdef __APPLE__
         return 1;
 #else
-            gladGetProcAddressPtr = (GLXGETPROCADDRESS)dlsym(libGL,
+            gladGetProcAddressPtr = (PFNGLXGETPROCADDRESSPROC)dlsym(libGL,
                 "glXGetProcAddressARB");
             return gladGetProcAddressPtr != NULL;
 #endif
@@ -99,7 +99,7 @@ void* get_proc(const char *namez) {
 
 int gladLoadGLX(void) {
     if(open_gl()) {
-        gladLoadGLXLoader((LOADER)get_proc);
+        gladLoadGLXLoader((GLADloadproc)get_proc);
         close_gl();
         return 1;
     }
@@ -107,313 +107,313 @@ int gladLoadGLX(void) {
     return 0;
 }
 
-fp_glXGetSelectedEvent gladglXGetSelectedEvent;
-fp_glXQueryExtension gladglXQueryExtension;
-fp_glXMakeCurrent gladglXMakeCurrent;
-fp_glXSelectEvent gladglXSelectEvent;
-fp_glXCreateContext gladglXCreateContext;
-fp_glXCreateGLXPixmap gladglXCreateGLXPixmap;
-fp_glXQueryVersion gladglXQueryVersion;
-fp_glXGetCurrentReadDrawable gladglXGetCurrentReadDrawable;
-fp_glXDestroyPixmap gladglXDestroyPixmap;
-fp_glXGetCurrentContext gladglXGetCurrentContext;
-fp_glXGetProcAddress gladglXGetProcAddress;
-fp_glXWaitGL gladglXWaitGL;
-fp_glXIsDirect gladglXIsDirect;
-fp_glXDestroyWindow gladglXDestroyWindow;
-fp_glXCreateWindow gladglXCreateWindow;
-fp_glXCopyContext gladglXCopyContext;
-fp_glXCreatePbuffer gladglXCreatePbuffer;
-fp_glXSwapBuffers gladglXSwapBuffers;
-fp_glXGetCurrentDisplay gladglXGetCurrentDisplay;
-fp_glXGetCurrentDrawable gladglXGetCurrentDrawable;
-fp_glXQueryContext gladglXQueryContext;
-fp_glXChooseVisual gladglXChooseVisual;
-fp_glXQueryServerString gladglXQueryServerString;
-fp_glXDestroyContext gladglXDestroyContext;
-fp_glXDestroyGLXPixmap gladglXDestroyGLXPixmap;
-fp_glXGetFBConfigAttrib gladglXGetFBConfigAttrib;
-fp_glXUseXFont gladglXUseXFont;
-fp_glXDestroyPbuffer gladglXDestroyPbuffer;
-fp_glXChooseFBConfig gladglXChooseFBConfig;
-fp_glXCreateNewContext gladglXCreateNewContext;
-fp_glXMakeContextCurrent gladglXMakeContextCurrent;
-fp_glXGetConfig gladglXGetConfig;
-fp_glXGetFBConfigs gladglXGetFBConfigs;
-fp_glXCreatePixmap gladglXCreatePixmap;
-fp_glXWaitX gladglXWaitX;
-fp_glXGetVisualFromFBConfig gladglXGetVisualFromFBConfig;
-fp_glXQueryDrawable gladglXQueryDrawable;
-fp_glXQueryExtensionsString gladglXQueryExtensionsString;
-fp_glXGetClientString gladglXGetClientString;
-fp_glXGetCurrentDisplayEXT gladglXGetCurrentDisplayEXT;
-fp_glXQueryContextInfoEXT gladglXQueryContextInfoEXT;
-fp_glXGetContextIDEXT gladglXGetContextIDEXT;
-fp_glXImportContextEXT gladglXImportContextEXT;
-fp_glXFreeContextEXT gladglXFreeContextEXT;
-fp_glXCreateGLXPbufferSGIX gladglXCreateGLXPbufferSGIX;
-fp_glXDestroyGLXPbufferSGIX gladglXDestroyGLXPbufferSGIX;
-fp_glXQueryGLXPbufferSGIX gladglXQueryGLXPbufferSGIX;
-fp_glXSelectEventSGIX gladglXSelectEventSGIX;
-fp_glXGetSelectedEventSGIX gladglXGetSelectedEventSGIX;
-fp_glXJoinSwapGroupNV gladglXJoinSwapGroupNV;
-fp_glXBindSwapBarrierNV gladglXBindSwapBarrierNV;
-fp_glXQuerySwapGroupNV gladglXQuerySwapGroupNV;
-fp_glXQueryMaxSwapGroupsNV gladglXQueryMaxSwapGroupsNV;
-fp_glXQueryFrameCountNV gladglXQueryFrameCountNV;
-fp_glXResetFrameCountNV gladglXResetFrameCountNV;
-fp_glXQueryHyperpipeNetworkSGIX gladglXQueryHyperpipeNetworkSGIX;
-fp_glXHyperpipeConfigSGIX gladglXHyperpipeConfigSGIX;
-fp_glXQueryHyperpipeConfigSGIX gladglXQueryHyperpipeConfigSGIX;
-fp_glXDestroyHyperpipeConfigSGIX gladglXDestroyHyperpipeConfigSGIX;
-fp_glXBindHyperpipeSGIX gladglXBindHyperpipeSGIX;
-fp_glXQueryHyperpipeBestAttribSGIX gladglXQueryHyperpipeBestAttribSGIX;
-fp_glXHyperpipeAttribSGIX gladglXHyperpipeAttribSGIX;
-fp_glXQueryHyperpipeAttribSGIX gladglXQueryHyperpipeAttribSGIX;
-fp_glXBindChannelToWindowSGIX gladglXBindChannelToWindowSGIX;
-fp_glXChannelRectSGIX gladglXChannelRectSGIX;
-fp_glXQueryChannelRectSGIX gladglXQueryChannelRectSGIX;
-fp_glXQueryChannelDeltasSGIX gladglXQueryChannelDeltasSGIX;
-fp_glXChannelRectSyncSGIX gladglXChannelRectSyncSGIX;
-fp_glXCopyImageSubDataNV gladglXCopyImageSubDataNV;
-fp_glXGetSyncValuesOML gladglXGetSyncValuesOML;
-fp_glXGetMscRateOML gladglXGetMscRateOML;
-fp_glXSwapBuffersMscOML gladglXSwapBuffersMscOML;
-fp_glXWaitForMscOML gladglXWaitForMscOML;
-fp_glXWaitForSbcOML gladglXWaitForSbcOML;
-fp_glXMakeCurrentReadSGI gladglXMakeCurrentReadSGI;
-fp_glXGetCurrentReadDrawableSGI gladglXGetCurrentReadDrawableSGI;
-fp_glXSwapIntervalSGI gladglXSwapIntervalSGI;
-fp_glXGetVideoSyncSGI gladglXGetVideoSyncSGI;
-fp_glXWaitVideoSyncSGI gladglXWaitVideoSyncSGI;
-fp_glXGetAGPOffsetMESA gladglXGetAGPOffsetMESA;
-fp_glXSet3DfxModeMESA gladglXSet3DfxModeMESA;
-fp_glXBindTexImageEXT gladglXBindTexImageEXT;
-fp_glXReleaseTexImageEXT gladglXReleaseTexImageEXT;
-fp_glXBindVideoCaptureDeviceNV gladglXBindVideoCaptureDeviceNV;
-fp_glXEnumerateVideoCaptureDevicesNV gladglXEnumerateVideoCaptureDevicesNV;
-fp_glXLockVideoCaptureDeviceNV gladglXLockVideoCaptureDeviceNV;
-fp_glXQueryVideoCaptureDeviceNV gladglXQueryVideoCaptureDeviceNV;
-fp_glXReleaseVideoCaptureDeviceNV gladglXReleaseVideoCaptureDeviceNV;
-fp_glXJoinSwapGroupSGIX gladglXJoinSwapGroupSGIX;
-fp_glXSwapIntervalEXT gladglXSwapIntervalEXT;
+PFNGLXGETSELECTEDEVENTPROC glad_glXGetSelectedEvent;
+PFNGLXQUERYEXTENSIONPROC glad_glXQueryExtension;
+PFNGLXMAKECURRENTPROC glad_glXMakeCurrent;
+PFNGLXSELECTEVENTPROC glad_glXSelectEvent;
+PFNGLXCREATECONTEXTPROC glad_glXCreateContext;
+PFNGLXCREATEGLXPIXMAPPROC glad_glXCreateGLXPixmap;
+PFNGLXQUERYVERSIONPROC glad_glXQueryVersion;
+PFNGLXGETCURRENTREADDRAWABLEPROC glad_glXGetCurrentReadDrawable;
+PFNGLXDESTROYPIXMAPPROC glad_glXDestroyPixmap;
+PFNGLXGETCURRENTCONTEXTPROC glad_glXGetCurrentContext;
+PFNGLXGETPROCADDRESSPROC glad_glXGetProcAddress;
+PFNGLXWAITGLPROC glad_glXWaitGL;
+PFNGLXISDIRECTPROC glad_glXIsDirect;
+PFNGLXDESTROYWINDOWPROC glad_glXDestroyWindow;
+PFNGLXCREATEWINDOWPROC glad_glXCreateWindow;
+PFNGLXCOPYCONTEXTPROC glad_glXCopyContext;
+PFNGLXCREATEPBUFFERPROC glad_glXCreatePbuffer;
+PFNGLXSWAPBUFFERSPROC glad_glXSwapBuffers;
+PFNGLXGETCURRENTDISPLAYPROC glad_glXGetCurrentDisplay;
+PFNGLXGETCURRENTDRAWABLEPROC glad_glXGetCurrentDrawable;
+PFNGLXQUERYCONTEXTPROC glad_glXQueryContext;
+PFNGLXCHOOSEVISUALPROC glad_glXChooseVisual;
+PFNGLXQUERYSERVERSTRINGPROC glad_glXQueryServerString;
+PFNGLXDESTROYCONTEXTPROC glad_glXDestroyContext;
+PFNGLXDESTROYGLXPIXMAPPROC glad_glXDestroyGLXPixmap;
+PFNGLXGETFBCONFIGATTRIBPROC glad_glXGetFBConfigAttrib;
+PFNGLXUSEXFONTPROC glad_glXUseXFont;
+PFNGLXDESTROYPBUFFERPROC glad_glXDestroyPbuffer;
+PFNGLXCHOOSEFBCONFIGPROC glad_glXChooseFBConfig;
+PFNGLXCREATENEWCONTEXTPROC glad_glXCreateNewContext;
+PFNGLXMAKECONTEXTCURRENTPROC glad_glXMakeContextCurrent;
+PFNGLXGETCONFIGPROC glad_glXGetConfig;
+PFNGLXGETFBCONFIGSPROC glad_glXGetFBConfigs;
+PFNGLXCREATEPIXMAPPROC glad_glXCreatePixmap;
+PFNGLXWAITXPROC glad_glXWaitX;
+PFNGLXGETVISUALFROMFBCONFIGPROC glad_glXGetVisualFromFBConfig;
+PFNGLXQUERYDRAWABLEPROC glad_glXQueryDrawable;
+PFNGLXQUERYEXTENSIONSSTRINGPROC glad_glXQueryExtensionsString;
+PFNGLXGETCLIENTSTRINGPROC glad_glXGetClientString;
+PFNGLXGETCURRENTDISPLAYEXTPROC glad_glXGetCurrentDisplayEXT;
+PFNGLXQUERYCONTEXTINFOEXTPROC glad_glXQueryContextInfoEXT;
+PFNGLXGETCONTEXTIDEXTPROC glad_glXGetContextIDEXT;
+PFNGLXIMPORTCONTEXTEXTPROC glad_glXImportContextEXT;
+PFNGLXFREECONTEXTEXTPROC glad_glXFreeContextEXT;
+PFNGLXCREATEGLXPBUFFERSGIXPROC glad_glXCreateGLXPbufferSGIX;
+PFNGLXDESTROYGLXPBUFFERSGIXPROC glad_glXDestroyGLXPbufferSGIX;
+PFNGLXQUERYGLXPBUFFERSGIXPROC glad_glXQueryGLXPbufferSGIX;
+PFNGLXSELECTEVENTSGIXPROC glad_glXSelectEventSGIX;
+PFNGLXGETSELECTEDEVENTSGIXPROC glad_glXGetSelectedEventSGIX;
+PFNGLXJOINSWAPGROUPNVPROC glad_glXJoinSwapGroupNV;
+PFNGLXBINDSWAPBARRIERNVPROC glad_glXBindSwapBarrierNV;
+PFNGLXQUERYSWAPGROUPNVPROC glad_glXQuerySwapGroupNV;
+PFNGLXQUERYMAXSWAPGROUPSNVPROC glad_glXQueryMaxSwapGroupsNV;
+PFNGLXQUERYFRAMECOUNTNVPROC glad_glXQueryFrameCountNV;
+PFNGLXRESETFRAMECOUNTNVPROC glad_glXResetFrameCountNV;
+PFNGLXQUERYHYPERPIPENETWORKSGIXPROC glad_glXQueryHyperpipeNetworkSGIX;
+PFNGLXHYPERPIPECONFIGSGIXPROC glad_glXHyperpipeConfigSGIX;
+PFNGLXQUERYHYPERPIPECONFIGSGIXPROC glad_glXQueryHyperpipeConfigSGIX;
+PFNGLXDESTROYHYPERPIPECONFIGSGIXPROC glad_glXDestroyHyperpipeConfigSGIX;
+PFNGLXBINDHYPERPIPESGIXPROC glad_glXBindHyperpipeSGIX;
+PFNGLXQUERYHYPERPIPEBESTATTRIBSGIXPROC glad_glXQueryHyperpipeBestAttribSGIX;
+PFNGLXHYPERPIPEATTRIBSGIXPROC glad_glXHyperpipeAttribSGIX;
+PFNGLXQUERYHYPERPIPEATTRIBSGIXPROC glad_glXQueryHyperpipeAttribSGIX;
+PFNGLXBINDCHANNELTOWINDOWSGIXPROC glad_glXBindChannelToWindowSGIX;
+PFNGLXCHANNELRECTSGIXPROC glad_glXChannelRectSGIX;
+PFNGLXQUERYCHANNELRECTSGIXPROC glad_glXQueryChannelRectSGIX;
+PFNGLXQUERYCHANNELDELTASSGIXPROC glad_glXQueryChannelDeltasSGIX;
+PFNGLXCHANNELRECTSYNCSGIXPROC glad_glXChannelRectSyncSGIX;
+PFNGLXCOPYIMAGESUBDATANVPROC glad_glXCopyImageSubDataNV;
+PFNGLXGETSYNCVALUESOMLPROC glad_glXGetSyncValuesOML;
+PFNGLXGETMSCRATEOMLPROC glad_glXGetMscRateOML;
+PFNGLXSWAPBUFFERSMSCOMLPROC glad_glXSwapBuffersMscOML;
+PFNGLXWAITFORMSCOMLPROC glad_glXWaitForMscOML;
+PFNGLXWAITFORSBCOMLPROC glad_glXWaitForSbcOML;
+PFNGLXMAKECURRENTREADSGIPROC glad_glXMakeCurrentReadSGI;
+PFNGLXGETCURRENTREADDRAWABLESGIPROC glad_glXGetCurrentReadDrawableSGI;
+PFNGLXSWAPINTERVALSGIPROC glad_glXSwapIntervalSGI;
+PFNGLXGETVIDEOSYNCSGIPROC glad_glXGetVideoSyncSGI;
+PFNGLXWAITVIDEOSYNCSGIPROC glad_glXWaitVideoSyncSGI;
+PFNGLXGETAGPOFFSETMESAPROC glad_glXGetAGPOffsetMESA;
+PFNGLXSET3DFXMODEMESAPROC glad_glXSet3DfxModeMESA;
+PFNGLXBINDTEXIMAGEEXTPROC glad_glXBindTexImageEXT;
+PFNGLXRELEASETEXIMAGEEXTPROC glad_glXReleaseTexImageEXT;
+PFNGLXBINDVIDEOCAPTUREDEVICENVPROC glad_glXBindVideoCaptureDeviceNV;
+PFNGLXENUMERATEVIDEOCAPTUREDEVICESNVPROC glad_glXEnumerateVideoCaptureDevicesNV;
+PFNGLXLOCKVIDEOCAPTUREDEVICENVPROC glad_glXLockVideoCaptureDeviceNV;
+PFNGLXQUERYVIDEOCAPTUREDEVICENVPROC glad_glXQueryVideoCaptureDeviceNV;
+PFNGLXRELEASEVIDEOCAPTUREDEVICENVPROC glad_glXReleaseVideoCaptureDeviceNV;
+PFNGLXJOINSWAPGROUPSGIXPROC glad_glXJoinSwapGroupSGIX;
+PFNGLXSWAPINTERVALEXTPROC glad_glXSwapIntervalEXT;
 #ifdef _VL_H_
-fp_glXCreateGLXVideoSourceSGIX gladglXCreateGLXVideoSourceSGIX;
-fp_glXDestroyGLXVideoSourceSGIX gladglXDestroyGLXVideoSourceSGIX;
+PFNGLXCREATEGLXVIDEOSOURCESGIXPROC glad_glXCreateGLXVideoSourceSGIX;
+PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC glad_glXDestroyGLXVideoSourceSGIX;
 #endif
-fp_glXCreateContextAttribsARB gladglXCreateContextAttribsARB;
-fp_glXGetFBConfigAttribSGIX gladglXGetFBConfigAttribSGIX;
-fp_glXChooseFBConfigSGIX gladglXChooseFBConfigSGIX;
-fp_glXCreateGLXPixmapWithConfigSGIX gladglXCreateGLXPixmapWithConfigSGIX;
-fp_glXCreateContextWithConfigSGIX gladglXCreateContextWithConfigSGIX;
-fp_glXGetVisualFromFBConfigSGIX gladglXGetVisualFromFBConfigSGIX;
-fp_glXGetFBConfigFromVisualSGIX gladglXGetFBConfigFromVisualSGIX;
-fp_glXCreateGLXPixmapMESA gladglXCreateGLXPixmapMESA;
-fp_glXGetVideoDeviceNV gladglXGetVideoDeviceNV;
-fp_glXReleaseVideoDeviceNV gladglXReleaseVideoDeviceNV;
-fp_glXBindVideoImageNV gladglXBindVideoImageNV;
-fp_glXReleaseVideoImageNV gladglXReleaseVideoImageNV;
-fp_glXSendPbufferToVideoNV gladglXSendPbufferToVideoNV;
-fp_glXGetVideoInfoNV gladglXGetVideoInfoNV;
+PFNGLXCREATECONTEXTATTRIBSARBPROC glad_glXCreateContextAttribsARB;
+PFNGLXGETFBCONFIGATTRIBSGIXPROC glad_glXGetFBConfigAttribSGIX;
+PFNGLXCHOOSEFBCONFIGSGIXPROC glad_glXChooseFBConfigSGIX;
+PFNGLXCREATEGLXPIXMAPWITHCONFIGSGIXPROC glad_glXCreateGLXPixmapWithConfigSGIX;
+PFNGLXCREATECONTEXTWITHCONFIGSGIXPROC glad_glXCreateContextWithConfigSGIX;
+PFNGLXGETVISUALFROMFBCONFIGSGIXPROC glad_glXGetVisualFromFBConfigSGIX;
+PFNGLXGETFBCONFIGFROMVISUALSGIXPROC glad_glXGetFBConfigFromVisualSGIX;
+PFNGLXCREATEGLXPIXMAPMESAPROC glad_glXCreateGLXPixmapMESA;
+PFNGLXGETVIDEODEVICENVPROC glad_glXGetVideoDeviceNV;
+PFNGLXRELEASEVIDEODEVICENVPROC glad_glXReleaseVideoDeviceNV;
+PFNGLXBINDVIDEOIMAGENVPROC glad_glXBindVideoImageNV;
+PFNGLXRELEASEVIDEOIMAGENVPROC glad_glXReleaseVideoImageNV;
+PFNGLXSENDPBUFFERTOVIDEONVPROC glad_glXSendPbufferToVideoNV;
+PFNGLXGETVIDEOINFONVPROC glad_glXGetVideoInfoNV;
 #ifdef _DM_BUFFER_H_
-fp_glXAssociateDMPbufferSGIX gladglXAssociateDMPbufferSGIX;
+PFNGLXASSOCIATEDMPBUFFERSGIXPROC glad_glXAssociateDMPbufferSGIX;
 #endif
-fp_glXBindSwapBarrierSGIX gladglXBindSwapBarrierSGIX;
-fp_glXQueryMaxSwapBarriersSGIX gladglXQueryMaxSwapBarriersSGIX;
-fp_glXReleaseBuffersMESA gladglXReleaseBuffersMESA;
-fp_glXCopySubBufferMESA gladglXCopySubBufferMESA;
-fp_glXCushionSGI gladglXCushionSGI;
-fp_glXEnumerateVideoDevicesNV gladglXEnumerateVideoDevicesNV;
-fp_glXBindVideoDeviceNV gladglXBindVideoDeviceNV;
-fp_glXGetTransparentIndexSUN gladglXGetTransparentIndexSUN;
-fp_glXGetProcAddressARB gladglXGetProcAddressARB;
-static void load_GLX_VERSION_1_0(LOADER load) {
-	glXChooseVisual = (fp_glXChooseVisual)load("glXChooseVisual");
-	glXCreateContext = (fp_glXCreateContext)load("glXCreateContext");
-	glXDestroyContext = (fp_glXDestroyContext)load("glXDestroyContext");
-	glXMakeCurrent = (fp_glXMakeCurrent)load("glXMakeCurrent");
-	glXCopyContext = (fp_glXCopyContext)load("glXCopyContext");
-	glXSwapBuffers = (fp_glXSwapBuffers)load("glXSwapBuffers");
-	glXCreateGLXPixmap = (fp_glXCreateGLXPixmap)load("glXCreateGLXPixmap");
-	glXDestroyGLXPixmap = (fp_glXDestroyGLXPixmap)load("glXDestroyGLXPixmap");
-	glXQueryExtension = (fp_glXQueryExtension)load("glXQueryExtension");
-	glXQueryVersion = (fp_glXQueryVersion)load("glXQueryVersion");
-	glXIsDirect = (fp_glXIsDirect)load("glXIsDirect");
-	glXGetConfig = (fp_glXGetConfig)load("glXGetConfig");
-	glXGetCurrentContext = (fp_glXGetCurrentContext)load("glXGetCurrentContext");
-	glXGetCurrentDrawable = (fp_glXGetCurrentDrawable)load("glXGetCurrentDrawable");
-	glXWaitGL = (fp_glXWaitGL)load("glXWaitGL");
-	glXWaitX = (fp_glXWaitX)load("glXWaitX");
-	glXUseXFont = (fp_glXUseXFont)load("glXUseXFont");
+PFNGLXBINDSWAPBARRIERSGIXPROC glad_glXBindSwapBarrierSGIX;
+PFNGLXQUERYMAXSWAPBARRIERSSGIXPROC glad_glXQueryMaxSwapBarriersSGIX;
+PFNGLXRELEASEBUFFERSMESAPROC glad_glXReleaseBuffersMESA;
+PFNGLXCOPYSUBBUFFERMESAPROC glad_glXCopySubBufferMESA;
+PFNGLXCUSHIONSGIPROC glad_glXCushionSGI;
+PFNGLXENUMERATEVIDEODEVICESNVPROC glad_glXEnumerateVideoDevicesNV;
+PFNGLXBINDVIDEODEVICENVPROC glad_glXBindVideoDeviceNV;
+PFNGLXGETTRANSPARENTINDEXSUNPROC glad_glXGetTransparentIndexSUN;
+PFNGLXGETPROCADDRESSARBPROC glad_glXGetProcAddressARB;
+static void load_GLX_VERSION_1_0(GLADloadproc load) {
+	glad_glXChooseVisual = (PFNGLXCHOOSEVISUALPROC)load("glXChooseVisual");
+	glad_glXCreateContext = (PFNGLXCREATECONTEXTPROC)load("glXCreateContext");
+	glad_glXDestroyContext = (PFNGLXDESTROYCONTEXTPROC)load("glXDestroyContext");
+	glad_glXMakeCurrent = (PFNGLXMAKECURRENTPROC)load("glXMakeCurrent");
+	glad_glXCopyContext = (PFNGLXCOPYCONTEXTPROC)load("glXCopyContext");
+	glad_glXSwapBuffers = (PFNGLXSWAPBUFFERSPROC)load("glXSwapBuffers");
+	glad_glXCreateGLXPixmap = (PFNGLXCREATEGLXPIXMAPPROC)load("glXCreateGLXPixmap");
+	glad_glXDestroyGLXPixmap = (PFNGLXDESTROYGLXPIXMAPPROC)load("glXDestroyGLXPixmap");
+	glad_glXQueryExtension = (PFNGLXQUERYEXTENSIONPROC)load("glXQueryExtension");
+	glad_glXQueryVersion = (PFNGLXQUERYVERSIONPROC)load("glXQueryVersion");
+	glad_glXIsDirect = (PFNGLXISDIRECTPROC)load("glXIsDirect");
+	glad_glXGetConfig = (PFNGLXGETCONFIGPROC)load("glXGetConfig");
+	glad_glXGetCurrentContext = (PFNGLXGETCURRENTCONTEXTPROC)load("glXGetCurrentContext");
+	glad_glXGetCurrentDrawable = (PFNGLXGETCURRENTDRAWABLEPROC)load("glXGetCurrentDrawable");
+	glad_glXWaitGL = (PFNGLXWAITGLPROC)load("glXWaitGL");
+	glad_glXWaitX = (PFNGLXWAITXPROC)load("glXWaitX");
+	glad_glXUseXFont = (PFNGLXUSEXFONTPROC)load("glXUseXFont");
 }
-static void load_GLX_VERSION_1_1(LOADER load) {
-	glXQueryExtensionsString = (fp_glXQueryExtensionsString)load("glXQueryExtensionsString");
-	glXQueryServerString = (fp_glXQueryServerString)load("glXQueryServerString");
-	glXGetClientString = (fp_glXGetClientString)load("glXGetClientString");
+static void load_GLX_VERSION_1_1(GLADloadproc load) {
+	glad_glXQueryExtensionsString = (PFNGLXQUERYEXTENSIONSSTRINGPROC)load("glXQueryExtensionsString");
+	glad_glXQueryServerString = (PFNGLXQUERYSERVERSTRINGPROC)load("glXQueryServerString");
+	glad_glXGetClientString = (PFNGLXGETCLIENTSTRINGPROC)load("glXGetClientString");
 }
-static void load_GLX_VERSION_1_2(LOADER load) {
-	glXGetCurrentDisplay = (fp_glXGetCurrentDisplay)load("glXGetCurrentDisplay");
+static void load_GLX_VERSION_1_2(GLADloadproc load) {
+	glad_glXGetCurrentDisplay = (PFNGLXGETCURRENTDISPLAYPROC)load("glXGetCurrentDisplay");
 }
-static void load_GLX_VERSION_1_3(LOADER load) {
-	glXGetFBConfigs = (fp_glXGetFBConfigs)load("glXGetFBConfigs");
-	glXChooseFBConfig = (fp_glXChooseFBConfig)load("glXChooseFBConfig");
-	glXGetFBConfigAttrib = (fp_glXGetFBConfigAttrib)load("glXGetFBConfigAttrib");
-	glXGetVisualFromFBConfig = (fp_glXGetVisualFromFBConfig)load("glXGetVisualFromFBConfig");
-	glXCreateWindow = (fp_glXCreateWindow)load("glXCreateWindow");
-	glXDestroyWindow = (fp_glXDestroyWindow)load("glXDestroyWindow");
-	glXCreatePixmap = (fp_glXCreatePixmap)load("glXCreatePixmap");
-	glXDestroyPixmap = (fp_glXDestroyPixmap)load("glXDestroyPixmap");
-	glXCreatePbuffer = (fp_glXCreatePbuffer)load("glXCreatePbuffer");
-	glXDestroyPbuffer = (fp_glXDestroyPbuffer)load("glXDestroyPbuffer");
-	glXQueryDrawable = (fp_glXQueryDrawable)load("glXQueryDrawable");
-	glXCreateNewContext = (fp_glXCreateNewContext)load("glXCreateNewContext");
-	glXMakeContextCurrent = (fp_glXMakeContextCurrent)load("glXMakeContextCurrent");
-	glXGetCurrentReadDrawable = (fp_glXGetCurrentReadDrawable)load("glXGetCurrentReadDrawable");
-	glXQueryContext = (fp_glXQueryContext)load("glXQueryContext");
-	glXSelectEvent = (fp_glXSelectEvent)load("glXSelectEvent");
-	glXGetSelectedEvent = (fp_glXGetSelectedEvent)load("glXGetSelectedEvent");
+static void load_GLX_VERSION_1_3(GLADloadproc load) {
+	glad_glXGetFBConfigs = (PFNGLXGETFBCONFIGSPROC)load("glXGetFBConfigs");
+	glad_glXChooseFBConfig = (PFNGLXCHOOSEFBCONFIGPROC)load("glXChooseFBConfig");
+	glad_glXGetFBConfigAttrib = (PFNGLXGETFBCONFIGATTRIBPROC)load("glXGetFBConfigAttrib");
+	glad_glXGetVisualFromFBConfig = (PFNGLXGETVISUALFROMFBCONFIGPROC)load("glXGetVisualFromFBConfig");
+	glad_glXCreateWindow = (PFNGLXCREATEWINDOWPROC)load("glXCreateWindow");
+	glad_glXDestroyWindow = (PFNGLXDESTROYWINDOWPROC)load("glXDestroyWindow");
+	glad_glXCreatePixmap = (PFNGLXCREATEPIXMAPPROC)load("glXCreatePixmap");
+	glad_glXDestroyPixmap = (PFNGLXDESTROYPIXMAPPROC)load("glXDestroyPixmap");
+	glad_glXCreatePbuffer = (PFNGLXCREATEPBUFFERPROC)load("glXCreatePbuffer");
+	glad_glXDestroyPbuffer = (PFNGLXDESTROYPBUFFERPROC)load("glXDestroyPbuffer");
+	glad_glXQueryDrawable = (PFNGLXQUERYDRAWABLEPROC)load("glXQueryDrawable");
+	glad_glXCreateNewContext = (PFNGLXCREATENEWCONTEXTPROC)load("glXCreateNewContext");
+	glad_glXMakeContextCurrent = (PFNGLXMAKECONTEXTCURRENTPROC)load("glXMakeContextCurrent");
+	glad_glXGetCurrentReadDrawable = (PFNGLXGETCURRENTREADDRAWABLEPROC)load("glXGetCurrentReadDrawable");
+	glad_glXQueryContext = (PFNGLXQUERYCONTEXTPROC)load("glXQueryContext");
+	glad_glXSelectEvent = (PFNGLXSELECTEVENTPROC)load("glXSelectEvent");
+	glad_glXGetSelectedEvent = (PFNGLXGETSELECTEDEVENTPROC)load("glXGetSelectedEvent");
 }
-static void load_GLX_VERSION_1_4(LOADER load) {
-	glXGetProcAddress = (fp_glXGetProcAddress)load("glXGetProcAddress");
+static void load_GLX_VERSION_1_4(GLADloadproc load) {
+	glad_glXGetProcAddress = (PFNGLXGETPROCADDRESSPROC)load("glXGetProcAddress");
 }
-static void load_GLX_EXT_import_context(LOADER load) {
-	glXGetCurrentDisplayEXT = (fp_glXGetCurrentDisplayEXT)load("glXGetCurrentDisplayEXT");
-	glXQueryContextInfoEXT = (fp_glXQueryContextInfoEXT)load("glXQueryContextInfoEXT");
-	glXGetContextIDEXT = (fp_glXGetContextIDEXT)load("glXGetContextIDEXT");
-	glXImportContextEXT = (fp_glXImportContextEXT)load("glXImportContextEXT");
-	glXFreeContextEXT = (fp_glXFreeContextEXT)load("glXFreeContextEXT");
+static void load_GLX_EXT_import_context(GLADloadproc load) {
+	glad_glXGetCurrentDisplayEXT = (PFNGLXGETCURRENTDISPLAYEXTPROC)load("glXGetCurrentDisplayEXT");
+	glad_glXQueryContextInfoEXT = (PFNGLXQUERYCONTEXTINFOEXTPROC)load("glXQueryContextInfoEXT");
+	glad_glXGetContextIDEXT = (PFNGLXGETCONTEXTIDEXTPROC)load("glXGetContextIDEXT");
+	glad_glXImportContextEXT = (PFNGLXIMPORTCONTEXTEXTPROC)load("glXImportContextEXT");
+	glad_glXFreeContextEXT = (PFNGLXFREECONTEXTEXTPROC)load("glXFreeContextEXT");
 }
-static void load_GLX_SGIX_pbuffer(LOADER load) {
-	glXCreateGLXPbufferSGIX = (fp_glXCreateGLXPbufferSGIX)load("glXCreateGLXPbufferSGIX");
-	glXDestroyGLXPbufferSGIX = (fp_glXDestroyGLXPbufferSGIX)load("glXDestroyGLXPbufferSGIX");
-	glXQueryGLXPbufferSGIX = (fp_glXQueryGLXPbufferSGIX)load("glXQueryGLXPbufferSGIX");
-	glXSelectEventSGIX = (fp_glXSelectEventSGIX)load("glXSelectEventSGIX");
-	glXGetSelectedEventSGIX = (fp_glXGetSelectedEventSGIX)load("glXGetSelectedEventSGIX");
+static void load_GLX_SGIX_pbuffer(GLADloadproc load) {
+	glad_glXCreateGLXPbufferSGIX = (PFNGLXCREATEGLXPBUFFERSGIXPROC)load("glXCreateGLXPbufferSGIX");
+	glad_glXDestroyGLXPbufferSGIX = (PFNGLXDESTROYGLXPBUFFERSGIXPROC)load("glXDestroyGLXPbufferSGIX");
+	glad_glXQueryGLXPbufferSGIX = (PFNGLXQUERYGLXPBUFFERSGIXPROC)load("glXQueryGLXPbufferSGIX");
+	glad_glXSelectEventSGIX = (PFNGLXSELECTEVENTSGIXPROC)load("glXSelectEventSGIX");
+	glad_glXGetSelectedEventSGIX = (PFNGLXGETSELECTEDEVENTSGIXPROC)load("glXGetSelectedEventSGIX");
 }
-static void load_GLX_NV_swap_group(LOADER load) {
-	glXJoinSwapGroupNV = (fp_glXJoinSwapGroupNV)load("glXJoinSwapGroupNV");
-	glXBindSwapBarrierNV = (fp_glXBindSwapBarrierNV)load("glXBindSwapBarrierNV");
-	glXQuerySwapGroupNV = (fp_glXQuerySwapGroupNV)load("glXQuerySwapGroupNV");
-	glXQueryMaxSwapGroupsNV = (fp_glXQueryMaxSwapGroupsNV)load("glXQueryMaxSwapGroupsNV");
-	glXQueryFrameCountNV = (fp_glXQueryFrameCountNV)load("glXQueryFrameCountNV");
-	glXResetFrameCountNV = (fp_glXResetFrameCountNV)load("glXResetFrameCountNV");
+static void load_GLX_NV_swap_group(GLADloadproc load) {
+	glad_glXJoinSwapGroupNV = (PFNGLXJOINSWAPGROUPNVPROC)load("glXJoinSwapGroupNV");
+	glad_glXBindSwapBarrierNV = (PFNGLXBINDSWAPBARRIERNVPROC)load("glXBindSwapBarrierNV");
+	glad_glXQuerySwapGroupNV = (PFNGLXQUERYSWAPGROUPNVPROC)load("glXQuerySwapGroupNV");
+	glad_glXQueryMaxSwapGroupsNV = (PFNGLXQUERYMAXSWAPGROUPSNVPROC)load("glXQueryMaxSwapGroupsNV");
+	glad_glXQueryFrameCountNV = (PFNGLXQUERYFRAMECOUNTNVPROC)load("glXQueryFrameCountNV");
+	glad_glXResetFrameCountNV = (PFNGLXRESETFRAMECOUNTNVPROC)load("glXResetFrameCountNV");
 }
-static void load_GLX_SGIX_hyperpipe(LOADER load) {
-	glXQueryHyperpipeNetworkSGIX = (fp_glXQueryHyperpipeNetworkSGIX)load("glXQueryHyperpipeNetworkSGIX");
-	glXHyperpipeConfigSGIX = (fp_glXHyperpipeConfigSGIX)load("glXHyperpipeConfigSGIX");
-	glXQueryHyperpipeConfigSGIX = (fp_glXQueryHyperpipeConfigSGIX)load("glXQueryHyperpipeConfigSGIX");
-	glXDestroyHyperpipeConfigSGIX = (fp_glXDestroyHyperpipeConfigSGIX)load("glXDestroyHyperpipeConfigSGIX");
-	glXBindHyperpipeSGIX = (fp_glXBindHyperpipeSGIX)load("glXBindHyperpipeSGIX");
-	glXQueryHyperpipeBestAttribSGIX = (fp_glXQueryHyperpipeBestAttribSGIX)load("glXQueryHyperpipeBestAttribSGIX");
-	glXHyperpipeAttribSGIX = (fp_glXHyperpipeAttribSGIX)load("glXHyperpipeAttribSGIX");
-	glXQueryHyperpipeAttribSGIX = (fp_glXQueryHyperpipeAttribSGIX)load("glXQueryHyperpipeAttribSGIX");
+static void load_GLX_SGIX_hyperpipe(GLADloadproc load) {
+	glad_glXQueryHyperpipeNetworkSGIX = (PFNGLXQUERYHYPERPIPENETWORKSGIXPROC)load("glXQueryHyperpipeNetworkSGIX");
+	glad_glXHyperpipeConfigSGIX = (PFNGLXHYPERPIPECONFIGSGIXPROC)load("glXHyperpipeConfigSGIX");
+	glad_glXQueryHyperpipeConfigSGIX = (PFNGLXQUERYHYPERPIPECONFIGSGIXPROC)load("glXQueryHyperpipeConfigSGIX");
+	glad_glXDestroyHyperpipeConfigSGIX = (PFNGLXDESTROYHYPERPIPECONFIGSGIXPROC)load("glXDestroyHyperpipeConfigSGIX");
+	glad_glXBindHyperpipeSGIX = (PFNGLXBINDHYPERPIPESGIXPROC)load("glXBindHyperpipeSGIX");
+	glad_glXQueryHyperpipeBestAttribSGIX = (PFNGLXQUERYHYPERPIPEBESTATTRIBSGIXPROC)load("glXQueryHyperpipeBestAttribSGIX");
+	glad_glXHyperpipeAttribSGIX = (PFNGLXHYPERPIPEATTRIBSGIXPROC)load("glXHyperpipeAttribSGIX");
+	glad_glXQueryHyperpipeAttribSGIX = (PFNGLXQUERYHYPERPIPEATTRIBSGIXPROC)load("glXQueryHyperpipeAttribSGIX");
 }
-static void load_GLX_SGIX_video_resize(LOADER load) {
-	glXBindChannelToWindowSGIX = (fp_glXBindChannelToWindowSGIX)load("glXBindChannelToWindowSGIX");
-	glXChannelRectSGIX = (fp_glXChannelRectSGIX)load("glXChannelRectSGIX");
-	glXQueryChannelRectSGIX = (fp_glXQueryChannelRectSGIX)load("glXQueryChannelRectSGIX");
-	glXQueryChannelDeltasSGIX = (fp_glXQueryChannelDeltasSGIX)load("glXQueryChannelDeltasSGIX");
-	glXChannelRectSyncSGIX = (fp_glXChannelRectSyncSGIX)load("glXChannelRectSyncSGIX");
+static void load_GLX_SGIX_video_resize(GLADloadproc load) {
+	glad_glXBindChannelToWindowSGIX = (PFNGLXBINDCHANNELTOWINDOWSGIXPROC)load("glXBindChannelToWindowSGIX");
+	glad_glXChannelRectSGIX = (PFNGLXCHANNELRECTSGIXPROC)load("glXChannelRectSGIX");
+	glad_glXQueryChannelRectSGIX = (PFNGLXQUERYCHANNELRECTSGIXPROC)load("glXQueryChannelRectSGIX");
+	glad_glXQueryChannelDeltasSGIX = (PFNGLXQUERYCHANNELDELTASSGIXPROC)load("glXQueryChannelDeltasSGIX");
+	glad_glXChannelRectSyncSGIX = (PFNGLXCHANNELRECTSYNCSGIXPROC)load("glXChannelRectSyncSGIX");
 }
-static void load_GLX_NV_copy_image(LOADER load) {
-	glXCopyImageSubDataNV = (fp_glXCopyImageSubDataNV)load("glXCopyImageSubDataNV");
+static void load_GLX_NV_copy_image(GLADloadproc load) {
+	glad_glXCopyImageSubDataNV = (PFNGLXCOPYIMAGESUBDATANVPROC)load("glXCopyImageSubDataNV");
 }
-static void load_GLX_OML_sync_control(LOADER load) {
-	glXGetSyncValuesOML = (fp_glXGetSyncValuesOML)load("glXGetSyncValuesOML");
-	glXGetMscRateOML = (fp_glXGetMscRateOML)load("glXGetMscRateOML");
-	glXSwapBuffersMscOML = (fp_glXSwapBuffersMscOML)load("glXSwapBuffersMscOML");
-	glXWaitForMscOML = (fp_glXWaitForMscOML)load("glXWaitForMscOML");
-	glXWaitForSbcOML = (fp_glXWaitForSbcOML)load("glXWaitForSbcOML");
+static void load_GLX_OML_sync_control(GLADloadproc load) {
+	glad_glXGetSyncValuesOML = (PFNGLXGETSYNCVALUESOMLPROC)load("glXGetSyncValuesOML");
+	glad_glXGetMscRateOML = (PFNGLXGETMSCRATEOMLPROC)load("glXGetMscRateOML");
+	glad_glXSwapBuffersMscOML = (PFNGLXSWAPBUFFERSMSCOMLPROC)load("glXSwapBuffersMscOML");
+	glad_glXWaitForMscOML = (PFNGLXWAITFORMSCOMLPROC)load("glXWaitForMscOML");
+	glad_glXWaitForSbcOML = (PFNGLXWAITFORSBCOMLPROC)load("glXWaitForSbcOML");
 }
-static void load_GLX_SGI_make_current_read(LOADER load) {
-	glXMakeCurrentReadSGI = (fp_glXMakeCurrentReadSGI)load("glXMakeCurrentReadSGI");
-	glXGetCurrentReadDrawableSGI = (fp_glXGetCurrentReadDrawableSGI)load("glXGetCurrentReadDrawableSGI");
+static void load_GLX_SGI_make_current_read(GLADloadproc load) {
+	glad_glXMakeCurrentReadSGI = (PFNGLXMAKECURRENTREADSGIPROC)load("glXMakeCurrentReadSGI");
+	glad_glXGetCurrentReadDrawableSGI = (PFNGLXGETCURRENTREADDRAWABLESGIPROC)load("glXGetCurrentReadDrawableSGI");
 }
-static void load_GLX_SGI_swap_control(LOADER load) {
-	glXSwapIntervalSGI = (fp_glXSwapIntervalSGI)load("glXSwapIntervalSGI");
+static void load_GLX_SGI_swap_control(GLADloadproc load) {
+	glad_glXSwapIntervalSGI = (PFNGLXSWAPINTERVALSGIPROC)load("glXSwapIntervalSGI");
 }
-static void load_GLX_SGI_video_sync(LOADER load) {
-	glXGetVideoSyncSGI = (fp_glXGetVideoSyncSGI)load("glXGetVideoSyncSGI");
-	glXWaitVideoSyncSGI = (fp_glXWaitVideoSyncSGI)load("glXWaitVideoSyncSGI");
+static void load_GLX_SGI_video_sync(GLADloadproc load) {
+	glad_glXGetVideoSyncSGI = (PFNGLXGETVIDEOSYNCSGIPROC)load("glXGetVideoSyncSGI");
+	glad_glXWaitVideoSyncSGI = (PFNGLXWAITVIDEOSYNCSGIPROC)load("glXWaitVideoSyncSGI");
 }
-static void load_GLX_MESA_agp_offset(LOADER load) {
-	glXGetAGPOffsetMESA = (fp_glXGetAGPOffsetMESA)load("glXGetAGPOffsetMESA");
+static void load_GLX_MESA_agp_offset(GLADloadproc load) {
+	glad_glXGetAGPOffsetMESA = (PFNGLXGETAGPOFFSETMESAPROC)load("glXGetAGPOffsetMESA");
 }
-static void load_GLX_MESA_set_3dfx_mode(LOADER load) {
-	glXSet3DfxModeMESA = (fp_glXSet3DfxModeMESA)load("glXSet3DfxModeMESA");
+static void load_GLX_MESA_set_3dfx_mode(GLADloadproc load) {
+	glad_glXSet3DfxModeMESA = (PFNGLXSET3DFXMODEMESAPROC)load("glXSet3DfxModeMESA");
 }
-static void load_GLX_EXT_texture_from_pixmap(LOADER load) {
-	glXBindTexImageEXT = (fp_glXBindTexImageEXT)load("glXBindTexImageEXT");
-	glXReleaseTexImageEXT = (fp_glXReleaseTexImageEXT)load("glXReleaseTexImageEXT");
+static void load_GLX_EXT_texture_from_pixmap(GLADloadproc load) {
+	glad_glXBindTexImageEXT = (PFNGLXBINDTEXIMAGEEXTPROC)load("glXBindTexImageEXT");
+	glad_glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)load("glXReleaseTexImageEXT");
 }
-static void load_GLX_NV_video_capture(LOADER load) {
-	glXBindVideoCaptureDeviceNV = (fp_glXBindVideoCaptureDeviceNV)load("glXBindVideoCaptureDeviceNV");
-	glXEnumerateVideoCaptureDevicesNV = (fp_glXEnumerateVideoCaptureDevicesNV)load("glXEnumerateVideoCaptureDevicesNV");
-	glXLockVideoCaptureDeviceNV = (fp_glXLockVideoCaptureDeviceNV)load("glXLockVideoCaptureDeviceNV");
-	glXQueryVideoCaptureDeviceNV = (fp_glXQueryVideoCaptureDeviceNV)load("glXQueryVideoCaptureDeviceNV");
-	glXReleaseVideoCaptureDeviceNV = (fp_glXReleaseVideoCaptureDeviceNV)load("glXReleaseVideoCaptureDeviceNV");
+static void load_GLX_NV_video_capture(GLADloadproc load) {
+	glad_glXBindVideoCaptureDeviceNV = (PFNGLXBINDVIDEOCAPTUREDEVICENVPROC)load("glXBindVideoCaptureDeviceNV");
+	glad_glXEnumerateVideoCaptureDevicesNV = (PFNGLXENUMERATEVIDEOCAPTUREDEVICESNVPROC)load("glXEnumerateVideoCaptureDevicesNV");
+	glad_glXLockVideoCaptureDeviceNV = (PFNGLXLOCKVIDEOCAPTUREDEVICENVPROC)load("glXLockVideoCaptureDeviceNV");
+	glad_glXQueryVideoCaptureDeviceNV = (PFNGLXQUERYVIDEOCAPTUREDEVICENVPROC)load("glXQueryVideoCaptureDeviceNV");
+	glad_glXReleaseVideoCaptureDeviceNV = (PFNGLXRELEASEVIDEOCAPTUREDEVICENVPROC)load("glXReleaseVideoCaptureDeviceNV");
 }
-static void load_GLX_SGIX_swap_group(LOADER load) {
-	glXJoinSwapGroupSGIX = (fp_glXJoinSwapGroupSGIX)load("glXJoinSwapGroupSGIX");
+static void load_GLX_SGIX_swap_group(GLADloadproc load) {
+	glad_glXJoinSwapGroupSGIX = (PFNGLXJOINSWAPGROUPSGIXPROC)load("glXJoinSwapGroupSGIX");
 }
-static void load_GLX_EXT_swap_control(LOADER load) {
-	glXSwapIntervalEXT = (fp_glXSwapIntervalEXT)load("glXSwapIntervalEXT");
+static void load_GLX_EXT_swap_control(GLADloadproc load) {
+	glad_glXSwapIntervalEXT = (PFNGLXSWAPINTERVALEXTPROC)load("glXSwapIntervalEXT");
 }
-static void load_GLX_SGIX_video_source(LOADER load) {
+static void load_GLX_SGIX_video_source(GLADloadproc load) {
 #ifdef _VL_H_
-	glXCreateGLXVideoSourceSGIX = (fp_glXCreateGLXVideoSourceSGIX)load("glXCreateGLXVideoSourceSGIX");
-	glXDestroyGLXVideoSourceSGIX = (fp_glXDestroyGLXVideoSourceSGIX)load("glXDestroyGLXVideoSourceSGIX");
+	glad_glXCreateGLXVideoSourceSGIX = (PFNGLXCREATEGLXVIDEOSOURCESGIXPROC)load("glXCreateGLXVideoSourceSGIX");
+	glad_glXDestroyGLXVideoSourceSGIX = (PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC)load("glXDestroyGLXVideoSourceSGIX");
 #endif
 }
-static void load_GLX_ARB_create_context(LOADER load) {
-	glXCreateContextAttribsARB = (fp_glXCreateContextAttribsARB)load("glXCreateContextAttribsARB");
+static void load_GLX_ARB_create_context(GLADloadproc load) {
+	glad_glXCreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC)load("glXCreateContextAttribsARB");
 }
-static void load_GLX_SGIX_fbconfig(LOADER load) {
-	glXGetFBConfigAttribSGIX = (fp_glXGetFBConfigAttribSGIX)load("glXGetFBConfigAttribSGIX");
-	glXChooseFBConfigSGIX = (fp_glXChooseFBConfigSGIX)load("glXChooseFBConfigSGIX");
-	glXCreateGLXPixmapWithConfigSGIX = (fp_glXCreateGLXPixmapWithConfigSGIX)load("glXCreateGLXPixmapWithConfigSGIX");
-	glXCreateContextWithConfigSGIX = (fp_glXCreateContextWithConfigSGIX)load("glXCreateContextWithConfigSGIX");
-	glXGetVisualFromFBConfigSGIX = (fp_glXGetVisualFromFBConfigSGIX)load("glXGetVisualFromFBConfigSGIX");
-	glXGetFBConfigFromVisualSGIX = (fp_glXGetFBConfigFromVisualSGIX)load("glXGetFBConfigFromVisualSGIX");
+static void load_GLX_SGIX_fbconfig(GLADloadproc load) {
+	glad_glXGetFBConfigAttribSGIX = (PFNGLXGETFBCONFIGATTRIBSGIXPROC)load("glXGetFBConfigAttribSGIX");
+	glad_glXChooseFBConfigSGIX = (PFNGLXCHOOSEFBCONFIGSGIXPROC)load("glXChooseFBConfigSGIX");
+	glad_glXCreateGLXPixmapWithConfigSGIX = (PFNGLXCREATEGLXPIXMAPWITHCONFIGSGIXPROC)load("glXCreateGLXPixmapWithConfigSGIX");
+	glad_glXCreateContextWithConfigSGIX = (PFNGLXCREATECONTEXTWITHCONFIGSGIXPROC)load("glXCreateContextWithConfigSGIX");
+	glad_glXGetVisualFromFBConfigSGIX = (PFNGLXGETVISUALFROMFBCONFIGSGIXPROC)load("glXGetVisualFromFBConfigSGIX");
+	glad_glXGetFBConfigFromVisualSGIX = (PFNGLXGETFBCONFIGFROMVISUALSGIXPROC)load("glXGetFBConfigFromVisualSGIX");
 }
-static void load_GLX_MESA_pixmap_colormap(LOADER load) {
-	glXCreateGLXPixmapMESA = (fp_glXCreateGLXPixmapMESA)load("glXCreateGLXPixmapMESA");
+static void load_GLX_MESA_pixmap_colormap(GLADloadproc load) {
+	glad_glXCreateGLXPixmapMESA = (PFNGLXCREATEGLXPIXMAPMESAPROC)load("glXCreateGLXPixmapMESA");
 }
-static void load_GLX_NV_video_output(LOADER load) {
-	glXGetVideoDeviceNV = (fp_glXGetVideoDeviceNV)load("glXGetVideoDeviceNV");
-	glXReleaseVideoDeviceNV = (fp_glXReleaseVideoDeviceNV)load("glXReleaseVideoDeviceNV");
-	glXBindVideoImageNV = (fp_glXBindVideoImageNV)load("glXBindVideoImageNV");
-	glXReleaseVideoImageNV = (fp_glXReleaseVideoImageNV)load("glXReleaseVideoImageNV");
-	glXSendPbufferToVideoNV = (fp_glXSendPbufferToVideoNV)load("glXSendPbufferToVideoNV");
-	glXGetVideoInfoNV = (fp_glXGetVideoInfoNV)load("glXGetVideoInfoNV");
+static void load_GLX_NV_video_output(GLADloadproc load) {
+	glad_glXGetVideoDeviceNV = (PFNGLXGETVIDEODEVICENVPROC)load("glXGetVideoDeviceNV");
+	glad_glXReleaseVideoDeviceNV = (PFNGLXRELEASEVIDEODEVICENVPROC)load("glXReleaseVideoDeviceNV");
+	glad_glXBindVideoImageNV = (PFNGLXBINDVIDEOIMAGENVPROC)load("glXBindVideoImageNV");
+	glad_glXReleaseVideoImageNV = (PFNGLXRELEASEVIDEOIMAGENVPROC)load("glXReleaseVideoImageNV");
+	glad_glXSendPbufferToVideoNV = (PFNGLXSENDPBUFFERTOVIDEONVPROC)load("glXSendPbufferToVideoNV");
+	glad_glXGetVideoInfoNV = (PFNGLXGETVIDEOINFONVPROC)load("glXGetVideoInfoNV");
 }
-static void load_GLX_SGIX_dmbuffer(LOADER load) {
+static void load_GLX_SGIX_dmbuffer(GLADloadproc load) {
 #ifdef _DM_BUFFER_H_
-	glXAssociateDMPbufferSGIX = (fp_glXAssociateDMPbufferSGIX)load("glXAssociateDMPbufferSGIX");
+	glad_glXAssociateDMPbufferSGIX = (PFNGLXASSOCIATEDMPBUFFERSGIXPROC)load("glXAssociateDMPbufferSGIX");
 #endif
 }
-static void load_GLX_SGIX_swap_barrier(LOADER load) {
-	glXBindSwapBarrierSGIX = (fp_glXBindSwapBarrierSGIX)load("glXBindSwapBarrierSGIX");
-	glXQueryMaxSwapBarriersSGIX = (fp_glXQueryMaxSwapBarriersSGIX)load("glXQueryMaxSwapBarriersSGIX");
+static void load_GLX_SGIX_swap_barrier(GLADloadproc load) {
+	glad_glXBindSwapBarrierSGIX = (PFNGLXBINDSWAPBARRIERSGIXPROC)load("glXBindSwapBarrierSGIX");
+	glad_glXQueryMaxSwapBarriersSGIX = (PFNGLXQUERYMAXSWAPBARRIERSSGIXPROC)load("glXQueryMaxSwapBarriersSGIX");
 }
-static void load_GLX_MESA_release_buffers(LOADER load) {
-	glXReleaseBuffersMESA = (fp_glXReleaseBuffersMESA)load("glXReleaseBuffersMESA");
+static void load_GLX_MESA_release_buffers(GLADloadproc load) {
+	glad_glXReleaseBuffersMESA = (PFNGLXRELEASEBUFFERSMESAPROC)load("glXReleaseBuffersMESA");
 }
-static void load_GLX_MESA_copy_sub_buffer(LOADER load) {
-	glXCopySubBufferMESA = (fp_glXCopySubBufferMESA)load("glXCopySubBufferMESA");
+static void load_GLX_MESA_copy_sub_buffer(GLADloadproc load) {
+	glad_glXCopySubBufferMESA = (PFNGLXCOPYSUBBUFFERMESAPROC)load("glXCopySubBufferMESA");
 }
-static void load_GLX_SGI_cushion(LOADER load) {
-	glXCushionSGI = (fp_glXCushionSGI)load("glXCushionSGI");
+static void load_GLX_SGI_cushion(GLADloadproc load) {
+	glad_glXCushionSGI = (PFNGLXCUSHIONSGIPROC)load("glXCushionSGI");
 }
-static void load_GLX_NV_present_video(LOADER load) {
-	glXEnumerateVideoDevicesNV = (fp_glXEnumerateVideoDevicesNV)load("glXEnumerateVideoDevicesNV");
-	glXBindVideoDeviceNV = (fp_glXBindVideoDeviceNV)load("glXBindVideoDeviceNV");
+static void load_GLX_NV_present_video(GLADloadproc load) {
+	glad_glXEnumerateVideoDevicesNV = (PFNGLXENUMERATEVIDEODEVICESNVPROC)load("glXEnumerateVideoDevicesNV");
+	glad_glXBindVideoDeviceNV = (PFNGLXBINDVIDEODEVICENVPROC)load("glXBindVideoDeviceNV");
 }
-static void load_GLX_SUN_get_transparent_index(LOADER load) {
-	glXGetTransparentIndexSUN = (fp_glXGetTransparentIndexSUN)load("glXGetTransparentIndexSUN");
+static void load_GLX_SUN_get_transparent_index(GLADloadproc load) {
+	glad_glXGetTransparentIndexSUN = (PFNGLXGETTRANSPARENTINDEXSUNPROC)load("glXGetTransparentIndexSUN");
 }
-static void load_GLX_ARB_get_proc_address(LOADER load) {
-	glXGetProcAddressARB = (fp_glXGetProcAddressARB)load("glXGetProcAddressARB");
+static void load_GLX_ARB_get_proc_address(GLADloadproc load) {
+	glad_glXGetProcAddressARB = (PFNGLXGETPROCADDRESSARBPROC)load("glXGetProcAddressARB");
 }
 static void find_extensionsGLX(void) {
 }
@@ -421,7 +421,7 @@ static void find_extensionsGLX(void) {
 static void find_coreGLX(void) {
 }
 
-void gladLoadGLXLoader(LOADER load) {
+void gladLoadGLXLoader(GLADloadproc load) {
 	find_coreGLX();
 	load_GLX_VERSION_1_0(load);
 	load_GLX_VERSION_1_1(load);

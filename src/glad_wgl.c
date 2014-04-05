@@ -7,14 +7,14 @@ static void* get_proc(const char *namez);
 #include <windows.h>
 static HMODULE libGL;
 
-typedef void* (*WGLGETPROCADDRESS)(const char*);
-WGLGETPROCADDRESS gladGetProcAddressPtr;
+typedef void* (*PFNWGLGETPROCADDRESSPROC)(const char*);
+PFNWGLGETPROCADDRESSPROC gladGetProcAddressPtr;
 
 static
 int open_gl(void) {
     libGL = LoadLibraryA("opengl32.dll");
     if(libGL != NULL) {
-        gladGetProcAddressPtr = (WGLGETPROCADDRESS)GetProcAddress(
+        gladGetProcAddressPtr = (PFNWGLGETPROCADDRESSPROC)GetProcAddress(
                 libGL, "wglGetProcAddress");
         return gladGetProcAddressPtr != NULL;
     }
@@ -34,8 +34,8 @@ void close_gl(void) {
 static void* libGL;
 
 #ifndef __APPLE__
-typedef void* (*WGLGETPROCADDRESS)(const char*);
-WGLGETPROCADDRESS gladGetProcAddressPtr;
+typedef void* (*PFNWGLGETPROCADDRESSPROC)(const char*);
+PFNWGLGETPROCADDRESSPROC gladGetProcAddressPtr;
 #endif
 
 static
@@ -59,7 +59,7 @@ int open_gl(void) {
 #ifdef __APPLE__
         return 1;
 #else
-            gladGetProcAddressPtr = (WGLGETPROCADDRESS)dlsym(libGL,
+            gladGetProcAddressPtr = (PFNWGLGETPROCADDRESSPROC)dlsym(libGL,
                 "glXGetProcAddressARB");
             return gladGetProcAddressPtr != NULL;
 #endif
@@ -99,7 +99,7 @@ void* get_proc(const char *namez) {
 
 int gladLoadWGL(void) {
     if(open_gl()) {
-        gladLoadWGLLoader((LOADER)get_proc);
+        gladLoadWGLLoader((GLADloadproc)get_proc);
         close_gl();
         return 1;
     }
@@ -110,301 +110,301 @@ int gladLoadWGL(void) {
 static int has_ext(const char *ext) {
     return 1;
 }
-fp_wglCreateImageBufferI3D gladwglCreateImageBufferI3D;
-fp_wglDestroyImageBufferI3D gladwglDestroyImageBufferI3D;
-fp_wglAssociateImageBufferEventsI3D gladwglAssociateImageBufferEventsI3D;
-fp_wglReleaseImageBufferEventsI3D gladwglReleaseImageBufferEventsI3D;
-fp_wglGetFrameUsageI3D gladwglGetFrameUsageI3D;
-fp_wglBeginFrameTrackingI3D gladwglBeginFrameTrackingI3D;
-fp_wglEndFrameTrackingI3D gladwglEndFrameTrackingI3D;
-fp_wglQueryFrameTrackingI3D gladwglQueryFrameTrackingI3D;
-fp_wglGetSyncValuesOML gladwglGetSyncValuesOML;
-fp_wglGetMscRateOML gladwglGetMscRateOML;
-fp_wglSwapBuffersMscOML gladwglSwapBuffersMscOML;
-fp_wglSwapLayerBuffersMscOML gladwglSwapLayerBuffersMscOML;
-fp_wglWaitForMscOML gladwglWaitForMscOML;
-fp_wglWaitForSbcOML gladwglWaitForSbcOML;
-fp_wglCreateContextAttribsARB gladwglCreateContextAttribsARB;
-fp_wglJoinSwapGroupNV gladwglJoinSwapGroupNV;
-fp_wglBindSwapBarrierNV gladwglBindSwapBarrierNV;
-fp_wglQuerySwapGroupNV gladwglQuerySwapGroupNV;
-fp_wglQueryMaxSwapGroupsNV gladwglQueryMaxSwapGroupsNV;
-fp_wglQueryFrameCountNV gladwglQueryFrameCountNV;
-fp_wglResetFrameCountNV gladwglResetFrameCountNV;
-fp_wglEnumGpusNV gladwglEnumGpusNV;
-fp_wglEnumGpuDevicesNV gladwglEnumGpuDevicesNV;
-fp_wglCreateAffinityDCNV gladwglCreateAffinityDCNV;
-fp_wglEnumGpusFromAffinityDCNV gladwglEnumGpusFromAffinityDCNV;
-fp_wglDeleteDCNV gladwglDeleteDCNV;
-fp_wglGetPixelFormatAttribivEXT gladwglGetPixelFormatAttribivEXT;
-fp_wglGetPixelFormatAttribfvEXT gladwglGetPixelFormatAttribfvEXT;
-fp_wglChoosePixelFormatEXT gladwglChoosePixelFormatEXT;
-fp_wglGetExtensionsStringARB gladwglGetExtensionsStringARB;
-fp_wglBindVideoCaptureDeviceNV gladwglBindVideoCaptureDeviceNV;
-fp_wglEnumerateVideoCaptureDevicesNV gladwglEnumerateVideoCaptureDevicesNV;
-fp_wglLockVideoCaptureDeviceNV gladwglLockVideoCaptureDeviceNV;
-fp_wglQueryVideoCaptureDeviceNV gladwglQueryVideoCaptureDeviceNV;
-fp_wglReleaseVideoCaptureDeviceNV gladwglReleaseVideoCaptureDeviceNV;
-fp_wglBindTexImageARB gladwglBindTexImageARB;
-fp_wglReleaseTexImageARB gladwglReleaseTexImageARB;
-fp_wglSetPbufferAttribARB gladwglSetPbufferAttribARB;
-fp_wglGetPixelFormatAttribivARB gladwglGetPixelFormatAttribivARB;
-fp_wglGetPixelFormatAttribfvARB gladwglGetPixelFormatAttribfvARB;
-fp_wglChoosePixelFormatARB gladwglChoosePixelFormatARB;
-fp_wglEnableGenlockI3D gladwglEnableGenlockI3D;
-fp_wglDisableGenlockI3D gladwglDisableGenlockI3D;
-fp_wglIsEnabledGenlockI3D gladwglIsEnabledGenlockI3D;
-fp_wglGenlockSourceI3D gladwglGenlockSourceI3D;
-fp_wglGetGenlockSourceI3D gladwglGetGenlockSourceI3D;
-fp_wglGenlockSourceEdgeI3D gladwglGenlockSourceEdgeI3D;
-fp_wglGetGenlockSourceEdgeI3D gladwglGetGenlockSourceEdgeI3D;
-fp_wglGenlockSampleRateI3D gladwglGenlockSampleRateI3D;
-fp_wglGetGenlockSampleRateI3D gladwglGetGenlockSampleRateI3D;
-fp_wglGenlockSourceDelayI3D gladwglGenlockSourceDelayI3D;
-fp_wglGetGenlockSourceDelayI3D gladwglGetGenlockSourceDelayI3D;
-fp_wglQueryGenlockMaxSourceDelayI3D gladwglQueryGenlockMaxSourceDelayI3D;
-fp_wglDXSetResourceShareHandleNV gladwglDXSetResourceShareHandleNV;
-fp_wglDXOpenDeviceNV gladwglDXOpenDeviceNV;
-fp_wglDXCloseDeviceNV gladwglDXCloseDeviceNV;
-fp_wglDXRegisterObjectNV gladwglDXRegisterObjectNV;
-fp_wglDXUnregisterObjectNV gladwglDXUnregisterObjectNV;
-fp_wglDXObjectAccessNV gladwglDXObjectAccessNV;
-fp_wglDXLockObjectsNV gladwglDXLockObjectsNV;
-fp_wglDXUnlockObjectsNV gladwglDXUnlockObjectsNV;
-fp_wglSetStereoEmitterState3DL gladwglSetStereoEmitterState3DL;
-fp_wglCreatePbufferEXT gladwglCreatePbufferEXT;
-fp_wglGetPbufferDCEXT gladwglGetPbufferDCEXT;
-fp_wglReleasePbufferDCEXT gladwglReleasePbufferDCEXT;
-fp_wglDestroyPbufferEXT gladwglDestroyPbufferEXT;
-fp_wglQueryPbufferEXT gladwglQueryPbufferEXT;
-fp_wglCreateDisplayColorTableEXT gladwglCreateDisplayColorTableEXT;
-fp_wglLoadDisplayColorTableEXT gladwglLoadDisplayColorTableEXT;
-fp_wglBindDisplayColorTableEXT gladwglBindDisplayColorTableEXT;
-fp_wglDestroyDisplayColorTableEXT gladwglDestroyDisplayColorTableEXT;
-fp_wglGetVideoDeviceNV gladwglGetVideoDeviceNV;
-fp_wglReleaseVideoDeviceNV gladwglReleaseVideoDeviceNV;
-fp_wglBindVideoImageNV gladwglBindVideoImageNV;
-fp_wglReleaseVideoImageNV gladwglReleaseVideoImageNV;
-fp_wglSendPbufferToVideoNV gladwglSendPbufferToVideoNV;
-fp_wglGetVideoInfoNV gladwglGetVideoInfoNV;
-fp_wglGetGammaTableParametersI3D gladwglGetGammaTableParametersI3D;
-fp_wglSetGammaTableParametersI3D gladwglSetGammaTableParametersI3D;
-fp_wglGetGammaTableI3D gladwglGetGammaTableI3D;
-fp_wglSetGammaTableI3D gladwglSetGammaTableI3D;
-fp_wglCopyImageSubDataNV gladwglCopyImageSubDataNV;
-fp_wglEnumerateVideoDevicesNV gladwglEnumerateVideoDevicesNV;
-fp_wglBindVideoDeviceNV gladwglBindVideoDeviceNV;
-fp_wglQueryCurrentContextNV gladwglQueryCurrentContextNV;
-fp_wglMakeContextCurrentARB gladwglMakeContextCurrentARB;
-fp_wglGetCurrentReadDCARB gladwglGetCurrentReadDCARB;
-fp_wglGetExtensionsStringEXT gladwglGetExtensionsStringEXT;
-fp_wglSwapIntervalEXT gladwglSwapIntervalEXT;
-fp_wglGetSwapIntervalEXT gladwglGetSwapIntervalEXT;
-fp_wglGetDigitalVideoParametersI3D gladwglGetDigitalVideoParametersI3D;
-fp_wglSetDigitalVideoParametersI3D gladwglSetDigitalVideoParametersI3D;
-fp_wglCreatePbufferARB gladwglCreatePbufferARB;
-fp_wglGetPbufferDCARB gladwglGetPbufferDCARB;
-fp_wglReleasePbufferDCARB gladwglReleasePbufferDCARB;
-fp_wglDestroyPbufferARB gladwglDestroyPbufferARB;
-fp_wglQueryPbufferARB gladwglQueryPbufferARB;
-fp_wglAllocateMemoryNV gladwglAllocateMemoryNV;
-fp_wglFreeMemoryNV gladwglFreeMemoryNV;
-fp_wglGetGPUIDsAMD gladwglGetGPUIDsAMD;
-fp_wglGetGPUInfoAMD gladwglGetGPUInfoAMD;
-fp_wglGetContextGPUIDAMD gladwglGetContextGPUIDAMD;
-fp_wglCreateAssociatedContextAMD gladwglCreateAssociatedContextAMD;
-fp_wglCreateAssociatedContextAttribsAMD gladwglCreateAssociatedContextAttribsAMD;
-fp_wglDeleteAssociatedContextAMD gladwglDeleteAssociatedContextAMD;
-fp_wglMakeAssociatedContextCurrentAMD gladwglMakeAssociatedContextCurrentAMD;
-fp_wglGetCurrentAssociatedContextAMD gladwglGetCurrentAssociatedContextAMD;
-fp_wglBlitContextFramebufferAMD gladwglBlitContextFramebufferAMD;
-fp_wglMakeContextCurrentEXT gladwglMakeContextCurrentEXT;
-fp_wglGetCurrentReadDCEXT gladwglGetCurrentReadDCEXT;
-fp_wglEnableFrameLockI3D gladwglEnableFrameLockI3D;
-fp_wglDisableFrameLockI3D gladwglDisableFrameLockI3D;
-fp_wglIsEnabledFrameLockI3D gladwglIsEnabledFrameLockI3D;
-fp_wglQueryFrameLockMasterI3D gladwglQueryFrameLockMasterI3D;
-fp_wglCreateBufferRegionARB gladwglCreateBufferRegionARB;
-fp_wglDeleteBufferRegionARB gladwglDeleteBufferRegionARB;
-fp_wglSaveBufferRegionARB gladwglSaveBufferRegionARB;
-fp_wglRestoreBufferRegionARB gladwglRestoreBufferRegionARB;
-static void load_WGL_I3D_image_buffer(LOADER load) {
-	wglCreateImageBufferI3D = (fp_wglCreateImageBufferI3D)load("wglCreateImageBufferI3D");
-	wglDestroyImageBufferI3D = (fp_wglDestroyImageBufferI3D)load("wglDestroyImageBufferI3D");
-	wglAssociateImageBufferEventsI3D = (fp_wglAssociateImageBufferEventsI3D)load("wglAssociateImageBufferEventsI3D");
-	wglReleaseImageBufferEventsI3D = (fp_wglReleaseImageBufferEventsI3D)load("wglReleaseImageBufferEventsI3D");
+PFNWGLCREATEIMAGEBUFFERI3DPROC glad_wglCreateImageBufferI3D;
+PFNWGLDESTROYIMAGEBUFFERI3DPROC glad_wglDestroyImageBufferI3D;
+PFNWGLASSOCIATEIMAGEBUFFEREVENTSI3DPROC glad_wglAssociateImageBufferEventsI3D;
+PFNWGLRELEASEIMAGEBUFFEREVENTSI3DPROC glad_wglReleaseImageBufferEventsI3D;
+PFNWGLGETFRAMEUSAGEI3DPROC glad_wglGetFrameUsageI3D;
+PFNWGLBEGINFRAMETRACKINGI3DPROC glad_wglBeginFrameTrackingI3D;
+PFNWGLENDFRAMETRACKINGI3DPROC glad_wglEndFrameTrackingI3D;
+PFNWGLQUERYFRAMETRACKINGI3DPROC glad_wglQueryFrameTrackingI3D;
+PFNWGLGETSYNCVALUESOMLPROC glad_wglGetSyncValuesOML;
+PFNWGLGETMSCRATEOMLPROC glad_wglGetMscRateOML;
+PFNWGLSWAPBUFFERSMSCOMLPROC glad_wglSwapBuffersMscOML;
+PFNWGLSWAPLAYERBUFFERSMSCOMLPROC glad_wglSwapLayerBuffersMscOML;
+PFNWGLWAITFORMSCOMLPROC glad_wglWaitForMscOML;
+PFNWGLWAITFORSBCOMLPROC glad_wglWaitForSbcOML;
+PFNWGLCREATECONTEXTATTRIBSARBPROC glad_wglCreateContextAttribsARB;
+PFNWGLJOINSWAPGROUPNVPROC glad_wglJoinSwapGroupNV;
+PFNWGLBINDSWAPBARRIERNVPROC glad_wglBindSwapBarrierNV;
+PFNWGLQUERYSWAPGROUPNVPROC glad_wglQuerySwapGroupNV;
+PFNWGLQUERYMAXSWAPGROUPSNVPROC glad_wglQueryMaxSwapGroupsNV;
+PFNWGLQUERYFRAMECOUNTNVPROC glad_wglQueryFrameCountNV;
+PFNWGLRESETFRAMECOUNTNVPROC glad_wglResetFrameCountNV;
+PFNWGLENUMGPUSNVPROC glad_wglEnumGpusNV;
+PFNWGLENUMGPUDEVICESNVPROC glad_wglEnumGpuDevicesNV;
+PFNWGLCREATEAFFINITYDCNVPROC glad_wglCreateAffinityDCNV;
+PFNWGLENUMGPUSFROMAFFINITYDCNVPROC glad_wglEnumGpusFromAffinityDCNV;
+PFNWGLDELETEDCNVPROC glad_wglDeleteDCNV;
+PFNWGLGETPIXELFORMATATTRIBIVEXTPROC glad_wglGetPixelFormatAttribivEXT;
+PFNWGLGETPIXELFORMATATTRIBFVEXTPROC glad_wglGetPixelFormatAttribfvEXT;
+PFNWGLCHOOSEPIXELFORMATEXTPROC glad_wglChoosePixelFormatEXT;
+PFNWGLGETEXTENSIONSSTRINGARBPROC glad_wglGetExtensionsStringARB;
+PFNWGLBINDVIDEOCAPTUREDEVICENVPROC glad_wglBindVideoCaptureDeviceNV;
+PFNWGLENUMERATEVIDEOCAPTUREDEVICESNVPROC glad_wglEnumerateVideoCaptureDevicesNV;
+PFNWGLLOCKVIDEOCAPTUREDEVICENVPROC glad_wglLockVideoCaptureDeviceNV;
+PFNWGLQUERYVIDEOCAPTUREDEVICENVPROC glad_wglQueryVideoCaptureDeviceNV;
+PFNWGLRELEASEVIDEOCAPTUREDEVICENVPROC glad_wglReleaseVideoCaptureDeviceNV;
+PFNWGLBINDTEXIMAGEARBPROC glad_wglBindTexImageARB;
+PFNWGLRELEASETEXIMAGEARBPROC glad_wglReleaseTexImageARB;
+PFNWGLSETPBUFFERATTRIBARBPROC glad_wglSetPbufferAttribARB;
+PFNWGLGETPIXELFORMATATTRIBIVARBPROC glad_wglGetPixelFormatAttribivARB;
+PFNWGLGETPIXELFORMATATTRIBFVARBPROC glad_wglGetPixelFormatAttribfvARB;
+PFNWGLCHOOSEPIXELFORMATARBPROC glad_wglChoosePixelFormatARB;
+PFNWGLENABLEGENLOCKI3DPROC glad_wglEnableGenlockI3D;
+PFNWGLDISABLEGENLOCKI3DPROC glad_wglDisableGenlockI3D;
+PFNWGLISENABLEDGENLOCKI3DPROC glad_wglIsEnabledGenlockI3D;
+PFNWGLGENLOCKSOURCEI3DPROC glad_wglGenlockSourceI3D;
+PFNWGLGETGENLOCKSOURCEI3DPROC glad_wglGetGenlockSourceI3D;
+PFNWGLGENLOCKSOURCEEDGEI3DPROC glad_wglGenlockSourceEdgeI3D;
+PFNWGLGETGENLOCKSOURCEEDGEI3DPROC glad_wglGetGenlockSourceEdgeI3D;
+PFNWGLGENLOCKSAMPLERATEI3DPROC glad_wglGenlockSampleRateI3D;
+PFNWGLGETGENLOCKSAMPLERATEI3DPROC glad_wglGetGenlockSampleRateI3D;
+PFNWGLGENLOCKSOURCEDELAYI3DPROC glad_wglGenlockSourceDelayI3D;
+PFNWGLGETGENLOCKSOURCEDELAYI3DPROC glad_wglGetGenlockSourceDelayI3D;
+PFNWGLQUERYGENLOCKMAXSOURCEDELAYI3DPROC glad_wglQueryGenlockMaxSourceDelayI3D;
+PFNWGLDXSETRESOURCESHAREHANDLENVPROC glad_wglDXSetResourceShareHandleNV;
+PFNWGLDXOPENDEVICENVPROC glad_wglDXOpenDeviceNV;
+PFNWGLDXCLOSEDEVICENVPROC glad_wglDXCloseDeviceNV;
+PFNWGLDXREGISTEROBJECTNVPROC glad_wglDXRegisterObjectNV;
+PFNWGLDXUNREGISTEROBJECTNVPROC glad_wglDXUnregisterObjectNV;
+PFNWGLDXOBJECTACCESSNVPROC glad_wglDXObjectAccessNV;
+PFNWGLDXLOCKOBJECTSNVPROC glad_wglDXLockObjectsNV;
+PFNWGLDXUNLOCKOBJECTSNVPROC glad_wglDXUnlockObjectsNV;
+PFNWGLSETSTEREOEMITTERSTATE3DLPROC glad_wglSetStereoEmitterState3DL;
+PFNWGLCREATEPBUFFEREXTPROC glad_wglCreatePbufferEXT;
+PFNWGLGETPBUFFERDCEXTPROC glad_wglGetPbufferDCEXT;
+PFNWGLRELEASEPBUFFERDCEXTPROC glad_wglReleasePbufferDCEXT;
+PFNWGLDESTROYPBUFFEREXTPROC glad_wglDestroyPbufferEXT;
+PFNWGLQUERYPBUFFEREXTPROC glad_wglQueryPbufferEXT;
+PFNWGLCREATEDISPLAYCOLORTABLEEXTPROC glad_wglCreateDisplayColorTableEXT;
+PFNWGLLOADDISPLAYCOLORTABLEEXTPROC glad_wglLoadDisplayColorTableEXT;
+PFNWGLBINDDISPLAYCOLORTABLEEXTPROC glad_wglBindDisplayColorTableEXT;
+PFNWGLDESTROYDISPLAYCOLORTABLEEXTPROC glad_wglDestroyDisplayColorTableEXT;
+PFNWGLGETVIDEODEVICENVPROC glad_wglGetVideoDeviceNV;
+PFNWGLRELEASEVIDEODEVICENVPROC glad_wglReleaseVideoDeviceNV;
+PFNWGLBINDVIDEOIMAGENVPROC glad_wglBindVideoImageNV;
+PFNWGLRELEASEVIDEOIMAGENVPROC glad_wglReleaseVideoImageNV;
+PFNWGLSENDPBUFFERTOVIDEONVPROC glad_wglSendPbufferToVideoNV;
+PFNWGLGETVIDEOINFONVPROC glad_wglGetVideoInfoNV;
+PFNWGLGETGAMMATABLEPARAMETERSI3DPROC glad_wglGetGammaTableParametersI3D;
+PFNWGLSETGAMMATABLEPARAMETERSI3DPROC glad_wglSetGammaTableParametersI3D;
+PFNWGLGETGAMMATABLEI3DPROC glad_wglGetGammaTableI3D;
+PFNWGLSETGAMMATABLEI3DPROC glad_wglSetGammaTableI3D;
+PFNWGLCOPYIMAGESUBDATANVPROC glad_wglCopyImageSubDataNV;
+PFNWGLENUMERATEVIDEODEVICESNVPROC glad_wglEnumerateVideoDevicesNV;
+PFNWGLBINDVIDEODEVICENVPROC glad_wglBindVideoDeviceNV;
+PFNWGLQUERYCURRENTCONTEXTNVPROC glad_wglQueryCurrentContextNV;
+PFNWGLMAKECONTEXTCURRENTARBPROC glad_wglMakeContextCurrentARB;
+PFNWGLGETCURRENTREADDCARBPROC glad_wglGetCurrentReadDCARB;
+PFNWGLGETEXTENSIONSSTRINGEXTPROC glad_wglGetExtensionsStringEXT;
+PFNWGLSWAPINTERVALEXTPROC glad_wglSwapIntervalEXT;
+PFNWGLGETSWAPINTERVALEXTPROC glad_wglGetSwapIntervalEXT;
+PFNWGLGETDIGITALVIDEOPARAMETERSI3DPROC glad_wglGetDigitalVideoParametersI3D;
+PFNWGLSETDIGITALVIDEOPARAMETERSI3DPROC glad_wglSetDigitalVideoParametersI3D;
+PFNWGLCREATEPBUFFERARBPROC glad_wglCreatePbufferARB;
+PFNWGLGETPBUFFERDCARBPROC glad_wglGetPbufferDCARB;
+PFNWGLRELEASEPBUFFERDCARBPROC glad_wglReleasePbufferDCARB;
+PFNWGLDESTROYPBUFFERARBPROC glad_wglDestroyPbufferARB;
+PFNWGLQUERYPBUFFERARBPROC glad_wglQueryPbufferARB;
+PFNWGLALLOCATEMEMORYNVPROC glad_wglAllocateMemoryNV;
+PFNWGLFREEMEMORYNVPROC glad_wglFreeMemoryNV;
+PFNWGLGETGPUIDSAMDPROC glad_wglGetGPUIDsAMD;
+PFNWGLGETGPUINFOAMDPROC glad_wglGetGPUInfoAMD;
+PFNWGLGETCONTEXTGPUIDAMDPROC glad_wglGetContextGPUIDAMD;
+PFNWGLCREATEASSOCIATEDCONTEXTAMDPROC glad_wglCreateAssociatedContextAMD;
+PFNWGLCREATEASSOCIATEDCONTEXTATTRIBSAMDPROC glad_wglCreateAssociatedContextAttribsAMD;
+PFNWGLDELETEASSOCIATEDCONTEXTAMDPROC glad_wglDeleteAssociatedContextAMD;
+PFNWGLMAKEASSOCIATEDCONTEXTCURRENTAMDPROC glad_wglMakeAssociatedContextCurrentAMD;
+PFNWGLGETCURRENTASSOCIATEDCONTEXTAMDPROC glad_wglGetCurrentAssociatedContextAMD;
+PFNWGLBLITCONTEXTFRAMEBUFFERAMDPROC glad_wglBlitContextFramebufferAMD;
+PFNWGLMAKECONTEXTCURRENTEXTPROC glad_wglMakeContextCurrentEXT;
+PFNWGLGETCURRENTREADDCEXTPROC glad_wglGetCurrentReadDCEXT;
+PFNWGLENABLEFRAMELOCKI3DPROC glad_wglEnableFrameLockI3D;
+PFNWGLDISABLEFRAMELOCKI3DPROC glad_wglDisableFrameLockI3D;
+PFNWGLISENABLEDFRAMELOCKI3DPROC glad_wglIsEnabledFrameLockI3D;
+PFNWGLQUERYFRAMELOCKMASTERI3DPROC glad_wglQueryFrameLockMasterI3D;
+PFNWGLCREATEBUFFERREGIONARBPROC glad_wglCreateBufferRegionARB;
+PFNWGLDELETEBUFFERREGIONARBPROC glad_wglDeleteBufferRegionARB;
+PFNWGLSAVEBUFFERREGIONARBPROC glad_wglSaveBufferRegionARB;
+PFNWGLRESTOREBUFFERREGIONARBPROC glad_wglRestoreBufferRegionARB;
+static void load_WGL_I3D_image_buffer(GLADloadproc load) {
+	glad_wglCreateImageBufferI3D = (PFNWGLCREATEIMAGEBUFFERI3DPROC)load("wglCreateImageBufferI3D");
+	glad_wglDestroyImageBufferI3D = (PFNWGLDESTROYIMAGEBUFFERI3DPROC)load("wglDestroyImageBufferI3D");
+	glad_wglAssociateImageBufferEventsI3D = (PFNWGLASSOCIATEIMAGEBUFFEREVENTSI3DPROC)load("wglAssociateImageBufferEventsI3D");
+	glad_wglReleaseImageBufferEventsI3D = (PFNWGLRELEASEIMAGEBUFFEREVENTSI3DPROC)load("wglReleaseImageBufferEventsI3D");
 }
-static void load_WGL_I3D_swap_frame_usage(LOADER load) {
-	wglGetFrameUsageI3D = (fp_wglGetFrameUsageI3D)load("wglGetFrameUsageI3D");
-	wglBeginFrameTrackingI3D = (fp_wglBeginFrameTrackingI3D)load("wglBeginFrameTrackingI3D");
-	wglEndFrameTrackingI3D = (fp_wglEndFrameTrackingI3D)load("wglEndFrameTrackingI3D");
-	wglQueryFrameTrackingI3D = (fp_wglQueryFrameTrackingI3D)load("wglQueryFrameTrackingI3D");
+static void load_WGL_I3D_swap_frame_usage(GLADloadproc load) {
+	glad_wglGetFrameUsageI3D = (PFNWGLGETFRAMEUSAGEI3DPROC)load("wglGetFrameUsageI3D");
+	glad_wglBeginFrameTrackingI3D = (PFNWGLBEGINFRAMETRACKINGI3DPROC)load("wglBeginFrameTrackingI3D");
+	glad_wglEndFrameTrackingI3D = (PFNWGLENDFRAMETRACKINGI3DPROC)load("wglEndFrameTrackingI3D");
+	glad_wglQueryFrameTrackingI3D = (PFNWGLQUERYFRAMETRACKINGI3DPROC)load("wglQueryFrameTrackingI3D");
 }
-static void load_WGL_OML_sync_control(LOADER load) {
-	wglGetSyncValuesOML = (fp_wglGetSyncValuesOML)load("wglGetSyncValuesOML");
-	wglGetMscRateOML = (fp_wglGetMscRateOML)load("wglGetMscRateOML");
-	wglSwapBuffersMscOML = (fp_wglSwapBuffersMscOML)load("wglSwapBuffersMscOML");
-	wglSwapLayerBuffersMscOML = (fp_wglSwapLayerBuffersMscOML)load("wglSwapLayerBuffersMscOML");
-	wglWaitForMscOML = (fp_wglWaitForMscOML)load("wglWaitForMscOML");
-	wglWaitForSbcOML = (fp_wglWaitForSbcOML)load("wglWaitForSbcOML");
+static void load_WGL_OML_sync_control(GLADloadproc load) {
+	glad_wglGetSyncValuesOML = (PFNWGLGETSYNCVALUESOMLPROC)load("wglGetSyncValuesOML");
+	glad_wglGetMscRateOML = (PFNWGLGETMSCRATEOMLPROC)load("wglGetMscRateOML");
+	glad_wglSwapBuffersMscOML = (PFNWGLSWAPBUFFERSMSCOMLPROC)load("wglSwapBuffersMscOML");
+	glad_wglSwapLayerBuffersMscOML = (PFNWGLSWAPLAYERBUFFERSMSCOMLPROC)load("wglSwapLayerBuffersMscOML");
+	glad_wglWaitForMscOML = (PFNWGLWAITFORMSCOMLPROC)load("wglWaitForMscOML");
+	glad_wglWaitForSbcOML = (PFNWGLWAITFORSBCOMLPROC)load("wglWaitForSbcOML");
 }
-static void load_WGL_ARB_create_context(LOADER load) {
-	wglCreateContextAttribsARB = (fp_wglCreateContextAttribsARB)load("wglCreateContextAttribsARB");
+static void load_WGL_ARB_create_context(GLADloadproc load) {
+	glad_wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)load("wglCreateContextAttribsARB");
 }
-static void load_WGL_NV_swap_group(LOADER load) {
-	wglJoinSwapGroupNV = (fp_wglJoinSwapGroupNV)load("wglJoinSwapGroupNV");
-	wglBindSwapBarrierNV = (fp_wglBindSwapBarrierNV)load("wglBindSwapBarrierNV");
-	wglQuerySwapGroupNV = (fp_wglQuerySwapGroupNV)load("wglQuerySwapGroupNV");
-	wglQueryMaxSwapGroupsNV = (fp_wglQueryMaxSwapGroupsNV)load("wglQueryMaxSwapGroupsNV");
-	wglQueryFrameCountNV = (fp_wglQueryFrameCountNV)load("wglQueryFrameCountNV");
-	wglResetFrameCountNV = (fp_wglResetFrameCountNV)load("wglResetFrameCountNV");
+static void load_WGL_NV_swap_group(GLADloadproc load) {
+	glad_wglJoinSwapGroupNV = (PFNWGLJOINSWAPGROUPNVPROC)load("wglJoinSwapGroupNV");
+	glad_wglBindSwapBarrierNV = (PFNWGLBINDSWAPBARRIERNVPROC)load("wglBindSwapBarrierNV");
+	glad_wglQuerySwapGroupNV = (PFNWGLQUERYSWAPGROUPNVPROC)load("wglQuerySwapGroupNV");
+	glad_wglQueryMaxSwapGroupsNV = (PFNWGLQUERYMAXSWAPGROUPSNVPROC)load("wglQueryMaxSwapGroupsNV");
+	glad_wglQueryFrameCountNV = (PFNWGLQUERYFRAMECOUNTNVPROC)load("wglQueryFrameCountNV");
+	glad_wglResetFrameCountNV = (PFNWGLRESETFRAMECOUNTNVPROC)load("wglResetFrameCountNV");
 }
-static void load_WGL_NV_gpu_affinity(LOADER load) {
-	wglEnumGpusNV = (fp_wglEnumGpusNV)load("wglEnumGpusNV");
-	wglEnumGpuDevicesNV = (fp_wglEnumGpuDevicesNV)load("wglEnumGpuDevicesNV");
-	wglCreateAffinityDCNV = (fp_wglCreateAffinityDCNV)load("wglCreateAffinityDCNV");
-	wglEnumGpusFromAffinityDCNV = (fp_wglEnumGpusFromAffinityDCNV)load("wglEnumGpusFromAffinityDCNV");
-	wglDeleteDCNV = (fp_wglDeleteDCNV)load("wglDeleteDCNV");
+static void load_WGL_NV_gpu_affinity(GLADloadproc load) {
+	glad_wglEnumGpusNV = (PFNWGLENUMGPUSNVPROC)load("wglEnumGpusNV");
+	glad_wglEnumGpuDevicesNV = (PFNWGLENUMGPUDEVICESNVPROC)load("wglEnumGpuDevicesNV");
+	glad_wglCreateAffinityDCNV = (PFNWGLCREATEAFFINITYDCNVPROC)load("wglCreateAffinityDCNV");
+	glad_wglEnumGpusFromAffinityDCNV = (PFNWGLENUMGPUSFROMAFFINITYDCNVPROC)load("wglEnumGpusFromAffinityDCNV");
+	glad_wglDeleteDCNV = (PFNWGLDELETEDCNVPROC)load("wglDeleteDCNV");
 }
-static void load_WGL_EXT_pixel_format(LOADER load) {
-	wglGetPixelFormatAttribivEXT = (fp_wglGetPixelFormatAttribivEXT)load("wglGetPixelFormatAttribivEXT");
-	wglGetPixelFormatAttribfvEXT = (fp_wglGetPixelFormatAttribfvEXT)load("wglGetPixelFormatAttribfvEXT");
-	wglChoosePixelFormatEXT = (fp_wglChoosePixelFormatEXT)load("wglChoosePixelFormatEXT");
+static void load_WGL_EXT_pixel_format(GLADloadproc load) {
+	glad_wglGetPixelFormatAttribivEXT = (PFNWGLGETPIXELFORMATATTRIBIVEXTPROC)load("wglGetPixelFormatAttribivEXT");
+	glad_wglGetPixelFormatAttribfvEXT = (PFNWGLGETPIXELFORMATATTRIBFVEXTPROC)load("wglGetPixelFormatAttribfvEXT");
+	glad_wglChoosePixelFormatEXT = (PFNWGLCHOOSEPIXELFORMATEXTPROC)load("wglChoosePixelFormatEXT");
 }
-static void load_WGL_ARB_extensions_string(LOADER load) {
-	wglGetExtensionsStringARB = (fp_wglGetExtensionsStringARB)load("wglGetExtensionsStringARB");
+static void load_WGL_ARB_extensions_string(GLADloadproc load) {
+	glad_wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)load("wglGetExtensionsStringARB");
 }
-static void load_WGL_NV_video_capture(LOADER load) {
-	wglBindVideoCaptureDeviceNV = (fp_wglBindVideoCaptureDeviceNV)load("wglBindVideoCaptureDeviceNV");
-	wglEnumerateVideoCaptureDevicesNV = (fp_wglEnumerateVideoCaptureDevicesNV)load("wglEnumerateVideoCaptureDevicesNV");
-	wglLockVideoCaptureDeviceNV = (fp_wglLockVideoCaptureDeviceNV)load("wglLockVideoCaptureDeviceNV");
-	wglQueryVideoCaptureDeviceNV = (fp_wglQueryVideoCaptureDeviceNV)load("wglQueryVideoCaptureDeviceNV");
-	wglReleaseVideoCaptureDeviceNV = (fp_wglReleaseVideoCaptureDeviceNV)load("wglReleaseVideoCaptureDeviceNV");
+static void load_WGL_NV_video_capture(GLADloadproc load) {
+	glad_wglBindVideoCaptureDeviceNV = (PFNWGLBINDVIDEOCAPTUREDEVICENVPROC)load("wglBindVideoCaptureDeviceNV");
+	glad_wglEnumerateVideoCaptureDevicesNV = (PFNWGLENUMERATEVIDEOCAPTUREDEVICESNVPROC)load("wglEnumerateVideoCaptureDevicesNV");
+	glad_wglLockVideoCaptureDeviceNV = (PFNWGLLOCKVIDEOCAPTUREDEVICENVPROC)load("wglLockVideoCaptureDeviceNV");
+	glad_wglQueryVideoCaptureDeviceNV = (PFNWGLQUERYVIDEOCAPTUREDEVICENVPROC)load("wglQueryVideoCaptureDeviceNV");
+	glad_wglReleaseVideoCaptureDeviceNV = (PFNWGLRELEASEVIDEOCAPTUREDEVICENVPROC)load("wglReleaseVideoCaptureDeviceNV");
 }
-static void load_WGL_ARB_render_texture(LOADER load) {
-	wglBindTexImageARB = (fp_wglBindTexImageARB)load("wglBindTexImageARB");
-	wglReleaseTexImageARB = (fp_wglReleaseTexImageARB)load("wglReleaseTexImageARB");
-	wglSetPbufferAttribARB = (fp_wglSetPbufferAttribARB)load("wglSetPbufferAttribARB");
+static void load_WGL_ARB_render_texture(GLADloadproc load) {
+	glad_wglBindTexImageARB = (PFNWGLBINDTEXIMAGEARBPROC)load("wglBindTexImageARB");
+	glad_wglReleaseTexImageARB = (PFNWGLRELEASETEXIMAGEARBPROC)load("wglReleaseTexImageARB");
+	glad_wglSetPbufferAttribARB = (PFNWGLSETPBUFFERATTRIBARBPROC)load("wglSetPbufferAttribARB");
 }
-static void load_WGL_ARB_pixel_format(LOADER load) {
-	wglGetPixelFormatAttribivARB = (fp_wglGetPixelFormatAttribivARB)load("wglGetPixelFormatAttribivARB");
-	wglGetPixelFormatAttribfvARB = (fp_wglGetPixelFormatAttribfvARB)load("wglGetPixelFormatAttribfvARB");
-	wglChoosePixelFormatARB = (fp_wglChoosePixelFormatARB)load("wglChoosePixelFormatARB");
+static void load_WGL_ARB_pixel_format(GLADloadproc load) {
+	glad_wglGetPixelFormatAttribivARB = (PFNWGLGETPIXELFORMATATTRIBIVARBPROC)load("wglGetPixelFormatAttribivARB");
+	glad_wglGetPixelFormatAttribfvARB = (PFNWGLGETPIXELFORMATATTRIBFVARBPROC)load("wglGetPixelFormatAttribfvARB");
+	glad_wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)load("wglChoosePixelFormatARB");
 }
-static void load_WGL_I3D_genlock(LOADER load) {
-	wglEnableGenlockI3D = (fp_wglEnableGenlockI3D)load("wglEnableGenlockI3D");
-	wglDisableGenlockI3D = (fp_wglDisableGenlockI3D)load("wglDisableGenlockI3D");
-	wglIsEnabledGenlockI3D = (fp_wglIsEnabledGenlockI3D)load("wglIsEnabledGenlockI3D");
-	wglGenlockSourceI3D = (fp_wglGenlockSourceI3D)load("wglGenlockSourceI3D");
-	wglGetGenlockSourceI3D = (fp_wglGetGenlockSourceI3D)load("wglGetGenlockSourceI3D");
-	wglGenlockSourceEdgeI3D = (fp_wglGenlockSourceEdgeI3D)load("wglGenlockSourceEdgeI3D");
-	wglGetGenlockSourceEdgeI3D = (fp_wglGetGenlockSourceEdgeI3D)load("wglGetGenlockSourceEdgeI3D");
-	wglGenlockSampleRateI3D = (fp_wglGenlockSampleRateI3D)load("wglGenlockSampleRateI3D");
-	wglGetGenlockSampleRateI3D = (fp_wglGetGenlockSampleRateI3D)load("wglGetGenlockSampleRateI3D");
-	wglGenlockSourceDelayI3D = (fp_wglGenlockSourceDelayI3D)load("wglGenlockSourceDelayI3D");
-	wglGetGenlockSourceDelayI3D = (fp_wglGetGenlockSourceDelayI3D)load("wglGetGenlockSourceDelayI3D");
-	wglQueryGenlockMaxSourceDelayI3D = (fp_wglQueryGenlockMaxSourceDelayI3D)load("wglQueryGenlockMaxSourceDelayI3D");
+static void load_WGL_I3D_genlock(GLADloadproc load) {
+	glad_wglEnableGenlockI3D = (PFNWGLENABLEGENLOCKI3DPROC)load("wglEnableGenlockI3D");
+	glad_wglDisableGenlockI3D = (PFNWGLDISABLEGENLOCKI3DPROC)load("wglDisableGenlockI3D");
+	glad_wglIsEnabledGenlockI3D = (PFNWGLISENABLEDGENLOCKI3DPROC)load("wglIsEnabledGenlockI3D");
+	glad_wglGenlockSourceI3D = (PFNWGLGENLOCKSOURCEI3DPROC)load("wglGenlockSourceI3D");
+	glad_wglGetGenlockSourceI3D = (PFNWGLGETGENLOCKSOURCEI3DPROC)load("wglGetGenlockSourceI3D");
+	glad_wglGenlockSourceEdgeI3D = (PFNWGLGENLOCKSOURCEEDGEI3DPROC)load("wglGenlockSourceEdgeI3D");
+	glad_wglGetGenlockSourceEdgeI3D = (PFNWGLGETGENLOCKSOURCEEDGEI3DPROC)load("wglGetGenlockSourceEdgeI3D");
+	glad_wglGenlockSampleRateI3D = (PFNWGLGENLOCKSAMPLERATEI3DPROC)load("wglGenlockSampleRateI3D");
+	glad_wglGetGenlockSampleRateI3D = (PFNWGLGETGENLOCKSAMPLERATEI3DPROC)load("wglGetGenlockSampleRateI3D");
+	glad_wglGenlockSourceDelayI3D = (PFNWGLGENLOCKSOURCEDELAYI3DPROC)load("wglGenlockSourceDelayI3D");
+	glad_wglGetGenlockSourceDelayI3D = (PFNWGLGETGENLOCKSOURCEDELAYI3DPROC)load("wglGetGenlockSourceDelayI3D");
+	glad_wglQueryGenlockMaxSourceDelayI3D = (PFNWGLQUERYGENLOCKMAXSOURCEDELAYI3DPROC)load("wglQueryGenlockMaxSourceDelayI3D");
 }
-static void load_WGL_NV_DX_interop(LOADER load) {
-	wglDXSetResourceShareHandleNV = (fp_wglDXSetResourceShareHandleNV)load("wglDXSetResourceShareHandleNV");
-	wglDXOpenDeviceNV = (fp_wglDXOpenDeviceNV)load("wglDXOpenDeviceNV");
-	wglDXCloseDeviceNV = (fp_wglDXCloseDeviceNV)load("wglDXCloseDeviceNV");
-	wglDXRegisterObjectNV = (fp_wglDXRegisterObjectNV)load("wglDXRegisterObjectNV");
-	wglDXUnregisterObjectNV = (fp_wglDXUnregisterObjectNV)load("wglDXUnregisterObjectNV");
-	wglDXObjectAccessNV = (fp_wglDXObjectAccessNV)load("wglDXObjectAccessNV");
-	wglDXLockObjectsNV = (fp_wglDXLockObjectsNV)load("wglDXLockObjectsNV");
-	wglDXUnlockObjectsNV = (fp_wglDXUnlockObjectsNV)load("wglDXUnlockObjectsNV");
+static void load_WGL_NV_DX_interop(GLADloadproc load) {
+	glad_wglDXSetResourceShareHandleNV = (PFNWGLDXSETRESOURCESHAREHANDLENVPROC)load("wglDXSetResourceShareHandleNV");
+	glad_wglDXOpenDeviceNV = (PFNWGLDXOPENDEVICENVPROC)load("wglDXOpenDeviceNV");
+	glad_wglDXCloseDeviceNV = (PFNWGLDXCLOSEDEVICENVPROC)load("wglDXCloseDeviceNV");
+	glad_wglDXRegisterObjectNV = (PFNWGLDXREGISTEROBJECTNVPROC)load("wglDXRegisterObjectNV");
+	glad_wglDXUnregisterObjectNV = (PFNWGLDXUNREGISTEROBJECTNVPROC)load("wglDXUnregisterObjectNV");
+	glad_wglDXObjectAccessNV = (PFNWGLDXOBJECTACCESSNVPROC)load("wglDXObjectAccessNV");
+	glad_wglDXLockObjectsNV = (PFNWGLDXLOCKOBJECTSNVPROC)load("wglDXLockObjectsNV");
+	glad_wglDXUnlockObjectsNV = (PFNWGLDXUNLOCKOBJECTSNVPROC)load("wglDXUnlockObjectsNV");
 }
-static void load_WGL_3DL_stereo_control(LOADER load) {
-	wglSetStereoEmitterState3DL = (fp_wglSetStereoEmitterState3DL)load("wglSetStereoEmitterState3DL");
+static void load_WGL_3DL_stereo_control(GLADloadproc load) {
+	glad_wglSetStereoEmitterState3DL = (PFNWGLSETSTEREOEMITTERSTATE3DLPROC)load("wglSetStereoEmitterState3DL");
 }
-static void load_WGL_EXT_pbuffer(LOADER load) {
-	wglCreatePbufferEXT = (fp_wglCreatePbufferEXT)load("wglCreatePbufferEXT");
-	wglGetPbufferDCEXT = (fp_wglGetPbufferDCEXT)load("wglGetPbufferDCEXT");
-	wglReleasePbufferDCEXT = (fp_wglReleasePbufferDCEXT)load("wglReleasePbufferDCEXT");
-	wglDestroyPbufferEXT = (fp_wglDestroyPbufferEXT)load("wglDestroyPbufferEXT");
-	wglQueryPbufferEXT = (fp_wglQueryPbufferEXT)load("wglQueryPbufferEXT");
+static void load_WGL_EXT_pbuffer(GLADloadproc load) {
+	glad_wglCreatePbufferEXT = (PFNWGLCREATEPBUFFEREXTPROC)load("wglCreatePbufferEXT");
+	glad_wglGetPbufferDCEXT = (PFNWGLGETPBUFFERDCEXTPROC)load("wglGetPbufferDCEXT");
+	glad_wglReleasePbufferDCEXT = (PFNWGLRELEASEPBUFFERDCEXTPROC)load("wglReleasePbufferDCEXT");
+	glad_wglDestroyPbufferEXT = (PFNWGLDESTROYPBUFFEREXTPROC)load("wglDestroyPbufferEXT");
+	glad_wglQueryPbufferEXT = (PFNWGLQUERYPBUFFEREXTPROC)load("wglQueryPbufferEXT");
 }
-static void load_WGL_EXT_display_color_table(LOADER load) {
-	wglCreateDisplayColorTableEXT = (fp_wglCreateDisplayColorTableEXT)load("wglCreateDisplayColorTableEXT");
-	wglLoadDisplayColorTableEXT = (fp_wglLoadDisplayColorTableEXT)load("wglLoadDisplayColorTableEXT");
-	wglBindDisplayColorTableEXT = (fp_wglBindDisplayColorTableEXT)load("wglBindDisplayColorTableEXT");
-	wglDestroyDisplayColorTableEXT = (fp_wglDestroyDisplayColorTableEXT)load("wglDestroyDisplayColorTableEXT");
+static void load_WGL_EXT_display_color_table(GLADloadproc load) {
+	glad_wglCreateDisplayColorTableEXT = (PFNWGLCREATEDISPLAYCOLORTABLEEXTPROC)load("wglCreateDisplayColorTableEXT");
+	glad_wglLoadDisplayColorTableEXT = (PFNWGLLOADDISPLAYCOLORTABLEEXTPROC)load("wglLoadDisplayColorTableEXT");
+	glad_wglBindDisplayColorTableEXT = (PFNWGLBINDDISPLAYCOLORTABLEEXTPROC)load("wglBindDisplayColorTableEXT");
+	glad_wglDestroyDisplayColorTableEXT = (PFNWGLDESTROYDISPLAYCOLORTABLEEXTPROC)load("wglDestroyDisplayColorTableEXT");
 }
-static void load_WGL_NV_video_output(LOADER load) {
-	wglGetVideoDeviceNV = (fp_wglGetVideoDeviceNV)load("wglGetVideoDeviceNV");
-	wglReleaseVideoDeviceNV = (fp_wglReleaseVideoDeviceNV)load("wglReleaseVideoDeviceNV");
-	wglBindVideoImageNV = (fp_wglBindVideoImageNV)load("wglBindVideoImageNV");
-	wglReleaseVideoImageNV = (fp_wglReleaseVideoImageNV)load("wglReleaseVideoImageNV");
-	wglSendPbufferToVideoNV = (fp_wglSendPbufferToVideoNV)load("wglSendPbufferToVideoNV");
-	wglGetVideoInfoNV = (fp_wglGetVideoInfoNV)load("wglGetVideoInfoNV");
+static void load_WGL_NV_video_output(GLADloadproc load) {
+	glad_wglGetVideoDeviceNV = (PFNWGLGETVIDEODEVICENVPROC)load("wglGetVideoDeviceNV");
+	glad_wglReleaseVideoDeviceNV = (PFNWGLRELEASEVIDEODEVICENVPROC)load("wglReleaseVideoDeviceNV");
+	glad_wglBindVideoImageNV = (PFNWGLBINDVIDEOIMAGENVPROC)load("wglBindVideoImageNV");
+	glad_wglReleaseVideoImageNV = (PFNWGLRELEASEVIDEOIMAGENVPROC)load("wglReleaseVideoImageNV");
+	glad_wglSendPbufferToVideoNV = (PFNWGLSENDPBUFFERTOVIDEONVPROC)load("wglSendPbufferToVideoNV");
+	glad_wglGetVideoInfoNV = (PFNWGLGETVIDEOINFONVPROC)load("wglGetVideoInfoNV");
 }
-static void load_WGL_I3D_gamma(LOADER load) {
-	wglGetGammaTableParametersI3D = (fp_wglGetGammaTableParametersI3D)load("wglGetGammaTableParametersI3D");
-	wglSetGammaTableParametersI3D = (fp_wglSetGammaTableParametersI3D)load("wglSetGammaTableParametersI3D");
-	wglGetGammaTableI3D = (fp_wglGetGammaTableI3D)load("wglGetGammaTableI3D");
-	wglSetGammaTableI3D = (fp_wglSetGammaTableI3D)load("wglSetGammaTableI3D");
+static void load_WGL_I3D_gamma(GLADloadproc load) {
+	glad_wglGetGammaTableParametersI3D = (PFNWGLGETGAMMATABLEPARAMETERSI3DPROC)load("wglGetGammaTableParametersI3D");
+	glad_wglSetGammaTableParametersI3D = (PFNWGLSETGAMMATABLEPARAMETERSI3DPROC)load("wglSetGammaTableParametersI3D");
+	glad_wglGetGammaTableI3D = (PFNWGLGETGAMMATABLEI3DPROC)load("wglGetGammaTableI3D");
+	glad_wglSetGammaTableI3D = (PFNWGLSETGAMMATABLEI3DPROC)load("wglSetGammaTableI3D");
 }
-static void load_WGL_NV_copy_image(LOADER load) {
-	wglCopyImageSubDataNV = (fp_wglCopyImageSubDataNV)load("wglCopyImageSubDataNV");
+static void load_WGL_NV_copy_image(GLADloadproc load) {
+	glad_wglCopyImageSubDataNV = (PFNWGLCOPYIMAGESUBDATANVPROC)load("wglCopyImageSubDataNV");
 }
-static void load_WGL_NV_present_video(LOADER load) {
-	wglEnumerateVideoDevicesNV = (fp_wglEnumerateVideoDevicesNV)load("wglEnumerateVideoDevicesNV");
-	wglBindVideoDeviceNV = (fp_wglBindVideoDeviceNV)load("wglBindVideoDeviceNV");
-	wglQueryCurrentContextNV = (fp_wglQueryCurrentContextNV)load("wglQueryCurrentContextNV");
+static void load_WGL_NV_present_video(GLADloadproc load) {
+	glad_wglEnumerateVideoDevicesNV = (PFNWGLENUMERATEVIDEODEVICESNVPROC)load("wglEnumerateVideoDevicesNV");
+	glad_wglBindVideoDeviceNV = (PFNWGLBINDVIDEODEVICENVPROC)load("wglBindVideoDeviceNV");
+	glad_wglQueryCurrentContextNV = (PFNWGLQUERYCURRENTCONTEXTNVPROC)load("wglQueryCurrentContextNV");
 }
-static void load_WGL_ARB_make_current_read(LOADER load) {
-	wglMakeContextCurrentARB = (fp_wglMakeContextCurrentARB)load("wglMakeContextCurrentARB");
-	wglGetCurrentReadDCARB = (fp_wglGetCurrentReadDCARB)load("wglGetCurrentReadDCARB");
+static void load_WGL_ARB_make_current_read(GLADloadproc load) {
+	glad_wglMakeContextCurrentARB = (PFNWGLMAKECONTEXTCURRENTARBPROC)load("wglMakeContextCurrentARB");
+	glad_wglGetCurrentReadDCARB = (PFNWGLGETCURRENTREADDCARBPROC)load("wglGetCurrentReadDCARB");
 }
-static void load_WGL_EXT_extensions_string(LOADER load) {
-	wglGetExtensionsStringEXT = (fp_wglGetExtensionsStringEXT)load("wglGetExtensionsStringEXT");
+static void load_WGL_EXT_extensions_string(GLADloadproc load) {
+	glad_wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)load("wglGetExtensionsStringEXT");
 }
-static void load_WGL_EXT_swap_control(LOADER load) {
-	wglSwapIntervalEXT = (fp_wglSwapIntervalEXT)load("wglSwapIntervalEXT");
-	wglGetSwapIntervalEXT = (fp_wglGetSwapIntervalEXT)load("wglGetSwapIntervalEXT");
+static void load_WGL_EXT_swap_control(GLADloadproc load) {
+	glad_wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)load("wglSwapIntervalEXT");
+	glad_wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)load("wglGetSwapIntervalEXT");
 }
-static void load_WGL_I3D_digital_video_control(LOADER load) {
-	wglGetDigitalVideoParametersI3D = (fp_wglGetDigitalVideoParametersI3D)load("wglGetDigitalVideoParametersI3D");
-	wglSetDigitalVideoParametersI3D = (fp_wglSetDigitalVideoParametersI3D)load("wglSetDigitalVideoParametersI3D");
+static void load_WGL_I3D_digital_video_control(GLADloadproc load) {
+	glad_wglGetDigitalVideoParametersI3D = (PFNWGLGETDIGITALVIDEOPARAMETERSI3DPROC)load("wglGetDigitalVideoParametersI3D");
+	glad_wglSetDigitalVideoParametersI3D = (PFNWGLSETDIGITALVIDEOPARAMETERSI3DPROC)load("wglSetDigitalVideoParametersI3D");
 }
-static void load_WGL_ARB_pbuffer(LOADER load) {
-	wglCreatePbufferARB = (fp_wglCreatePbufferARB)load("wglCreatePbufferARB");
-	wglGetPbufferDCARB = (fp_wglGetPbufferDCARB)load("wglGetPbufferDCARB");
-	wglReleasePbufferDCARB = (fp_wglReleasePbufferDCARB)load("wglReleasePbufferDCARB");
-	wglDestroyPbufferARB = (fp_wglDestroyPbufferARB)load("wglDestroyPbufferARB");
-	wglQueryPbufferARB = (fp_wglQueryPbufferARB)load("wglQueryPbufferARB");
+static void load_WGL_ARB_pbuffer(GLADloadproc load) {
+	glad_wglCreatePbufferARB = (PFNWGLCREATEPBUFFERARBPROC)load("wglCreatePbufferARB");
+	glad_wglGetPbufferDCARB = (PFNWGLGETPBUFFERDCARBPROC)load("wglGetPbufferDCARB");
+	glad_wglReleasePbufferDCARB = (PFNWGLRELEASEPBUFFERDCARBPROC)load("wglReleasePbufferDCARB");
+	glad_wglDestroyPbufferARB = (PFNWGLDESTROYPBUFFERARBPROC)load("wglDestroyPbufferARB");
+	glad_wglQueryPbufferARB = (PFNWGLQUERYPBUFFERARBPROC)load("wglQueryPbufferARB");
 }
-static void load_WGL_NV_vertex_array_range(LOADER load) {
-	wglAllocateMemoryNV = (fp_wglAllocateMemoryNV)load("wglAllocateMemoryNV");
-	wglFreeMemoryNV = (fp_wglFreeMemoryNV)load("wglFreeMemoryNV");
+static void load_WGL_NV_vertex_array_range(GLADloadproc load) {
+	glad_wglAllocateMemoryNV = (PFNWGLALLOCATEMEMORYNVPROC)load("wglAllocateMemoryNV");
+	glad_wglFreeMemoryNV = (PFNWGLFREEMEMORYNVPROC)load("wglFreeMemoryNV");
 }
-static void load_WGL_AMD_gpu_association(LOADER load) {
-	wglGetGPUIDsAMD = (fp_wglGetGPUIDsAMD)load("wglGetGPUIDsAMD");
-	wglGetGPUInfoAMD = (fp_wglGetGPUInfoAMD)load("wglGetGPUInfoAMD");
-	wglGetContextGPUIDAMD = (fp_wglGetContextGPUIDAMD)load("wglGetContextGPUIDAMD");
-	wglCreateAssociatedContextAMD = (fp_wglCreateAssociatedContextAMD)load("wglCreateAssociatedContextAMD");
-	wglCreateAssociatedContextAttribsAMD = (fp_wglCreateAssociatedContextAttribsAMD)load("wglCreateAssociatedContextAttribsAMD");
-	wglDeleteAssociatedContextAMD = (fp_wglDeleteAssociatedContextAMD)load("wglDeleteAssociatedContextAMD");
-	wglMakeAssociatedContextCurrentAMD = (fp_wglMakeAssociatedContextCurrentAMD)load("wglMakeAssociatedContextCurrentAMD");
-	wglGetCurrentAssociatedContextAMD = (fp_wglGetCurrentAssociatedContextAMD)load("wglGetCurrentAssociatedContextAMD");
-	wglBlitContextFramebufferAMD = (fp_wglBlitContextFramebufferAMD)load("wglBlitContextFramebufferAMD");
+static void load_WGL_AMD_gpu_association(GLADloadproc load) {
+	glad_wglGetGPUIDsAMD = (PFNWGLGETGPUIDSAMDPROC)load("wglGetGPUIDsAMD");
+	glad_wglGetGPUInfoAMD = (PFNWGLGETGPUINFOAMDPROC)load("wglGetGPUInfoAMD");
+	glad_wglGetContextGPUIDAMD = (PFNWGLGETCONTEXTGPUIDAMDPROC)load("wglGetContextGPUIDAMD");
+	glad_wglCreateAssociatedContextAMD = (PFNWGLCREATEASSOCIATEDCONTEXTAMDPROC)load("wglCreateAssociatedContextAMD");
+	glad_wglCreateAssociatedContextAttribsAMD = (PFNWGLCREATEASSOCIATEDCONTEXTATTRIBSAMDPROC)load("wglCreateAssociatedContextAttribsAMD");
+	glad_wglDeleteAssociatedContextAMD = (PFNWGLDELETEASSOCIATEDCONTEXTAMDPROC)load("wglDeleteAssociatedContextAMD");
+	glad_wglMakeAssociatedContextCurrentAMD = (PFNWGLMAKEASSOCIATEDCONTEXTCURRENTAMDPROC)load("wglMakeAssociatedContextCurrentAMD");
+	glad_wglGetCurrentAssociatedContextAMD = (PFNWGLGETCURRENTASSOCIATEDCONTEXTAMDPROC)load("wglGetCurrentAssociatedContextAMD");
+	glad_wglBlitContextFramebufferAMD = (PFNWGLBLITCONTEXTFRAMEBUFFERAMDPROC)load("wglBlitContextFramebufferAMD");
 }
-static void load_WGL_EXT_make_current_read(LOADER load) {
-	wglMakeContextCurrentEXT = (fp_wglMakeContextCurrentEXT)load("wglMakeContextCurrentEXT");
-	wglGetCurrentReadDCEXT = (fp_wglGetCurrentReadDCEXT)load("wglGetCurrentReadDCEXT");
+static void load_WGL_EXT_make_current_read(GLADloadproc load) {
+	glad_wglMakeContextCurrentEXT = (PFNWGLMAKECONTEXTCURRENTEXTPROC)load("wglMakeContextCurrentEXT");
+	glad_wglGetCurrentReadDCEXT = (PFNWGLGETCURRENTREADDCEXTPROC)load("wglGetCurrentReadDCEXT");
 }
-static void load_WGL_I3D_swap_frame_lock(LOADER load) {
-	wglEnableFrameLockI3D = (fp_wglEnableFrameLockI3D)load("wglEnableFrameLockI3D");
-	wglDisableFrameLockI3D = (fp_wglDisableFrameLockI3D)load("wglDisableFrameLockI3D");
-	wglIsEnabledFrameLockI3D = (fp_wglIsEnabledFrameLockI3D)load("wglIsEnabledFrameLockI3D");
-	wglQueryFrameLockMasterI3D = (fp_wglQueryFrameLockMasterI3D)load("wglQueryFrameLockMasterI3D");
+static void load_WGL_I3D_swap_frame_lock(GLADloadproc load) {
+	glad_wglEnableFrameLockI3D = (PFNWGLENABLEFRAMELOCKI3DPROC)load("wglEnableFrameLockI3D");
+	glad_wglDisableFrameLockI3D = (PFNWGLDISABLEFRAMELOCKI3DPROC)load("wglDisableFrameLockI3D");
+	glad_wglIsEnabledFrameLockI3D = (PFNWGLISENABLEDFRAMELOCKI3DPROC)load("wglIsEnabledFrameLockI3D");
+	glad_wglQueryFrameLockMasterI3D = (PFNWGLQUERYFRAMELOCKMASTERI3DPROC)load("wglQueryFrameLockMasterI3D");
 }
-static void load_WGL_ARB_buffer_region(LOADER load) {
-	wglCreateBufferRegionARB = (fp_wglCreateBufferRegionARB)load("wglCreateBufferRegionARB");
-	wglDeleteBufferRegionARB = (fp_wglDeleteBufferRegionARB)load("wglDeleteBufferRegionARB");
-	wglSaveBufferRegionARB = (fp_wglSaveBufferRegionARB)load("wglSaveBufferRegionARB");
-	wglRestoreBufferRegionARB = (fp_wglRestoreBufferRegionARB)load("wglRestoreBufferRegionARB");
+static void load_WGL_ARB_buffer_region(GLADloadproc load) {
+	glad_wglCreateBufferRegionARB = (PFNWGLCREATEBUFFERREGIONARBPROC)load("wglCreateBufferRegionARB");
+	glad_wglDeleteBufferRegionARB = (PFNWGLDELETEBUFFERREGIONARBPROC)load("wglDeleteBufferRegionARB");
+	glad_wglSaveBufferRegionARB = (PFNWGLSAVEBUFFERREGIONARBPROC)load("wglSaveBufferRegionARB");
+	glad_wglRestoreBufferRegionARB = (PFNWGLRESTOREBUFFERREGIONARBPROC)load("wglRestoreBufferRegionARB");
 }
 static void find_extensionsWGL(void) {
 }
@@ -414,7 +414,7 @@ static void find_coreWGL(void) {
 	int minor = 9;
 }
 
-void gladLoadWGLLoader(LOADER load) {
+void gladLoadWGLLoader(GLADloadproc load) {
 	find_coreWGL();
 
 	find_extensionsWGL();

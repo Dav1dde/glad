@@ -8,137 +8,137 @@ void gladLoadEGL(void) {
 static int has_ext(const char *ext) {
     return 1;
 }
-fp_eglLockSurfaceKHR gladeglLockSurfaceKHR;
-fp_eglUnlockSurfaceKHR gladeglUnlockSurfaceKHR;
-fp_eglQueryStreamTimeKHR gladeglQueryStreamTimeKHR;
-fp_eglQueryNativeDisplayNV gladeglQueryNativeDisplayNV;
-fp_eglQueryNativeWindowNV gladeglQueryNativeWindowNV;
-fp_eglQueryNativePixmapNV gladeglQueryNativePixmapNV;
-fp_eglCreateDRMImageMESA gladeglCreateDRMImageMESA;
-fp_eglExportDRMImageMESA gladeglExportDRMImageMESA;
-fp_eglCreateStreamProducerSurfaceKHR gladeglCreateStreamProducerSurfaceKHR;
-fp_eglStreamConsumerGLTextureExternalKHR gladeglStreamConsumerGLTextureExternalKHR;
-fp_eglStreamConsumerAcquireKHR gladeglStreamConsumerAcquireKHR;
-fp_eglStreamConsumerReleaseKHR gladeglStreamConsumerReleaseKHR;
-fp_eglCreateStreamSyncNV gladeglCreateStreamSyncNV;
-fp_eglSwapBuffersWithDamageEXT gladeglSwapBuffersWithDamageEXT;
-fp_eglPostSubBufferNV gladeglPostSubBufferNV;
-fp_eglGetSystemTimeFrequencyNV gladeglGetSystemTimeFrequencyNV;
-fp_eglGetSystemTimeNV gladeglGetSystemTimeNV;
-fp_eglCreateFenceSyncNV gladeglCreateFenceSyncNV;
-fp_eglDestroySyncNV gladeglDestroySyncNV;
-fp_eglFenceNV gladeglFenceNV;
-fp_eglClientWaitSyncNV gladeglClientWaitSyncNV;
-fp_eglSignalSyncNV gladeglSignalSyncNV;
-fp_eglGetSyncAttribNV gladeglGetSyncAttribNV;
-fp_eglWaitSyncKHR gladeglWaitSyncKHR;
-fp_eglDupNativeFenceFDANDROID gladeglDupNativeFenceFDANDROID;
-fp_eglCreatePixmapSurfaceHI gladeglCreatePixmapSurfaceHI;
-fp_eglCreateStreamKHR gladeglCreateStreamKHR;
-fp_eglDestroyStreamKHR gladeglDestroyStreamKHR;
-fp_eglStreamAttribKHR gladeglStreamAttribKHR;
-fp_eglQueryStreamKHR gladeglQueryStreamKHR;
-fp_eglQueryStreamu64KHR gladeglQueryStreamu64KHR;
-fp_eglCreateImageKHR gladeglCreateImageKHR;
-fp_eglDestroyImageKHR gladeglDestroyImageKHR;
-fp_eglQuerySurfacePointerANGLE gladeglQuerySurfacePointerANGLE;
-fp_eglCreateSyncKHR gladeglCreateSyncKHR;
-fp_eglDestroySyncKHR gladeglDestroySyncKHR;
-fp_eglClientWaitSyncKHR gladeglClientWaitSyncKHR;
-fp_eglSignalSyncKHR gladeglSignalSyncKHR;
-fp_eglGetSyncAttribKHR gladeglGetSyncAttribKHR;
-fp_eglGetStreamFileDescriptorKHR gladeglGetStreamFileDescriptorKHR;
-fp_eglCreateStreamFromFileDescriptorKHR gladeglCreateStreamFromFileDescriptorKHR;
-fp_eglGetPlatformDisplayEXT gladeglGetPlatformDisplayEXT;
-fp_eglCreatePlatformWindowSurfaceEXT gladeglCreatePlatformWindowSurfaceEXT;
-fp_eglCreatePlatformPixmapSurfaceEXT gladeglCreatePlatformPixmapSurfaceEXT;
-fp_eglSetBlobCacheFuncsANDROID gladeglSetBlobCacheFuncsANDROID;
-static void load_EGL_KHR_lock_surface(LOADER load) {
-	eglLockSurfaceKHR = (fp_eglLockSurfaceKHR)load("eglLockSurfaceKHR");
-	eglUnlockSurfaceKHR = (fp_eglUnlockSurfaceKHR)load("eglUnlockSurfaceKHR");
+PFNEGLLOCKSURFACEKHRPROC glad_eglLockSurfaceKHR;
+PFNEGLUNLOCKSURFACEKHRPROC glad_eglUnlockSurfaceKHR;
+PFNEGLQUERYSTREAMTIMEKHRPROC glad_eglQueryStreamTimeKHR;
+PFNEGLQUERYNATIVEDISPLAYNVPROC glad_eglQueryNativeDisplayNV;
+PFNEGLQUERYNATIVEWINDOWNVPROC glad_eglQueryNativeWindowNV;
+PFNEGLQUERYNATIVEPIXMAPNVPROC glad_eglQueryNativePixmapNV;
+PFNEGLCREATEDRMIMAGEMESAPROC glad_eglCreateDRMImageMESA;
+PFNEGLEXPORTDRMIMAGEMESAPROC glad_eglExportDRMImageMESA;
+PFNEGLCREATESTREAMPRODUCERSURFACEKHRPROC glad_eglCreateStreamProducerSurfaceKHR;
+PFNEGLSTREAMCONSUMERGLTEXTUREEXTERNALKHRPROC glad_eglStreamConsumerGLTextureExternalKHR;
+PFNEGLSTREAMCONSUMERACQUIREKHRPROC glad_eglStreamConsumerAcquireKHR;
+PFNEGLSTREAMCONSUMERRELEASEKHRPROC glad_eglStreamConsumerReleaseKHR;
+PFNEGLCREATESTREAMSYNCNVPROC glad_eglCreateStreamSyncNV;
+PFNEGLSWAPBUFFERSWITHDAMAGEEXTPROC glad_eglSwapBuffersWithDamageEXT;
+PFNEGLPOSTSUBBUFFERNVPROC glad_eglPostSubBufferNV;
+PFNEGLGETSYSTEMTIMEFREQUENCYNVPROC glad_eglGetSystemTimeFrequencyNV;
+PFNEGLGETSYSTEMTIMENVPROC glad_eglGetSystemTimeNV;
+PFNEGLCREATEFENCESYNCNVPROC glad_eglCreateFenceSyncNV;
+PFNEGLDESTROYSYNCNVPROC glad_eglDestroySyncNV;
+PFNEGLFENCENVPROC glad_eglFenceNV;
+PFNEGLCLIENTWAITSYNCNVPROC glad_eglClientWaitSyncNV;
+PFNEGLSIGNALSYNCNVPROC glad_eglSignalSyncNV;
+PFNEGLGETSYNCATTRIBNVPROC glad_eglGetSyncAttribNV;
+PFNEGLWAITSYNCKHRPROC glad_eglWaitSyncKHR;
+PFNEGLDUPNATIVEFENCEFDANDROIDPROC glad_eglDupNativeFenceFDANDROID;
+PFNEGLCREATEPIXMAPSURFACEHIPROC glad_eglCreatePixmapSurfaceHI;
+PFNEGLCREATESTREAMKHRPROC glad_eglCreateStreamKHR;
+PFNEGLDESTROYSTREAMKHRPROC glad_eglDestroyStreamKHR;
+PFNEGLSTREAMATTRIBKHRPROC glad_eglStreamAttribKHR;
+PFNEGLQUERYSTREAMKHRPROC glad_eglQueryStreamKHR;
+PFNEGLQUERYSTREAMU64KHRPROC glad_eglQueryStreamu64KHR;
+PFNEGLCREATEIMAGEKHRPROC glad_eglCreateImageKHR;
+PFNEGLDESTROYIMAGEKHRPROC glad_eglDestroyImageKHR;
+PFNEGLQUERYSURFACEPOINTERANGLEPROC glad_eglQuerySurfacePointerANGLE;
+PFNEGLCREATESYNCKHRPROC glad_eglCreateSyncKHR;
+PFNEGLDESTROYSYNCKHRPROC glad_eglDestroySyncKHR;
+PFNEGLCLIENTWAITSYNCKHRPROC glad_eglClientWaitSyncKHR;
+PFNEGLSIGNALSYNCKHRPROC glad_eglSignalSyncKHR;
+PFNEGLGETSYNCATTRIBKHRPROC glad_eglGetSyncAttribKHR;
+PFNEGLGETSTREAMFILEDESCRIPTORKHRPROC glad_eglGetStreamFileDescriptorKHR;
+PFNEGLCREATESTREAMFROMFILEDESCRIPTORKHRPROC glad_eglCreateStreamFromFileDescriptorKHR;
+PFNEGLGETPLATFORMDISPLAYEXTPROC glad_eglGetPlatformDisplayEXT;
+PFNEGLCREATEPLATFORMWINDOWSURFACEEXTPROC glad_eglCreatePlatformWindowSurfaceEXT;
+PFNEGLCREATEPLATFORMPIXMAPSURFACEEXTPROC glad_eglCreatePlatformPixmapSurfaceEXT;
+PFNEGLSETBLOBCACHEFUNCSANDROIDPROC glad_eglSetBlobCacheFuncsANDROID;
+static void load_EGL_KHR_lock_surface(GLADloadproc load) {
+	glad_eglLockSurfaceKHR = (PFNEGLLOCKSURFACEKHRPROC)load("eglLockSurfaceKHR");
+	glad_eglUnlockSurfaceKHR = (PFNEGLUNLOCKSURFACEKHRPROC)load("eglUnlockSurfaceKHR");
 }
-static void load_EGL_KHR_stream_fifo(LOADER load) {
-	eglQueryStreamTimeKHR = (fp_eglQueryStreamTimeKHR)load("eglQueryStreamTimeKHR");
+static void load_EGL_KHR_stream_fifo(GLADloadproc load) {
+	glad_eglQueryStreamTimeKHR = (PFNEGLQUERYSTREAMTIMEKHRPROC)load("eglQueryStreamTimeKHR");
 }
-static void load_EGL_NV_native_query(LOADER load) {
-	eglQueryNativeDisplayNV = (fp_eglQueryNativeDisplayNV)load("eglQueryNativeDisplayNV");
-	eglQueryNativeWindowNV = (fp_eglQueryNativeWindowNV)load("eglQueryNativeWindowNV");
-	eglQueryNativePixmapNV = (fp_eglQueryNativePixmapNV)load("eglQueryNativePixmapNV");
+static void load_EGL_NV_native_query(GLADloadproc load) {
+	glad_eglQueryNativeDisplayNV = (PFNEGLQUERYNATIVEDISPLAYNVPROC)load("eglQueryNativeDisplayNV");
+	glad_eglQueryNativeWindowNV = (PFNEGLQUERYNATIVEWINDOWNVPROC)load("eglQueryNativeWindowNV");
+	glad_eglQueryNativePixmapNV = (PFNEGLQUERYNATIVEPIXMAPNVPROC)load("eglQueryNativePixmapNV");
 }
-static void load_EGL_MESA_drm_image(LOADER load) {
-	eglCreateDRMImageMESA = (fp_eglCreateDRMImageMESA)load("eglCreateDRMImageMESA");
-	eglExportDRMImageMESA = (fp_eglExportDRMImageMESA)load("eglExportDRMImageMESA");
+static void load_EGL_MESA_drm_image(GLADloadproc load) {
+	glad_eglCreateDRMImageMESA = (PFNEGLCREATEDRMIMAGEMESAPROC)load("eglCreateDRMImageMESA");
+	glad_eglExportDRMImageMESA = (PFNEGLEXPORTDRMIMAGEMESAPROC)load("eglExportDRMImageMESA");
 }
-static void load_EGL_KHR_stream_producer_eglsurface(LOADER load) {
-	eglCreateStreamProducerSurfaceKHR = (fp_eglCreateStreamProducerSurfaceKHR)load("eglCreateStreamProducerSurfaceKHR");
+static void load_EGL_KHR_stream_producer_eglsurface(GLADloadproc load) {
+	glad_eglCreateStreamProducerSurfaceKHR = (PFNEGLCREATESTREAMPRODUCERSURFACEKHRPROC)load("eglCreateStreamProducerSurfaceKHR");
 }
-static void load_EGL_KHR_stream_consumer_gltexture(LOADER load) {
-	eglStreamConsumerGLTextureExternalKHR = (fp_eglStreamConsumerGLTextureExternalKHR)load("eglStreamConsumerGLTextureExternalKHR");
-	eglStreamConsumerAcquireKHR = (fp_eglStreamConsumerAcquireKHR)load("eglStreamConsumerAcquireKHR");
-	eglStreamConsumerReleaseKHR = (fp_eglStreamConsumerReleaseKHR)load("eglStreamConsumerReleaseKHR");
+static void load_EGL_KHR_stream_consumer_gltexture(GLADloadproc load) {
+	glad_eglStreamConsumerGLTextureExternalKHR = (PFNEGLSTREAMCONSUMERGLTEXTUREEXTERNALKHRPROC)load("eglStreamConsumerGLTextureExternalKHR");
+	glad_eglStreamConsumerAcquireKHR = (PFNEGLSTREAMCONSUMERACQUIREKHRPROC)load("eglStreamConsumerAcquireKHR");
+	glad_eglStreamConsumerReleaseKHR = (PFNEGLSTREAMCONSUMERRELEASEKHRPROC)load("eglStreamConsumerReleaseKHR");
 }
-static void load_EGL_NV_stream_sync(LOADER load) {
-	eglCreateStreamSyncNV = (fp_eglCreateStreamSyncNV)load("eglCreateStreamSyncNV");
+static void load_EGL_NV_stream_sync(GLADloadproc load) {
+	glad_eglCreateStreamSyncNV = (PFNEGLCREATESTREAMSYNCNVPROC)load("eglCreateStreamSyncNV");
 }
-static void load_EGL_EXT_swap_buffers_with_damage(LOADER load) {
-	eglSwapBuffersWithDamageEXT = (fp_eglSwapBuffersWithDamageEXT)load("eglSwapBuffersWithDamageEXT");
+static void load_EGL_EXT_swap_buffers_with_damage(GLADloadproc load) {
+	glad_eglSwapBuffersWithDamageEXT = (PFNEGLSWAPBUFFERSWITHDAMAGEEXTPROC)load("eglSwapBuffersWithDamageEXT");
 }
-static void load_EGL_NV_post_sub_buffer(LOADER load) {
-	eglPostSubBufferNV = (fp_eglPostSubBufferNV)load("eglPostSubBufferNV");
+static void load_EGL_NV_post_sub_buffer(GLADloadproc load) {
+	glad_eglPostSubBufferNV = (PFNEGLPOSTSUBBUFFERNVPROC)load("eglPostSubBufferNV");
 }
-static void load_EGL_NV_system_time(LOADER load) {
-	eglGetSystemTimeFrequencyNV = (fp_eglGetSystemTimeFrequencyNV)load("eglGetSystemTimeFrequencyNV");
-	eglGetSystemTimeNV = (fp_eglGetSystemTimeNV)load("eglGetSystemTimeNV");
+static void load_EGL_NV_system_time(GLADloadproc load) {
+	glad_eglGetSystemTimeFrequencyNV = (PFNEGLGETSYSTEMTIMEFREQUENCYNVPROC)load("eglGetSystemTimeFrequencyNV");
+	glad_eglGetSystemTimeNV = (PFNEGLGETSYSTEMTIMENVPROC)load("eglGetSystemTimeNV");
 }
-static void load_EGL_NV_sync(LOADER load) {
-	eglCreateFenceSyncNV = (fp_eglCreateFenceSyncNV)load("eglCreateFenceSyncNV");
-	eglDestroySyncNV = (fp_eglDestroySyncNV)load("eglDestroySyncNV");
-	eglFenceNV = (fp_eglFenceNV)load("eglFenceNV");
-	eglClientWaitSyncNV = (fp_eglClientWaitSyncNV)load("eglClientWaitSyncNV");
-	eglSignalSyncNV = (fp_eglSignalSyncNV)load("eglSignalSyncNV");
-	eglGetSyncAttribNV = (fp_eglGetSyncAttribNV)load("eglGetSyncAttribNV");
+static void load_EGL_NV_sync(GLADloadproc load) {
+	glad_eglCreateFenceSyncNV = (PFNEGLCREATEFENCESYNCNVPROC)load("eglCreateFenceSyncNV");
+	glad_eglDestroySyncNV = (PFNEGLDESTROYSYNCNVPROC)load("eglDestroySyncNV");
+	glad_eglFenceNV = (PFNEGLFENCENVPROC)load("eglFenceNV");
+	glad_eglClientWaitSyncNV = (PFNEGLCLIENTWAITSYNCNVPROC)load("eglClientWaitSyncNV");
+	glad_eglSignalSyncNV = (PFNEGLSIGNALSYNCNVPROC)load("eglSignalSyncNV");
+	glad_eglGetSyncAttribNV = (PFNEGLGETSYNCATTRIBNVPROC)load("eglGetSyncAttribNV");
 }
-static void load_EGL_KHR_wait_sync(LOADER load) {
-	eglWaitSyncKHR = (fp_eglWaitSyncKHR)load("eglWaitSyncKHR");
+static void load_EGL_KHR_wait_sync(GLADloadproc load) {
+	glad_eglWaitSyncKHR = (PFNEGLWAITSYNCKHRPROC)load("eglWaitSyncKHR");
 }
-static void load_EGL_ANDROID_native_fence_sync(LOADER load) {
-	eglDupNativeFenceFDANDROID = (fp_eglDupNativeFenceFDANDROID)load("eglDupNativeFenceFDANDROID");
+static void load_EGL_ANDROID_native_fence_sync(GLADloadproc load) {
+	glad_eglDupNativeFenceFDANDROID = (PFNEGLDUPNATIVEFENCEFDANDROIDPROC)load("eglDupNativeFenceFDANDROID");
 }
-static void load_EGL_HI_clientpixmap(LOADER load) {
-	eglCreatePixmapSurfaceHI = (fp_eglCreatePixmapSurfaceHI)load("eglCreatePixmapSurfaceHI");
+static void load_EGL_HI_clientpixmap(GLADloadproc load) {
+	glad_eglCreatePixmapSurfaceHI = (PFNEGLCREATEPIXMAPSURFACEHIPROC)load("eglCreatePixmapSurfaceHI");
 }
-static void load_EGL_KHR_stream(LOADER load) {
-	eglCreateStreamKHR = (fp_eglCreateStreamKHR)load("eglCreateStreamKHR");
-	eglDestroyStreamKHR = (fp_eglDestroyStreamKHR)load("eglDestroyStreamKHR");
-	eglStreamAttribKHR = (fp_eglStreamAttribKHR)load("eglStreamAttribKHR");
-	eglQueryStreamKHR = (fp_eglQueryStreamKHR)load("eglQueryStreamKHR");
-	eglQueryStreamu64KHR = (fp_eglQueryStreamu64KHR)load("eglQueryStreamu64KHR");
+static void load_EGL_KHR_stream(GLADloadproc load) {
+	glad_eglCreateStreamKHR = (PFNEGLCREATESTREAMKHRPROC)load("eglCreateStreamKHR");
+	glad_eglDestroyStreamKHR = (PFNEGLDESTROYSTREAMKHRPROC)load("eglDestroyStreamKHR");
+	glad_eglStreamAttribKHR = (PFNEGLSTREAMATTRIBKHRPROC)load("eglStreamAttribKHR");
+	glad_eglQueryStreamKHR = (PFNEGLQUERYSTREAMKHRPROC)load("eglQueryStreamKHR");
+	glad_eglQueryStreamu64KHR = (PFNEGLQUERYSTREAMU64KHRPROC)load("eglQueryStreamu64KHR");
 }
-static void load_EGL_KHR_image(LOADER load) {
-	eglCreateImageKHR = (fp_eglCreateImageKHR)load("eglCreateImageKHR");
-	eglDestroyImageKHR = (fp_eglDestroyImageKHR)load("eglDestroyImageKHR");
+static void load_EGL_KHR_image(GLADloadproc load) {
+	glad_eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)load("eglCreateImageKHR");
+	glad_eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)load("eglDestroyImageKHR");
 }
-static void load_EGL_ANGLE_query_surface_pointer(LOADER load) {
-	eglQuerySurfacePointerANGLE = (fp_eglQuerySurfacePointerANGLE)load("eglQuerySurfacePointerANGLE");
+static void load_EGL_ANGLE_query_surface_pointer(GLADloadproc load) {
+	glad_eglQuerySurfacePointerANGLE = (PFNEGLQUERYSURFACEPOINTERANGLEPROC)load("eglQuerySurfacePointerANGLE");
 }
-static void load_EGL_KHR_reusable_sync(LOADER load) {
-	eglCreateSyncKHR = (fp_eglCreateSyncKHR)load("eglCreateSyncKHR");
-	eglDestroySyncKHR = (fp_eglDestroySyncKHR)load("eglDestroySyncKHR");
-	eglClientWaitSyncKHR = (fp_eglClientWaitSyncKHR)load("eglClientWaitSyncKHR");
-	eglSignalSyncKHR = (fp_eglSignalSyncKHR)load("eglSignalSyncKHR");
-	eglGetSyncAttribKHR = (fp_eglGetSyncAttribKHR)load("eglGetSyncAttribKHR");
+static void load_EGL_KHR_reusable_sync(GLADloadproc load) {
+	glad_eglCreateSyncKHR = (PFNEGLCREATESYNCKHRPROC)load("eglCreateSyncKHR");
+	glad_eglDestroySyncKHR = (PFNEGLDESTROYSYNCKHRPROC)load("eglDestroySyncKHR");
+	glad_eglClientWaitSyncKHR = (PFNEGLCLIENTWAITSYNCKHRPROC)load("eglClientWaitSyncKHR");
+	glad_eglSignalSyncKHR = (PFNEGLSIGNALSYNCKHRPROC)load("eglSignalSyncKHR");
+	glad_eglGetSyncAttribKHR = (PFNEGLGETSYNCATTRIBKHRPROC)load("eglGetSyncAttribKHR");
 }
-static void load_EGL_KHR_stream_cross_process_fd(LOADER load) {
-	eglGetStreamFileDescriptorKHR = (fp_eglGetStreamFileDescriptorKHR)load("eglGetStreamFileDescriptorKHR");
-	eglCreateStreamFromFileDescriptorKHR = (fp_eglCreateStreamFromFileDescriptorKHR)load("eglCreateStreamFromFileDescriptorKHR");
+static void load_EGL_KHR_stream_cross_process_fd(GLADloadproc load) {
+	glad_eglGetStreamFileDescriptorKHR = (PFNEGLGETSTREAMFILEDESCRIPTORKHRPROC)load("eglGetStreamFileDescriptorKHR");
+	glad_eglCreateStreamFromFileDescriptorKHR = (PFNEGLCREATESTREAMFROMFILEDESCRIPTORKHRPROC)load("eglCreateStreamFromFileDescriptorKHR");
 }
-static void load_EGL_EXT_platform_base(LOADER load) {
-	eglGetPlatformDisplayEXT = (fp_eglGetPlatformDisplayEXT)load("eglGetPlatformDisplayEXT");
-	eglCreatePlatformWindowSurfaceEXT = (fp_eglCreatePlatformWindowSurfaceEXT)load("eglCreatePlatformWindowSurfaceEXT");
-	eglCreatePlatformPixmapSurfaceEXT = (fp_eglCreatePlatformPixmapSurfaceEXT)load("eglCreatePlatformPixmapSurfaceEXT");
+static void load_EGL_EXT_platform_base(GLADloadproc load) {
+	glad_eglGetPlatformDisplayEXT = (PFNEGLGETPLATFORMDISPLAYEXTPROC)load("eglGetPlatformDisplayEXT");
+	glad_eglCreatePlatformWindowSurfaceEXT = (PFNEGLCREATEPLATFORMWINDOWSURFACEEXTPROC)load("eglCreatePlatformWindowSurfaceEXT");
+	glad_eglCreatePlatformPixmapSurfaceEXT = (PFNEGLCREATEPLATFORMPIXMAPSURFACEEXTPROC)load("eglCreatePlatformPixmapSurfaceEXT");
 }
-static void load_EGL_ANDROID_blob_cache(LOADER load) {
-	eglSetBlobCacheFuncsANDROID = (fp_eglSetBlobCacheFuncsANDROID)load("eglSetBlobCacheFuncsANDROID");
+static void load_EGL_ANDROID_blob_cache(GLADloadproc load) {
+	glad_eglSetBlobCacheFuncsANDROID = (PFNEGLSETBLOBCACHEFUNCSANDROIDPROC)load("eglSetBlobCacheFuncsANDROID");
 }
 static void find_extensionsEGL(void) {
 }
@@ -146,7 +146,7 @@ static void find_extensionsEGL(void) {
 static void find_coreEGL(void) {
 }
 
-void gladLoadEGLLoader(LOADER load) {
+void gladLoadEGLLoader(GLADloadproc load) {
 	find_coreEGL();
 
 	find_extensionsEGL();
