@@ -15,8 +15,14 @@ int gladLoadGL(void) {
 '''
 
 _OPENGL_HAS_EXT = '''
+#if defined(GL_ES_VERSION_3_0) || defined(GL_VERSION_3_0)
+#define _GLAD_IS_SOME_NEW_VERSION 1
+#endif
+
 static int has_ext(const char *ext) {
+#ifdef _GLAD_IS_SOME_NEW_VERSION
     if(GLVersion.major < 3) {
+#endif
         const char *extensions;
         const char *loc;
         const char *terminator;
@@ -38,6 +44,7 @@ static int has_ext(const char *ext) {
             }
             extensions = terminator;
         }
+#ifdef _GLAD_IS_SOME_NEW_VERSION
     } else {
         int num;
         glGetIntegerv(GL_NUM_EXTENSIONS, &num);
@@ -50,6 +57,7 @@ static int has_ext(const char *ext) {
             }
         }
     }
+#endif
 
     return 0;
 }
