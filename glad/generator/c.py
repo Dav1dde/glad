@@ -42,7 +42,7 @@ class CGenerator(Generator):
             for feature in features[api]:
                 f.write('static void load_{}(GLADloadproc load) {{\n'
                         .format(feature.name))
-                if self.spec.NAME == 'gl':
+                if self.spec.NAME in ('gl','glx','wgl'):
                     f.write('\tif(!GLAD_{}) return;\n'.format(feature.name))
                 for func in feature.functions:
                     f.write('\tglad_{0} = (PFN{1}PROC)load("{0}");\n'
@@ -55,7 +55,7 @@ class CGenerator(Generator):
 
                 f.write('static void load_{}(GLADloadproc load) {{\n'
                     .format(ext.name))
-                if self.spec.NAME == 'gl':
+                if self.spec.NAME in ('gl','glx','wgl'):
                     f.write('\tif(!GLAD_{}) return;\n'.format(ext.name))
                 if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
                 if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
@@ -72,23 +72,34 @@ class CGenerator(Generator):
                 written.add(ext.name)
 
             f.write('static void find_extensions{}(void) {{\n'.format(api.upper()))
-            if self.spec.NAME == 'gl':
+            if self.spec.NAME in ('gl','glx','wgl'):
                 for ext in extensions[api]:
                     f.write('\tGLAD_{0} = has_ext("{0}");\n'.format(ext.name))
             f.write('}\n\n')
 
-            f.write('static void find_core{}(void) {{\n'.format(api.upper()))
+            if api == 'glx':
+                f.write('static void find_core{}(Display *dpy, int screen) {{\n'.format(api.upper()))
+            else:
+                f.write('static void find_core{}(void) {{\n'.format(api.upper()))
+
             self.loader.write_find_core(f)
-            if self.spec.NAME == 'gl':
+            if self.spec.NAME in ('gl','glx','wgl'):
                 for feature in features[api]:
                     f.write('\tGLAD_{} = (major == {num[0]} && minor >= {num[1]}) ||'
                         ' major > {num[0]};\n'.format(feature.name, num=feature.number))
             f.write('}\n\n')
 
-            f.write('void gladLoad{}Loader(GLADloadproc load) {{\n'.format(api.upper()))
+            if api == 'glx':
+                f.write('void gladLoad{}Loader(GLADloadproc load, Display *dpy, int screen) {{\n'.format(api.upper()))
+            else:
+                f.write('void gladLoad{}Loader(GLADloadproc load) {{\n'.format(api.upper()))
 
             self.loader.write_begin_load(f)
-            f.write('\tfind_core{}();\n'.format(api.upper()))
+
+            if api == 'glx':
+                f.write('\tfind_core{}(dpy, screen);\n'.format(api.upper()))
+            else:
+                f.write('\tfind_core{}();\n'.format(api.upper()))
 
             for feature in features[api]:
                 f.write('\tload_{}(load);\n'.format(feature.name))
@@ -107,7 +118,10 @@ class CGenerator(Generator):
         self.loader.write_header(f)
 
         for api in self.api:
-            f.write('void gladLoad{}Loader(GLADloadproc);\n'.format(api.upper()))
+            if api == 'glx':
+                f.write('void gladLoad{}Loader(GLADloadproc, Display *dpy, int screen);\n'.format(api.upper()))
+            else:
+                f.write('void gladLoad{}Loader(GLADloadproc);\n'.format(api.upper()))
 
         for type in types:
             if not self.spec.NAME in ('egl',) and 'khronos' in type.raw:
@@ -133,7 +147,7 @@ class CGenerator(Generator):
         self.loader.write(f, self.api.keys())
         self.loader.write_has_ext(f)
 
-        if self.spec.NAME == 'gl':
+        if self.spec.NAME in ('gl','glx','wgl'):
             for feature in features:
                 f.write('int GLAD_{};\n'.format(feature.name))
 
@@ -149,7 +163,7 @@ class CGenerator(Generator):
         self.write_functions(f, write, written, extensions)
 
         f = self._f_c
-        if self.spec.NAME == 'gl':
+        if self.spec.NAME in ('gl','glx','wgl'):
             for ext in extensions:
                 f.write('int GLAD_{};\n'.format(ext.name))
 
@@ -170,7 +184,7 @@ class CGenerator(Generator):
 
         for ext in extensions:
             f.write('#ifndef {0}\n#define {0} 1\n'.format(ext.name))
-            if self.spec.NAME == 'gl':
+            if self.spec.NAME in ('gl','glx','wgl'):
                 f.write('extern int GLAD_{};\n'.format(ext.name))
             if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
             if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
