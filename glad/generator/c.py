@@ -125,17 +125,16 @@ class CGenerator(Generator):
 
         for api in self.api:
             if api == 'glx':
-                f.write('void gladLoad{}Loader(GLADloadproc, Display *dpy, int screen);\n'.format(api.upper()))
+                f.write('void gladLoad{}Loader(GLADloadproc, Display *dpy, int screen);\n\n'.format(api.upper()))
             elif api == 'wgl':
-                f.write('void gladLoad{}Loader(GLADloadproc, HDC hdc);\n'.format(api.upper()))
+                f.write('void gladLoad{}Loader(GLADloadproc, HDC hdc);\n\n'.format(api.upper()))
             else:
-                f.write('void gladLoad{}Loader(GLADloadproc);\n'.format(api.upper()))
+                f.write('void gladLoad{}Loader(GLADloadproc);\n\n'.format(api.upper()))
 
         for type in types:
             if not self.spec.NAME in ('egl',) and 'khronos' in type.raw:
                 continue
-            f.write(type.raw.lstrip().replace('        ', ''))
-            f.write('\n')
+            f.write((type.raw + '\n').lstrip().replace('        ', ' '))
 
     def generate_features(self, features):
         f = self._f_h
