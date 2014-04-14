@@ -51,7 +51,7 @@ static int has_ext(const char *ext) {
         int num;
         glGetIntegerv(GL_NUM_EXTENSIONS, &num);
 
-        unsigned int index;
+        int index;
         for(index = 0; index < num; index++) {
             const char *e = (const char*)glGetStringi(GL_EXTENSIONS, index);
             if(strcmp(e, ext) == 0) {

@@ -6,7 +6,7 @@ LOAD_OPENGL_DLL = '''
 #include <windows.h>
 static HMODULE libGL;
 
-typedef void* (*PFNWGLGETPROCADDRESSPROC)(const char*);
+typedef void* (APIENTRYP PFNWGLGETPROCADDRESSPROC)(const GLubyte*);
 PFNWGLGETPROCADDRESSPROC gladGetProcAddressPtr;
 
 %(pre)s
@@ -33,7 +33,7 @@ void %(terminate)s(void) {
 static void* libGL;
 
 #ifndef __APPLE__
-typedef void* (*PFNGLXGETPROCADDRESSPROC)(const char*);
+typedef void* (APIENTRYP PFNGLXGETPROCADDRESSPROC)(const GLubyte*);
 PFNGLXGETPROCADDRESSPROC gladGetProcAddressPtr;
 #endif
 
@@ -50,13 +50,13 @@ int %(init)s(void) {
     static const char *NAMES[] = {"libGL.so.1", "libGL.so"};
 #endif
 
-    int index = 0;
+    unsigned int index = 0;
     for(index = 0; index < (sizeof(NAMES) / sizeof(NAMES[0])); index++) {
         libGL = dlopen(NAMES[index], RTLD_NOW | RTLD_GLOBAL);
 
         if(libGL != NULL) {
 #ifdef __APPLE__
-        return 1;
+            return 1;
 #else
             gladGetProcAddressPtr = (PFNGLXGETPROCADDRESSPROC)dlsym(libGL,
                 "glXGetProcAddressARB");
@@ -82,9 +82,11 @@ void* %(proc)s(const char *namez) {
     void* result = NULL;
     if(libGL == NULL) return NULL;
 
+#ifndef __APPLE__
     if(gladGetProcAddressPtr != NULL) {
-        result = gladGetProcAddressPtr(namez);
+        result = gladGetProcAddressPtr((const GLubyte*)namez);
     }
+#endif
     if(result == NULL) {
 #ifdef _WIN32
         result = (void*)GetProcAddress(libGL, namez);

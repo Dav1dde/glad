@@ -63,7 +63,10 @@ class CGenerator(Generator):
                     # even if they were in written we need to load it
                     f.write('\tglad_{0} = (PFN{1}PROC)load("{0}");\n'
                         .format(func.proto.name, func.proto.name.upper()))
-                if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'): f.write('#endif\n')
+                if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'):
+                    f.write('#else\n')
+                    f.write('\t(void)load;\n')
+                    f.write('#endif\n')
                 f.write('}\n')
 
                 written.add(ext.name)
