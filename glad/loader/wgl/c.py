@@ -16,10 +16,13 @@ int gladLoadWGL(HDC hdc) {
 '''
 
 _WGL_HEADER = '''
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
+#ifndef WINAPI
+# ifndef WIN32_LEAN_AND_MEAN
+#  define WIN32_LEAN_AND_MEAN 1
+# endif
+# include <windows.h>
 #endif
-#include <windows.h>
+
 #include <glad/glad.h>
 
 #ifndef __glad_wglext_h_
