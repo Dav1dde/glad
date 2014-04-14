@@ -30,13 +30,6 @@ _GLX_HEADER = '''
 #define __glad_glxext_h_
 #define __glxext_h_
 
-#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-#include <windows.h>
-#endif
-
 #ifndef APIENTRY
 #define APIENTRY
 #endif
@@ -110,7 +103,7 @@ class GLXCLoader(BaseLoader):
 
     def write_begin_load(self, fobj):
         fobj.write('\tglXQueryVersion = (PFNGLXQUERYVERSIONPROC)load("glXQueryVersion");\n')
-        fobj.write('\tif(glXQueryVersion == NULL) return;')
+        fobj.write('\tif(glXQueryVersion == NULL) return;\n')
 
     def write_find_core(self, fobj):
         fobj.write('\tint major = 0, minor = 0;\n')

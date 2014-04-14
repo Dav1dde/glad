@@ -79,6 +79,8 @@ class CGenerator(Generator):
 
             if api == 'glx':
                 f.write('static void find_core{}(Display *dpy, int screen) {{\n'.format(api.upper()))
+            elif api == 'wgl':
+                f.write('static void find_core{}(HDC hdc) {{\n'.format(api.upper()))
             else:
                 f.write('static void find_core{}(void) {{\n'.format(api.upper()))
 
@@ -91,6 +93,8 @@ class CGenerator(Generator):
 
             if api == 'glx':
                 f.write('void gladLoad{}Loader(GLADloadproc load, Display *dpy, int screen) {{\n'.format(api.upper()))
+            elif api == 'wgl':
+                f.write('void gladLoad{}Loader(GLADloadproc load, HDC hdc) {{\n'.format(api.upper()))
             else:
                 f.write('void gladLoad{}Loader(GLADloadproc load) {{\n'.format(api.upper()))
 
@@ -98,6 +102,8 @@ class CGenerator(Generator):
 
             if api == 'glx':
                 f.write('\tfind_core{}(dpy, screen);\n'.format(api.upper()))
+            elif api == 'wgl':
+                f.write('\tfind_core{}(hdc);\n'.format(api.upper()))
             else:
                 f.write('\tfind_core{}();\n'.format(api.upper()))
 
@@ -120,6 +126,8 @@ class CGenerator(Generator):
         for api in self.api:
             if api == 'glx':
                 f.write('void gladLoad{}Loader(GLADloadproc, Display *dpy, int screen);\n'.format(api.upper()))
+            elif api == 'wgl':
+                f.write('void gladLoad{}Loader(GLADloadproc, HDC hdc);\n'.format(api.upper()))
             else:
                 f.write('void gladLoad{}Loader(GLADloadproc);\n'.format(api.upper()))
 
