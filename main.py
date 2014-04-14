@@ -1,3 +1,5 @@
+#!/usr/bin/env python2
+
 '''Uses the offcial Khronos-XML specs to generate a
 GL/GLES/EGL/GLX/WGL Loader made for your needs. Glad currently supports
 the languages C, D and Volt.'''
