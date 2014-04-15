@@ -125,11 +125,11 @@ class CGenerator(Generator):
 
         for api in self.api:
             if api == 'glx':
-                f.write('void gladLoad{}Loader(GLADloadproc, Display *dpy, int screen);\n\n'.format(api.upper()))
+                f.write('GLAPI void gladLoad{}Loader(GLADloadproc, Display *dpy, int screen);\n\n'.format(api.upper()))
             elif api == 'wgl':
-                f.write('void gladLoad{}Loader(GLADloadproc, HDC hdc);\n\n'.format(api.upper()))
+                f.write('GLAPI void gladLoad{}Loader(GLADloadproc, HDC hdc);\n\n'.format(api.upper()))
             else:
-                f.write('void gladLoad{}Loader(GLADloadproc);\n\n'.format(api.upper()))
+                f.write('GLAPI void gladLoad{}Loader(GLADloadproc);\n\n'.format(api.upper()))
 
         for type in types:
             if not self.spec.NAME in ('egl',) and 'khronos' in type.raw:
@@ -192,7 +192,7 @@ class CGenerator(Generator):
         for ext in extensions:
             f.write('#ifndef {0}\n#define {0} 1\n'.format(ext.name))
             if self.spec.NAME in ('gl','glx','wgl'):
-                f.write('extern int GLAD_{};\n'.format(ext.name))
+                f.write('GLAPI int GLAD_{};\n'.format(ext.name))
             if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
             if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
             for func in ext.functions:

@@ -1,5 +1,5 @@
 from glad.loader import BaseLoader
-from glad.loader.c import LOAD_OPENGL_DLL, LOAD_OPENGL_DLL_H
+from glad.loader.c import LOAD_OPENGL_DLL, LOAD_OPENGL_DLL_H, LOAD_OPENGL_GLAPI_H
 
 _WGL_LOADER = \
     LOAD_OPENGL_DLL % {'pre':'static', 'init':'open_gl',
@@ -40,19 +40,16 @@ _WGL_HEADER = '''
 #ifndef APIENTRYP
 #define APIENTRYP APIENTRY *
 #endif
-#ifndef GLAPI
-#define GLAPI extern
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 typedef void* (* GLADloadproc)(const char *name);
-'''
+''' + LOAD_OPENGL_GLAPI_H
 
 _WGL_HEADER_LOADER = '''
-int gladLoadWGL(HDC hdc);
+GLAPI int gladLoadWGL(HDC hdc);
 ''' + LOAD_OPENGL_DLL_H
 
 _WGL_HEADER_END = '''
