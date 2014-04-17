@@ -1,5 +1,5 @@
 from glad.loader import BaseLoader
-from glad.loader.c import LOAD_OPENGL_DLL, LOAD_OPENGL_DLL_H
+from glad.loader.c import LOAD_OPENGL_DLL, LOAD_OPENGL_DLL_H, LOAD_OPENGL_GLAPI_H
 
 _OPENGL_LOADER = \
     LOAD_OPENGL_DLL % {'pre':'static', 'init':'open_gl',
@@ -51,7 +51,7 @@ static int has_ext(const char *ext) {
         int num;
         glGetIntegerv(GL_NUM_EXTENSIONS, &num);
 
-        unsigned int index;
+        int index;
         for(index = 0; index < num; index++) {
             const char *e = (const char*)glGetStringi(GL_EXTENSIONS, index);
             if(strcmp(e, ext) == 0) {
@@ -88,9 +88,6 @@ _OPENGL_HEADER = '''
 #ifndef APIENTRYP
 #define APIENTRYP APIENTRY *
 #endif
-#ifndef GLAPI
-#define GLAPI extern
-#endif
 
 extern struct gladGLversionStruct {
     int major;
@@ -102,10 +99,10 @@ extern "C" {
 #endif
 
 typedef void* (* GLADloadproc)(const char *name);
-'''
+''' + LOAD_OPENGL_GLAPI_H
 
 _OPENGL_HEADER_LOADER = '''
-int gladLoadGL(void);
+GLAPI int gladLoadGL(void);
 ''' + LOAD_OPENGL_DLL_H
 
 _OPENGL_HEADER_END = '''

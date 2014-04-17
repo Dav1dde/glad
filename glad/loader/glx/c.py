@@ -1,12 +1,12 @@
 from glad.loader import BaseLoader
-from glad.loader.c import LOAD_OPENGL_DLL, LOAD_OPENGL_DLL_H
+from glad.loader.c import LOAD_OPENGL_DLL, LOAD_OPENGL_DLL_H, LOAD_OPENGL_GLAPI_H
 
 _GLX_LOADER = \
     LOAD_OPENGL_DLL % {'pre':'static', 'init':'open_gl',
                        'proc':'get_proc', 'terminate':'close_gl'} + '''
-int gladLoadGLX(void) {
+int gladLoadGLX(Display *dpy, int screen) {
     if(open_gl()) {
-        gladLoadGLXLoader((GLADloadproc)get_proc);
+        gladLoadGLXLoader((GLADloadproc)get_proc, dpy, screen);
         close_gl();
         return 1;
     }
@@ -30,21 +30,11 @@ _GLX_HEADER = '''
 #define __glad_glxext_h_
 #define __glxext_h_
 
-#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-#include <windows.h>
-#endif
-
 #ifndef APIENTRY
 #define APIENTRY
 #endif
 #ifndef APIENTRYP
 #define APIENTRYP APIENTRY *
-#endif
-#ifndef GLAPI
-#define GLAPI extern
 #endif
 
 #ifdef __cplusplus
@@ -52,11 +42,10 @@ extern "C" {
 #endif
 
 typedef void* (* GLADloadproc)(const char *name);
-void gladLoadGLXLoader(GLADloadproc);
-'''
+''' + LOAD_OPENGL_GLAPI_H
 
 _GLX_HEADER_LOADER = '''
-int gladLoadGLX(void);
+GLAPI int gladLoadGLX(Display *dpy, int screen);
 ''' + LOAD_OPENGL_DLL_H
 
 _GLX_HEADER_END = '''
@@ -68,6 +57,39 @@ _GLX_HEADER_END = '''
 '''
 
 _GLX_HAS_EXT = '''
+static Display *GLADGLXDisplay = 0;
+static int GLADGLXscreen = 0;
+
+static int has_ext(const char *ext) {
+    const char *terminator;
+    const char *loc;
+    const char *extensions;
+
+    if(!GLAD_GLX_VERSION_1_1)
+        return 0;
+
+    extensions = glXQueryExtensionsString(GLADGLXDisplay, GLADGLXscreen);
+
+    if(extensions == NULL || ext == NULL)
+        return 0;
+
+    while(1) {
+        loc = strstr(extensions, ext);
+        if(loc == NULL)
+            break;
+
+        terminator = loc + strlen(ext);
+        if((loc == extensions || *(loc - 1) == ' ') &&
+            (*terminator == ' ' || *terminator == '\\0'))
+        {
+            return 1;
+        }
+        extensions = terminator;
+    }
+
+    return 0;
+}
+
 '''
 
 
@@ -77,10 +99,21 @@ class GLXCLoader(BaseLoader):
             fobj.write(_GLX_LOADER)
 
     def write_begin_load(self, fobj):
-        pass
+        fobj.write('\tglXQueryVersion = (PFNGLXQUERYVERSIONPROC)load("glXQueryVersion");\n')
+        fobj.write('\tif(glXQueryVersion == NULL) return;\n')
 
     def write_find_core(self, fobj):
-        pass
+        fobj.write('\tint major = 0, minor = 0;\n')
+        fobj.write('\tif(dpy == 0 && GLADGLXDisplay == 0) {\n')
+        fobj.write('\t\tdpy = XOpenDisplay(0);\n')
+        fobj.write('\t\tscreen = XScreenNumberOfScreen(XDefaultScreenOfDisplay(dpy));\n')
+        fobj.write('\t} else if(dpy == 0) {\n')
+        fobj.write('\t\tdpy = GLADGLXDisplay;\n')
+        fobj.write('\t\tscreen = GLADGLXscreen;\n')
+        fobj.write('\t}\n')
+        fobj.write('\tglXQueryVersion(dpy, &major, &minor);\n')
+        fobj.write('\tGLADGLXDisplay = dpy;\n')
+        fobj.write('\tGLADGLXscreen = screen;\n')
 
     def write_has_ext(self, fobj):
         fobj.write(_GLX_HAS_EXT)

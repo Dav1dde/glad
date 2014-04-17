@@ -120,6 +120,8 @@ class Spec(object):
 
 class Type(object):
     def __init__(self, element):
+        apientry = element.find('apientry')
+        if apientry != None: apientry.text = 'APIENTRY'
         self.raw = ''.join(element.itertext())
         self.api = element.get('api')
         self.name = element.get('name')
