@@ -2,7 +2,7 @@ from glad.loader import BaseLoader
 
 _EGL_LOADER = '''
 void gladLoadEGL(void) {
-    gladLoadEGLLoader((LOADER)eglGetProcAddress);
+    gladLoadEGLLoader((GLADloadproc)eglGetProcAddress);
 }
 '''
 
