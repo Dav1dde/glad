@@ -528,7 +528,7 @@ class BaseDGenerator(Generator):
         f = self._f_gl
 
         self.write_module(f, self.PACKAGE)
-        self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES], True)
+        self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES], False)
 
         for api, features in allfeatures.iteritems():
             extensions = allextensions[api]
