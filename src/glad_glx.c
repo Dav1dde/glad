@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 #include <glad/glad_glx.h>
 
@@ -7,14 +8,14 @@ static void* get_proc(const char *namez);
 #include <windows.h>
 static HMODULE libGL;
 
-typedef void* (*PFNWGLGETPROCADDRESSPROC)(const char*);
-PFNWGLGETPROCADDRESSPROC gladGetProcAddressPtr;
+typedef void* (APIENTRYP PFNWGLGETPROCADDRESSPROC_PRIVATE)(const char*);
+PFNWGLGETPROCADDRESSPROC_PRIVATE gladGetProcAddressPtr;
 
 static
 int open_gl(void) {
     libGL = LoadLibraryA("opengl32.dll");
     if(libGL != NULL) {
-        gladGetProcAddressPtr = (PFNWGLGETPROCADDRESSPROC)GetProcAddress(
+        gladGetProcAddressPtr = (PFNWGLGETPROCADDRESSPROC_PRIVATE)GetProcAddress(
                 libGL, "wglGetProcAddress");
         return gladGetProcAddressPtr != NULL;
     }
@@ -34,8 +35,8 @@ void close_gl(void) {
 static void* libGL;
 
 #ifndef __APPLE__
-typedef void* (*PFNGLXGETPROCADDRESSPROC)(const char*);
-PFNGLXGETPROCADDRESSPROC gladGetProcAddressPtr;
+typedef void* (APIENTRYP PFNGLXGETPROCADDRESSPROC_PRIVATE)(const char*);
+PFNGLXGETPROCADDRESSPROC_PRIVATE gladGetProcAddressPtr;
 #endif
 
 static
@@ -51,15 +52,15 @@ int open_gl(void) {
     static const char *NAMES[] = {"libGL.so.1", "libGL.so"};
 #endif
 
-    int index = 0;
+    unsigned int index = 0;
     for(index = 0; index < (sizeof(NAMES) / sizeof(NAMES[0])); index++) {
         libGL = dlopen(NAMES[index], RTLD_NOW | RTLD_GLOBAL);
 
         if(libGL != NULL) {
 #ifdef __APPLE__
-        return 1;
+            return 1;
 #else
-            gladGetProcAddressPtr = (PFNGLXGETPROCADDRESSPROC)dlsym(libGL,
+            gladGetProcAddressPtr = (PFNGLXGETPROCADDRESSPROC_PRIVATE)dlsym(libGL,
                 "glXGetProcAddressARB");
             return gladGetProcAddressPtr != NULL;
 #endif
@@ -83,9 +84,11 @@ void* get_proc(const char *namez) {
     void* result = NULL;
     if(libGL == NULL) return NULL;
 
+#ifndef __APPLE__
     if(gladGetProcAddressPtr != NULL) {
         result = gladGetProcAddressPtr(namez);
     }
+#endif
     if(result == NULL) {
 #ifdef _WIN32
         result = (void*)GetProcAddress(libGL, namez);
@@ -97,9 +100,9 @@ void* get_proc(const char *namez) {
     return result;
 }
 
-int gladLoadGLX(void) {
+int gladLoadGLX(Display *dpy, int screen) {
     if(open_gl()) {
-        gladLoadGLXLoader((GLADloadproc)get_proc);
+        gladLoadGLXLoader((GLADloadproc)get_proc, dpy, screen);
         close_gl();
         return 1;
     }
@@ -107,6 +110,44 @@ int gladLoadGLX(void) {
     return 0;
 }
 
+static Display *GLADGLXDisplay = 0;
+static int GLADGLXscreen = 0;
+
+static int has_ext(const char *ext) {
+    const char *terminator;
+    const char *loc;
+    const char *extensions;
+
+    if(!GLAD_GLX_VERSION_1_1)
+        return 0;
+
+    extensions = glXQueryExtensionsString(GLADGLXDisplay, GLADGLXscreen);
+
+    if(extensions == NULL || ext == NULL)
+        return 0;
+
+    while(1) {
+        loc = strstr(extensions, ext);
+        if(loc == NULL)
+            break;
+
+        terminator = loc + strlen(ext);
+        if((loc == extensions || *(loc - 1) == ' ') &&
+            (*terminator == ' ' || *terminator == '\0'))
+        {
+            return 1;
+        }
+        extensions = terminator;
+    }
+
+    return 0;
+}
+
+int GLAD_GLX_VERSION_1_0;
+int GLAD_GLX_VERSION_1_1;
+int GLAD_GLX_VERSION_1_2;
+int GLAD_GLX_VERSION_1_3;
+int GLAD_GLX_VERSION_1_4;
 PFNGLXGETSELECTEDEVENTPROC glad_glXGetSelectedEvent;
 PFNGLXQUERYEXTENSIONPROC glad_glXQueryExtension;
 PFNGLXMAKECURRENTPROC glad_glXMakeCurrent;
@@ -146,6 +187,61 @@ PFNGLXGETVISUALFROMFBCONFIGPROC glad_glXGetVisualFromFBConfig;
 PFNGLXQUERYDRAWABLEPROC glad_glXQueryDrawable;
 PFNGLXQUERYEXTENSIONSSTRINGPROC glad_glXQueryExtensionsString;
 PFNGLXGETCLIENTSTRINGPROC glad_glXGetClientString;
+int GLAD_GLX_ARB_framebuffer_sRGB;
+int GLAD_GLX_EXT_import_context;
+int GLAD_GLX_NV_multisample_coverage;
+int GLAD_GLX_SGIS_shared_multisample;
+int GLAD_GLX_SGIX_pbuffer;
+int GLAD_GLX_NV_swap_group;
+int GLAD_GLX_ARB_fbconfig_float;
+int GLAD_GLX_SGIX_hyperpipe;
+int GLAD_GLX_ARB_robustness_share_group_isolation;
+int GLAD_GLX_INTEL_swap_event;
+int GLAD_GLX_SGIX_video_resize;
+int GLAD_GLX_EXT_create_context_es2_profile;
+int GLAD_GLX_ARB_robustness_application_isolation;
+int GLAD_GLX_NV_copy_image;
+int GLAD_GLX_OML_sync_control;
+int GLAD_GLX_EXT_framebuffer_sRGB;
+int GLAD_GLX_SGI_make_current_read;
+int GLAD_GLX_SGI_swap_control;
+int GLAD_GLX_EXT_fbconfig_packed_float;
+int GLAD_GLX_EXT_buffer_age;
+int GLAD_GLX_3DFX_multisample;
+int GLAD_GLX_EXT_visual_info;
+int GLAD_GLX_SGI_video_sync;
+int GLAD_GLX_MESA_agp_offset;
+int GLAD_GLX_SGIS_multisample;
+int GLAD_GLX_MESA_set_3dfx_mode;
+int GLAD_GLX_EXT_texture_from_pixmap;
+int GLAD_GLX_NV_video_capture;
+int GLAD_GLX_ARB_multisample;
+int GLAD_GLX_SGIX_swap_group;
+int GLAD_GLX_EXT_swap_control;
+int GLAD_GLX_SGIX_video_source;
+int GLAD_GLX_ARB_create_context;
+int GLAD_GLX_EXT_create_context_es_profile;
+int GLAD_GLX_SGIX_fbconfig;
+int GLAD_GLX_MESA_pixmap_colormap;
+int GLAD_GLX_SGIX_visual_select_group;
+int GLAD_GLX_NV_video_output;
+int GLAD_GLX_SGIS_blended_overlay;
+int GLAD_GLX_SGIX_dmbuffer;
+int GLAD_GLX_ARB_create_context_robustness;
+int GLAD_GLX_SGIX_swap_barrier;
+int GLAD_GLX_EXT_swap_control_tear;
+int GLAD_GLX_MESA_release_buffers;
+int GLAD_GLX_EXT_visual_rating;
+int GLAD_GLX_MESA_copy_sub_buffer;
+int GLAD_GLX_SGI_cushion;
+int GLAD_GLX_NV_float_buffer;
+int GLAD_GLX_OML_swap_method;
+int GLAD_GLX_NV_present_video;
+int GLAD_GLX_SUN_get_transparent_index;
+int GLAD_GLX_AMD_gpu_association;
+int GLAD_GLX_ARB_create_context_profile;
+int GLAD_GLX_ARB_get_proc_address;
+int GLAD_GLX_ARB_vertex_buffer_object;
 PFNGLXGETCURRENTDISPLAYEXTPROC glad_glXGetCurrentDisplayEXT;
 PFNGLXQUERYCONTEXTINFOEXTPROC glad_glXQueryContextInfoEXT;
 PFNGLXGETCONTEXTIDEXTPROC glad_glXGetContextIDEXT;
@@ -228,6 +324,7 @@ PFNGLXBINDVIDEODEVICENVPROC glad_glXBindVideoDeviceNV;
 PFNGLXGETTRANSPARENTINDEXSUNPROC glad_glXGetTransparentIndexSUN;
 PFNGLXGETPROCADDRESSARBPROC glad_glXGetProcAddressARB;
 static void load_GLX_VERSION_1_0(GLADloadproc load) {
+	if(!GLAD_GLX_VERSION_1_0) return;
 	glad_glXChooseVisual = (PFNGLXCHOOSEVISUALPROC)load("glXChooseVisual");
 	glad_glXCreateContext = (PFNGLXCREATECONTEXTPROC)load("glXCreateContext");
 	glad_glXDestroyContext = (PFNGLXDESTROYCONTEXTPROC)load("glXDestroyContext");
@@ -247,14 +344,17 @@ static void load_GLX_VERSION_1_0(GLADloadproc load) {
 	glad_glXUseXFont = (PFNGLXUSEXFONTPROC)load("glXUseXFont");
 }
 static void load_GLX_VERSION_1_1(GLADloadproc load) {
+	if(!GLAD_GLX_VERSION_1_1) return;
 	glad_glXQueryExtensionsString = (PFNGLXQUERYEXTENSIONSSTRINGPROC)load("glXQueryExtensionsString");
 	glad_glXQueryServerString = (PFNGLXQUERYSERVERSTRINGPROC)load("glXQueryServerString");
 	glad_glXGetClientString = (PFNGLXGETCLIENTSTRINGPROC)load("glXGetClientString");
 }
 static void load_GLX_VERSION_1_2(GLADloadproc load) {
+	if(!GLAD_GLX_VERSION_1_2) return;
 	glad_glXGetCurrentDisplay = (PFNGLXGETCURRENTDISPLAYPROC)load("glXGetCurrentDisplay");
 }
 static void load_GLX_VERSION_1_3(GLADloadproc load) {
+	if(!GLAD_GLX_VERSION_1_3) return;
 	glad_glXGetFBConfigs = (PFNGLXGETFBCONFIGSPROC)load("glXGetFBConfigs");
 	glad_glXChooseFBConfig = (PFNGLXCHOOSEFBCONFIGPROC)load("glXChooseFBConfig");
 	glad_glXGetFBConfigAttrib = (PFNGLXGETFBCONFIGATTRIBPROC)load("glXGetFBConfigAttrib");
@@ -274,9 +374,11 @@ static void load_GLX_VERSION_1_3(GLADloadproc load) {
 	glad_glXGetSelectedEvent = (PFNGLXGETSELECTEDEVENTPROC)load("glXGetSelectedEvent");
 }
 static void load_GLX_VERSION_1_4(GLADloadproc load) {
+	if(!GLAD_GLX_VERSION_1_4) return;
 	glad_glXGetProcAddress = (PFNGLXGETPROCADDRESSPROC)load("glXGetProcAddress");
 }
 static void load_GLX_EXT_import_context(GLADloadproc load) {
+	if(!GLAD_GLX_EXT_import_context) return;
 	glad_glXGetCurrentDisplayEXT = (PFNGLXGETCURRENTDISPLAYEXTPROC)load("glXGetCurrentDisplayEXT");
 	glad_glXQueryContextInfoEXT = (PFNGLXQUERYCONTEXTINFOEXTPROC)load("glXQueryContextInfoEXT");
 	glad_glXGetContextIDEXT = (PFNGLXGETCONTEXTIDEXTPROC)load("glXGetContextIDEXT");
@@ -284,6 +386,7 @@ static void load_GLX_EXT_import_context(GLADloadproc load) {
 	glad_glXFreeContextEXT = (PFNGLXFREECONTEXTEXTPROC)load("glXFreeContextEXT");
 }
 static void load_GLX_SGIX_pbuffer(GLADloadproc load) {
+	if(!GLAD_GLX_SGIX_pbuffer) return;
 	glad_glXCreateGLXPbufferSGIX = (PFNGLXCREATEGLXPBUFFERSGIXPROC)load("glXCreateGLXPbufferSGIX");
 	glad_glXDestroyGLXPbufferSGIX = (PFNGLXDESTROYGLXPBUFFERSGIXPROC)load("glXDestroyGLXPbufferSGIX");
 	glad_glXQueryGLXPbufferSGIX = (PFNGLXQUERYGLXPBUFFERSGIXPROC)load("glXQueryGLXPbufferSGIX");
@@ -291,6 +394,7 @@ static void load_GLX_SGIX_pbuffer(GLADloadproc load) {
 	glad_glXGetSelectedEventSGIX = (PFNGLXGETSELECTEDEVENTSGIXPROC)load("glXGetSelectedEventSGIX");
 }
 static void load_GLX_NV_swap_group(GLADloadproc load) {
+	if(!GLAD_GLX_NV_swap_group) return;
 	glad_glXJoinSwapGroupNV = (PFNGLXJOINSWAPGROUPNVPROC)load("glXJoinSwapGroupNV");
 	glad_glXBindSwapBarrierNV = (PFNGLXBINDSWAPBARRIERNVPROC)load("glXBindSwapBarrierNV");
 	glad_glXQuerySwapGroupNV = (PFNGLXQUERYSWAPGROUPNVPROC)load("glXQuerySwapGroupNV");
@@ -299,6 +403,7 @@ static void load_GLX_NV_swap_group(GLADloadproc load) {
 	glad_glXResetFrameCountNV = (PFNGLXRESETFRAMECOUNTNVPROC)load("glXResetFrameCountNV");
 }
 static void load_GLX_SGIX_hyperpipe(GLADloadproc load) {
+	if(!GLAD_GLX_SGIX_hyperpipe) return;
 	glad_glXQueryHyperpipeNetworkSGIX = (PFNGLXQUERYHYPERPIPENETWORKSGIXPROC)load("glXQueryHyperpipeNetworkSGIX");
 	glad_glXHyperpipeConfigSGIX = (PFNGLXHYPERPIPECONFIGSGIXPROC)load("glXHyperpipeConfigSGIX");
 	glad_glXQueryHyperpipeConfigSGIX = (PFNGLXQUERYHYPERPIPECONFIGSGIXPROC)load("glXQueryHyperpipeConfigSGIX");
@@ -309,6 +414,7 @@ static void load_GLX_SGIX_hyperpipe(GLADloadproc load) {
 	glad_glXQueryHyperpipeAttribSGIX = (PFNGLXQUERYHYPERPIPEATTRIBSGIXPROC)load("glXQueryHyperpipeAttribSGIX");
 }
 static void load_GLX_SGIX_video_resize(GLADloadproc load) {
+	if(!GLAD_GLX_SGIX_video_resize) return;
 	glad_glXBindChannelToWindowSGIX = (PFNGLXBINDCHANNELTOWINDOWSGIXPROC)load("glXBindChannelToWindowSGIX");
 	glad_glXChannelRectSGIX = (PFNGLXCHANNELRECTSGIXPROC)load("glXChannelRectSGIX");
 	glad_glXQueryChannelRectSGIX = (PFNGLXQUERYCHANNELRECTSGIXPROC)load("glXQueryChannelRectSGIX");
@@ -316,9 +422,11 @@ static void load_GLX_SGIX_video_resize(GLADloadproc load) {
 	glad_glXChannelRectSyncSGIX = (PFNGLXCHANNELRECTSYNCSGIXPROC)load("glXChannelRectSyncSGIX");
 }
 static void load_GLX_NV_copy_image(GLADloadproc load) {
+	if(!GLAD_GLX_NV_copy_image) return;
 	glad_glXCopyImageSubDataNV = (PFNGLXCOPYIMAGESUBDATANVPROC)load("glXCopyImageSubDataNV");
 }
 static void load_GLX_OML_sync_control(GLADloadproc load) {
+	if(!GLAD_GLX_OML_sync_control) return;
 	glad_glXGetSyncValuesOML = (PFNGLXGETSYNCVALUESOMLPROC)load("glXGetSyncValuesOML");
 	glad_glXGetMscRateOML = (PFNGLXGETMSCRATEOMLPROC)load("glXGetMscRateOML");
 	glad_glXSwapBuffersMscOML = (PFNGLXSWAPBUFFERSMSCOMLPROC)load("glXSwapBuffersMscOML");
@@ -326,27 +434,34 @@ static void load_GLX_OML_sync_control(GLADloadproc load) {
 	glad_glXWaitForSbcOML = (PFNGLXWAITFORSBCOMLPROC)load("glXWaitForSbcOML");
 }
 static void load_GLX_SGI_make_current_read(GLADloadproc load) {
+	if(!GLAD_GLX_SGI_make_current_read) return;
 	glad_glXMakeCurrentReadSGI = (PFNGLXMAKECURRENTREADSGIPROC)load("glXMakeCurrentReadSGI");
 	glad_glXGetCurrentReadDrawableSGI = (PFNGLXGETCURRENTREADDRAWABLESGIPROC)load("glXGetCurrentReadDrawableSGI");
 }
 static void load_GLX_SGI_swap_control(GLADloadproc load) {
+	if(!GLAD_GLX_SGI_swap_control) return;
 	glad_glXSwapIntervalSGI = (PFNGLXSWAPINTERVALSGIPROC)load("glXSwapIntervalSGI");
 }
 static void load_GLX_SGI_video_sync(GLADloadproc load) {
+	if(!GLAD_GLX_SGI_video_sync) return;
 	glad_glXGetVideoSyncSGI = (PFNGLXGETVIDEOSYNCSGIPROC)load("glXGetVideoSyncSGI");
 	glad_glXWaitVideoSyncSGI = (PFNGLXWAITVIDEOSYNCSGIPROC)load("glXWaitVideoSyncSGI");
 }
 static void load_GLX_MESA_agp_offset(GLADloadproc load) {
+	if(!GLAD_GLX_MESA_agp_offset) return;
 	glad_glXGetAGPOffsetMESA = (PFNGLXGETAGPOFFSETMESAPROC)load("glXGetAGPOffsetMESA");
 }
 static void load_GLX_MESA_set_3dfx_mode(GLADloadproc load) {
+	if(!GLAD_GLX_MESA_set_3dfx_mode) return;
 	glad_glXSet3DfxModeMESA = (PFNGLXSET3DFXMODEMESAPROC)load("glXSet3DfxModeMESA");
 }
 static void load_GLX_EXT_texture_from_pixmap(GLADloadproc load) {
+	if(!GLAD_GLX_EXT_texture_from_pixmap) return;
 	glad_glXBindTexImageEXT = (PFNGLXBINDTEXIMAGEEXTPROC)load("glXBindTexImageEXT");
 	glad_glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)load("glXReleaseTexImageEXT");
 }
 static void load_GLX_NV_video_capture(GLADloadproc load) {
+	if(!GLAD_GLX_NV_video_capture) return;
 	glad_glXBindVideoCaptureDeviceNV = (PFNGLXBINDVIDEOCAPTUREDEVICENVPROC)load("glXBindVideoCaptureDeviceNV");
 	glad_glXEnumerateVideoCaptureDevicesNV = (PFNGLXENUMERATEVIDEOCAPTUREDEVICESNVPROC)load("glXEnumerateVideoCaptureDevicesNV");
 	glad_glXLockVideoCaptureDeviceNV = (PFNGLXLOCKVIDEOCAPTUREDEVICENVPROC)load("glXLockVideoCaptureDeviceNV");
@@ -354,21 +469,28 @@ static void load_GLX_NV_video_capture(GLADloadproc load) {
 	glad_glXReleaseVideoCaptureDeviceNV = (PFNGLXRELEASEVIDEOCAPTUREDEVICENVPROC)load("glXReleaseVideoCaptureDeviceNV");
 }
 static void load_GLX_SGIX_swap_group(GLADloadproc load) {
+	if(!GLAD_GLX_SGIX_swap_group) return;
 	glad_glXJoinSwapGroupSGIX = (PFNGLXJOINSWAPGROUPSGIXPROC)load("glXJoinSwapGroupSGIX");
 }
 static void load_GLX_EXT_swap_control(GLADloadproc load) {
+	if(!GLAD_GLX_EXT_swap_control) return;
 	glad_glXSwapIntervalEXT = (PFNGLXSWAPINTERVALEXTPROC)load("glXSwapIntervalEXT");
 }
 static void load_GLX_SGIX_video_source(GLADloadproc load) {
+	if(!GLAD_GLX_SGIX_video_source) return;
 #ifdef _VL_H_
 	glad_glXCreateGLXVideoSourceSGIX = (PFNGLXCREATEGLXVIDEOSOURCESGIXPROC)load("glXCreateGLXVideoSourceSGIX");
 	glad_glXDestroyGLXVideoSourceSGIX = (PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC)load("glXDestroyGLXVideoSourceSGIX");
+#else
+	(void)load;
 #endif
 }
 static void load_GLX_ARB_create_context(GLADloadproc load) {
+	if(!GLAD_GLX_ARB_create_context) return;
 	glad_glXCreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC)load("glXCreateContextAttribsARB");
 }
 static void load_GLX_SGIX_fbconfig(GLADloadproc load) {
+	if(!GLAD_GLX_SGIX_fbconfig) return;
 	glad_glXGetFBConfigAttribSGIX = (PFNGLXGETFBCONFIGATTRIBSGIXPROC)load("glXGetFBConfigAttribSGIX");
 	glad_glXChooseFBConfigSGIX = (PFNGLXCHOOSEFBCONFIGSGIXPROC)load("glXChooseFBConfigSGIX");
 	glad_glXCreateGLXPixmapWithConfigSGIX = (PFNGLXCREATEGLXPIXMAPWITHCONFIGSGIXPROC)load("glXCreateGLXPixmapWithConfigSGIX");
@@ -377,9 +499,11 @@ static void load_GLX_SGIX_fbconfig(GLADloadproc load) {
 	glad_glXGetFBConfigFromVisualSGIX = (PFNGLXGETFBCONFIGFROMVISUALSGIXPROC)load("glXGetFBConfigFromVisualSGIX");
 }
 static void load_GLX_MESA_pixmap_colormap(GLADloadproc load) {
+	if(!GLAD_GLX_MESA_pixmap_colormap) return;
 	glad_glXCreateGLXPixmapMESA = (PFNGLXCREATEGLXPIXMAPMESAPROC)load("glXCreateGLXPixmapMESA");
 }
 static void load_GLX_NV_video_output(GLADloadproc load) {
+	if(!GLAD_GLX_NV_video_output) return;
 	glad_glXGetVideoDeviceNV = (PFNGLXGETVIDEODEVICENVPROC)load("glXGetVideoDeviceNV");
 	glad_glXReleaseVideoDeviceNV = (PFNGLXRELEASEVIDEODEVICENVPROC)load("glXReleaseVideoDeviceNV");
 	glad_glXBindVideoImageNV = (PFNGLXBINDVIDEOIMAGENVPROC)load("glXBindVideoImageNV");
@@ -388,41 +512,124 @@ static void load_GLX_NV_video_output(GLADloadproc load) {
 	glad_glXGetVideoInfoNV = (PFNGLXGETVIDEOINFONVPROC)load("glXGetVideoInfoNV");
 }
 static void load_GLX_SGIX_dmbuffer(GLADloadproc load) {
+	if(!GLAD_GLX_SGIX_dmbuffer) return;
 #ifdef _DM_BUFFER_H_
 	glad_glXAssociateDMPbufferSGIX = (PFNGLXASSOCIATEDMPBUFFERSGIXPROC)load("glXAssociateDMPbufferSGIX");
+#else
+	(void)load;
 #endif
 }
 static void load_GLX_SGIX_swap_barrier(GLADloadproc load) {
+	if(!GLAD_GLX_SGIX_swap_barrier) return;
 	glad_glXBindSwapBarrierSGIX = (PFNGLXBINDSWAPBARRIERSGIXPROC)load("glXBindSwapBarrierSGIX");
 	glad_glXQueryMaxSwapBarriersSGIX = (PFNGLXQUERYMAXSWAPBARRIERSSGIXPROC)load("glXQueryMaxSwapBarriersSGIX");
 }
 static void load_GLX_MESA_release_buffers(GLADloadproc load) {
+	if(!GLAD_GLX_MESA_release_buffers) return;
 	glad_glXReleaseBuffersMESA = (PFNGLXRELEASEBUFFERSMESAPROC)load("glXReleaseBuffersMESA");
 }
 static void load_GLX_MESA_copy_sub_buffer(GLADloadproc load) {
+	if(!GLAD_GLX_MESA_copy_sub_buffer) return;
 	glad_glXCopySubBufferMESA = (PFNGLXCOPYSUBBUFFERMESAPROC)load("glXCopySubBufferMESA");
 }
 static void load_GLX_SGI_cushion(GLADloadproc load) {
+	if(!GLAD_GLX_SGI_cushion) return;
 	glad_glXCushionSGI = (PFNGLXCUSHIONSGIPROC)load("glXCushionSGI");
 }
 static void load_GLX_NV_present_video(GLADloadproc load) {
+	if(!GLAD_GLX_NV_present_video) return;
 	glad_glXEnumerateVideoDevicesNV = (PFNGLXENUMERATEVIDEODEVICESNVPROC)load("glXEnumerateVideoDevicesNV");
 	glad_glXBindVideoDeviceNV = (PFNGLXBINDVIDEODEVICENVPROC)load("glXBindVideoDeviceNV");
 }
 static void load_GLX_SUN_get_transparent_index(GLADloadproc load) {
+	if(!GLAD_GLX_SUN_get_transparent_index) return;
 	glad_glXGetTransparentIndexSUN = (PFNGLXGETTRANSPARENTINDEXSUNPROC)load("glXGetTransparentIndexSUN");
 }
 static void load_GLX_ARB_get_proc_address(GLADloadproc load) {
+	if(!GLAD_GLX_ARB_get_proc_address) return;
 	glad_glXGetProcAddressARB = (PFNGLXGETPROCADDRESSARBPROC)load("glXGetProcAddressARB");
 }
 static void find_extensionsGLX(void) {
+	GLAD_GLX_ARB_framebuffer_sRGB = has_ext("GLX_ARB_framebuffer_sRGB");
+	GLAD_GLX_EXT_import_context = has_ext("GLX_EXT_import_context");
+	GLAD_GLX_NV_multisample_coverage = has_ext("GLX_NV_multisample_coverage");
+	GLAD_GLX_SGIS_shared_multisample = has_ext("GLX_SGIS_shared_multisample");
+	GLAD_GLX_SGIX_pbuffer = has_ext("GLX_SGIX_pbuffer");
+	GLAD_GLX_NV_swap_group = has_ext("GLX_NV_swap_group");
+	GLAD_GLX_ARB_fbconfig_float = has_ext("GLX_ARB_fbconfig_float");
+	GLAD_GLX_SGIX_hyperpipe = has_ext("GLX_SGIX_hyperpipe");
+	GLAD_GLX_ARB_robustness_share_group_isolation = has_ext("GLX_ARB_robustness_share_group_isolation");
+	GLAD_GLX_INTEL_swap_event = has_ext("GLX_INTEL_swap_event");
+	GLAD_GLX_SGIX_video_resize = has_ext("GLX_SGIX_video_resize");
+	GLAD_GLX_EXT_create_context_es2_profile = has_ext("GLX_EXT_create_context_es2_profile");
+	GLAD_GLX_ARB_robustness_application_isolation = has_ext("GLX_ARB_robustness_application_isolation");
+	GLAD_GLX_NV_copy_image = has_ext("GLX_NV_copy_image");
+	GLAD_GLX_OML_sync_control = has_ext("GLX_OML_sync_control");
+	GLAD_GLX_EXT_framebuffer_sRGB = has_ext("GLX_EXT_framebuffer_sRGB");
+	GLAD_GLX_SGI_make_current_read = has_ext("GLX_SGI_make_current_read");
+	GLAD_GLX_SGI_swap_control = has_ext("GLX_SGI_swap_control");
+	GLAD_GLX_EXT_fbconfig_packed_float = has_ext("GLX_EXT_fbconfig_packed_float");
+	GLAD_GLX_EXT_buffer_age = has_ext("GLX_EXT_buffer_age");
+	GLAD_GLX_3DFX_multisample = has_ext("GLX_3DFX_multisample");
+	GLAD_GLX_EXT_visual_info = has_ext("GLX_EXT_visual_info");
+	GLAD_GLX_SGI_video_sync = has_ext("GLX_SGI_video_sync");
+	GLAD_GLX_MESA_agp_offset = has_ext("GLX_MESA_agp_offset");
+	GLAD_GLX_SGIS_multisample = has_ext("GLX_SGIS_multisample");
+	GLAD_GLX_MESA_set_3dfx_mode = has_ext("GLX_MESA_set_3dfx_mode");
+	GLAD_GLX_EXT_texture_from_pixmap = has_ext("GLX_EXT_texture_from_pixmap");
+	GLAD_GLX_NV_video_capture = has_ext("GLX_NV_video_capture");
+	GLAD_GLX_ARB_multisample = has_ext("GLX_ARB_multisample");
+	GLAD_GLX_SGIX_swap_group = has_ext("GLX_SGIX_swap_group");
+	GLAD_GLX_EXT_swap_control = has_ext("GLX_EXT_swap_control");
+	GLAD_GLX_SGIX_video_source = has_ext("GLX_SGIX_video_source");
+	GLAD_GLX_ARB_create_context = has_ext("GLX_ARB_create_context");
+	GLAD_GLX_EXT_create_context_es_profile = has_ext("GLX_EXT_create_context_es_profile");
+	GLAD_GLX_SGIX_fbconfig = has_ext("GLX_SGIX_fbconfig");
+	GLAD_GLX_MESA_pixmap_colormap = has_ext("GLX_MESA_pixmap_colormap");
+	GLAD_GLX_SGIX_visual_select_group = has_ext("GLX_SGIX_visual_select_group");
+	GLAD_GLX_NV_video_output = has_ext("GLX_NV_video_output");
+	GLAD_GLX_SGIS_blended_overlay = has_ext("GLX_SGIS_blended_overlay");
+	GLAD_GLX_SGIX_dmbuffer = has_ext("GLX_SGIX_dmbuffer");
+	GLAD_GLX_ARB_create_context_robustness = has_ext("GLX_ARB_create_context_robustness");
+	GLAD_GLX_SGIX_swap_barrier = has_ext("GLX_SGIX_swap_barrier");
+	GLAD_GLX_EXT_swap_control_tear = has_ext("GLX_EXT_swap_control_tear");
+	GLAD_GLX_MESA_release_buffers = has_ext("GLX_MESA_release_buffers");
+	GLAD_GLX_EXT_visual_rating = has_ext("GLX_EXT_visual_rating");
+	GLAD_GLX_MESA_copy_sub_buffer = has_ext("GLX_MESA_copy_sub_buffer");
+	GLAD_GLX_SGI_cushion = has_ext("GLX_SGI_cushion");
+	GLAD_GLX_NV_float_buffer = has_ext("GLX_NV_float_buffer");
+	GLAD_GLX_OML_swap_method = has_ext("GLX_OML_swap_method");
+	GLAD_GLX_NV_present_video = has_ext("GLX_NV_present_video");
+	GLAD_GLX_SUN_get_transparent_index = has_ext("GLX_SUN_get_transparent_index");
+	GLAD_GLX_AMD_gpu_association = has_ext("GLX_AMD_gpu_association");
+	GLAD_GLX_ARB_create_context_profile = has_ext("GLX_ARB_create_context_profile");
+	GLAD_GLX_ARB_get_proc_address = has_ext("GLX_ARB_get_proc_address");
+	GLAD_GLX_ARB_vertex_buffer_object = has_ext("GLX_ARB_vertex_buffer_object");
 }
 
-static void find_coreGLX(void) {
+static void find_coreGLX(Display *dpy, int screen) {
+	int major = 0, minor = 0;
+	if(dpy == 0 && GLADGLXDisplay == 0) {
+		dpy = XOpenDisplay(0);
+		screen = XScreenNumberOfScreen(XDefaultScreenOfDisplay(dpy));
+	} else if(dpy == 0) {
+		dpy = GLADGLXDisplay;
+		screen = GLADGLXscreen;
+	}
+	glXQueryVersion(dpy, &major, &minor);
+	GLADGLXDisplay = dpy;
+	GLADGLXscreen = screen;
+	GLAD_GLX_VERSION_1_0 = (major == 1 && minor >= 0) || major > 1;
+	GLAD_GLX_VERSION_1_1 = (major == 1 && minor >= 1) || major > 1;
+	GLAD_GLX_VERSION_1_2 = (major == 1 && minor >= 2) || major > 1;
+	GLAD_GLX_VERSION_1_3 = (major == 1 && minor >= 3) || major > 1;
+	GLAD_GLX_VERSION_1_4 = (major == 1 && minor >= 4) || major > 1;
 }
 
-void gladLoadGLXLoader(GLADloadproc load) {
-	find_coreGLX();
+void gladLoadGLXLoader(GLADloadproc load, Display *dpy, int screen) {
+	glXQueryVersion = (PFNGLXQUERYVERSIONPROC)load("glXQueryVersion");
+	if(glXQueryVersion == NULL) return;
+	find_coreGLX(dpy, screen);
 	load_GLX_VERSION_1_0(load);
 	load_GLX_VERSION_1_1(load);
 	load_GLX_VERSION_1_2(load);

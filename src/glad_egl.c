@@ -1,8 +1,9 @@
+#include <stdio.h>
 #include <string.h>
 #include <glad/glad_egl.h>
 
 void gladLoadEGL(void) {
-    gladLoadEGLLoader((LOADER)eglGetProcAddress);
+    gladLoadEGLLoader((GLADloadproc)eglGetProcAddress);
 }
 
 static int has_ext(const char *ext) {

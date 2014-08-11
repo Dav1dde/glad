@@ -33,20 +33,10 @@ typedef void* (* GLADloadproc)(const char *name);
 void gladLoadEGLLoader(GLADloadproc);
 
 void gladLoadEGL(void);
-void gladLoadEGLLoader(GLADloadproc);
+GLAPI void gladLoadEGLLoader(GLADloadproc);
+
 #include <KHR/khrplatform.h>
 #include <EGL/eglplatform.h>
-
-
-
-
-
-
-
-
-
-
-
 typedef unsigned int EGLBoolean;
 typedef unsigned int EGLenum;
 typedef void *EGLConfig;

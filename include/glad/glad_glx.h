@@ -13,21 +13,11 @@
 #define __glad_glxext_h_
 #define __glxext_h_
 
-#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-#include <windows.h>
-#endif
-
 #ifndef APIENTRY
 #define APIENTRY
 #endif
 #ifndef APIENTRYP
 #define APIENTRYP APIENTRY *
-#endif
-#ifndef GLAPI
-#define GLAPI extern
 #endif
 
 #ifdef __cplusplus
@@ -35,11 +25,37 @@ extern "C" {
 #endif
 
 typedef void* (* GLADloadproc)(const char *name);
-void gladLoadGLXLoader(GLADloadproc);
 
-int gladLoadGLX(void);
+#ifndef GLAPI
+# if defined(GLAD_GLAPI_EXPORT)
+#  if defined(WIN32) || defined(__CYGWIN__)
+#   if defined(GLAD_GLAPI_EXPORT_BUILD)
+#    if defined(__GNUC__)
+#     define GLAPI __attribute__ ((dllexport)) extern
+#    else
+#     define GLAPI __declspec(dllexport) extern
+#    endif
+#   else
+#    if defined(__GNUC__)
+#     define GLAPI __attribute__ ((dllimport)) extern
+#    else
+#     define GLAPI __declspec(dllimport) extern
+#    endif
+#   endif
+#  elif defined(__GNUC__) && defined(GLAD_GLAPI_EXPORT_BUILD)
+#   define GLAPI __attribute__ ((visibility ("default"))) extern
+#  else
+#   define GLAPI extern
+#  endif
+# else
+#  define GLAPI extern
+# endif
+#endif
 
-void gladLoadGLXLoader(GLADloadproc);
+GLAPI int gladLoadGLX(Display *dpy, int screen);
+
+GLAPI void gladLoadGLXLoader(GLADloadproc, Display *dpy, int screen);
+
 #ifndef GLEXT_64_TYPES_DEFINED
 /* This code block is duplicated in glext.h, so must be protected */
 #define GLEXT_64_TYPES_DEFINED
@@ -77,28 +93,6 @@ typedef unsigned __int64 uint64_t;
 #include <inttypes.h>
 #endif
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 typedef XID GLXFBConfigID;
 typedef struct __GLXFBConfigRec *GLXFBConfig;
 typedef XID GLXContextID;
@@ -107,7 +101,7 @@ typedef XID GLXPixmap;
 typedef XID GLXDrawable;
 typedef XID GLXWindow;
 typedef XID GLXPbuffer;
-typedef void ( *__GLXextFuncPtr)(void);
+typedef void (APIENTRY *__GLXextFuncPtr)(void);
 typedef XID GLXVideoCaptureDeviceNV;
 typedef unsigned int GLXVideoDeviceNV;
 typedef XID GLXVideoSourceSGIX;
@@ -115,23 +109,23 @@ typedef XID GLXFBConfigIDSGIX;
 typedef struct __GLXFBConfigRec *GLXFBConfigSGIX;
 typedef XID GLXPbufferSGIX;
 typedef struct {
-    int event_type;     /* GLX_DAMAGED or GLX_SAVED */
-    int draw_type;      /* GLX_WINDOW or GLX_PBUFFER */
+    int event_type;      /* GLX_DAMAGED or GLX_SAVED */
+    int draw_type;       /* GLX_WINDOW or GLX_PBUFFER */
     unsigned long serial;       /* # of last request processed by server */
-    Bool send_event;    /* true if this came for SendEvent request */
-    Display *display;   /* display the event was read from */
+    Bool send_event;     /* true if this came for SendEvent request */
+    Display *display;    /* display the event was read from */
     GLXDrawable drawable;       /* XID of Drawable */
     unsigned int buffer_mask;   /* mask indicating which buffers are affected */
     unsigned int aux_buffer;    /* which aux buffer was affected */
     int x, y;
     int width, height;
-    int count;  /* if nonzero, at least this many more */
+    int count;    /* if nonzero, at least this many more */
 } GLXPbufferClobberEvent;
 typedef struct {
     int type;
     unsigned long serial;       /* # of last request processed by server */
-    Bool send_event;    /* true if this came from a SendEvent request */
-    Display *display;   /* Display the event was read from */
+    Bool send_event;     /* true if this came from a SendEvent request */
+    Display *display;    /* Display the event was read from */
     GLXDrawable drawable;       /* drawable on which event was requested in event mask */
     int event_type;
     int64_t ust;
@@ -146,15 +140,15 @@ typedef union __GLXEvent {
 typedef struct {
     int type;
     unsigned long serial;   /* # of last request processed by server */
-    Bool send_event;/* true if this came for SendEvent request */
+    Bool send_event; /* true if this came for SendEvent request */
     Display *display;       /* display the event was read from */
     GLXDrawable drawable;   /* i.d. of Drawable */
-    int event_type; /* GLX_DAMAGED_SGIX or GLX_SAVED_SGIX */
-    int draw_type;  /* GLX_WINDOW_SGIX or GLX_PBUFFER_SGIX */
+    int event_type;  /* GLX_DAMAGED_SGIX or GLX_SAVED_SGIX */
+    int draw_type;   /* GLX_WINDOW_SGIX or GLX_PBUFFER_SGIX */
     unsigned int mask;      /* mask indicating which buffers are affected*/
     int x, y;
     int width, height;
-    int count;      /* if nonzero, at least this many more */
+    int count;       /* if nonzero, at least this many more */
 } GLXBufferClobberEventSGIX;
 typedef struct {
     char    pipeName[80]; /* Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX] */
@@ -266,6 +260,7 @@ typedef struct {
 #define GLX_SAMPLES 100001
 #ifndef GLX_VERSION_1_0
 #define GLX_VERSION_1_0 1
+GLAPI int GLAD_GLX_VERSION_1_0;
 typedef XVisualInfo* (APIENTRYP PFNGLXCHOOSEVISUALPROC)(Display*, int, int*);
 GLAPI PFNGLXCHOOSEVISUALPROC glad_glXChooseVisual;
 #define glXChooseVisual glad_glXChooseVisual
@@ -320,6 +315,7 @@ GLAPI PFNGLXUSEXFONTPROC glad_glXUseXFont;
 #endif
 #ifndef GLX_VERSION_1_1
 #define GLX_VERSION_1_1 1
+GLAPI int GLAD_GLX_VERSION_1_1;
 typedef const char* (APIENTRYP PFNGLXQUERYEXTENSIONSSTRINGPROC)(Display*, int);
 GLAPI PFNGLXQUERYEXTENSIONSSTRINGPROC glad_glXQueryExtensionsString;
 #define glXQueryExtensionsString glad_glXQueryExtensionsString
@@ -332,12 +328,14 @@ GLAPI PFNGLXGETCLIENTSTRINGPROC glad_glXGetClientString;
 #endif
 #ifndef GLX_VERSION_1_2
 #define GLX_VERSION_1_2 1
+GLAPI int GLAD_GLX_VERSION_1_2;
 typedef Display* (APIENTRYP PFNGLXGETCURRENTDISPLAYPROC)();
 GLAPI PFNGLXGETCURRENTDISPLAYPROC glad_glXGetCurrentDisplay;
 #define glXGetCurrentDisplay glad_glXGetCurrentDisplay
 #endif
 #ifndef GLX_VERSION_1_3
 #define GLX_VERSION_1_3 1
+GLAPI int GLAD_GLX_VERSION_1_3;
 typedef GLXFBConfig* (APIENTRYP PFNGLXGETFBCONFIGSPROC)(Display*, int, int*);
 GLAPI PFNGLXGETFBCONFIGSPROC glad_glXGetFBConfigs;
 #define glXGetFBConfigs glad_glXGetFBConfigs
@@ -392,6 +390,7 @@ GLAPI PFNGLXGETSELECTEDEVENTPROC glad_glXGetSelectedEvent;
 #endif
 #ifndef GLX_VERSION_1_4
 #define GLX_VERSION_1_4 1
+GLAPI int GLAD_GLX_VERSION_1_4;
 typedef __GLXextFuncPtr (APIENTRYP PFNGLXGETPROCADDRESSPROC)(const GLubyte*);
 GLAPI PFNGLXGETPROCADDRESSPROC glad_glXGetProcAddress;
 #define glXGetProcAddress glad_glXGetProcAddress
@@ -574,9 +573,11 @@ GLAPI PFNGLXGETPROCADDRESSPROC glad_glXGetProcAddress;
 #define GLX_CONTEXT_ALLOW_BUFFER_BYTE_ORDER_MISMATCH_ARB 0x2095
 #ifndef GLX_ARB_framebuffer_sRGB
 #define GLX_ARB_framebuffer_sRGB 1
+GLAPI int GLAD_GLX_ARB_framebuffer_sRGB;
 #endif
 #ifndef GLX_EXT_import_context
 #define GLX_EXT_import_context 1
+GLAPI int GLAD_GLX_EXT_import_context;
 typedef Display* (APIENTRYP PFNGLXGETCURRENTDISPLAYEXTPROC)();
 GLAPI PFNGLXGETCURRENTDISPLAYEXTPROC glad_glXGetCurrentDisplayEXT;
 #define glXGetCurrentDisplayEXT glad_glXGetCurrentDisplayEXT
@@ -595,12 +596,15 @@ GLAPI PFNGLXFREECONTEXTEXTPROC glad_glXFreeContextEXT;
 #endif
 #ifndef GLX_NV_multisample_coverage
 #define GLX_NV_multisample_coverage 1
+GLAPI int GLAD_GLX_NV_multisample_coverage;
 #endif
 #ifndef GLX_SGIS_shared_multisample
 #define GLX_SGIS_shared_multisample 1
+GLAPI int GLAD_GLX_SGIS_shared_multisample;
 #endif
 #ifndef GLX_SGIX_pbuffer
 #define GLX_SGIX_pbuffer 1
+GLAPI int GLAD_GLX_SGIX_pbuffer;
 typedef GLXPbufferSGIX (APIENTRYP PFNGLXCREATEGLXPBUFFERSGIXPROC)(Display*, GLXFBConfigSGIX, unsigned int, unsigned int, int*);
 GLAPI PFNGLXCREATEGLXPBUFFERSGIXPROC glad_glXCreateGLXPbufferSGIX;
 #define glXCreateGLXPbufferSGIX glad_glXCreateGLXPbufferSGIX
@@ -619,6 +623,7 @@ GLAPI PFNGLXGETSELECTEDEVENTSGIXPROC glad_glXGetSelectedEventSGIX;
 #endif
 #ifndef GLX_NV_swap_group
 #define GLX_NV_swap_group 1
+GLAPI int GLAD_GLX_NV_swap_group;
 typedef Bool (APIENTRYP PFNGLXJOINSWAPGROUPNVPROC)(Display*, GLXDrawable, GLuint);
 GLAPI PFNGLXJOINSWAPGROUPNVPROC glad_glXJoinSwapGroupNV;
 #define glXJoinSwapGroupNV glad_glXJoinSwapGroupNV
@@ -640,9 +645,11 @@ GLAPI PFNGLXRESETFRAMECOUNTNVPROC glad_glXResetFrameCountNV;
 #endif
 #ifndef GLX_ARB_fbconfig_float
 #define GLX_ARB_fbconfig_float 1
+GLAPI int GLAD_GLX_ARB_fbconfig_float;
 #endif
 #ifndef GLX_SGIX_hyperpipe
 #define GLX_SGIX_hyperpipe 1
+GLAPI int GLAD_GLX_SGIX_hyperpipe;
 typedef GLXHyperpipeNetworkSGIX* (APIENTRYP PFNGLXQUERYHYPERPIPENETWORKSGIXPROC)(Display*, int*);
 GLAPI PFNGLXQUERYHYPERPIPENETWORKSGIXPROC glad_glXQueryHyperpipeNetworkSGIX;
 #define glXQueryHyperpipeNetworkSGIX glad_glXQueryHyperpipeNetworkSGIX
@@ -670,12 +677,15 @@ GLAPI PFNGLXQUERYHYPERPIPEATTRIBSGIXPROC glad_glXQueryHyperpipeAttribSGIX;
 #endif
 #ifndef GLX_ARB_robustness_share_group_isolation
 #define GLX_ARB_robustness_share_group_isolation 1
+GLAPI int GLAD_GLX_ARB_robustness_share_group_isolation;
 #endif
 #ifndef GLX_INTEL_swap_event
 #define GLX_INTEL_swap_event 1
+GLAPI int GLAD_GLX_INTEL_swap_event;
 #endif
 #ifndef GLX_SGIX_video_resize
 #define GLX_SGIX_video_resize 1
+GLAPI int GLAD_GLX_SGIX_video_resize;
 typedef int (APIENTRYP PFNGLXBINDCHANNELTOWINDOWSGIXPROC)(Display*, int, int, Window);
 GLAPI PFNGLXBINDCHANNELTOWINDOWSGIXPROC glad_glXBindChannelToWindowSGIX;
 #define glXBindChannelToWindowSGIX glad_glXBindChannelToWindowSGIX
@@ -694,18 +704,22 @@ GLAPI PFNGLXCHANNELRECTSYNCSGIXPROC glad_glXChannelRectSyncSGIX;
 #endif
 #ifndef GLX_EXT_create_context_es2_profile
 #define GLX_EXT_create_context_es2_profile 1
+GLAPI int GLAD_GLX_EXT_create_context_es2_profile;
 #endif
 #ifndef GLX_ARB_robustness_application_isolation
 #define GLX_ARB_robustness_application_isolation 1
+GLAPI int GLAD_GLX_ARB_robustness_application_isolation;
 #endif
 #ifndef GLX_NV_copy_image
 #define GLX_NV_copy_image 1
+GLAPI int GLAD_GLX_NV_copy_image;
 typedef void (APIENTRYP PFNGLXCOPYIMAGESUBDATANVPROC)(Display*, GLXContext, GLuint, GLenum, GLint, GLint, GLint, GLint, GLXContext, GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei);
 GLAPI PFNGLXCOPYIMAGESUBDATANVPROC glad_glXCopyImageSubDataNV;
 #define glXCopyImageSubDataNV glad_glXCopyImageSubDataNV
 #endif
 #ifndef GLX_OML_sync_control
 #define GLX_OML_sync_control 1
+GLAPI int GLAD_GLX_OML_sync_control;
 typedef Bool (APIENTRYP PFNGLXGETSYNCVALUESOMLPROC)(Display*, GLXDrawable, int64_t*, int64_t*, int64_t*);
 GLAPI PFNGLXGETSYNCVALUESOMLPROC glad_glXGetSyncValuesOML;
 #define glXGetSyncValuesOML glad_glXGetSyncValuesOML
@@ -724,9 +738,11 @@ GLAPI PFNGLXWAITFORSBCOMLPROC glad_glXWaitForSbcOML;
 #endif
 #ifndef GLX_EXT_framebuffer_sRGB
 #define GLX_EXT_framebuffer_sRGB 1
+GLAPI int GLAD_GLX_EXT_framebuffer_sRGB;
 #endif
 #ifndef GLX_SGI_make_current_read
 #define GLX_SGI_make_current_read 1
+GLAPI int GLAD_GLX_SGI_make_current_read;
 typedef Bool (APIENTRYP PFNGLXMAKECURRENTREADSGIPROC)(Display*, GLXDrawable, GLXDrawable, GLXContext);
 GLAPI PFNGLXMAKECURRENTREADSGIPROC glad_glXMakeCurrentReadSGI;
 #define glXMakeCurrentReadSGI glad_glXMakeCurrentReadSGI
@@ -736,24 +752,30 @@ GLAPI PFNGLXGETCURRENTREADDRAWABLESGIPROC glad_glXGetCurrentReadDrawableSGI;
 #endif
 #ifndef GLX_SGI_swap_control
 #define GLX_SGI_swap_control 1
+GLAPI int GLAD_GLX_SGI_swap_control;
 typedef int (APIENTRYP PFNGLXSWAPINTERVALSGIPROC)(int);
 GLAPI PFNGLXSWAPINTERVALSGIPROC glad_glXSwapIntervalSGI;
 #define glXSwapIntervalSGI glad_glXSwapIntervalSGI
 #endif
 #ifndef GLX_EXT_fbconfig_packed_float
 #define GLX_EXT_fbconfig_packed_float 1
+GLAPI int GLAD_GLX_EXT_fbconfig_packed_float;
 #endif
 #ifndef GLX_EXT_buffer_age
 #define GLX_EXT_buffer_age 1
+GLAPI int GLAD_GLX_EXT_buffer_age;
 #endif
 #ifndef GLX_3DFX_multisample
 #define GLX_3DFX_multisample 1
+GLAPI int GLAD_GLX_3DFX_multisample;
 #endif
 #ifndef GLX_EXT_visual_info
 #define GLX_EXT_visual_info 1
+GLAPI int GLAD_GLX_EXT_visual_info;
 #endif
 #ifndef GLX_SGI_video_sync
 #define GLX_SGI_video_sync 1
+GLAPI int GLAD_GLX_SGI_video_sync;
 typedef int (APIENTRYP PFNGLXGETVIDEOSYNCSGIPROC)(unsigned int*);
 GLAPI PFNGLXGETVIDEOSYNCSGIPROC glad_glXGetVideoSyncSGI;
 #define glXGetVideoSyncSGI glad_glXGetVideoSyncSGI
@@ -763,21 +785,25 @@ GLAPI PFNGLXWAITVIDEOSYNCSGIPROC glad_glXWaitVideoSyncSGI;
 #endif
 #ifndef GLX_MESA_agp_offset
 #define GLX_MESA_agp_offset 1
+GLAPI int GLAD_GLX_MESA_agp_offset;
 typedef unsigned int (APIENTRYP PFNGLXGETAGPOFFSETMESAPROC)(const void*);
 GLAPI PFNGLXGETAGPOFFSETMESAPROC glad_glXGetAGPOffsetMESA;
 #define glXGetAGPOffsetMESA glad_glXGetAGPOffsetMESA
 #endif
 #ifndef GLX_SGIS_multisample
 #define GLX_SGIS_multisample 1
+GLAPI int GLAD_GLX_SGIS_multisample;
 #endif
 #ifndef GLX_MESA_set_3dfx_mode
 #define GLX_MESA_set_3dfx_mode 1
+GLAPI int GLAD_GLX_MESA_set_3dfx_mode;
 typedef Bool (APIENTRYP PFNGLXSET3DFXMODEMESAPROC)(int);
 GLAPI PFNGLXSET3DFXMODEMESAPROC glad_glXSet3DfxModeMESA;
 #define glXSet3DfxModeMESA glad_glXSet3DfxModeMESA
 #endif
 #ifndef GLX_EXT_texture_from_pixmap
 #define GLX_EXT_texture_from_pixmap 1
+GLAPI int GLAD_GLX_EXT_texture_from_pixmap;
 typedef void (APIENTRYP PFNGLXBINDTEXIMAGEEXTPROC)(Display*, GLXDrawable, int, const int*);
 GLAPI PFNGLXBINDTEXIMAGEEXTPROC glad_glXBindTexImageEXT;
 #define glXBindTexImageEXT glad_glXBindTexImageEXT
@@ -787,6 +813,7 @@ GLAPI PFNGLXRELEASETEXIMAGEEXTPROC glad_glXReleaseTexImageEXT;
 #endif
 #ifndef GLX_NV_video_capture
 #define GLX_NV_video_capture 1
+GLAPI int GLAD_GLX_NV_video_capture;
 typedef int (APIENTRYP PFNGLXBINDVIDEOCAPTUREDEVICENVPROC)(Display*, unsigned int, GLXVideoCaptureDeviceNV);
 GLAPI PFNGLXBINDVIDEOCAPTUREDEVICENVPROC glad_glXBindVideoCaptureDeviceNV;
 #define glXBindVideoCaptureDeviceNV glad_glXBindVideoCaptureDeviceNV
@@ -805,21 +832,25 @@ GLAPI PFNGLXRELEASEVIDEOCAPTUREDEVICENVPROC glad_glXReleaseVideoCaptureDeviceNV;
 #endif
 #ifndef GLX_ARB_multisample
 #define GLX_ARB_multisample 1
+GLAPI int GLAD_GLX_ARB_multisample;
 #endif
 #ifndef GLX_SGIX_swap_group
 #define GLX_SGIX_swap_group 1
+GLAPI int GLAD_GLX_SGIX_swap_group;
 typedef void (APIENTRYP PFNGLXJOINSWAPGROUPSGIXPROC)(Display*, GLXDrawable, GLXDrawable);
 GLAPI PFNGLXJOINSWAPGROUPSGIXPROC glad_glXJoinSwapGroupSGIX;
 #define glXJoinSwapGroupSGIX glad_glXJoinSwapGroupSGIX
 #endif
 #ifndef GLX_EXT_swap_control
 #define GLX_EXT_swap_control 1
+GLAPI int GLAD_GLX_EXT_swap_control;
 typedef void (APIENTRYP PFNGLXSWAPINTERVALEXTPROC)(Display*, GLXDrawable, int);
 GLAPI PFNGLXSWAPINTERVALEXTPROC glad_glXSwapIntervalEXT;
 #define glXSwapIntervalEXT glad_glXSwapIntervalEXT
 #endif
 #ifndef GLX_SGIX_video_source
 #define GLX_SGIX_video_source 1
+GLAPI int GLAD_GLX_SGIX_video_source;
 #ifdef _VL_H_
 typedef GLXVideoSourceSGIX (APIENTRYP PFNGLXCREATEGLXVIDEOSOURCESGIXPROC)(Display*, int, VLServer, VLPath, int, VLNode);
 GLAPI PFNGLXCREATEGLXVIDEOSOURCESGIXPROC glad_glXCreateGLXVideoSourceSGIX;
@@ -831,15 +862,18 @@ GLAPI PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC glad_glXDestroyGLXVideoSourceSGIX;
 #endif
 #ifndef GLX_ARB_create_context
 #define GLX_ARB_create_context 1
+GLAPI int GLAD_GLX_ARB_create_context;
 typedef GLXContext (APIENTRYP PFNGLXCREATECONTEXTATTRIBSARBPROC)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
 GLAPI PFNGLXCREATECONTEXTATTRIBSARBPROC glad_glXCreateContextAttribsARB;
 #define glXCreateContextAttribsARB glad_glXCreateContextAttribsARB
 #endif
 #ifndef GLX_EXT_create_context_es_profile
 #define GLX_EXT_create_context_es_profile 1
+GLAPI int GLAD_GLX_EXT_create_context_es_profile;
 #endif
 #ifndef GLX_SGIX_fbconfig
 #define GLX_SGIX_fbconfig 1
+GLAPI int GLAD_GLX_SGIX_fbconfig;
 typedef int (APIENTRYP PFNGLXGETFBCONFIGATTRIBSGIXPROC)(Display*, GLXFBConfigSGIX, int, int*);
 GLAPI PFNGLXGETFBCONFIGATTRIBSGIXPROC glad_glXGetFBConfigAttribSGIX;
 #define glXGetFBConfigAttribSGIX glad_glXGetFBConfigAttribSGIX
@@ -861,15 +895,18 @@ GLAPI PFNGLXGETFBCONFIGFROMVISUALSGIXPROC glad_glXGetFBConfigFromVisualSGIX;
 #endif
 #ifndef GLX_MESA_pixmap_colormap
 #define GLX_MESA_pixmap_colormap 1
+GLAPI int GLAD_GLX_MESA_pixmap_colormap;
 typedef GLXPixmap (APIENTRYP PFNGLXCREATEGLXPIXMAPMESAPROC)(Display*, XVisualInfo*, Pixmap, Colormap);
 GLAPI PFNGLXCREATEGLXPIXMAPMESAPROC glad_glXCreateGLXPixmapMESA;
 #define glXCreateGLXPixmapMESA glad_glXCreateGLXPixmapMESA
 #endif
 #ifndef GLX_SGIX_visual_select_group
 #define GLX_SGIX_visual_select_group 1
+GLAPI int GLAD_GLX_SGIX_visual_select_group;
 #endif
 #ifndef GLX_NV_video_output
 #define GLX_NV_video_output 1
+GLAPI int GLAD_GLX_NV_video_output;
 typedef int (APIENTRYP PFNGLXGETVIDEODEVICENVPROC)(Display*, int, int, GLXVideoDeviceNV*);
 GLAPI PFNGLXGETVIDEODEVICENVPROC glad_glXGetVideoDeviceNV;
 #define glXGetVideoDeviceNV glad_glXGetVideoDeviceNV
@@ -891,9 +928,11 @@ GLAPI PFNGLXGETVIDEOINFONVPROC glad_glXGetVideoInfoNV;
 #endif
 #ifndef GLX_SGIS_blended_overlay
 #define GLX_SGIS_blended_overlay 1
+GLAPI int GLAD_GLX_SGIS_blended_overlay;
 #endif
 #ifndef GLX_SGIX_dmbuffer
 #define GLX_SGIX_dmbuffer 1
+GLAPI int GLAD_GLX_SGIX_dmbuffer;
 #ifdef _DM_BUFFER_H_
 typedef Bool (APIENTRYP PFNGLXASSOCIATEDMPBUFFERSGIXPROC)(Display*, GLXPbufferSGIX, DMparams*, DMbuffer);
 GLAPI PFNGLXASSOCIATEDMPBUFFERSGIXPROC glad_glXAssociateDMPbufferSGIX;
@@ -902,9 +941,11 @@ GLAPI PFNGLXASSOCIATEDMPBUFFERSGIXPROC glad_glXAssociateDMPbufferSGIX;
 #endif
 #ifndef GLX_ARB_create_context_robustness
 #define GLX_ARB_create_context_robustness 1
+GLAPI int GLAD_GLX_ARB_create_context_robustness;
 #endif
 #ifndef GLX_SGIX_swap_barrier
 #define GLX_SGIX_swap_barrier 1
+GLAPI int GLAD_GLX_SGIX_swap_barrier;
 typedef void (APIENTRYP PFNGLXBINDSWAPBARRIERSGIXPROC)(Display*, GLXDrawable, int);
 GLAPI PFNGLXBINDSWAPBARRIERSGIXPROC glad_glXBindSwapBarrierSGIX;
 #define glXBindSwapBarrierSGIX glad_glXBindSwapBarrierSGIX
@@ -914,36 +955,44 @@ GLAPI PFNGLXQUERYMAXSWAPBARRIERSSGIXPROC glad_glXQueryMaxSwapBarriersSGIX;
 #endif
 #ifndef GLX_EXT_swap_control_tear
 #define GLX_EXT_swap_control_tear 1
+GLAPI int GLAD_GLX_EXT_swap_control_tear;
 #endif
 #ifndef GLX_MESA_release_buffers
 #define GLX_MESA_release_buffers 1
+GLAPI int GLAD_GLX_MESA_release_buffers;
 typedef Bool (APIENTRYP PFNGLXRELEASEBUFFERSMESAPROC)(Display*, GLXDrawable);
 GLAPI PFNGLXRELEASEBUFFERSMESAPROC glad_glXReleaseBuffersMESA;
 #define glXReleaseBuffersMESA glad_glXReleaseBuffersMESA
 #endif
 #ifndef GLX_EXT_visual_rating
 #define GLX_EXT_visual_rating 1
+GLAPI int GLAD_GLX_EXT_visual_rating;
 #endif
 #ifndef GLX_MESA_copy_sub_buffer
 #define GLX_MESA_copy_sub_buffer 1
+GLAPI int GLAD_GLX_MESA_copy_sub_buffer;
 typedef void (APIENTRYP PFNGLXCOPYSUBBUFFERMESAPROC)(Display*, GLXDrawable, int, int, int, int);
 GLAPI PFNGLXCOPYSUBBUFFERMESAPROC glad_glXCopySubBufferMESA;
 #define glXCopySubBufferMESA glad_glXCopySubBufferMESA
 #endif
 #ifndef GLX_SGI_cushion
 #define GLX_SGI_cushion 1
+GLAPI int GLAD_GLX_SGI_cushion;
 typedef void (APIENTRYP PFNGLXCUSHIONSGIPROC)(Display*, Window, float);
 GLAPI PFNGLXCUSHIONSGIPROC glad_glXCushionSGI;
 #define glXCushionSGI glad_glXCushionSGI
 #endif
 #ifndef GLX_NV_float_buffer
 #define GLX_NV_float_buffer 1
+GLAPI int GLAD_GLX_NV_float_buffer;
 #endif
 #ifndef GLX_OML_swap_method
 #define GLX_OML_swap_method 1
+GLAPI int GLAD_GLX_OML_swap_method;
 #endif
 #ifndef GLX_NV_present_video
 #define GLX_NV_present_video 1
+GLAPI int GLAD_GLX_NV_present_video;
 typedef unsigned int* (APIENTRYP PFNGLXENUMERATEVIDEODEVICESNVPROC)(Display*, int, int*);
 GLAPI PFNGLXENUMERATEVIDEODEVICESNVPROC glad_glXEnumerateVideoDevicesNV;
 #define glXEnumerateVideoDevicesNV glad_glXEnumerateVideoDevicesNV
@@ -953,24 +1002,29 @@ GLAPI PFNGLXBINDVIDEODEVICENVPROC glad_glXBindVideoDeviceNV;
 #endif
 #ifndef GLX_SUN_get_transparent_index
 #define GLX_SUN_get_transparent_index 1
+GLAPI int GLAD_GLX_SUN_get_transparent_index;
 typedef Status (APIENTRYP PFNGLXGETTRANSPARENTINDEXSUNPROC)(Display*, Window, Window, long*);
 GLAPI PFNGLXGETTRANSPARENTINDEXSUNPROC glad_glXGetTransparentIndexSUN;
 #define glXGetTransparentIndexSUN glad_glXGetTransparentIndexSUN
 #endif
 #ifndef GLX_AMD_gpu_association
 #define GLX_AMD_gpu_association 1
+GLAPI int GLAD_GLX_AMD_gpu_association;
 #endif
 #ifndef GLX_ARB_create_context_profile
 #define GLX_ARB_create_context_profile 1
+GLAPI int GLAD_GLX_ARB_create_context_profile;
 #endif
 #ifndef GLX_ARB_get_proc_address
 #define GLX_ARB_get_proc_address 1
+GLAPI int GLAD_GLX_ARB_get_proc_address;
 typedef __GLXextFuncPtr (APIENTRYP PFNGLXGETPROCADDRESSARBPROC)(const GLubyte*);
 GLAPI PFNGLXGETPROCADDRESSARBPROC glad_glXGetProcAddressARB;
 #define glXGetProcAddressARB glad_glXGetProcAddressARB
 #endif
 #ifndef GLX_ARB_vertex_buffer_object
 #define GLX_ARB_vertex_buffer_object 1
+GLAPI int GLAD_GLX_ARB_vertex_buffer_object;
 #endif
 
 #ifdef __cplusplus

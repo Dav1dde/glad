@@ -1,19 +1,21 @@
-#include <windows.h>
 
+#ifndef WINAPI
+# ifndef WIN32_LEAN_AND_MEAN
+#  define WIN32_LEAN_AND_MEAN 1
+# endif
+# include <windows.h>
+#endif
+
+#include <glad/glad.h>
 
 #ifndef __glad_wglext_h_
 
 #ifdef __wglext_h_
+#error WGL header already included, remove this include, glad already provides it
 #endif
 
 #define __glad_wglext_h_
 #define __wglext_h_
-
-#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-#endif
 
 #ifndef APIENTRY
 #define APIENTRY
@@ -21,48 +23,42 @@
 #ifndef APIENTRYP
 #define APIENTRYP APIENTRY *
 #endif
-#ifndef GLAPI
-#define GLAPI extern
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 typedef void* (* GLADloadproc)(const char *name);
-void gladLoadWGLLoader(GLADloadproc);
-int gladLoadWGL(void);
 
-void gladLoadWGLLoader(GLADloadproc);
+#ifndef GLAPI
+# if defined(GLAD_GLAPI_EXPORT)
+#  if defined(WIN32) || defined(__CYGWIN__)
+#   if defined(GLAD_GLAPI_EXPORT_BUILD)
+#    if defined(__GNUC__)
+#     define GLAPI __attribute__ ((dllexport)) extern
+#    else
+#     define GLAPI __declspec(dllexport) extern
+#    endif
+#   else
+#    if defined(__GNUC__)
+#     define GLAPI __attribute__ ((dllimport)) extern
+#    else
+#     define GLAPI __declspec(dllimport) extern
+#    endif
+#   endif
+#  elif defined(__GNUC__) && defined(GLAD_GLAPI_EXPORT_BUILD)
+#   define GLAPI __attribute__ ((visibility ("default"))) extern
+#  else
+#   define GLAPI extern
+#  endif
+# else
+#  define GLAPI extern
+# endif
+#endif
 
+GLAPI int gladLoadWGL(HDC hdc);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+GLAPI void gladLoadWGLLoader(GLADloadproc, HDC hdc);
 
 struct _GPU_DEVICE {
     DWORD  cb;
@@ -334,9 +330,11 @@ typedef struct _GPU_DEVICE *PGPU_DEVICE;
 #define WGL_STENCIL_BUFFER_BIT_ARB 0x00000008
 #ifndef WGL_NV_multisample_coverage
 #define WGL_NV_multisample_coverage 1
+GLAPI int GLAD_WGL_NV_multisample_coverage;
 #endif
 #ifndef WGL_I3D_image_buffer
 #define WGL_I3D_image_buffer 1
+GLAPI int GLAD_WGL_I3D_image_buffer;
 typedef LPVOID (APIENTRYP PFNWGLCREATEIMAGEBUFFERI3DPROC)(HDC, DWORD, UINT);
 GLAPI PFNWGLCREATEIMAGEBUFFERI3DPROC glad_wglCreateImageBufferI3D;
 #define wglCreateImageBufferI3D glad_wglCreateImageBufferI3D
@@ -352,6 +350,7 @@ GLAPI PFNWGLRELEASEIMAGEBUFFEREVENTSI3DPROC glad_wglReleaseImageBufferEventsI3D;
 #endif
 #ifndef WGL_I3D_swap_frame_usage
 #define WGL_I3D_swap_frame_usage 1
+GLAPI int GLAD_WGL_I3D_swap_frame_usage;
 typedef BOOL (APIENTRYP PFNWGLGETFRAMEUSAGEI3DPROC)(float*);
 GLAPI PFNWGLGETFRAMEUSAGEI3DPROC glad_wglGetFrameUsageI3D;
 #define wglGetFrameUsageI3D glad_wglGetFrameUsageI3D
@@ -367,12 +366,15 @@ GLAPI PFNWGLQUERYFRAMETRACKINGI3DPROC glad_wglQueryFrameTrackingI3D;
 #endif
 #ifndef WGL_NV_DX_interop2
 #define WGL_NV_DX_interop2 1
+GLAPI int GLAD_WGL_NV_DX_interop2;
 #endif
 #ifndef WGL_NV_float_buffer
 #define WGL_NV_float_buffer 1
+GLAPI int GLAD_WGL_NV_float_buffer;
 #endif
 #ifndef WGL_OML_sync_control
 #define WGL_OML_sync_control 1
+GLAPI int GLAD_WGL_OML_sync_control;
 typedef BOOL (APIENTRYP PFNWGLGETSYNCVALUESOMLPROC)(HDC, INT64*, INT64*, INT64*);
 GLAPI PFNWGLGETSYNCVALUESOMLPROC glad_wglGetSyncValuesOML;
 #define wglGetSyncValuesOML glad_wglGetSyncValuesOML
@@ -394,15 +396,18 @@ GLAPI PFNWGLWAITFORSBCOMLPROC glad_wglWaitForSbcOML;
 #endif
 #ifndef WGL_ARB_pixel_format_float
 #define WGL_ARB_pixel_format_float 1
+GLAPI int GLAD_WGL_ARB_pixel_format_float;
 #endif
 #ifndef WGL_ARB_create_context
 #define WGL_ARB_create_context 1
+GLAPI int GLAD_WGL_ARB_create_context;
 typedef HGLRC (APIENTRYP PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC, HGLRC, const int*);
 GLAPI PFNWGLCREATECONTEXTATTRIBSARBPROC glad_wglCreateContextAttribsARB;
 #define wglCreateContextAttribsARB glad_wglCreateContextAttribsARB
 #endif
 #ifndef WGL_NV_swap_group
 #define WGL_NV_swap_group 1
+GLAPI int GLAD_WGL_NV_swap_group;
 typedef BOOL (APIENTRYP PFNWGLJOINSWAPGROUPNVPROC)(HDC, GLuint);
 GLAPI PFNWGLJOINSWAPGROUPNVPROC glad_wglJoinSwapGroupNV;
 #define wglJoinSwapGroupNV glad_wglJoinSwapGroupNV
@@ -424,6 +429,7 @@ GLAPI PFNWGLRESETFRAMECOUNTNVPROC glad_wglResetFrameCountNV;
 #endif
 #ifndef WGL_NV_gpu_affinity
 #define WGL_NV_gpu_affinity 1
+GLAPI int GLAD_WGL_NV_gpu_affinity;
 typedef BOOL (APIENTRYP PFNWGLENUMGPUSNVPROC)(UINT, HGPUNV*);
 GLAPI PFNWGLENUMGPUSNVPROC glad_wglEnumGpusNV;
 #define wglEnumGpusNV glad_wglEnumGpusNV
@@ -442,6 +448,7 @@ GLAPI PFNWGLDELETEDCNVPROC glad_wglDeleteDCNV;
 #endif
 #ifndef WGL_EXT_pixel_format
 #define WGL_EXT_pixel_format 1
+GLAPI int GLAD_WGL_EXT_pixel_format;
 typedef BOOL (APIENTRYP PFNWGLGETPIXELFORMATATTRIBIVEXTPROC)(HDC, int, int, UINT, int*, int*);
 GLAPI PFNWGLGETPIXELFORMATATTRIBIVEXTPROC glad_wglGetPixelFormatAttribivEXT;
 #define wglGetPixelFormatAttribivEXT glad_wglGetPixelFormatAttribivEXT
@@ -454,12 +461,14 @@ GLAPI PFNWGLCHOOSEPIXELFORMATEXTPROC glad_wglChoosePixelFormatEXT;
 #endif
 #ifndef WGL_ARB_extensions_string
 #define WGL_ARB_extensions_string 1
+GLAPI int GLAD_WGL_ARB_extensions_string;
 typedef const char* (APIENTRYP PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC);
 GLAPI PFNWGLGETEXTENSIONSSTRINGARBPROC glad_wglGetExtensionsStringARB;
 #define wglGetExtensionsStringARB glad_wglGetExtensionsStringARB
 #endif
 #ifndef WGL_NV_video_capture
 #define WGL_NV_video_capture 1
+GLAPI int GLAD_WGL_NV_video_capture;
 typedef BOOL (APIENTRYP PFNWGLBINDVIDEOCAPTUREDEVICENVPROC)(UINT, HVIDEOINPUTDEVICENV);
 GLAPI PFNWGLBINDVIDEOCAPTUREDEVICENVPROC glad_wglBindVideoCaptureDeviceNV;
 #define wglBindVideoCaptureDeviceNV glad_wglBindVideoCaptureDeviceNV
@@ -478,15 +487,19 @@ GLAPI PFNWGLRELEASEVIDEOCAPTUREDEVICENVPROC glad_wglReleaseVideoCaptureDeviceNV;
 #endif
 #ifndef WGL_NV_render_texture_rectangle
 #define WGL_NV_render_texture_rectangle 1
+GLAPI int GLAD_WGL_NV_render_texture_rectangle;
 #endif
 #ifndef WGL_EXT_create_context_es_profile
 #define WGL_EXT_create_context_es_profile 1
+GLAPI int GLAD_WGL_EXT_create_context_es_profile;
 #endif
 #ifndef WGL_ARB_robustness_share_group_isolation
 #define WGL_ARB_robustness_share_group_isolation 1
+GLAPI int GLAD_WGL_ARB_robustness_share_group_isolation;
 #endif
 #ifndef WGL_ARB_render_texture
 #define WGL_ARB_render_texture 1
+GLAPI int GLAD_WGL_ARB_render_texture;
 typedef BOOL (APIENTRYP PFNWGLBINDTEXIMAGEARBPROC)(HPBUFFERARB, int);
 GLAPI PFNWGLBINDTEXIMAGEARBPROC glad_wglBindTexImageARB;
 #define wglBindTexImageARB glad_wglBindTexImageARB
@@ -499,12 +512,15 @@ GLAPI PFNWGLSETPBUFFERATTRIBARBPROC glad_wglSetPbufferAttribARB;
 #endif
 #ifndef WGL_EXT_depth_float
 #define WGL_EXT_depth_float 1
+GLAPI int GLAD_WGL_EXT_depth_float;
 #endif
 #ifndef WGL_EXT_swap_control_tear
 #define WGL_EXT_swap_control_tear 1
+GLAPI int GLAD_WGL_EXT_swap_control_tear;
 #endif
 #ifndef WGL_ARB_pixel_format
 #define WGL_ARB_pixel_format 1
+GLAPI int GLAD_WGL_ARB_pixel_format;
 typedef BOOL (APIENTRYP PFNWGLGETPIXELFORMATATTRIBIVARBPROC)(HDC, int, int, UINT, const int*, int*);
 GLAPI PFNWGLGETPIXELFORMATATTRIBIVARBPROC glad_wglGetPixelFormatAttribivARB;
 #define wglGetPixelFormatAttribivARB glad_wglGetPixelFormatAttribivARB
@@ -517,9 +533,11 @@ GLAPI PFNWGLCHOOSEPIXELFORMATARBPROC glad_wglChoosePixelFormatARB;
 #endif
 #ifndef WGL_ARB_multisample
 #define WGL_ARB_multisample 1
+GLAPI int GLAD_WGL_ARB_multisample;
 #endif
 #ifndef WGL_I3D_genlock
 #define WGL_I3D_genlock 1
+GLAPI int GLAD_WGL_I3D_genlock;
 typedef BOOL (APIENTRYP PFNWGLENABLEGENLOCKI3DPROC)(HDC);
 GLAPI PFNWGLENABLEGENLOCKI3DPROC glad_wglEnableGenlockI3D;
 #define wglEnableGenlockI3D glad_wglEnableGenlockI3D
@@ -559,6 +577,7 @@ GLAPI PFNWGLQUERYGENLOCKMAXSOURCEDELAYI3DPROC glad_wglQueryGenlockMaxSourceDelay
 #endif
 #ifndef WGL_NV_DX_interop
 #define WGL_NV_DX_interop 1
+GLAPI int GLAD_WGL_NV_DX_interop;
 typedef BOOL (APIENTRYP PFNWGLDXSETRESOURCESHAREHANDLENVPROC)(void*, HANDLE);
 GLAPI PFNWGLDXSETRESOURCESHAREHANDLENVPROC glad_wglDXSetResourceShareHandleNV;
 #define wglDXSetResourceShareHandleNV glad_wglDXSetResourceShareHandleNV
@@ -586,12 +605,14 @@ GLAPI PFNWGLDXUNLOCKOBJECTSNVPROC glad_wglDXUnlockObjectsNV;
 #endif
 #ifndef WGL_3DL_stereo_control
 #define WGL_3DL_stereo_control 1
+GLAPI int GLAD_WGL_3DL_stereo_control;
 typedef BOOL (APIENTRYP PFNWGLSETSTEREOEMITTERSTATE3DLPROC)(HDC, UINT);
 GLAPI PFNWGLSETSTEREOEMITTERSTATE3DLPROC glad_wglSetStereoEmitterState3DL;
 #define wglSetStereoEmitterState3DL glad_wglSetStereoEmitterState3DL
 #endif
 #ifndef WGL_EXT_pbuffer
 #define WGL_EXT_pbuffer 1
+GLAPI int GLAD_WGL_EXT_pbuffer;
 typedef HPBUFFEREXT (APIENTRYP PFNWGLCREATEPBUFFEREXTPROC)(HDC, int, int, int, const int*);
 GLAPI PFNWGLCREATEPBUFFEREXTPROC glad_wglCreatePbufferEXT;
 #define wglCreatePbufferEXT glad_wglCreatePbufferEXT
@@ -610,6 +631,7 @@ GLAPI PFNWGLQUERYPBUFFEREXTPROC glad_wglQueryPbufferEXT;
 #endif
 #ifndef WGL_EXT_display_color_table
 #define WGL_EXT_display_color_table 1
+GLAPI int GLAD_WGL_EXT_display_color_table;
 typedef GLboolean (APIENTRYP PFNWGLCREATEDISPLAYCOLORTABLEEXTPROC)(GLushort);
 GLAPI PFNWGLCREATEDISPLAYCOLORTABLEEXTPROC glad_wglCreateDisplayColorTableEXT;
 #define wglCreateDisplayColorTableEXT glad_wglCreateDisplayColorTableEXT
@@ -625,6 +647,7 @@ GLAPI PFNWGLDESTROYDISPLAYCOLORTABLEEXTPROC glad_wglDestroyDisplayColorTableEXT;
 #endif
 #ifndef WGL_NV_video_output
 #define WGL_NV_video_output 1
+GLAPI int GLAD_WGL_NV_video_output;
 typedef BOOL (APIENTRYP PFNWGLGETVIDEODEVICENVPROC)(HDC, int, HPVIDEODEV*);
 GLAPI PFNWGLGETVIDEODEVICENVPROC glad_wglGetVideoDeviceNV;
 #define wglGetVideoDeviceNV glad_wglGetVideoDeviceNV
@@ -646,12 +669,15 @@ GLAPI PFNWGLGETVIDEOINFONVPROC glad_wglGetVideoInfoNV;
 #endif
 #ifndef WGL_ARB_robustness_application_isolation
 #define WGL_ARB_robustness_application_isolation 1
+GLAPI int GLAD_WGL_ARB_robustness_application_isolation;
 #endif
 #ifndef WGL_3DFX_multisample
 #define WGL_3DFX_multisample 1
+GLAPI int GLAD_WGL_3DFX_multisample;
 #endif
 #ifndef WGL_I3D_gamma
 #define WGL_I3D_gamma 1
+GLAPI int GLAD_WGL_I3D_gamma;
 typedef BOOL (APIENTRYP PFNWGLGETGAMMATABLEPARAMETERSI3DPROC)(HDC, int, int*);
 GLAPI PFNWGLGETGAMMATABLEPARAMETERSI3DPROC glad_wglGetGammaTableParametersI3D;
 #define wglGetGammaTableParametersI3D glad_wglGetGammaTableParametersI3D
@@ -667,18 +693,22 @@ GLAPI PFNWGLSETGAMMATABLEI3DPROC glad_wglSetGammaTableI3D;
 #endif
 #ifndef WGL_ARB_framebuffer_sRGB
 #define WGL_ARB_framebuffer_sRGB 1
+GLAPI int GLAD_WGL_ARB_framebuffer_sRGB;
 #endif
 #ifndef WGL_NV_copy_image
 #define WGL_NV_copy_image 1
+GLAPI int GLAD_WGL_NV_copy_image;
 typedef BOOL (APIENTRYP PFNWGLCOPYIMAGESUBDATANVPROC)(HGLRC, GLuint, GLenum, GLint, GLint, GLint, GLint, HGLRC, GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei);
 GLAPI PFNWGLCOPYIMAGESUBDATANVPROC glad_wglCopyImageSubDataNV;
 #define wglCopyImageSubDataNV glad_wglCopyImageSubDataNV
 #endif
 #ifndef WGL_EXT_framebuffer_sRGB
 #define WGL_EXT_framebuffer_sRGB 1
+GLAPI int GLAD_WGL_EXT_framebuffer_sRGB;
 #endif
 #ifndef WGL_NV_present_video
 #define WGL_NV_present_video 1
+GLAPI int GLAD_WGL_NV_present_video;
 typedef int (APIENTRYP PFNWGLENUMERATEVIDEODEVICESNVPROC)(HDC, HVIDEOOUTPUTDEVICENV*);
 GLAPI PFNWGLENUMERATEVIDEODEVICESNVPROC glad_wglEnumerateVideoDevicesNV;
 #define wglEnumerateVideoDevicesNV glad_wglEnumerateVideoDevicesNV
@@ -691,12 +721,15 @@ GLAPI PFNWGLQUERYCURRENTCONTEXTNVPROC glad_wglQueryCurrentContextNV;
 #endif
 #ifndef WGL_EXT_create_context_es2_profile
 #define WGL_EXT_create_context_es2_profile 1
+GLAPI int GLAD_WGL_EXT_create_context_es2_profile;
 #endif
 #ifndef WGL_ARB_create_context_robustness
 #define WGL_ARB_create_context_robustness 1
+GLAPI int GLAD_WGL_ARB_create_context_robustness;
 #endif
 #ifndef WGL_ARB_make_current_read
 #define WGL_ARB_make_current_read 1
+GLAPI int GLAD_WGL_ARB_make_current_read;
 typedef BOOL (APIENTRYP PFNWGLMAKECONTEXTCURRENTARBPROC)(HDC, HDC, HGLRC);
 GLAPI PFNWGLMAKECONTEXTCURRENTARBPROC glad_wglMakeContextCurrentARB;
 #define wglMakeContextCurrentARB glad_wglMakeContextCurrentARB
@@ -706,24 +739,30 @@ GLAPI PFNWGLGETCURRENTREADDCARBPROC glad_wglGetCurrentReadDCARB;
 #endif
 #ifndef WGL_EXT_multisample
 #define WGL_EXT_multisample 1
+GLAPI int GLAD_WGL_EXT_multisample;
 #endif
 #ifndef WGL_EXT_extensions_string
 #define WGL_EXT_extensions_string 1
+GLAPI int GLAD_WGL_EXT_extensions_string;
 typedef const char* (APIENTRYP PFNWGLGETEXTENSIONSSTRINGEXTPROC)();
 GLAPI PFNWGLGETEXTENSIONSSTRINGEXTPROC glad_wglGetExtensionsStringEXT;
 #define wglGetExtensionsStringEXT glad_wglGetExtensionsStringEXT
 #endif
 #ifndef WGL_NV_render_depth_texture
 #define WGL_NV_render_depth_texture 1
+GLAPI int GLAD_WGL_NV_render_depth_texture;
 #endif
 #ifndef WGL_ATI_pixel_format_float
 #define WGL_ATI_pixel_format_float 1
+GLAPI int GLAD_WGL_ATI_pixel_format_float;
 #endif
 #ifndef WGL_ARB_create_context_profile
 #define WGL_ARB_create_context_profile 1
+GLAPI int GLAD_WGL_ARB_create_context_profile;
 #endif
 #ifndef WGL_EXT_swap_control
 #define WGL_EXT_swap_control 1
+GLAPI int GLAD_WGL_EXT_swap_control;
 typedef BOOL (APIENTRYP PFNWGLSWAPINTERVALEXTPROC)(int);
 GLAPI PFNWGLSWAPINTERVALEXTPROC glad_wglSwapIntervalEXT;
 #define wglSwapIntervalEXT glad_wglSwapIntervalEXT
@@ -733,6 +772,7 @@ GLAPI PFNWGLGETSWAPINTERVALEXTPROC glad_wglGetSwapIntervalEXT;
 #endif
 #ifndef WGL_I3D_digital_video_control
 #define WGL_I3D_digital_video_control 1
+GLAPI int GLAD_WGL_I3D_digital_video_control;
 typedef BOOL (APIENTRYP PFNWGLGETDIGITALVIDEOPARAMETERSI3DPROC)(HDC, int, int*);
 GLAPI PFNWGLGETDIGITALVIDEOPARAMETERSI3DPROC glad_wglGetDigitalVideoParametersI3D;
 #define wglGetDigitalVideoParametersI3D glad_wglGetDigitalVideoParametersI3D
@@ -742,6 +782,7 @@ GLAPI PFNWGLSETDIGITALVIDEOPARAMETERSI3DPROC glad_wglSetDigitalVideoParametersI3
 #endif
 #ifndef WGL_ARB_pbuffer
 #define WGL_ARB_pbuffer 1
+GLAPI int GLAD_WGL_ARB_pbuffer;
 typedef HPBUFFERARB (APIENTRYP PFNWGLCREATEPBUFFERARBPROC)(HDC, int, int, int, const int*);
 GLAPI PFNWGLCREATEPBUFFERARBPROC glad_wglCreatePbufferARB;
 #define wglCreatePbufferARB glad_wglCreatePbufferARB
@@ -760,6 +801,7 @@ GLAPI PFNWGLQUERYPBUFFERARBPROC glad_wglQueryPbufferARB;
 #endif
 #ifndef WGL_NV_vertex_array_range
 #define WGL_NV_vertex_array_range 1
+GLAPI int GLAD_WGL_NV_vertex_array_range;
 typedef void* (APIENTRYP PFNWGLALLOCATEMEMORYNVPROC)(GLsizei, GLfloat, GLfloat, GLfloat);
 GLAPI PFNWGLALLOCATEMEMORYNVPROC glad_wglAllocateMemoryNV;
 #define wglAllocateMemoryNV glad_wglAllocateMemoryNV
@@ -769,6 +811,7 @@ GLAPI PFNWGLFREEMEMORYNVPROC glad_wglFreeMemoryNV;
 #endif
 #ifndef WGL_AMD_gpu_association
 #define WGL_AMD_gpu_association 1
+GLAPI int GLAD_WGL_AMD_gpu_association;
 typedef UINT (APIENTRYP PFNWGLGETGPUIDSAMDPROC)(UINT, UINT*);
 GLAPI PFNWGLGETGPUIDSAMDPROC glad_wglGetGPUIDsAMD;
 #define wglGetGPUIDsAMD glad_wglGetGPUIDsAMD
@@ -799,9 +842,11 @@ GLAPI PFNWGLBLITCONTEXTFRAMEBUFFERAMDPROC glad_wglBlitContextFramebufferAMD;
 #endif
 #ifndef WGL_EXT_pixel_format_packed_float
 #define WGL_EXT_pixel_format_packed_float 1
+GLAPI int GLAD_WGL_EXT_pixel_format_packed_float;
 #endif
 #ifndef WGL_EXT_make_current_read
 #define WGL_EXT_make_current_read 1
+GLAPI int GLAD_WGL_EXT_make_current_read;
 typedef BOOL (APIENTRYP PFNWGLMAKECONTEXTCURRENTEXTPROC)(HDC, HDC, HGLRC);
 GLAPI PFNWGLMAKECONTEXTCURRENTEXTPROC glad_wglMakeContextCurrentEXT;
 #define wglMakeContextCurrentEXT glad_wglMakeContextCurrentEXT
@@ -811,6 +856,7 @@ GLAPI PFNWGLGETCURRENTREADDCEXTPROC glad_wglGetCurrentReadDCEXT;
 #endif
 #ifndef WGL_I3D_swap_frame_lock
 #define WGL_I3D_swap_frame_lock 1
+GLAPI int GLAD_WGL_I3D_swap_frame_lock;
 typedef BOOL (APIENTRYP PFNWGLENABLEFRAMELOCKI3DPROC)();
 GLAPI PFNWGLENABLEFRAMELOCKI3DPROC glad_wglEnableFrameLockI3D;
 #define wglEnableFrameLockI3D glad_wglEnableFrameLockI3D
@@ -826,6 +872,7 @@ GLAPI PFNWGLQUERYFRAMELOCKMASTERI3DPROC glad_wglQueryFrameLockMasterI3D;
 #endif
 #ifndef WGL_ARB_buffer_region
 #define WGL_ARB_buffer_region 1
+GLAPI int GLAD_WGL_ARB_buffer_region;
 typedef HANDLE (APIENTRYP PFNWGLCREATEBUFFERREGIONARBPROC)(HDC, int, UINT);
 GLAPI PFNWGLCREATEBUFFERREGIONARBPROC glad_wglCreateBufferRegionARB;
 #define wglCreateBufferRegionARB glad_wglCreateBufferRegionARB
