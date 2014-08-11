@@ -1,7 +1,7 @@
 module glad.glx.all;
 
 
-private import glad.glx.funcs;
-private import glad.glx.ext;
-private import glad.glx.enums;
-private import glad.glx.types;
+public import glad.glx.funcs;
+public import glad.glx.ext;
+public import glad.glx.enums;
+public import glad.glx.types;

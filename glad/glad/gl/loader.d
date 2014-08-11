@@ -107,6 +107,7 @@ bool gladLoadGL() {
 static struct GLVersion { static int major = 0; static int minor = 0; }
 private extern(C) char* strstr(const(char)*, const(char)*);
 private extern(C) int strcmp(const(char)*, const(char)*);
+private extern(C) int strncmp(const(char)*, const(char)*, size_t);
 private extern(C) size_t strlen(const(char)*);
 private bool has_ext(const(char)* ext) {
     if(GLVersion.major < 3) {
@@ -429,10 +430,32 @@ void gladLoadGL(Loader load) {
 private:
 
 void find_coreGL() {
-	const(char)* v = cast(const(char)*)glGetString(GL_VERSION);
-	int major = v[0] - '0';
-	int minor = v[2] - '0';
-	GLVersion.major = major; GLVersion.minor = minor;
+
+    // Thank you @elmindreda
+    // https://github.com/elmindreda/greg/blob/master/templates/greg.c.in#L176
+    // https://github.com/glfw/glfw/blob/master/src/context.c#L36
+    int i;
+    const(char)* glversion;
+    const(char)*[] prefixes = [
+        "OpenGL ES-CM ".ptr,
+        "OpenGL ES-CL ".ptr,
+        "OpenGL ES ".ptr,
+    ];
+
+    glversion = cast(const(char)*)glGetString(GL_VERSION);
+    if (glversion is null) return;
+
+    foreach(prefix; prefixes) {
+        size_t length = strlen(prefix);
+        if (strncmp(glversion, prefix, length) == 0) {
+            glversion += length;
+            break;
+        }
+    }
+
+    int major = glversion[0] - '0';
+    int minor = glversion[2] - '0';
+    GLVersion.major = major; GLVersion.minor = minor;
 	GL_VERSION_1_0 = (major == 1 && minor >= 0) || major > 1;
 	GL_VERSION_1_1 = (major == 1 && minor >= 1) || major > 1;
 	GL_VERSION_1_2 = (major == 1 && minor >= 2) || major > 1;
@@ -5070,10 +5093,32 @@ void gladLoadGLES2(Loader load) {
 private:
 
 void find_coreGLES2() {
-	const(char)* v = cast(const(char)*)glGetString(GL_VERSION);
-	int major = v[0] - '0';
-	int minor = v[2] - '0';
-	GLVersion.major = major; GLVersion.minor = minor;
+
+    // Thank you @elmindreda
+    // https://github.com/elmindreda/greg/blob/master/templates/greg.c.in#L176
+    // https://github.com/glfw/glfw/blob/master/src/context.c#L36
+    int i;
+    const(char)* glversion;
+    const(char)*[] prefixes = [
+        "OpenGL ES-CM ".ptr,
+        "OpenGL ES-CL ".ptr,
+        "OpenGL ES ".ptr,
+    ];
+
+    glversion = cast(const(char)*)glGetString(GL_VERSION);
+    if (glversion is null) return;
+
+    foreach(prefix; prefixes) {
+        size_t length = strlen(prefix);
+        if (strncmp(glversion, prefix, length) == 0) {
+            glversion += length;
+            break;
+        }
+    }
+
+    int major = glversion[0] - '0';
+    int minor = glversion[2] - '0';
+    GLVersion.major = major; GLVersion.minor = minor;
 	GL_ES_VERSION_2_0 = (major == 2 && minor >= 0) || major > 2;
 	GL_ES_VERSION_3_0 = (major == 3 && minor >= 0) || major > 3;
 	return;
@@ -5834,10 +5879,32 @@ void gladLoadGLES1(Loader load) {
 private:
 
 void find_coreGLES1() {
-	const(char)* v = cast(const(char)*)glGetString(GL_VERSION);
-	int major = v[0] - '0';
-	int minor = v[2] - '0';
-	GLVersion.major = major; GLVersion.minor = minor;
+
+    // Thank you @elmindreda
+    // https://github.com/elmindreda/greg/blob/master/templates/greg.c.in#L176
+    // https://github.com/glfw/glfw/blob/master/src/context.c#L36
+    int i;
+    const(char)* glversion;
+    const(char)*[] prefixes = [
+        "OpenGL ES-CM ".ptr,
+        "OpenGL ES-CL ".ptr,
+        "OpenGL ES ".ptr,
+    ];
+
+    glversion = cast(const(char)*)glGetString(GL_VERSION);
+    if (glversion is null) return;
+
+    foreach(prefix; prefixes) {
+        size_t length = strlen(prefix);
+        if (strncmp(glversion, prefix, length) == 0) {
+            glversion += length;
+            break;
+        }
+    }
+
+    int major = glversion[0] - '0';
+    int minor = glversion[2] - '0';
+    GLVersion.major = major; GLVersion.minor = minor;
 	GL_VERSION_ES_CM_1_0 = (major == 1 && minor >= 0) || major > 1;
 	return;
 }
