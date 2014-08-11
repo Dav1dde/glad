@@ -113,6 +113,36 @@ _OPENGL_HEADER_END = '''
 #endif
 '''
 
+_FIND_VERSION = '''
+    // Thank you @elmindreda
+    // https://github.com/elmindreda/greg/blob/master/templates/greg.c.in#L176
+    // https://github.com/glfw/glfw/blob/master/src/context.c#L36
+    int i;
+    const char* version;
+    const char* prefixes[] = {
+        "OpenGL ES-CM ",
+        "OpenGL ES-CL ",
+        "OpenGL ES ",
+        NULL
+    };
+
+    version = (const char*) glGetString(GL_VERSION);
+    if (!version) return;
+
+    for (i = 0;  prefixes[i];  i++) {
+        const size_t length = strlen(prefixes[i]);
+        if (strncmp(version, prefixes[i], length) == 0) {
+            version += length;
+            break;
+        }
+    }
+
+    int major;
+    int minor;
+    sscanf(version, "%d.%d", &major, &minor);
+    GLVersion.major = major; GLVersion.minor = minor;
+'''
+
 
 class OpenGLCLoader(BaseLoader):
     def write(self, fobj, apis):
@@ -125,10 +155,7 @@ class OpenGLCLoader(BaseLoader):
         fobj.write('\tif(glGetString == NULL) return;\n')
 
     def write_find_core(self, fobj):
-        fobj.write('\tconst char *v = (const char *)glGetString(GL_VERSION);\n')
-        fobj.write('\tint major = v[0] - \'0\';\n')
-        fobj.write('\tint minor = v[2] - \'0\';\n')
-        fobj.write('\tGLVersion.major = major; GLVersion.minor = minor;\n')
+        fobj.write(_FIND_VERSION);
 
     def write_has_ext(self, fobj):
         fobj.write(_OPENGL_HAS_EXT)

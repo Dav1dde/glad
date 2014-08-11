@@ -150,7 +150,7 @@ class CGenerator(Generator):
             self.write_functions(f, write, set(), features)
 
         f = self._f_c
-        f.write('#include <string.h>\n#include {}\n'.format(self.h_include))
+        f.write('#include <stdio.h>\n#include <string.h>\n#include {}\n'.format(self.h_include))
         self.loader.write(f, self.api.keys())
         self.loader.write_has_ext(f)
 

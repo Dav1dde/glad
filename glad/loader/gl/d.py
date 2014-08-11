@@ -18,6 +18,7 @@ _OPENGL_HAS_EXT = '''
 static struct GLVersion { static int major = 0; static int minor = 0; }
 private extern(C) char* strstr(const(char)*, const(char)*);
 private extern(C) int strcmp(const(char)*, const(char)*);
+private extern(C) int strncmp(const(char)*, const(char)*, size_t);
 private extern(C) size_t strlen(const(char)*);
 private bool has_ext(const(char)* ext) {
     if(GLVersion.major < 3) {
@@ -57,6 +58,34 @@ private bool has_ext(const(char)* ext) {
 }
 '''
 
+_FIND_VERSION = '''
+    // Thank you @elmindreda
+    // https://github.com/elmindreda/greg/blob/master/templates/greg.c.in#L176
+    // https://github.com/glfw/glfw/blob/master/src/context.c#L36
+    int i;
+    const(char)* glversion;
+    const(char)*[] prefixes = [
+        "OpenGL ES-CM ".ptr,
+        "OpenGL ES-CL ".ptr,
+        "OpenGL ES ".ptr,
+    ];
+
+    glversion = cast(const(char)*)glGetString(GL_VERSION);
+    if (glversion is null) return;
+
+    foreach(prefix; prefixes) {
+        size_t length = strlen(prefix);
+        if (strncmp(glversion, prefix, length) == 0) {
+            glversion += length;
+            break;
+        }
+    }
+
+    int major = glversion[0] - \'0\';
+    int minor = glversion[2] - \'0\';
+    GLVersion.major = major; GLVersion.minor = minor;
+'''
+
 class OpenGLDLoader(BaseLoader):
     def write(self, fobj, apis):
         fobj.write('alias Loader = void* delegate(const(char)*);\n')
@@ -68,10 +97,7 @@ class OpenGLDLoader(BaseLoader):
         fobj.write('\tif(glGetString is null) { return; }\n\n')
 
     def write_find_core(self, fobj):
-        fobj.write('\tconst(char)* v = cast(const(char)*)glGetString(GL_VERSION);\n')
-        fobj.write('\tint major = v[0] - \'0\';\n')
-        fobj.write('\tint minor = v[2] - \'0\';\n')
-        fobj.write('\tGLVersion.major = major; GLVersion.minor = minor;\n')
+        fobj.write(_FIND_VERSION)
 
     def write_has_ext(self, fobj):
         fobj.write(_OPENGL_HAS_EXT)
