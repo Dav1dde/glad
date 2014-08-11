@@ -85,6 +85,7 @@ global int GL_MAJOR = 0;
 global int GL_MINOR = 0;
 private extern(C) char* strstr(const(char)*, const(char)*);
 private extern(C) int strcmp(const(char)*, const(char)*);
+private extern(C) int strncmp(const(char)*, const(char)*, size_t);
 private extern(C) size_t strlen(const(char)*);
 private bool has_ext(const(char)* ext) {
     if(GL_MAJOR < 3) {
