@@ -38,7 +38,7 @@ class Generator(object):
             extension_names = list(chain.from_iterable(self.spec.extensions[a]
                                                        for a in self.api))
 
-        e = chain.from_iterable(self.spec.extensions[a] for a in self.api)
+        e = list(chain.from_iterable(self.spec.extensions[a] for a in self.api))
         for ext in extension_names:
             enforce(ext in e, 'Invalid extension "{}"'.format(ext), ValueError)
 
