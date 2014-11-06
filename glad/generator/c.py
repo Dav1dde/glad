@@ -183,12 +183,14 @@ class CGenerator(Generator):
             for ext in extensions:
                 f.write('int GLAD_{};\n'.format(ext.name))
 
+        written = set()
         for ext in extensions:
             if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
             if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
             for func in ext.functions:
-                if func in write:
+                if func in write and func not in written:
                     self.write_function(f, func)
+                    written.add(func)
             if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'): f.write('#endif\n')
 
     def write_functions(self, f, write, written, extensions):

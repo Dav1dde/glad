@@ -62,7 +62,7 @@ _WGL_HEADER_END = '''
 '''
 
 _WGL_HAS_EXT = '''
-static HDC GLADWGLhdc = INVALID_HANDLE_VALUE;
+static HDC GLADWGLhdc = (HDC)INVALID_HANDLE_VALUE;
 
 static int has_ext(const char *ext) {
     const char *terminator;
