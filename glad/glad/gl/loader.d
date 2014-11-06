@@ -96,12 +96,14 @@ void close_gl() {
 }
 
 bool gladLoadGL() {
+    bool status = false;
+
     if(open_gl()) {
-        gladLoadGL(x => get_proc(x));
+        status = gladLoadGL(x => get_proc(x));
         close_gl();
-        return true;
     }
-    return false;
+
+    return status;
 }
 
 static struct GLVersion { static int major = 0; static int minor = 0; }
@@ -145,9 +147,10 @@ private bool has_ext(const(char)* ext) {
 
     return false;
 }
-void gladLoadGL(Loader load) {
+bool gladLoadGL(Loader load) {
 	glGetString = cast(typeof(glGetString))load("glGetString");
-	if(glGetString is null) { return; }
+	if(glGetString is null) { return false; }
+	if(glGetString(GL_VERSION) is null) { return false; }
 
 	find_coreGL();
 	load_GL_VERSION_1_0(load);
@@ -423,8 +426,7 @@ void gladLoadGL(Loader load) {
 	load_GL_OES_query_matrix(load);
 	load_GL_EXT_blend_minmax(load);
 	load_GL_OES_byte_coordinates(load);
-
-	return;
+	return GLVersion.major != 0 && GLVersion.minor != 0;
 }
 
 private:
@@ -5010,9 +5012,10 @@ void load_GL_EXT_draw_range_elements(Loader load) {
 	glDrawRangeElementsEXT = cast(typeof(glDrawRangeElementsEXT))load("glDrawRangeElementsEXT");
 	return;
 }
-void gladLoadGLES2(Loader load) {
+bool gladLoadGLES2(Loader load) {
 	glGetString = cast(typeof(glGetString))load("glGetString");
-	if(glGetString is null) { return; }
+	if(glGetString is null) { return false; }
+	if(glGetString(GL_VERSION) is null) { return false; }
 
 	find_coreGLES2();
 	load_GL_ES_VERSION_2_0(load);
@@ -5086,8 +5089,7 @@ void gladLoadGLES2(Loader load) {
 	load_GL_APPLE_sync(load);
 	load_GL_EXT_texture_storage(load);
 	load_GL_QCOM_driver_control(load);
-
-	return;
+	return GLVersion.major != 0 && GLVersion.minor != 0;
 }
 
 private:
@@ -5806,9 +5808,10 @@ void load_GL_OES_vertex_array_object(Loader load) {
 	glIsVertexArrayOES = cast(typeof(glIsVertexArrayOES))load("glIsVertexArrayOES");
 	return;
 }
-void gladLoadGLES1(Loader load) {
+bool gladLoadGLES1(Loader load) {
 	glGetString = cast(typeof(glGetString))load("glGetString");
-	if(glGetString is null) { return; }
+	if(glGetString is null) { return false; }
+	if(glGetString(GL_VERSION) is null) { return false; }
 
 	find_coreGLES1();
 	load_GL_VERSION_ES_CM_1_0(load);
@@ -5872,8 +5875,7 @@ void gladLoadGLES1(Loader load) {
 	load_GL_APPLE_sync(load);
 	load_GL_EXT_texture_storage(load);
 	load_GL_QCOM_driver_control(load);
-
-	return;
+	return GLVersion.major != 0 && GLVersion.minor != 0;
 }
 
 private:

@@ -96,19 +96,20 @@ void close_gl() {
 }
 
 bool gladLoadWGL() {
+    bool status = false;
+
     if(open_gl()) {
-        gladLoadWGL(x => get_proc(x));
+        status = gladLoadWGL(x => get_proc(x));
         close_gl();
-        return true;
     }
 
-    return false;
+    return status;
 }
 
 private bool has_ext(const(char)* name) {
     return true;
 }
-void gladLoadWGL(Loader load) {
+bool gladLoadWGL(Loader load) {
 	find_coreWGL();
 
 	find_extensionsWGL();
@@ -142,8 +143,7 @@ void gladLoadWGL(Loader load) {
 	load_WGL_EXT_make_current_read(load);
 	load_WGL_I3D_swap_frame_lock(load);
 	load_WGL_ARB_buffer_region(load);
-
-	return;
+	return true;
 }
 
 private:
