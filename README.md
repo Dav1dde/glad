@@ -10,7 +10,7 @@ Advantages:
  * Supports every Extension (GL/EGL/GLX/WGL)
  * Easy to maintain and extend (supporting multiple languages at once)
  * Allows you to use your own loader or e.g. SDL_GL_GetProcAddress instead of the builtin
- * Easy way to check if an extension is loaded `if(GL_EXT_Cg_shader) { /* Exists */ }`
+ * Easy way to check if an extension is loaded `if(GL_EXT_framebuffer_multisample) { /* Exists */ }`
  * Can generate a loader which fits exactly your needs, only the extensions and version you need
 
 What a D code using glad (and SDL) could look like:
@@ -40,7 +40,7 @@ You're not familiar with D, here is a C example:
 
 If you don't want to generate your own loader or just wanna check out the generated code:
 
- * C loader: https://github.com/Dav1dde/glad/tree/c
+ * C/C++ loader: https://github.com/Dav1dde/glad/tree/c
  * D loader: https://github.com/Dav1dde/glad/tree/d
  * Volt bindings: https://github.com/Dav1dde/glad/tree/volt
 
@@ -83,7 +83,7 @@ Possible commandline options:
 By default a loader for the D programming language will be generated. To generate
 a loader for C with two extensions, it could look like this:
 
-    python main.py --generator=c --extensions=GL_EXT_framebuffer_multisample,GL_EXT_Cg_shader --out-path=GL
+    python main.py --generator=c --extensions=GL_EXT_framebuffer_multisample,GL_EXT_texture_filter_anisotropic --out-path=GL
 
 `--out-path` is the only required option. If the `--extensions` option is missing,
 glad adds support for all extensions found in the OpenGL spec.
@@ -120,13 +120,13 @@ void gladLoadGLLoader(GLADloadproc);
 ```
 
 
-#### C ####
+#### C/C++ ####
 
 `glad.h` completely replaces any `gl.h` or `gl3.h` only include `glad.h`.
 
     if(!gladLoadGL()) { exit(-1) };
     printf("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
-    if(GLAD_GL_EXT_gpu_shader4) { /* GL_EXT_gpu_shader4 is supported */ }
+    if(GLAD_GL_EXT_framebuffer_multisample) { /* GL_EXT_framebuffer_multisample is supported */ }
     if(GLAD_GL_VERSION_3_0) { /* We support at least OpenGL version 3 */ }
 
 On non-Windows platforms `glad` requires `libdl`, make sure to link with it (`-ldl` for gcc)!
@@ -145,7 +145,7 @@ the functions needed to initialize `glad` and load the OpenGL functions.
 
     enforce(gladLoadGL());
     writefln("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
-    if(GL_EXT_gpu_shader4) { /* GL_EXT_gpu_shader4 is supported */ }
+    if(GL_EXT_framebuffer_multisample) { /* GL_EXT_framebuffer_multisample is supported */ }
     if(GL_VERSION_3_0) { /* We support at least OpenGL version 3 */ }
 
 On non-Windows platforms `glad` requires `libdl`, make sure to link with it (`L-ldl` for dmd)!

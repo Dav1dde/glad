@@ -8,8 +8,10 @@
 #endif
 
 // This file is a modified version of gl3w's test.c
+// https://github.com/skaslev/gl3w/blob/master/src/test.c
 
-// gcc -I. example/c/simple.c GL/glad.c -ldl -lglut
+// gcc -IGL/include example/c/simple.c GL/src/glad.c -ldl -lglut
+
 
 static int width = 600, height = 600;
 

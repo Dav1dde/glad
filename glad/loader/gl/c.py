@@ -89,14 +89,16 @@ _OPENGL_HEADER = '''
 #define APIENTRYP APIENTRY *
 #endif
 
-extern struct gladGLversionStruct {
-    int major;
-    int minor;
-} GLVersion;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+struct gladGLversionStruct {
+    int major;
+    int minor;
+};
+
+extern struct gladGLversionStruct GLVersion;
 
 typedef void* (* GLADloadproc)(const char *name);
 ''' + LOAD_OPENGL_GLAPI_H
