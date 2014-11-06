@@ -5,13 +5,14 @@ _GLX_LOADER = \
     LOAD_OPENGL_DLL % {'pre':'static', 'init':'open_gl',
                        'proc':'get_proc', 'terminate':'close_gl'} + '''
 int gladLoadGLX(Display *dpy, int screen) {
+    int status = 0;
+
     if(open_gl()) {
-        gladLoadGLXLoader((GLADloadproc)get_proc, dpy, screen);
+        status = gladLoadGLXLoader((GLADloadproc)get_proc, dpy, screen);
         close_gl();
-        return 1;
     }
 
-    return 0;
+    return status;
 }
 '''
 
@@ -100,7 +101,7 @@ class GLXCLoader(BaseLoader):
 
     def write_begin_load(self, fobj):
         fobj.write('\tglXQueryVersion = (PFNGLXQUERYVERSIONPROC)load("glXQueryVersion");\n')
-        fobj.write('\tif(glXQueryVersion == NULL) return;\n')
+        fobj.write('\tif(glXQueryVersion == NULL) return 0;\n')
 
     def write_find_core(self, fobj):
         fobj.write('\tint major = 0, minor = 0;\n')

@@ -1,8 +1,8 @@
 from glad.loader import BaseLoader
 
 _EGL_LOADER = '''
-void gladLoadEGL(void) {
-    gladLoadEGLLoader((GLADloadproc)eglGetProcAddress);
+int gladLoadEGL(void) {
+    return gladLoadEGLLoader((GLADloadproc)eglGetProcAddress);
 }
 '''
 
@@ -38,11 +38,11 @@ extern "C" {
 #endif
 
 typedef void* (* GLADloadproc)(const char *name);
-void gladLoadEGLLoader(GLADloadproc);
+GLAPI int gladLoadEGLLoader(GLADloadproc);
 '''
 
 _EGL_HEADER_LOADER = '''
-void gladLoadEGL(void);
+GLAPI int gladLoadEGL(void);
 '''
 
 _EGL_HEADER_END = '''
@@ -54,9 +54,6 @@ _EGL_HEADER_END = '''
 '''
 
 _EGL_HAS_EXT = '''
-static int has_ext(const char *ext) {
-    return 1;
-}
 '''
 
 

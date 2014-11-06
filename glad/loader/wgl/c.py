@@ -5,13 +5,14 @@ _WGL_LOADER = \
     LOAD_OPENGL_DLL % {'pre':'static', 'init':'open_gl',
                        'proc':'get_proc', 'terminate':'close_gl'} + '''
 int gladLoadWGL(HDC hdc) {
+    int status = 0;
+
     if(open_gl()) {
-        gladLoadWGLLoader((GLADloadproc)get_proc, hdc);
+        status = gladLoadWGLLoader((GLADloadproc)get_proc, hdc);
         close_gl();
-        return 1;
     }
 
-    return 0;
+    return status;
 }
 '''
 
@@ -105,10 +106,9 @@ class WGLCLoader(BaseLoader):
     def write_begin_load(self, fobj):
         fobj.write('\twglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)load("wglGetExtensionsStringARB");\n')
         fobj.write('\twglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)load("wglGetExtensionsStringEXT");\n')
-        fobj.write('\tif(wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return;\n')
+        fobj.write('\tif(wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return 0;\n')
 
     def write_find_core(self, fobj):
-        fobj.write('\tint major = 9;\n\tint minor = 9;\n')
         fobj.write('\tGLADWGLhdc = hdc;\n')
 
     def write_has_ext(self, fobj):

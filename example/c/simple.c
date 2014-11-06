@@ -35,6 +35,12 @@ static void reshape(int w, int h)
 
 int main(int argc, char **argv)
 {
+    if(gladLoadGL()) {
+        // you need an OpenGL context before loading glad
+        printf("I did load GL with no context!\n");
+        exit(-1);
+    }
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(width, height);

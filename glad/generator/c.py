@@ -99,11 +99,11 @@ class CGenerator(Generator):
             f.write('}\n\n')
 
             if api == 'glx':
-                f.write('void gladLoad{}Loader(GLADloadproc load, Display *dpy, int screen) {{\n'.format(api.upper()))
+                f.write('int gladLoad{}Loader(GLADloadproc load, Display *dpy, int screen) {{\n'.format(api.upper()))
             elif api == 'wgl':
-                f.write('void gladLoad{}Loader(GLADloadproc load, HDC hdc) {{\n'.format(api.upper()))
+                f.write('int gladLoad{}Loader(GLADloadproc load, HDC hdc) {{\n'.format(api.upper()))
             else:
-                f.write('void gladLoad{}Loader(GLADloadproc load) {{\n'.format(api.upper()))
+                f.write('int gladLoad{}Loader(GLADloadproc load) {{\n'.format(api.upper()))
 
             self.loader.write_begin_load(f)
 
@@ -121,7 +121,11 @@ class CGenerator(Generator):
                 if len(list(ext.functions)) == 0:
                     continue
                 f.write('\tload_{}(load);\n'.format(ext.name))
-            f.write('\n\treturn;\n}\n\n')
+
+            if api == 'gl':
+                f.write('\n\treturn GLVersion.major != 0 && GLVersion.minor != 0;\n}\n\n')
+            else:
+                f.write('\n\treturn 1;\n}\n\n')
 
         self.loader.write_header_end(self._f_h)
 
@@ -132,11 +136,11 @@ class CGenerator(Generator):
 
         for api in self.api:
             if api == 'glx':
-                f.write('GLAPI void gladLoad{}Loader(GLADloadproc, Display *dpy, int screen);\n\n'.format(api.upper()))
+                f.write('GLAPI int gladLoad{}Loader(GLADloadproc, Display *dpy, int screen);\n\n'.format(api.upper()))
             elif api == 'wgl':
-                f.write('GLAPI void gladLoad{}Loader(GLADloadproc, HDC hdc);\n\n'.format(api.upper()))
+                f.write('GLAPI int gladLoad{}Loader(GLADloadproc, HDC hdc);\n\n'.format(api.upper()))
             else:
-                f.write('GLAPI void gladLoad{}Loader(GLADloadproc);\n\n'.format(api.upper()))
+                f.write('GLAPI int gladLoad{}Loader(GLADloadproc);\n\n'.format(api.upper()))
 
         for type in types:
             if not self.spec.NAME in ('egl',) and 'khronos' in type.raw:
