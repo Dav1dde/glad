@@ -16,18 +16,18 @@ private void* get_proc(string name) {
     return eglGetProcAddress(arg.ptr);
 }
 
-void gladLoadEGL() {
+bool gladLoadEGL() {
     StructToDg structToDg;
     structToDg.func = cast(void*)get_proc;
     auto dg = *cast(Loader*)&structToDg;
 
-    gladLoadEGL(dg);
+    return gladLoadEGL(dg);
 }
 
 private bool has_ext(const(char)* ext) {
     return true;
 }
-void gladLoadEGL(Loader load) {
+bool gladLoadEGL(Loader load) {
 	find_coreEGL();
 
 	find_extensionsEGL();
@@ -52,9 +52,7 @@ void gladLoadEGL(Loader load) {
 	load_EGL_KHR_stream_cross_process_fd(load);
 	load_EGL_EXT_platform_base(load);
 	load_EGL_ANDROID_blob_cache(load);
-
-	return;
-}
+	return true;}
 
 private:
 

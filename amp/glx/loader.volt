@@ -74,19 +74,20 @@ bool gladLoadGLX() {
     structToDg.func = cast(void*)get_proc;
     auto dg = *cast(Loader*)&structToDg;
 
+    bool status = false;
+
     if(open_gl()) {
-        gladLoadGLX(dg);
+        status = gladLoadGLX(dg);
         close_gl();
-        return true;
     }
 
-    return false;
+    return status;
 }
 
 private bool has_ext(const(char)* name) {
     return true;
 }
-void gladLoadGLX(Loader load) {
+bool gladLoadGLX(Loader load) {
 	find_coreGLX();
 	load_GLX_VERSION_1_0(load);
 	load_GLX_VERSION_1_1(load);
@@ -124,8 +125,7 @@ void gladLoadGLX(Loader load) {
 	load_GLX_NV_present_video(load);
 	load_GLX_SUN_get_transparent_index(load);
 	load_GLX_ARB_get_proc_address(load);
-
-	return;
+	return true;
 }
 
 private:
