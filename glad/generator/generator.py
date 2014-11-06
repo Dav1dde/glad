@@ -26,11 +26,11 @@ class Generator(object):
 
     def generate(self, extension_names=None):
         features = list()
-        for api, version in self.api.iteritems():
+        for api, version in self.api.items():
             features.extend(self.spec.features[api])
 
             if version is None:
-                version = self.api[api] = self.spec.features[api].keys()[-1]
+                version = self.api[api] = list(self.spec.features[api].keys())[-1]
             enforce(version in self.spec.features[api],
                     'Unknown version', ValueError)
 
@@ -46,7 +46,7 @@ class Generator(object):
         self.generate_types(types)
 
         f = list()
-        for api, version in self.api.iteritems():
+        for api, version in self.api.items():
             f.extend([value for key, value in self.spec.features[api].items()
                         if key <= version])
         enums, functions = merge(f)
@@ -61,7 +61,7 @@ class Generator(object):
 
         fs = defaultdict(list)
         es = defaultdict(list)
-        for api, version in self.api.iteritems():
+        for api, version in self.api.items():
             fs[api].extend([value for key, value in self.spec.features[api].items()
                         if key <= version])
             es[api].extend(self.spec.extensions[api][ext]

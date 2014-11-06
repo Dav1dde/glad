@@ -3,10 +3,15 @@ try:
 except ImportError:
     import xml.etree.ElementTree as etree
 
-from contextlib import closing
-from urllib2 import urlopen
-from itertools import chain
 from collections import defaultdict, OrderedDict
+from contextlib import closing
+from itertools import chain
+import sys
+
+if sys.version_info >= (3, 0):
+    from urllib.request import urlopen
+else:
+    from urllib2 import urlopen
 
 
 class Spec(object):

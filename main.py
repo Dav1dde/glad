@@ -1,8 +1,11 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 '''Uses the offcial Khronos-XML specs to generate a
 GL/GLES/EGL/GLX/WGL Loader made for your needs. Glad currently supports
 the languages C, D and Volt.'''
+
+from __future__ import print_function
+
 
 from glad.gl import OpenGLSpec
 from glad.egl import EGLSpec
@@ -14,13 +17,14 @@ from glad.loader import NullLoader, get_loader
 from collections import namedtuple
 
 SPECS = {
-    'gl' : OpenGLSpec,
-    'egl' : EGLSpec,
-    'glx' : GLXSpec,
-    'wgl' : WGLSpec
+    'gl': OpenGLSpec,
+    'egl': EGLSpec,
+    'glx': GLXSpec,
+    'wgl': WGLSpec
 }
 
 Version = namedtuple('Version', ['major', 'minor'])
+
 
 def main():
     import os.path
@@ -28,17 +32,16 @@ def main():
     from argparse import ArgumentParser
 
     def get_spec(value):
-        if not value in SPECS:
+        if value not in SPECS:
             raise argparse.ArgumentTypeError('Unknown spec')
 
         Spec = SPECS[value]
 
         if os.path.exists(value + '.xml'):
-            print 'Using local spec: {}.xml'.format(value)
+            print('Using local spec: {}.xml'.format(value))
             return Spec.from_file(value + '.xml')
-        print 'Downloading latest spec from svn...'
+        print('Downloading latest spec from svn...')
         return Spec.from_svn()
-
 
     def ext_file(value):
         msg = 'Invalid extensions argument'
@@ -58,13 +61,13 @@ def main():
         if value is None or len(value.strip()) == 0:
             return None
 
-        if not '.' in value:
+        if '.' not in value:
             value = '{}.0'.format(value)
 
         try:
             v = Version(*map(int, value.split('.')))
             return v
-        except Exception, e:
+        except Exception as e:
             pass
 
         raise argparse.ArgumentTypeError('Invalid version: "{}"'.format(value))
@@ -107,7 +110,7 @@ def main():
 
     api = ns.api
     if api is None or len(api.keys()) == 0:
-        api = {spec.NAME : None}
+        api = {spec.NAME: None}
 
     try:
         loader = get_loader(ns.generator, spec.NAME)
@@ -117,7 +120,7 @@ def main():
 
     Generator = get_generator(ns.generator)
 
-    print 'Generating {spec} bindings...'.format(spec=spec.NAME)
+    print('Generating {spec} bindings...'.format(spec=spec.NAME))
     with Generator(ns.out, spec, api, loader) as generator:
         #try:
         generator.generate(ns.extensions)

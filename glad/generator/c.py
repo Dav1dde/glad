@@ -1,10 +1,17 @@
 from glad.generator import Generator
 from glad.generator.util import makefiledir
-from urllib import urlretrieve
 import os.path
 import os
+import sys
+
+if sys.version_info >= (3, 0):
+    from urllib.request import urlretrieve
+else:
+    from urllib import urlretrieve
+
 
 KHRPLATFORM = 'https://www.khronos.org/registry/egl/api/KHR/khrplatform.h'
+
 
 class CGenerator(Generator):
     def open(self):
@@ -38,7 +45,7 @@ class CGenerator(Generator):
             features = {'egl' : [], 'wgl' : []}
 
         written = set()
-        for api, version in self.api.iteritems():
+        for api, version in self.api.items():
             for feature in features[api]:
                 f.write('static void load_{}(GLADloadproc load) {{\n'
                         .format(feature.name))

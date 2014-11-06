@@ -1,5 +1,9 @@
 from glad.generator.d import DGenerator
 import os.path
+import sys
+
+if sys.version_info >= (3, 0):
+    basestring = str
 
 
 class VoltGenerator(DGenerator):

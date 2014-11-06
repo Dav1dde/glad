@@ -2,8 +2,15 @@ from glad.generator import Generator
 from glad.generator.util import makefiledir
 from glad.loader import NullLoader
 from itertools import chain
-from StringIO import StringIO
 import os.path
+import sys
+
+if sys.version_info >= (3, 0):
+    from io import StringIO
+    basestring = str
+else:
+    from StringIO import StringIO
+
 
 def _gl_types(gen, f):
     gen.write_opaque_struct(f, '__GLsync')
@@ -464,7 +471,7 @@ class BaseDGenerator(Generator):
         self.loader.write_has_ext(f)
 
         written = set()
-        for api, version in self.api.iteritems():
+        for api, version in self.api.items():
             loadername = 'Load' if self.LOAD_GL_PREFIX else 'load'
             f.write('void {}{}{}(Loader load) {{\n'
                     .format(self.LOAD_GL_PREFIX, loadername, api.upper()))
@@ -532,7 +539,7 @@ class BaseDGenerator(Generator):
         self.write_module(f, self.PACKAGE)
         self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES], False)
 
-        for api, features in allfeatures.iteritems():
+        for api, features in allfeatures.items():
             extensions = allextensions[api]
             with open(self.make_path(api), 'w') as f:
                 self.write_module(f, api)
