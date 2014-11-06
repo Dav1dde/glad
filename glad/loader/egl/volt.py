@@ -11,12 +11,12 @@ private void* get_proc(string name) {
     return eglGetProcAddress(arg.ptr);
 }
 
-void gladLoadEGL() {
+bool gladLoadEGL() {
     StructToDg structToDg;
     structToDg.func = cast(void*)get_proc;
     auto dg = *cast(Loader*)&structToDg;
 
-    gladLoadEGL(dg);
+    return gladLoadEGL(dg);
 }
 '''
 _EGL_HAS_EXT = _D_EGL_HAS_EXT
@@ -29,6 +29,9 @@ class EGLVoltLoader(BaseLoader):
 
     def write_begin_load(self, fobj):
         pass
+
+    def write_end_load(self, fobj):
+        fobj.write('\treturn true;')
 
     def write_find_core(self, fobj):
         pass

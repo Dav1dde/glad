@@ -5,13 +5,14 @@ _GLX_LOADER = \
     LOAD_OPENGL_DLL % {'pre':'private', 'init':'open_gl',
                        'proc':'get_proc', 'terminate':'close_gl'} + '''
 bool gladLoadGLX() {
+    bool status = false;
+
     if(open_gl()) {
-        gladLoadGLX(x => get_proc(x));
+        status = gladLoadGLX(x => get_proc(x));
         close_gl();
-        return true;
     }
 
-    return false;
+    return status;
 }
 '''
 
@@ -29,6 +30,9 @@ class GLXDLoader(BaseLoader):
 
     def write_begin_load(self, fobj):
         pass
+
+    def write_end_load(self, fobj):
+        fobj.write('\treturn true;\n')
 
     def write_find_core(self, fobj):
         pass

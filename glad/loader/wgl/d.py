@@ -19,6 +19,9 @@ class WGLDLoader(BaseLoader):
     def write_begin_load(self, fobj):
         pass
 
+    def write_end_load(self, fobj):
+        fobj.write('\treturn true;\n')
+
     def write_find_core(self, fobj):
         pass
 

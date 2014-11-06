@@ -5,12 +5,14 @@ _OPENGL_LOADER = \
     LOAD_OPENGL_DLL % {'pre':'private', 'init':'open_gl',
                        'proc':'get_proc', 'terminate':'close_gl'} + '''
 bool gladLoadGL() {
+    bool status = false;
+
     if(open_gl()) {
-        gladLoadGL(x => get_proc(x));
+        status = gladLoadGL(x => get_proc(x));
         close_gl();
-        return true;
     }
-    return false;
+
+    return status;
 }
 '''
 
@@ -94,7 +96,11 @@ class OpenGLDLoader(BaseLoader):
 
     def write_begin_load(self, fobj):
         fobj.write('\tglGetString = cast(typeof(glGetString))load("glGetString");\n')
-        fobj.write('\tif(glGetString is null) { return; }\n\n')
+        fobj.write('\tif(glGetString is null) { return false; }\n')
+        fobj.write('\tif(glGetString(GL_VERSION) is null) { return false; }\n\n')
+
+    def write_end_load(self, fobj):
+        fobj.write('\treturn GLVersion.major != 0 && GLVersion.minor != 0;\n')
 
     def write_find_core(self, fobj):
         fobj.write(_FIND_VERSION)

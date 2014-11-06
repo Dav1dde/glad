@@ -10,12 +10,14 @@ bool gladLoadGL() {
     structToDg.func = cast(void*)get_proc;
     auto dg = *cast(Loader*)&structToDg;
 
+    bool status = false;
+
     if(open_gl()) {
-        gladLoadGL(dg);
+        status = gladLoadGL(dg);
         close_gl();
-        return true;
     }
-    return false;
+
+    return status;
 }
 '''
 
@@ -32,7 +34,11 @@ class OpenGLVoltLoader(BaseLoader):
 
     def write_begin_load(self, fobj):
         fobj.write('\tglGetString = cast(typeof(glGetString))load("glGetString");\n')
-        fobj.write('\tif(glGetString is null) { return; }\n\n')
+        fobj.write('\tif(glGetString is null) { return false; }\n')
+        fobj.write('\tif(glGetString(GL_VERSION) is null) { return false; }\n\n')
+
+    def write_end_load(self, fobj):
+        fobj.write('\treturn GL_MAJOR != 0 && GL_MINOR != 0;\n')
 
     def write_find_core(self, fobj):
         fobj.write('\tconst(char)* v = cast(const(char)*)glGetString(GL_VERSION);\n')

@@ -1,8 +1,8 @@
 from glad.loader import BaseLoader
 
 _EGL_LOADER = '''
-void gladLoadEGL() {
-    gladLoadEGL(x => eglGetProcAddress(x));
+bool gladLoadEGL() {
+    return gladLoadEGL(x => eglGetProcAddress(x));
 }
 '''
 
@@ -20,6 +20,9 @@ class EGLDLoader(BaseLoader):
 
     def write_begin_load(self, fobj):
         pass
+
+    def write_end_load(self, fobj):
+        fobj.write('\treturn true;\n')
 
     def write_find_core(self, fobj):
         pass

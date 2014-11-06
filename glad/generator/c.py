@@ -122,10 +122,8 @@ class CGenerator(Generator):
                     continue
                 f.write('\tload_{}(load);\n'.format(ext.name))
 
-            if api == 'gl':
-                f.write('\n\treturn GLVersion.major != 0 && GLVersion.minor != 0;\n}\n\n')
-            else:
-                f.write('\n\treturn 1;\n}\n\n')
+            self.loader.write_end_load(f)
+            f.write('}\n\n')
 
         self.loader.write_header_end(self._f_h)
 

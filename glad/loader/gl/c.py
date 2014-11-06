@@ -159,6 +159,9 @@ class OpenGLCLoader(BaseLoader):
         fobj.write('\tif(glGetString == NULL) return 0;\n')
         fobj.write('\tif(glGetString(GL_VERSION) == NULL) return 0;\n')
 
+    def write_end_load(self, fobj):
+        fobj.write('\treturn GLVersion.major != 0 && GLVersion.minor != 0;\n')
+
     def write_find_core(self, fobj):
         fobj.write(_FIND_VERSION);
 

@@ -103,6 +103,9 @@ class GLXCLoader(BaseLoader):
         fobj.write('\tglXQueryVersion = (PFNGLXQUERYVERSIONPROC)load("glXQueryVersion");\n')
         fobj.write('\tif(glXQueryVersion == NULL) return 0;\n')
 
+    def write_end_load(self, fobj):
+        fobj.write('\treturn 1;\n')
+
     def write_find_core(self, fobj):
         fobj.write('\tint major = 0, minor = 0;\n')
         fobj.write('\tif(dpy == 0 && GLADGLXDisplay == 0) {\n')

@@ -9,13 +9,14 @@ bool gladLoadGLX() {
     structToDg.func = cast(void*)get_proc;
     auto dg = *cast(Loader*)&structToDg;
 
+    bool status = false;
+
     if(open_gl()) {
-        gladLoadGLX(dg);
+        status = gladLoadGLX(dg);
         close_gl();
-        return true;
     }
 
-    return false;
+    return status;
 }
 '''
 
@@ -32,6 +33,9 @@ class GLXVoltLoader(BaseLoader):
 
     def write_begin_load(self, fobj):
         pass
+
+    def write_end_load(self, fobj):
+        fobj.write('\treturn true;\n')
 
     def write_find_core(self, fobj):
         pass

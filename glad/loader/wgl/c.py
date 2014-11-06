@@ -108,6 +108,9 @@ class WGLCLoader(BaseLoader):
         fobj.write('\twglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)load("wglGetExtensionsStringEXT");\n')
         fobj.write('\tif(wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return 0;\n')
 
+    def write_end_load(self, fobj):
+        fobj.write('\treturn 1;\n')
+
     def write_find_core(self, fobj):
         fobj.write('\tGLADWGLhdc = hdc;\n')
 

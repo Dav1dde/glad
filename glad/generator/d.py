@@ -473,7 +473,7 @@ class BaseDGenerator(Generator):
         written = set()
         for api, version in self.api.items():
             loadername = 'Load' if self.LOAD_GL_PREFIX else 'load'
-            f.write('void {}{}{}(Loader load) {{\n'
+            f.write('bool {}{}{}(Loader load) {{\n'
                     .format(self.LOAD_GL_PREFIX, loadername, api.upper()))
             self.loader.write_begin_load(f)
             f.write('\tfind_core{}();\n'.format(api.upper()))
@@ -484,7 +484,8 @@ class BaseDGenerator(Generator):
                 if len(list(ext.functions)) == 0:
                     continue
                 f.write('\tload_{}(load);\n'.format(ext.name))
-            f.write('\n\treturn;\n}\n\n')
+            self.loader.write_end_load(f)
+            f.write('}\n\n')
 
             f.write('private:\n\n')
 
