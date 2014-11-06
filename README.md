@@ -155,8 +155,5 @@ On non-Windows platforms `glad` requires `libdl`, make sure to link with it (`L-
 Contributing is easy! Found a bug? Message me or make a pull request! Added a new generator backend?
 Make a pull request!
 
-People who contributed so far (special thanks):
-
-* [Slime](https://github.com/slime73/)
-* [GLWT team](https://github.com/rikusalminen/glwt)
-* #OpenGL on Freenode
+Special thanks for all the people who contributed and are going to contribute!
+Also to these who helped me solve a problem when I simply could not think of a solution.
