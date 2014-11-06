@@ -58,7 +58,7 @@ typedef void* (* GLADloadproc)(const char *name);
 
 GLAPI int gladLoadWGL(HDC hdc);
 
-GLAPI void gladLoadWGLLoader(GLADloadproc, HDC hdc);
+GLAPI int gladLoadWGLLoader(GLADloadproc, HDC hdc);
 
 struct _GPU_DEVICE {
     DWORD  cb;

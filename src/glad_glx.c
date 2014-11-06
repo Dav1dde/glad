@@ -101,13 +101,14 @@ void* get_proc(const char *namez) {
 }
 
 int gladLoadGLX(Display *dpy, int screen) {
+    int status = 0;
+
     if(open_gl()) {
-        gladLoadGLXLoader((GLADloadproc)get_proc, dpy, screen);
+        status = gladLoadGLXLoader((GLADloadproc)get_proc, dpy, screen);
         close_gl();
-        return 1;
     }
 
-    return 0;
+    return status;
 }
 
 static Display *GLADGLXDisplay = 0;
@@ -626,9 +627,9 @@ static void find_coreGLX(Display *dpy, int screen) {
 	GLAD_GLX_VERSION_1_4 = (major == 1 && minor >= 4) || major > 1;
 }
 
-void gladLoadGLXLoader(GLADloadproc load, Display *dpy, int screen) {
+int gladLoadGLXLoader(GLADloadproc load, Display *dpy, int screen) {
 	glXQueryVersion = (PFNGLXQUERYVERSIONPROC)load("glXQueryVersion");
-	if(glXQueryVersion == NULL) return;
+	if(glXQueryVersion == NULL) return 0;
 	find_coreGLX(dpy, screen);
 	load_GLX_VERSION_1_0(load);
 	load_GLX_VERSION_1_1(load);
@@ -666,7 +667,6 @@ void gladLoadGLXLoader(GLADloadproc load, Display *dpy, int screen) {
 	load_GLX_NV_present_video(load);
 	load_GLX_SUN_get_transparent_index(load);
 	load_GLX_ARB_get_proc_address(load);
-
-	return;
+	return 1;
 }
 

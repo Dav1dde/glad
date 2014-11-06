@@ -30,10 +30,10 @@ extern "C" {
 #endif
 
 typedef void* (* GLADloadproc)(const char *name);
-void gladLoadEGLLoader(GLADloadproc);
+GLAPI int gladLoadEGLLoader(GLADloadproc);
 
-void gladLoadEGL(void);
-GLAPI void gladLoadEGLLoader(GLADloadproc);
+GLAPI int gladLoadEGL(void);
+GLAPI int gladLoadEGLLoader(GLADloadproc);
 
 #include <KHR/khrplatform.h>
 #include <EGL/eglplatform.h>

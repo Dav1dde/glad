@@ -22,14 +22,16 @@
 #define APIENTRYP APIENTRY *
 #endif
 
-extern struct gladGLversionStruct {
-    int major;
-    int minor;
-} GLVersion;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+struct gladGLversionStruct {
+    int major;
+    int minor;
+};
+
+extern struct gladGLversionStruct GLVersion;
 
 typedef void* (* GLADloadproc)(const char *name);
 
@@ -61,11 +63,11 @@ typedef void* (* GLADloadproc)(const char *name);
 
 GLAPI int gladLoadGL(void);
 
-GLAPI void gladLoadGLLoader(GLADloadproc);
+GLAPI int gladLoadGLLoader(GLADloadproc);
 
-GLAPI void gladLoadGLES2Loader(GLADloadproc);
+GLAPI int gladLoadGLES2Loader(GLADloadproc);
 
-GLAPI void gladLoadGLES1Loader(GLADloadproc);
+GLAPI int gladLoadGLES1Loader(GLADloadproc);
 
 #include <stddef.h>
 #include <KHR/khrplatform.h>

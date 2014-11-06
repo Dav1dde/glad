@@ -2,13 +2,10 @@
 #include <string.h>
 #include <glad/glad_egl.h>
 
-void gladLoadEGL(void) {
-    gladLoadEGLLoader((GLADloadproc)eglGetProcAddress);
+int gladLoadEGL(void) {
+    return gladLoadEGLLoader((GLADloadproc)eglGetProcAddress);
 }
 
-static int has_ext(const char *ext) {
-    return 1;
-}
 PFNEGLLOCKSURFACEKHRPROC glad_eglLockSurfaceKHR;
 PFNEGLUNLOCKSURFACEKHRPROC glad_eglUnlockSurfaceKHR;
 PFNEGLQUERYSTREAMTIMEKHRPROC glad_eglQueryStreamTimeKHR;
@@ -147,7 +144,7 @@ static void find_extensionsEGL(void) {
 static void find_coreEGL(void) {
 }
 
-void gladLoadEGLLoader(GLADloadproc load) {
+int gladLoadEGLLoader(GLADloadproc load) {
 	find_coreEGL();
 
 	find_extensionsEGL();
@@ -172,7 +169,6 @@ void gladLoadEGLLoader(GLADloadproc load) {
 	load_EGL_KHR_stream_cross_process_fd(load);
 	load_EGL_EXT_platform_base(load);
 	load_EGL_ANDROID_blob_cache(load);
-
-	return;
+	return 1;
 }
 

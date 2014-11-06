@@ -101,16 +101,17 @@ void* get_proc(const char *namez) {
 }
 
 int gladLoadWGL(HDC hdc) {
+    int status = 0;
+
     if(open_gl()) {
-        gladLoadWGLLoader((GLADloadproc)get_proc, hdc);
+        status = gladLoadWGLLoader((GLADloadproc)get_proc, hdc);
         close_gl();
-        return 1;
     }
 
-    return 0;
+    return status;
 }
 
-static HDC GLADWGLhdc = INVALID_HANDLE_VALUE;
+static HDC GLADWGLhdc = (HDC)INVALID_HANDLE_VALUE;
 
 static int has_ext(const char *ext) {
     const char *terminator;
@@ -577,15 +578,13 @@ static void find_extensionsWGL(void) {
 }
 
 static void find_coreWGL(HDC hdc) {
-	int major = 9;
-	int minor = 9;
 	GLADWGLhdc = hdc;
 }
 
-void gladLoadWGLLoader(GLADloadproc load, HDC hdc) {
+int gladLoadWGLLoader(GLADloadproc load, HDC hdc) {
 	wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)load("wglGetExtensionsStringARB");
 	wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)load("wglGetExtensionsStringEXT");
-	if(wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return;
+	if(wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return 0;
 	find_coreWGL(hdc);
 
 	find_extensionsWGL();
@@ -619,7 +618,6 @@ void gladLoadWGLLoader(GLADloadproc load, HDC hdc) {
 	load_WGL_EXT_make_current_read(load);
 	load_WGL_I3D_swap_frame_lock(load);
 	load_WGL_ARB_buffer_region(load);
-
-	return;
+	return 1;
 }
 

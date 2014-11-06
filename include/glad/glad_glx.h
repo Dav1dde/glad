@@ -54,7 +54,7 @@ typedef void* (* GLADloadproc)(const char *name);
 
 GLAPI int gladLoadGLX(Display *dpy, int screen);
 
-GLAPI void gladLoadGLXLoader(GLADloadproc, Display *dpy, int screen);
+GLAPI int gladLoadGLXLoader(GLADloadproc, Display *dpy, int screen);
 
 #ifndef GLEXT_64_TYPES_DEFINED
 /* This code block is duplicated in glext.h, so must be protected */
