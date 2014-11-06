@@ -6,4 +6,3 @@ build/
 *.kdev_include_paths
 main.c
 *.diff
-*.sh
