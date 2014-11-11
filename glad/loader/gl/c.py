@@ -50,12 +50,13 @@ static int has_ext(const char *ext) {
         }
 #ifdef _GLAD_IS_SOME_NEW_VERSION
     } else {
-        int num;
+        int num, index;
+
         glGetIntegerv(GL_NUM_EXTENSIONS, &num);
 
-        int index;
         for(index = 0; index < num; index++) {
             const char *e = (const char*)glGetStringi(GL_EXTENSIONS, index);
+
             if(strcmp(e, ext) == 0) {
                 return 1;
             }
@@ -121,7 +122,8 @@ _FIND_VERSION = '''
     // Thank you @elmindreda
     // https://github.com/elmindreda/greg/blob/master/templates/greg.c.in#L176
     // https://github.com/glfw/glfw/blob/master/src/context.c#L36
-    int i;
+    int i, major, minor;
+
     const char* version;
     const char* prefixes[] = {
         "OpenGL ES-CM ",
@@ -141,8 +143,6 @@ _FIND_VERSION = '''
         }
     }
 
-    int major;
-    int minor;
     sscanf(version, "%d.%d", &major, &minor);
     GLVersion.major = major; GLVersion.minor = minor;
 '''
