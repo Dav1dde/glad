@@ -119,9 +119,10 @@ _OPENGL_HEADER_END = '''
 '''
 
 _FIND_VERSION = '''
-    // Thank you @elmindreda
-    // https://github.com/elmindreda/greg/blob/master/templates/greg.c.in#L176
-    // https://github.com/glfw/glfw/blob/master/src/context.c#L36
+    /* Thank you @elmindreda
+     * https://github.com/elmindreda/greg/blob/master/templates/greg.c.in#L176
+     * https://github.com/glfw/glfw/blob/master/src/context.c#L36
+     */
     int i, major, minor;
 
     const char* version;
