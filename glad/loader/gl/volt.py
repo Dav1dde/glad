@@ -38,7 +38,7 @@ class OpenGLVoltLoader(BaseLoader):
         fobj.write('\tif(glGetString(GL_VERSION) is null) { return false; }\n\n')
 
     def write_end_load(self, fobj):
-        fobj.write('\treturn GL_MAJOR != 0 && GL_MINOR != 0;\n')
+        fobj.write('\treturn GL_MAJOR != 0 || GL_MINOR != 0;\n')
 
     def write_find_core(self, fobj):
         fobj.write('\tconst(char)* v = cast(const(char)*)glGetString(GL_VERSION);\n')
