@@ -426,7 +426,7 @@ bool gladLoadGL(Loader load) {
 	load_GL_OES_query_matrix(load);
 	load_GL_EXT_blend_minmax(load);
 	load_GL_OES_byte_coordinates(load);
-	return GLVersion.major != 0 && GLVersion.minor != 0;
+	return GLVersion.major != 0 || GLVersion.minor != 0;
 }
 
 private:
@@ -5089,7 +5089,7 @@ bool gladLoadGLES2(Loader load) {
 	load_GL_APPLE_sync(load);
 	load_GL_EXT_texture_storage(load);
 	load_GL_QCOM_driver_control(load);
-	return GLVersion.major != 0 && GLVersion.minor != 0;
+	return GLVersion.major != 0 || GLVersion.minor != 0;
 }
 
 private:
@@ -5875,7 +5875,7 @@ bool gladLoadGLES1(Loader load) {
 	load_GL_APPLE_sync(load);
 	load_GL_EXT_texture_storage(load);
 	load_GL_QCOM_driver_control(load);
-	return GLVersion.major != 0 && GLVersion.minor != 0;
+	return GLVersion.major != 0 || GLVersion.minor != 0;
 }
 
 private:
