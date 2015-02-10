@@ -15,24 +15,28 @@ Advantages:
 
 What a D code using glad (and SDL) could look like:
 
-    import glad.gl; // imports all constants and functions, including extensions
-    import glad.loader : gladLoadGL;
-    void main() {
-        /* setup OpenGL context with SDL */
-        gladLoadGL(x => SDL_GL_GetProcAddress(x));
-        enforce(GLVersion.major >= 3 && GLVersion.minor >= 2);
-        /* done, use OpenGL here */
-    }
+```d
+import glad.gl; // imports all constants and functions, including extensions
+import glad.loader : gladLoadGL;
+void main() {
+    /* setup OpenGL context with SDL */
+    gladLoadGL(x => SDL_GL_GetProcAddress(x));
+    enforce(GLVersion.major >= 3 && GLVersion.minor >= 2);
+    /* done, use OpenGL here */
+}
+```
 
 Of course you don't need to use SDL, glad provides its own OpenGL loader:
 
-    void main() {
-        /* setup OpenGL context with e.g. glfw */
-        enforce(gladLoadGL());
-        enforce(GLVersion.major == 3 && GLVersion.minor == 2);
-        enforce(GL_EXT_texture_filter_anisotropic, "Extension not supported!");
-        /* done, use OpenGL here */
-    }
+```c
+void main() {
+    /* setup OpenGL context with e.g. glfw */
+    enforce(gladLoadGL());
+    enforce(GLVersion.major == 3 && GLVersion.minor == 2);
+    enforce(GL_EXT_texture_filter_anisotropic, "Extension not supported!");
+    /* done, use OpenGL here */
+}
+```
 
 You're not familiar with D, here is a C example:
 [https://github.com/Dav1dde/glad/blob/master/example/c/simple.c](https://github.com/Dav1dde/glad/blob/master/example/c/simple.c)
@@ -124,10 +128,12 @@ void gladLoadGLLoader(GLADloadproc);
 
 `glad.h` completely replaces any `gl.h` or `gl3.h` only include `glad.h`.
 
+```c
     if(!gladLoadGL()) { exit(-1) };
     printf("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
     if(GLAD_GL_EXT_framebuffer_multisample) { /* GL_EXT_framebuffer_multisample is supported */ }
     if(GLAD_GL_VERSION_3_0) { /* We support at least OpenGL version 3 */ }
+```
 
 On non-Windows platforms `glad` requires `libdl`, make sure to link with it (`-ldl` for gcc)!
 
@@ -143,10 +149,12 @@ The runtime booleans are only valid *after* a succesful call to `gladLoadGL` or 
 Import `glad.gl` for OpenGL functions/extensions, import `glad.loader` to import
 the functions needed to initialize `glad` and load the OpenGL functions.
 
+```d
     enforce(gladLoadGL());
     writefln("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
     if(GL_EXT_framebuffer_multisample) { /* GL_EXT_framebuffer_multisample is supported */ }
     if(GL_VERSION_3_0) { /* We support at least OpenGL version 3 */ }
+```
 
 On non-Windows platforms `glad` requires `libdl`, make sure to link with it (`L-ldl` for dmd)!
 
