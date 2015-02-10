@@ -180,8 +180,8 @@ class CGenerator(Generator):
 
         f = self._f_c
         if self.spec.NAME in ('gl','glx','wgl'):
-            for ext in extensions:
-                f.write('int GLAD_{};\n'.format(ext.name))
+            for ext in set(ext.name for ext in extensions):
+                f.write('int GLAD_{};\n'.format(ext))
 
         written = set()
         for ext in extensions:
