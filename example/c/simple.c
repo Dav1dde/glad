@@ -10,7 +10,8 @@
 // This file is a modified version of gl3w's test.c
 // https://github.com/skaslev/gl3w/blob/master/src/test.c
 
-// gcc -IGL/include example/c/simple.c GL/src/glad.c -ldl -lglut
+// Compile:
+// gcc example/c/simple.c -Iinclude/glad src/glad/glad.c -lglut -ldl
 
 
 static int width = 600, height = 600;
