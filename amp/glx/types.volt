@@ -2,11 +2,15 @@ module amp.glx.types;
 
 
 alias GLenum = uint;
+alias GLfloat = float;
 alias GLsizei = int;
+alias GLsizeiptr = ptrdiff_t;
+alias GLubyte = ubyte;
 alias GLint = int;
 alias GLboolean = ubyte;
-alias GLubyte = ubyte;
 alias GLuint = uint;
+alias GLbitfield = uint;
+alias GLintptr = ptrdiff_t;
 
 version(Xlib) {
     import X11.Xlib;

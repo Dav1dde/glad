@@ -149,12 +149,13 @@ bool gladLoadGL(Loader load) {
 	load_GL_VERSION_4_2(load);
 	load_GL_VERSION_4_3(load);
 	load_GL_VERSION_4_4(load);
+	load_GL_VERSION_4_5(load);
 
 	find_extensionsGL();
-	load_GL_NV_point_sprite(load);
 	load_GL_APPLE_element_array(load);
 	load_GL_AMD_multi_draw_indirect(load);
 	load_GL_SGIX_tag_sample_buffer(load);
+	load_GL_NV_point_sprite(load);
 	load_GL_ATI_separate_stencil(load);
 	load_GL_EXT_texture_buffer_object(load);
 	load_GL_ARB_vertex_blend(load);
@@ -177,7 +178,8 @@ bool gladLoadGL(Loader load) {
 	load_GL_SGIX_flush_raster(load);
 	load_GL_EXT_light_texture(load);
 	load_GL_AMD_draw_buffers_blend(load);
-	load_GL_MESA_window_pos(load);
+	load_GL_APPLE_texture_range(load);
+	load_GL_EXT_texture_array(load);
 	load_GL_NV_texture_barrier(load);
 	load_GL_ARB_vertex_type_2_10_10_10_rev(load);
 	load_GL_3DFX_tbuffer(load);
@@ -196,20 +198,23 @@ bool gladLoadGL(Loader load) {
 	load_GL_EXT_vertex_weighting(load);
 	load_GL_GREMEDY_string_marker(load);
 	load_GL_EXT_subtexture(load);
+	load_GL_EXT_gpu_program_parameters(load);
 	load_GL_NV_evaluators(load);
 	load_GL_SGIS_texture_filter4(load);
 	load_GL_AMD_performance_monitor(load);
 	load_GL_EXT_stencil_clear_tag(load);
 	load_GL_NV_present_video(load);
-	load_GL_EXT_gpu_program_parameters(load);
-	load_GL_SGIX_list_priority(load);
+	load_GL_SGIX_framezoom(load);
 	load_GL_ARB_draw_elements_base_vertex(load);
 	load_GL_NV_transform_feedback(load);
 	load_GL_NV_fragment_program(load);
 	load_GL_AMD_stencil_operation_extended(load);
 	load_GL_ARB_instanced_arrays(load);
-	load_GL_EXT_polygon_offset(load);
+	load_GL_ARB_get_texture_sub_image(load);
+	load_GL_KHR_robustness(load);
 	load_GL_AMD_sparse_texture(load);
+	load_GL_ARB_clip_control(load);
+	load_GL_NV_fragment_coverage_to_color(load);
 	load_GL_NV_fence(load);
 	load_GL_ARB_texture_buffer_range(load);
 	load_GL_SUN_mesh_array(load);
@@ -224,7 +229,9 @@ bool gladLoadGL(Loader load) {
 	load_GL_ARB_buffer_storage(load);
 	load_GL_APPLE_vertex_program_evaluators(load);
 	load_GL_ARB_multi_bind(load);
+	load_GL_SGIX_list_priority(load);
 	load_GL_NV_vertex_buffer_unified_memory(load);
+	load_GL_ARB_clear_texture(load);
 	load_GL_NV_blend_equation_advanced(load);
 	load_GL_SGIS_sharpen_texture(load);
 	load_GL_ARB_vertex_program(load);
@@ -238,6 +245,7 @@ bool gladLoadGL(Loader load) {
 	load_GL_ATI_vertex_attrib_array_object(load);
 	load_GL_EXT_geometry_shader4(load);
 	load_GL_EXT_bindable_uniform(load);
+	load_GL_KHR_blend_equation_advanced(load);
 	load_GL_ATI_element_array(load);
 	load_GL_SGIX_reference_plane(load);
 	load_GL_EXT_stencil_two_side(load);
@@ -250,6 +258,7 @@ bool gladLoadGL(Loader load) {
 	load_GL_ARB_tessellation_shader(load);
 	load_GL_EXT_draw_buffers2(load);
 	load_GL_ARB_vertex_attrib_64bit(load);
+	load_GL_EXT_texture_filter_minmax(load);
 	load_GL_AMD_interleaved_elements(load);
 	load_GL_ARB_fragment_program(load);
 	load_GL_ARB_texture_storage(load);
@@ -259,8 +268,10 @@ bool gladLoadGL(Loader load) {
 	load_GL_ARB_shader_storage_buffer_object(load);
 	load_GL_EXT_blend_minmax(load);
 	load_GL_ARB_base_instance(load);
+	load_GL_ARB_ES3_1_compatibility(load);
 	load_GL_EXT_texture_integer(load);
 	load_GL_ARB_texture_multisample(load);
+	load_GL_AMD_gpu_shader_int64(load);
 	load_GL_AMD_vertex_shader_tessellator(load);
 	load_GL_ARB_invalidate_subdata(load);
 	load_GL_EXT_index_material(load);
@@ -269,15 +280,16 @@ bool gladLoadGL(Loader load) {
 	load_GL_SGIX_pixel_texture(load);
 	load_GL_ARB_timer_query(load);
 	load_GL_NV_parameter_buffer_object(load);
+	load_GL_ARB_direct_state_access(load);
 	load_GL_ARB_uniform_buffer_object(load);
 	load_GL_NV_transform_feedback2(load);
 	load_GL_EXT_blend_color(load);
 	load_GL_EXT_histogram(load);
+	load_GL_EXT_polygon_offset(load);
 	load_GL_SGIS_point_parameters(load);
 	load_GL_EXT_direct_state_access(load);
 	load_GL_AMD_sample_positions(load);
 	load_GL_NV_vertex_program(load);
-	load_GL_NVX_conditional_render(load);
 	load_GL_EXT_vertex_shader(load);
 	load_GL_EXT_blend_func_separate(load);
 	load_GL_APPLE_fence(load);
@@ -287,21 +299,28 @@ bool gladLoadGL(Loader load) {
 	load_GL_EXT_fog_coord(load);
 	load_GL_EXT_vertex_array(load);
 	load_GL_EXT_blend_equation_separate(load);
+	load_GL_NV_framebuffer_mixed_samples(load);
+	load_GL_NVX_conditional_render(load);
 	load_GL_ARB_multi_draw_indirect(load);
+	load_GL_EXT_raster_multisample(load);
 	load_GL_NV_copy_image(load);
 	load_GL_ARB_transform_feedback2(load);
 	load_GL_ARB_transform_feedback3(load);
+	load_GL_EXT_debug_marker(load);
 	load_GL_EXT_pixel_transform(load);
 	load_GL_ATI_fragment_shader(load);
 	load_GL_ARB_vertex_array_object(load);
 	load_GL_SUN_triangle_list(load);
 	load_GL_ARB_transform_feedback_instanced(load);
 	load_GL_SGIX_async(load);
+	load_GL_INTEL_performance_query(load);
 	load_GL_NV_gpu_shader5(load);
+	load_GL_NV_bindless_multi_draw_indirect_count(load);
 	load_GL_ARB_ES2_compatibility(load);
 	load_GL_ARB_indirect_parameters(load);
 	load_GL_NV_half_float(load);
 	load_GL_EXT_coordinate_frame(load);
+	load_GL_EXT_polygon_offset_clamp(load);
 	load_GL_EXT_compiled_vertex_array(load);
 	load_GL_NV_depth_buffer_float(load);
 	load_GL_NV_occlusion_query(load);
@@ -310,7 +329,9 @@ bool gladLoadGL(Loader load) {
 	load_GL_ARB_draw_buffers_blend(load);
 	load_GL_ARB_clear_buffer_object(load);
 	load_GL_ARB_multisample(load);
+	load_GL_EXT_debug_label(load);
 	load_GL_ARB_sample_shading(load);
+	load_GL_NV_internalformat_sample_query(load);
 	load_GL_INTEL_map_texture(load);
 	load_GL_ARB_compute_shader(load);
 	load_GL_IBM_vertex_array_lists(load);
@@ -336,7 +357,7 @@ bool gladLoadGL(Loader load) {
 	load_GL_ARB_texture_storage_multisample(load);
 	load_GL_EXT_vertex_attrib_64bit(load);
 	load_GL_OES_query_matrix(load);
-	load_GL_APPLE_texture_range(load);
+	load_GL_MESA_window_pos(load);
 	load_GL_ARB_copy_buffer(load);
 	load_GL_APPLE_object_purgeable(load);
 	load_GL_ARB_occlusion_query(load);
@@ -349,20 +370,21 @@ bool gladLoadGL(Loader load) {
 	load_GL_EXT_provoking_vertex(load);
 	load_GL_ARB_point_parameters(load);
 	load_GL_ARB_shader_image_load_store(load);
-	load_GL_SGIX_framezoom(load);
+	load_GL_ARB_texture_barrier(load);
 	load_GL_NV_bindless_multi_draw_indirect(load);
 	load_GL_EXT_transform_feedback(load);
 	load_GL_NV_gpu_program4(load);
 	load_GL_NV_gpu_program5(load);
 	load_GL_ARB_geometry_shader4(load);
+	load_GL_NV_conservative_raster(load);
 	load_GL_SGIX_sprite(load);
 	load_GL_ARB_get_program_binary(load);
+	load_GL_AMD_occlusion_query_event(load);
 	load_GL_SGIS_multisample(load);
 	load_GL_EXT_framebuffer_object(load);
 	load_GL_APPLE_vertex_array_range(load);
 	load_GL_NV_register_combiners(load);
 	load_GL_ARB_draw_buffers(load);
-	load_GL_ARB_clear_texture(load);
 	load_GL_ARB_debug_output(load);
 	load_GL_EXT_cull_vertex(load);
 	load_GL_IBM_multimode_draw_arrays(load);
@@ -382,6 +404,7 @@ bool gladLoadGL(Loader load) {
 	load_GL_SGIS_fog_function(load);
 	load_GL_EXT_x11_sync_object(load);
 	load_GL_ARB_sync(load);
+	load_GL_NV_sample_locations(load);
 	load_GL_ARB_compute_variable_group_size(load);
 	load_GL_OES_fixed_point(load);
 	load_GL_EXT_framebuffer_multisample(load);
@@ -391,13 +414,25 @@ bool gladLoadGL(Loader load) {
 	load_GL_EXT_secondary_color(load);
 	load_GL_ATI_vertex_array_object(load);
 	load_GL_ARB_sparse_texture(load);
+	load_GL_ARB_sparse_buffer(load);
 	load_GL_EXT_draw_range_elements(load);
 	load_GL_NV_fence(load);
+	load_GL_KHR_robustness(load);
 	load_GL_EXT_multi_draw_arrays(load);
+	load_GL_EXT_debug_marker(load);
+	load_GL_INTEL_performance_query(load);
 	load_GL_KHR_debug(load);
+	load_GL_NV_bindless_texture(load);
+	load_GL_KHR_blend_equation_advanced(load);
 	load_GL_EXT_separate_shader_objects(load);
+	load_GL_NV_path_rendering(load);
+	load_GL_NV_blend_equation_advanced(load);
+	load_GL_EXT_debug_label(load);
+	load_GL_NV_conditional_render(load);
 	load_GL_EXT_blend_minmax(load);
+	load_GL_NV_internalformat_sample_query(load);
 	load_GL_AMD_performance_monitor(load);
+	load_GL_EXT_draw_instanced(load);
 	load_GL_EXT_multi_draw_arrays(load);
 	load_GL_OES_single_precision(load);
 	load_GL_NV_fence(load);
@@ -432,19 +467,22 @@ void find_coreGL() {
 	GL_VERSION_4_2 = (major == 4 && minor >= 2) || major > 4;
 	GL_VERSION_4_3 = (major == 4 && minor >= 3) || major > 4;
 	GL_VERSION_4_4 = (major == 4 && minor >= 4) || major > 4;
+	GL_VERSION_4_5 = (major == 4 && minor >= 5) || major > 4;
 	return;
 }
 
 void find_extensionsGL() {
 	GL_SGIX_pixel_tiles = has_ext("GL_SGIX_pixel_tiles");
-	GL_NV_point_sprite = has_ext("GL_NV_point_sprite");
+	GL_EXT_post_depth_coverage = has_ext("GL_EXT_post_depth_coverage");
 	GL_APPLE_element_array = has_ext("GL_APPLE_element_array");
 	GL_AMD_multi_draw_indirect = has_ext("GL_AMD_multi_draw_indirect");
 	GL_EXT_blend_subtract = has_ext("GL_EXT_blend_subtract");
 	GL_SGIX_tag_sample_buffer = has_ext("GL_SGIX_tag_sample_buffer");
+	GL_NV_point_sprite = has_ext("GL_NV_point_sprite");
 	GL_IBM_texture_mirrored_repeat = has_ext("GL_IBM_texture_mirrored_repeat");
 	GL_APPLE_transform_hint = has_ext("GL_APPLE_transform_hint");
 	GL_ATI_separate_stencil = has_ext("GL_ATI_separate_stencil");
+	GL_NV_shader_atomic_int64 = has_ext("GL_NV_shader_atomic_int64");
 	GL_NV_vertex_program2_option = has_ext("GL_NV_vertex_program2_option");
 	GL_EXT_texture_buffer_object = has_ext("GL_EXT_texture_buffer_object");
 	GL_ARB_vertex_blend = has_ext("GL_ARB_vertex_blend");
@@ -454,6 +492,7 @@ void find_extensionsGL() {
 	GL_NV_multisample_coverage = has_ext("GL_NV_multisample_coverage");
 	GL_ARB_shading_language_packing = has_ext("GL_ARB_shading_language_packing");
 	GL_EXT_texture_cube_map = has_ext("GL_EXT_texture_cube_map");
+	GL_NV_viewport_array2 = has_ext("GL_NV_viewport_array2");
 	GL_ARB_texture_stencil8 = has_ext("GL_ARB_texture_stencil8");
 	GL_EXT_index_func = has_ext("GL_EXT_index_func");
 	GL_OES_compressed_paletted_texture = has_ext("GL_OES_compressed_paletted_texture");
@@ -493,7 +532,7 @@ void find_extensionsGL() {
 	GL_SGIX_vertex_preclip = has_ext("GL_SGIX_vertex_preclip");
 	GL_SGIX_texture_scale_bias = has_ext("GL_SGIX_texture_scale_bias");
 	GL_AMD_draw_buffers_blend = has_ext("GL_AMD_draw_buffers_blend");
-	GL_MESA_window_pos = has_ext("GL_MESA_window_pos");
+	GL_APPLE_texture_range = has_ext("GL_APPLE_texture_range");
 	GL_EXT_texture_array = has_ext("GL_EXT_texture_array");
 	GL_NV_texture_barrier = has_ext("GL_NV_texture_barrier");
 	GL_ARB_texture_query_levels = has_ext("GL_ARB_texture_query_levels");
@@ -529,7 +568,7 @@ void find_extensionsGL() {
 	GL_EXT_pixel_transform_color_table = has_ext("GL_EXT_pixel_transform_color_table");
 	GL_EXT_texture_compression_rgtc = has_ext("GL_EXT_texture_compression_rgtc");
 	GL_SGIX_depth_pass_instrument = has_ext("GL_SGIX_depth_pass_instrument");
-	GL_ARB_shader_precision = has_ext("GL_ARB_shader_precision");
+	GL_EXT_gpu_program_parameters = has_ext("GL_EXT_gpu_program_parameters");
 	GL_NV_evaluators = has_ext("GL_NV_evaluators");
 	GL_SGIS_texture_filter4 = has_ext("GL_SGIS_texture_filter4");
 	GL_AMD_performance_monitor = has_ext("GL_AMD_performance_monitor");
@@ -539,9 +578,10 @@ void find_extensionsGL() {
 	GL_NV_present_video = has_ext("GL_NV_present_video");
 	GL_ARB_texture_compression_rgtc = has_ext("GL_ARB_texture_compression_rgtc");
 	GL_HP_convolution_border_modes = has_ext("GL_HP_convolution_border_modes");
-	GL_EXT_gpu_program_parameters = has_ext("GL_EXT_gpu_program_parameters");
-	GL_SGIX_list_priority = has_ext("GL_SGIX_list_priority");
+	GL_EXT_shader_integer_mix = has_ext("GL_EXT_shader_integer_mix");
+	GL_SGIX_framezoom = has_ext("GL_SGIX_framezoom");
 	GL_ARB_stencil_texturing = has_ext("GL_ARB_stencil_texturing");
+	GL_NV_shader_atomic_fp16_vector = has_ext("GL_NV_shader_atomic_fp16_vector");
 	GL_SGIX_fog_offset = has_ext("GL_SGIX_fog_offset");
 	GL_ARB_draw_elements_base_vertex = has_ext("GL_ARB_draw_elements_base_vertex");
 	GL_INGR_interlace_read = has_ext("GL_INGR_interlace_read");
@@ -550,15 +590,19 @@ void find_extensionsGL() {
 	GL_AMD_stencil_operation_extended = has_ext("GL_AMD_stencil_operation_extended");
 	GL_ARB_seamless_cubemap_per_texture = has_ext("GL_ARB_seamless_cubemap_per_texture");
 	GL_ARB_instanced_arrays = has_ext("GL_ARB_instanced_arrays");
-	GL_EXT_polygon_offset = has_ext("GL_EXT_polygon_offset");
+	GL_ARB_get_texture_sub_image = has_ext("GL_ARB_get_texture_sub_image");
 	GL_NV_vertex_array_range2 = has_ext("GL_NV_vertex_array_range2");
+	GL_KHR_robustness = has_ext("GL_KHR_robustness");
 	GL_AMD_sparse_texture = has_ext("GL_AMD_sparse_texture");
+	GL_ARB_clip_control = has_ext("GL_ARB_clip_control");
+	GL_NV_fragment_coverage_to_color = has_ext("GL_NV_fragment_coverage_to_color");
 	GL_NV_fence = has_ext("GL_NV_fence");
 	GL_ARB_texture_buffer_range = has_ext("GL_ARB_texture_buffer_range");
 	GL_SUN_mesh_array = has_ext("GL_SUN_mesh_array");
 	GL_ARB_vertex_attrib_binding = has_ext("GL_ARB_vertex_attrib_binding");
 	GL_ARB_framebuffer_no_attachments = has_ext("GL_ARB_framebuffer_no_attachments");
 	GL_ARB_cl_event = has_ext("GL_ARB_cl_event");
+	GL_ARB_derivative_control = has_ext("GL_ARB_derivative_control");
 	GL_NV_packed_depth_stencil = has_ext("GL_NV_packed_depth_stencil");
 	GL_OES_single_precision = has_ext("GL_OES_single_precision");
 	GL_NV_primitive_restart = has_ext("GL_NV_primitive_restart");
@@ -566,7 +610,7 @@ void find_extensionsGL() {
 	GL_EXT_texture_object = has_ext("GL_EXT_texture_object");
 	GL_AMD_name_gen_delete = has_ext("GL_AMD_name_gen_delete");
 	GL_NV_texture_compression_vtc = has_ext("GL_NV_texture_compression_vtc");
-	GL_SGIX_ycrcb_subsample = has_ext("GL_SGIX_ycrcb_subsample");
+	GL_NV_sample_mask_override_coverage = has_ext("GL_NV_sample_mask_override_coverage");
 	GL_NV_texture_shader3 = has_ext("GL_NV_texture_shader3");
 	GL_NV_texture_shader2 = has_ext("GL_NV_texture_shader2");
 	GL_EXT_texture = has_ext("GL_EXT_texture");
@@ -576,19 +620,25 @@ void find_extensionsGL() {
 	GL_ARB_multi_bind = has_ext("GL_ARB_multi_bind");
 	GL_ARB_explicit_uniform_location = has_ext("GL_ARB_explicit_uniform_location");
 	GL_ARB_depth_buffer_float = has_ext("GL_ARB_depth_buffer_float");
+	GL_NV_path_rendering_shared_edge = has_ext("GL_NV_path_rendering_shared_edge");
 	GL_SGIX_shadow_ambient = has_ext("GL_SGIX_shadow_ambient");
 	GL_ARB_texture_cube_map = has_ext("GL_ARB_texture_cube_map");
 	GL_AMD_vertex_shader_viewport_index = has_ext("GL_AMD_vertex_shader_viewport_index");
+	GL_SGIX_list_priority = has_ext("GL_SGIX_list_priority");
 	GL_NV_vertex_buffer_unified_memory = has_ext("GL_NV_vertex_buffer_unified_memory");
-	GL_EXT_texture_env_dot3 = has_ext("GL_EXT_texture_env_dot3");
+	GL_NV_uniform_buffer_unified_memory = has_ext("GL_NV_uniform_buffer_unified_memory");
+	GL_ARB_clear_texture = has_ext("GL_ARB_clear_texture");
 	GL_ATI_texture_env_combine3 = has_ext("GL_ATI_texture_env_combine3");
 	GL_ARB_map_buffer_alignment = has_ext("GL_ARB_map_buffer_alignment");
 	GL_NV_blend_equation_advanced = has_ext("GL_NV_blend_equation_advanced");
 	GL_SGIS_sharpen_texture = has_ext("GL_SGIS_sharpen_texture");
+	GL_KHR_robust_buffer_access_behavior = has_ext("GL_KHR_robust_buffer_access_behavior");
+	GL_ARB_pipeline_statistics_query = has_ext("GL_ARB_pipeline_statistics_query");
 	GL_ARB_vertex_program = has_ext("GL_ARB_vertex_program");
 	GL_ARB_texture_rgb10_a2ui = has_ext("GL_ARB_texture_rgb10_a2ui");
 	GL_OML_interlace = has_ext("GL_OML_interlace");
 	GL_ATI_pixel_format_float = has_ext("GL_ATI_pixel_format_float");
+	GL_NV_geometry_shader_passthrough = has_ext("GL_NV_geometry_shader_passthrough");
 	GL_ARB_vertex_buffer_object = has_ext("GL_ARB_vertex_buffer_object");
 	GL_EXT_shadow_funcs = has_ext("GL_EXT_shadow_funcs");
 	GL_ATI_text_fragment_shader = has_ext("GL_ATI_text_fragment_shader");
@@ -604,15 +654,19 @@ void find_extensionsGL() {
 	GL_ATI_vertex_attrib_array_object = has_ext("GL_ATI_vertex_attrib_array_object");
 	GL_SGIX_clipmap = has_ext("GL_SGIX_clipmap");
 	GL_EXT_geometry_shader4 = has_ext("GL_EXT_geometry_shader4");
+	GL_ARB_shader_texture_image_samples = has_ext("GL_ARB_shader_texture_image_samples");
 	GL_MESA_ycbcr_texture = has_ext("GL_MESA_ycbcr_texture");
 	GL_MESAX_texture_stack = has_ext("GL_MESAX_texture_stack");
 	GL_AMD_seamless_cubemap_per_texture = has_ext("GL_AMD_seamless_cubemap_per_texture");
 	GL_EXT_bindable_uniform = has_ext("GL_EXT_bindable_uniform");
+	GL_KHR_texture_compression_astc_hdr = has_ext("GL_KHR_texture_compression_astc_hdr");
+	GL_KHR_blend_equation_advanced = has_ext("GL_KHR_blend_equation_advanced");
 	GL_ARB_fragment_program_shadow = has_ext("GL_ARB_fragment_program_shadow");
 	GL_ATI_element_array = has_ext("GL_ATI_element_array");
 	GL_AMD_texture_texture4 = has_ext("GL_AMD_texture_texture4");
 	GL_SGIX_reference_plane = has_ext("GL_SGIX_reference_plane");
 	GL_EXT_stencil_two_side = has_ext("GL_EXT_stencil_two_side");
+	GL_ARB_transform_feedback_overflow_query = has_ext("GL_ARB_transform_feedback_overflow_query");
 	GL_SGIX_texture_lod_bias = has_ext("GL_SGIX_texture_lod_bias");
 	GL_NV_explicit_multisample = has_ext("GL_NV_explicit_multisample");
 	GL_IBM_static_data = has_ext("GL_IBM_static_data");
@@ -632,6 +686,7 @@ void find_extensionsGL() {
 	GL_ARB_tessellation_shader = has_ext("GL_ARB_tessellation_shader");
 	GL_EXT_draw_buffers2 = has_ext("GL_EXT_draw_buffers2");
 	GL_ARB_vertex_attrib_64bit = has_ext("GL_ARB_vertex_attrib_64bit");
+	GL_EXT_texture_filter_minmax = has_ext("GL_EXT_texture_filter_minmax");
 	GL_WIN_specular_fog = has_ext("GL_WIN_specular_fog");
 	GL_AMD_interleaved_elements = has_ext("GL_AMD_interleaved_elements");
 	GL_ARB_fragment_program = has_ext("GL_ARB_fragment_program");
@@ -647,13 +702,17 @@ void find_extensionsGL() {
 	GL_SGIX_instruments = has_ext("GL_SGIX_instruments");
 	GL_HP_texture_lighting = has_ext("GL_HP_texture_lighting");
 	GL_ARB_shader_storage_buffer_object = has_ext("GL_ARB_shader_storage_buffer_object");
+	GL_EXT_sparse_texture2 = has_ext("GL_EXT_sparse_texture2");
 	GL_EXT_blend_minmax = has_ext("GL_EXT_blend_minmax");
 	GL_MESA_pack_invert = has_ext("GL_MESA_pack_invert");
 	GL_ARB_base_instance = has_ext("GL_ARB_base_instance");
 	GL_SGIX_convolution_accuracy = has_ext("GL_SGIX_convolution_accuracy");
 	GL_PGI_vertex_hints = has_ext("GL_PGI_vertex_hints");
+	GL_AMD_transform_feedback4 = has_ext("GL_AMD_transform_feedback4");
+	GL_ARB_ES3_1_compatibility = has_ext("GL_ARB_ES3_1_compatibility");
 	GL_EXT_texture_integer = has_ext("GL_EXT_texture_integer");
 	GL_ARB_texture_multisample = has_ext("GL_ARB_texture_multisample");
+	GL_AMD_gpu_shader_int64 = has_ext("GL_AMD_gpu_shader_int64");
 	GL_S3_s3tc = has_ext("GL_S3_s3tc");
 	GL_ARB_query_buffer_object = has_ext("GL_ARB_query_buffer_object");
 	GL_AMD_vertex_shader_tessellator = has_ext("GL_AMD_vertex_shader_tessellator");
@@ -670,6 +729,7 @@ void find_extensionsGL() {
 	GL_SGIX_interlace = has_ext("GL_SGIX_interlace");
 	GL_NV_parameter_buffer_object = has_ext("GL_NV_parameter_buffer_object");
 	GL_AMD_shader_trinary_minmax = has_ext("GL_AMD_shader_trinary_minmax");
+	GL_ARB_direct_state_access = has_ext("GL_ARB_direct_state_access");
 	GL_EXT_rescale_normal = has_ext("GL_EXT_rescale_normal");
 	GL_ARB_pixel_buffer_object = has_ext("GL_ARB_pixel_buffer_object");
 	GL_ARB_uniform_buffer_object = has_ext("GL_ARB_uniform_buffer_object");
@@ -680,14 +740,19 @@ void find_extensionsGL() {
 	GL_NV_fragment_program_option = has_ext("GL_NV_fragment_program_option");
 	GL_ARB_explicit_attrib_location = has_ext("GL_ARB_explicit_attrib_location");
 	GL_EXT_blend_color = has_ext("GL_EXT_blend_color");
+	GL_NV_shader_thread_group = has_ext("GL_NV_shader_thread_group");
 	GL_EXT_stencil_wrap = has_ext("GL_EXT_stencil_wrap");
 	GL_EXT_index_array_formats = has_ext("GL_EXT_index_array_formats");
 	GL_EXT_histogram = has_ext("GL_EXT_histogram");
+	GL_EXT_polygon_offset = has_ext("GL_EXT_polygon_offset");
 	GL_SGIS_point_parameters = has_ext("GL_SGIS_point_parameters");
+	GL_SGIX_ycrcb = has_ext("GL_SGIX_ycrcb");
 	GL_EXT_direct_state_access = has_ext("GL_EXT_direct_state_access");
+	GL_ARB_cull_distance = has_ext("GL_ARB_cull_distance");
 	GL_AMD_sample_positions = has_ext("GL_AMD_sample_positions");
 	GL_NV_vertex_program = has_ext("GL_NV_vertex_program");
-	GL_NVX_conditional_render = has_ext("GL_NVX_conditional_render");
+	GL_NV_shader_thread_shuffle = has_ext("GL_NV_shader_thread_shuffle");
+	GL_ARB_shader_precision = has_ext("GL_ARB_shader_precision");
 	GL_EXT_vertex_shader = has_ext("GL_EXT_vertex_shader");
 	GL_EXT_blend_func_separate = has_ext("GL_EXT_blend_func_separate");
 	GL_APPLE_fence = has_ext("GL_APPLE_fence");
@@ -698,12 +763,16 @@ void find_extensionsGL() {
 	GL_EXT_vertex_array = has_ext("GL_EXT_vertex_array");
 	GL_ARB_half_float_vertex = has_ext("GL_ARB_half_float_vertex");
 	GL_EXT_blend_equation_separate = has_ext("GL_EXT_blend_equation_separate");
+	GL_NV_framebuffer_mixed_samples = has_ext("GL_NV_framebuffer_mixed_samples");
+	GL_NVX_conditional_render = has_ext("GL_NVX_conditional_render");
 	GL_ARB_multi_draw_indirect = has_ext("GL_ARB_multi_draw_indirect");
+	GL_EXT_raster_multisample = has_ext("GL_EXT_raster_multisample");
 	GL_NV_copy_image = has_ext("GL_NV_copy_image");
 	GL_ARB_fragment_layer_viewport = has_ext("GL_ARB_fragment_layer_viewport");
 	GL_ARB_transform_feedback2 = has_ext("GL_ARB_transform_feedback2");
 	GL_ARB_transform_feedback3 = has_ext("GL_ARB_transform_feedback3");
 	GL_SGIX_ycrcba = has_ext("GL_SGIX_ycrcba");
+	GL_EXT_debug_marker = has_ext("GL_EXT_debug_marker");
 	GL_EXT_bgra = has_ext("GL_EXT_bgra");
 	GL_EXT_texture_compression_s3tc = has_ext("GL_EXT_texture_compression_s3tc");
 	GL_EXT_pixel_transform = has_ext("GL_EXT_pixel_transform");
@@ -721,8 +790,10 @@ void find_extensionsGL() {
 	GL_EXT_texture_compression_latc = has_ext("GL_EXT_texture_compression_latc");
 	GL_NV_shader_atomic_float = has_ext("GL_NV_shader_atomic_float");
 	GL_ARB_shading_language_100 = has_ext("GL_ARB_shading_language_100");
+	GL_INTEL_performance_query = has_ext("GL_INTEL_performance_query");
 	GL_ARB_texture_mirror_clamp_to_edge = has_ext("GL_ARB_texture_mirror_clamp_to_edge");
 	GL_NV_gpu_shader5 = has_ext("GL_NV_gpu_shader5");
+	GL_NV_bindless_multi_draw_indirect_count = has_ext("GL_NV_bindless_multi_draw_indirect_count");
 	GL_ARB_ES2_compatibility = has_ext("GL_ARB_ES2_compatibility");
 	GL_ARB_indirect_parameters = has_ext("GL_ARB_indirect_parameters");
 	GL_NV_half_float = has_ext("GL_NV_half_float");
@@ -730,6 +801,7 @@ void find_extensionsGL() {
 	GL_ATI_texture_mirror_once = has_ext("GL_ATI_texture_mirror_once");
 	GL_IBM_rasterpos_clip = has_ext("GL_IBM_rasterpos_clip");
 	GL_SGIX_shadow = has_ext("GL_SGIX_shadow");
+	GL_EXT_polygon_offset_clamp = has_ext("GL_EXT_polygon_offset_clamp");
 	GL_NV_deep_texture3D = has_ext("GL_NV_deep_texture3D");
 	GL_ARB_shader_draw_parameters = has_ext("GL_ARB_shader_draw_parameters");
 	GL_SGIX_calligraphic_fragment = has_ext("GL_SGIX_calligraphic_fragment");
@@ -740,7 +812,7 @@ void find_extensionsGL() {
 	GL_APPLE_flush_buffer_range = has_ext("GL_APPLE_flush_buffer_range");
 	GL_ARB_imaging = has_ext("GL_ARB_imaging");
 	GL_ARB_draw_buffers_blend = has_ext("GL_ARB_draw_buffers_blend");
-	GL_NV_blend_square = has_ext("GL_NV_blend_square");
+	GL_AMD_gcn_shader = has_ext("GL_AMD_gcn_shader");
 	GL_AMD_blend_minmax_factor = has_ext("GL_AMD_blend_minmax_factor");
 	GL_EXT_texture_sRGB_decode = has_ext("GL_EXT_texture_sRGB_decode");
 	GL_ARB_shading_language_420pack = has_ext("GL_ARB_shading_language_420pack");
@@ -751,7 +823,9 @@ void find_extensionsGL() {
 	GL_SGIX_texture_coordinate_clamp = has_ext("GL_SGIX_texture_coordinate_clamp");
 	GL_ARB_clear_buffer_object = has_ext("GL_ARB_clear_buffer_object");
 	GL_ARB_multisample = has_ext("GL_ARB_multisample");
+	GL_EXT_debug_label = has_ext("GL_EXT_debug_label");
 	GL_ARB_sample_shading = has_ext("GL_ARB_sample_shading");
+	GL_NV_internalformat_sample_query = has_ext("GL_NV_internalformat_sample_query");
 	GL_INTEL_map_texture = has_ext("GL_INTEL_map_texture");
 	GL_ARB_texture_env_crossbar = has_ext("GL_ARB_texture_env_crossbar");
 	GL_EXT_422_pixels = has_ext("GL_EXT_422_pixels");
@@ -768,6 +842,7 @@ void find_extensionsGL() {
 	GL_EXT_shader_image_load_store = has_ext("GL_EXT_shader_image_load_store");
 	GL_EXT_copy_texture = has_ext("GL_EXT_copy_texture");
 	GL_NV_register_combiners2 = has_ext("GL_NV_register_combiners2");
+	GL_SGIX_ycrcb_subsample = has_ext("GL_SGIX_ycrcb_subsample");
 	GL_SGIX_ir_instrument1 = has_ext("GL_SGIX_ir_instrument1");
 	GL_NV_draw_texture = has_ext("GL_NV_draw_texture");
 	GL_EXT_texture_shared_exponent = has_ext("GL_EXT_texture_shared_exponent");
@@ -788,11 +863,13 @@ void find_extensionsGL() {
 	GL_ARB_shader_subroutine = has_ext("GL_ARB_shader_subroutine");
 	GL_EXT_framebuffer_sRGB = has_ext("GL_EXT_framebuffer_sRGB");
 	GL_ARB_texture_storage_multisample = has_ext("GL_ARB_texture_storage_multisample");
+	GL_KHR_blend_equation_advanced_coherent = has_ext("GL_KHR_blend_equation_advanced_coherent");
 	GL_EXT_vertex_attrib_64bit = has_ext("GL_EXT_vertex_attrib_64bit");
 	GL_ARB_depth_texture = has_ext("GL_ARB_depth_texture");
 	GL_NV_shader_buffer_store = has_ext("GL_NV_shader_buffer_store");
 	GL_OES_query_matrix = has_ext("GL_OES_query_matrix");
-	GL_APPLE_texture_range = has_ext("GL_APPLE_texture_range");
+	GL_MESA_window_pos = has_ext("GL_MESA_window_pos");
+	GL_NV_fill_rectangle = has_ext("GL_NV_fill_rectangle");
 	GL_NV_shader_storage_buffer_object = has_ext("GL_NV_shader_storage_buffer_object");
 	GL_ARB_texture_query_lod = has_ext("GL_ARB_texture_query_lod");
 	GL_ARB_copy_buffer = has_ext("GL_ARB_copy_buffer");
@@ -816,15 +893,17 @@ void find_extensionsGL() {
 	GL_EXT_provoking_vertex = has_ext("GL_EXT_provoking_vertex");
 	GL_ARB_point_parameters = has_ext("GL_ARB_point_parameters");
 	GL_ARB_shader_image_load_store = has_ext("GL_ARB_shader_image_load_store");
+	GL_ARB_conditional_render_inverted = has_ext("GL_ARB_conditional_render_inverted");
 	GL_HP_occlusion_test = has_ext("GL_HP_occlusion_test");
 	GL_ARB_ES3_compatibility = has_ext("GL_ARB_ES3_compatibility");
-	GL_SGIX_framezoom = has_ext("GL_SGIX_framezoom");
+	GL_ARB_texture_barrier = has_ext("GL_ARB_texture_barrier");
 	GL_ARB_texture_buffer_object_rgb32 = has_ext("GL_ARB_texture_buffer_object_rgb32");
 	GL_NV_bindless_multi_draw_indirect = has_ext("GL_NV_bindless_multi_draw_indirect");
 	GL_SGIX_texture_multi_buffer = has_ext("GL_SGIX_texture_multi_buffer");
 	GL_EXT_transform_feedback = has_ext("GL_EXT_transform_feedback");
 	GL_KHR_texture_compression_astc_ldr = has_ext("GL_KHR_texture_compression_astc_ldr");
 	GL_3DFX_multisample = has_ext("GL_3DFX_multisample");
+	GL_INTEL_fragment_shader_ordering = has_ext("GL_INTEL_fragment_shader_ordering");
 	GL_ARB_texture_env_dot3 = has_ext("GL_ARB_texture_env_dot3");
 	GL_NV_gpu_program4 = has_ext("GL_NV_gpu_program4");
 	GL_NV_gpu_program5 = has_ext("GL_NV_gpu_program5");
@@ -833,12 +912,15 @@ void find_extensionsGL() {
 	GL_ARB_framebuffer_sRGB = has_ext("GL_ARB_framebuffer_sRGB");
 	GL_SUN_slice_accum = has_ext("GL_SUN_slice_accum");
 	GL_EXT_index_texture = has_ext("GL_EXT_index_texture");
+	GL_EXT_shader_image_load_formatted = has_ext("GL_EXT_shader_image_load_formatted");
 	GL_ARB_geometry_shader4 = has_ext("GL_ARB_geometry_shader4");
 	GL_EXT_separate_specular_color = has_ext("GL_EXT_separate_specular_color");
 	GL_AMD_depth_clamp_separate = has_ext("GL_AMD_depth_clamp_separate");
+	GL_NV_conservative_raster = has_ext("GL_NV_conservative_raster");
 	GL_SUN_convolution_border_modes = has_ext("GL_SUN_convolution_border_modes");
 	GL_SGIX_sprite = has_ext("GL_SGIX_sprite");
 	GL_ARB_get_program_binary = has_ext("GL_ARB_get_program_binary");
+	GL_AMD_occlusion_query_event = has_ext("GL_AMD_occlusion_query_event");
 	GL_SGIS_multisample = has_ext("GL_SGIS_multisample");
 	GL_EXT_framebuffer_object = has_ext("GL_EXT_framebuffer_object");
 	GL_ARB_robustness_isolation = has_ext("GL_ARB_robustness_isolation");
@@ -847,7 +929,7 @@ void find_extensionsGL() {
 	GL_AMD_query_buffer_object = has_ext("GL_AMD_query_buffer_object");
 	GL_NV_register_combiners = has_ext("GL_NV_register_combiners");
 	GL_ARB_draw_buffers = has_ext("GL_ARB_draw_buffers");
-	GL_ARB_clear_texture = has_ext("GL_ARB_clear_texture");
+	GL_EXT_texture_env_dot3 = has_ext("GL_EXT_texture_env_dot3");
 	GL_ARB_debug_output = has_ext("GL_ARB_debug_output");
 	GL_SGI_color_matrix = has_ext("GL_SGI_color_matrix");
 	GL_EXT_cull_vertex = has_ext("GL_EXT_cull_vertex");
@@ -857,7 +939,7 @@ void find_extensionsGL() {
 	GL_IBM_multimode_draw_arrays = has_ext("GL_IBM_multimode_draw_arrays");
 	GL_APPLE_vertex_array_object = has_ext("GL_APPLE_vertex_array_object");
 	GL_3DFX_texture_compression_FXT1 = has_ext("GL_3DFX_texture_compression_FXT1");
-	GL_SGIX_ycrcb = has_ext("GL_SGIX_ycrcb");
+	GL_NV_fragment_shader_interlock = has_ext("GL_NV_fragment_shader_interlock");
 	GL_AMD_conservative_depth = has_ext("GL_AMD_conservative_depth");
 	GL_ARB_texture_float = has_ext("GL_ARB_texture_float");
 	GL_ARB_compressed_texture_pixel_storage = has_ext("GL_ARB_compressed_texture_pixel_storage");
@@ -892,8 +974,10 @@ void find_extensionsGL() {
 	GL_SGIS_fog_function = has_ext("GL_SGIS_fog_function");
 	GL_EXT_x11_sync_object = has_ext("GL_EXT_x11_sync_object");
 	GL_ARB_sync = has_ext("GL_ARB_sync");
+	GL_NV_sample_locations = has_ext("GL_NV_sample_locations");
 	GL_ARB_compute_variable_group_size = has_ext("GL_ARB_compute_variable_group_size");
 	GL_OES_fixed_point = has_ext("GL_OES_fixed_point");
+	GL_NV_blend_square = has_ext("GL_NV_blend_square");
 	GL_EXT_framebuffer_multisample = has_ext("GL_EXT_framebuffer_multisample");
 	GL_ARB_gpu_shader5 = has_ext("GL_ARB_gpu_shader5");
 	GL_SGIS_texture4D = has_ext("GL_SGIS_texture4D");
@@ -902,20 +986,42 @@ void find_extensionsGL() {
 	GL_EXT_secondary_color = has_ext("GL_EXT_secondary_color");
 	GL_NV_parameter_buffer_object2 = has_ext("GL_NV_parameter_buffer_object2");
 	GL_ATI_vertex_array_object = has_ext("GL_ATI_vertex_array_object");
+	GL_NVX_gpu_memory_info = has_ext("GL_NVX_gpu_memory_info");
 	GL_ARB_sparse_texture = has_ext("GL_ARB_sparse_texture");
 	GL_SGIS_point_line_texgen = has_ext("GL_SGIS_point_line_texgen");
+	GL_ARB_sparse_buffer = has_ext("GL_ARB_sparse_buffer");
 	GL_EXT_draw_range_elements = has_ext("GL_EXT_draw_range_elements");
 	GL_SGIX_blend_alpha_minmax = has_ext("GL_SGIX_blend_alpha_minmax");
+	GL_KHR_context_flush_control = has_ext("GL_KHR_context_flush_control");
+	GL_KHR_blend_equation_advanced_coherent = has_ext("GL_KHR_blend_equation_advanced_coherent");
 	GL_NV_fence = has_ext("GL_NV_fence");
+	GL_EXT_texture_compression_s3tc = has_ext("GL_EXT_texture_compression_s3tc");
+	GL_KHR_robustness = has_ext("GL_KHR_robustness");
 	GL_OES_compressed_paletted_texture = has_ext("GL_OES_compressed_paletted_texture");
+	GL_EXT_shader_integer_mix = has_ext("GL_EXT_shader_integer_mix");
 	GL_EXT_multi_draw_arrays = has_ext("GL_EXT_multi_draw_arrays");
+	GL_KHR_robust_buffer_access_behavior = has_ext("GL_KHR_robust_buffer_access_behavior");
 	GL_KHR_texture_compression_astc_ldr = has_ext("GL_KHR_texture_compression_astc_ldr");
+	GL_EXT_debug_marker = has_ext("GL_EXT_debug_marker");
+	GL_NV_blend_equation_advanced_coherent = has_ext("GL_NV_blend_equation_advanced_coherent");
+	GL_INTEL_performance_query = has_ext("GL_INTEL_performance_query");
 	GL_KHR_debug = has_ext("GL_KHR_debug");
+	GL_NV_bindless_texture = has_ext("GL_NV_bindless_texture");
+	GL_KHR_texture_compression_astc_hdr = has_ext("GL_KHR_texture_compression_astc_hdr");
+	GL_KHR_blend_equation_advanced = has_ext("GL_KHR_blend_equation_advanced");
 	GL_EXT_separate_shader_objects = has_ext("GL_EXT_separate_shader_objects");
+	GL_NV_path_rendering = has_ext("GL_NV_path_rendering");
 	GL_APPLE_rgb_422 = has_ext("GL_APPLE_rgb_422");
+	GL_NV_blend_equation_advanced = has_ext("GL_NV_blend_equation_advanced");
+	GL_EXT_debug_label = has_ext("GL_EXT_debug_label");
+	GL_NV_conditional_render = has_ext("GL_NV_conditional_render");
 	GL_EXT_texture_filter_anisotropic = has_ext("GL_EXT_texture_filter_anisotropic");
 	GL_EXT_blend_minmax = has_ext("GL_EXT_blend_minmax");
+	GL_NV_internalformat_sample_query = has_ext("GL_NV_internalformat_sample_query");
 	GL_AMD_performance_monitor = has_ext("GL_AMD_performance_monitor");
+	GL_EXT_draw_instanced = has_ext("GL_EXT_draw_instanced");
+	GL_KHR_context_flush_control = has_ext("GL_KHR_context_flush_control");
+	GL_EXT_texture_sRGB_decode = has_ext("GL_EXT_texture_sRGB_decode");
 	GL_EXT_multi_draw_arrays = has_ext("GL_EXT_multi_draw_arrays");
 	GL_OES_single_precision = has_ext("GL_OES_single_precision");
 	GL_NV_fence = has_ext("GL_NV_fence");
@@ -1278,8 +1384,6 @@ void load_GL_VERSION_1_1(Loader load) {
 
 void load_GL_VERSION_1_2(Loader load) {
 	if(!GL_VERSION_1_2) return;
-	glBlendColor = cast(typeof(glBlendColor))load("glBlendColor");
-	glBlendEquation = cast(typeof(glBlendEquation))load("glBlendEquation");
 	glDrawRangeElements = cast(typeof(glDrawRangeElements))load("glDrawRangeElements");
 	glTexImage3D = cast(typeof(glTexImage3D))load("glTexImage3D");
 	glTexSubImage3D = cast(typeof(glTexSubImage3D))load("glTexSubImage3D");
@@ -1865,7 +1969,7 @@ void load_GL_VERSION_4_2(Loader load) {
 	glDrawArraysInstancedBaseInstance = cast(typeof(glDrawArraysInstancedBaseInstance))load("glDrawArraysInstancedBaseInstance");
 	glDrawElementsInstancedBaseInstance = cast(typeof(glDrawElementsInstancedBaseInstance))load("glDrawElementsInstancedBaseInstance");
 	glDrawElementsInstancedBaseVertexBaseInstance = cast(typeof(glDrawElementsInstancedBaseVertexBaseInstance))load("glDrawElementsInstancedBaseVertexBaseInstance");
-	glGetInternalformati64v = cast(typeof(glGetInternalformati64v))load("glGetInternalformati64v");
+	glGetInternalformativ = cast(typeof(glGetInternalformativ))load("glGetInternalformativ");
 	glGetActiveAtomicCounterBufferiv = cast(typeof(glGetActiveAtomicCounterBufferiv))load("glGetActiveAtomicCounterBufferiv");
 	glBindImageTexture = cast(typeof(glBindImageTexture))load("glBindImageTexture");
 	glMemoryBarrier = cast(typeof(glMemoryBarrier))load("glMemoryBarrier");
@@ -1941,12 +2045,133 @@ void load_GL_VERSION_4_4(Loader load) {
 	return;
 }
 
-void load_GL_NV_point_sprite(Loader load) {
-	if(!GL_NV_point_sprite) return;
-	glPointParameteriNV = cast(typeof(glPointParameteriNV))load("glPointParameteriNV");
-	glPointParameterivNV = cast(typeof(glPointParameterivNV))load("glPointParameterivNV");
+void load_GL_VERSION_4_5(Loader load) {
+	if(!GL_VERSION_4_5) return;
+	glClipControl = cast(typeof(glClipControl))load("glClipControl");
+	glCreateTransformFeedbacks = cast(typeof(glCreateTransformFeedbacks))load("glCreateTransformFeedbacks");
+	glTransformFeedbackBufferBase = cast(typeof(glTransformFeedbackBufferBase))load("glTransformFeedbackBufferBase");
+	glTransformFeedbackBufferRange = cast(typeof(glTransformFeedbackBufferRange))load("glTransformFeedbackBufferRange");
+	glGetTransformFeedbackiv = cast(typeof(glGetTransformFeedbackiv))load("glGetTransformFeedbackiv");
+	glGetTransformFeedbacki_v = cast(typeof(glGetTransformFeedbacki_v))load("glGetTransformFeedbacki_v");
+	glGetTransformFeedbacki64_v = cast(typeof(glGetTransformFeedbacki64_v))load("glGetTransformFeedbacki64_v");
+	glCreateBuffers = cast(typeof(glCreateBuffers))load("glCreateBuffers");
+	glNamedBufferStorage = cast(typeof(glNamedBufferStorage))load("glNamedBufferStorage");
+	glNamedBufferData = cast(typeof(glNamedBufferData))load("glNamedBufferData");
+	glNamedBufferSubData = cast(typeof(glNamedBufferSubData))load("glNamedBufferSubData");
+	glCopyNamedBufferSubData = cast(typeof(glCopyNamedBufferSubData))load("glCopyNamedBufferSubData");
+	glClearNamedBufferData = cast(typeof(glClearNamedBufferData))load("glClearNamedBufferData");
+	glClearNamedBufferSubData = cast(typeof(glClearNamedBufferSubData))load("glClearNamedBufferSubData");
+	glMapNamedBuffer = cast(typeof(glMapNamedBuffer))load("glMapNamedBuffer");
+	glMapNamedBufferRange = cast(typeof(glMapNamedBufferRange))load("glMapNamedBufferRange");
+	glUnmapNamedBuffer = cast(typeof(glUnmapNamedBuffer))load("glUnmapNamedBuffer");
+	glFlushMappedNamedBufferRange = cast(typeof(glFlushMappedNamedBufferRange))load("glFlushMappedNamedBufferRange");
+	glGetNamedBufferParameteriv = cast(typeof(glGetNamedBufferParameteriv))load("glGetNamedBufferParameteriv");
+	glGetNamedBufferParameteri64v = cast(typeof(glGetNamedBufferParameteri64v))load("glGetNamedBufferParameteri64v");
+	glGetNamedBufferPointerv = cast(typeof(glGetNamedBufferPointerv))load("glGetNamedBufferPointerv");
+	glGetNamedBufferSubData = cast(typeof(glGetNamedBufferSubData))load("glGetNamedBufferSubData");
+	glCreateFramebuffers = cast(typeof(glCreateFramebuffers))load("glCreateFramebuffers");
+	glNamedFramebufferRenderbuffer = cast(typeof(glNamedFramebufferRenderbuffer))load("glNamedFramebufferRenderbuffer");
+	glNamedFramebufferParameteri = cast(typeof(glNamedFramebufferParameteri))load("glNamedFramebufferParameteri");
+	glNamedFramebufferTexture = cast(typeof(glNamedFramebufferTexture))load("glNamedFramebufferTexture");
+	glNamedFramebufferTextureLayer = cast(typeof(glNamedFramebufferTextureLayer))load("glNamedFramebufferTextureLayer");
+	glNamedFramebufferDrawBuffer = cast(typeof(glNamedFramebufferDrawBuffer))load("glNamedFramebufferDrawBuffer");
+	glNamedFramebufferDrawBuffers = cast(typeof(glNamedFramebufferDrawBuffers))load("glNamedFramebufferDrawBuffers");
+	glNamedFramebufferReadBuffer = cast(typeof(glNamedFramebufferReadBuffer))load("glNamedFramebufferReadBuffer");
+	glInvalidateNamedFramebufferData = cast(typeof(glInvalidateNamedFramebufferData))load("glInvalidateNamedFramebufferData");
+	glInvalidateNamedFramebufferSubData = cast(typeof(glInvalidateNamedFramebufferSubData))load("glInvalidateNamedFramebufferSubData");
+	glClearNamedFramebufferiv = cast(typeof(glClearNamedFramebufferiv))load("glClearNamedFramebufferiv");
+	glClearNamedFramebufferuiv = cast(typeof(glClearNamedFramebufferuiv))load("glClearNamedFramebufferuiv");
+	glClearNamedFramebufferfv = cast(typeof(glClearNamedFramebufferfv))load("glClearNamedFramebufferfv");
+	glClearNamedFramebufferfi = cast(typeof(glClearNamedFramebufferfi))load("glClearNamedFramebufferfi");
+	glBlitNamedFramebuffer = cast(typeof(glBlitNamedFramebuffer))load("glBlitNamedFramebuffer");
+	glCheckNamedFramebufferStatus = cast(typeof(glCheckNamedFramebufferStatus))load("glCheckNamedFramebufferStatus");
+	glGetNamedFramebufferParameteriv = cast(typeof(glGetNamedFramebufferParameteriv))load("glGetNamedFramebufferParameteriv");
+	glGetNamedFramebufferAttachmentParameteriv = cast(typeof(glGetNamedFramebufferAttachmentParameteriv))load("glGetNamedFramebufferAttachmentParameteriv");
+	glCreateRenderbuffers = cast(typeof(glCreateRenderbuffers))load("glCreateRenderbuffers");
+	glNamedRenderbufferStorage = cast(typeof(glNamedRenderbufferStorage))load("glNamedRenderbufferStorage");
+	glNamedRenderbufferStorageMultisample = cast(typeof(glNamedRenderbufferStorageMultisample))load("glNamedRenderbufferStorageMultisample");
+	glGetNamedRenderbufferParameteriv = cast(typeof(glGetNamedRenderbufferParameteriv))load("glGetNamedRenderbufferParameteriv");
+	glCreateTextures = cast(typeof(glCreateTextures))load("glCreateTextures");
+	glTextureBuffer = cast(typeof(glTextureBuffer))load("glTextureBuffer");
+	glTextureBufferRange = cast(typeof(glTextureBufferRange))load("glTextureBufferRange");
+	glTextureStorage1D = cast(typeof(glTextureStorage1D))load("glTextureStorage1D");
+	glTextureStorage2D = cast(typeof(glTextureStorage2D))load("glTextureStorage2D");
+	glTextureStorage3D = cast(typeof(glTextureStorage3D))load("glTextureStorage3D");
+	glTextureStorage2DMultisample = cast(typeof(glTextureStorage2DMultisample))load("glTextureStorage2DMultisample");
+	glTextureStorage3DMultisample = cast(typeof(glTextureStorage3DMultisample))load("glTextureStorage3DMultisample");
+	glTextureSubImage1D = cast(typeof(glTextureSubImage1D))load("glTextureSubImage1D");
+	glTextureSubImage2D = cast(typeof(glTextureSubImage2D))load("glTextureSubImage2D");
+	glTextureSubImage3D = cast(typeof(glTextureSubImage3D))load("glTextureSubImage3D");
+	glCompressedTextureSubImage1D = cast(typeof(glCompressedTextureSubImage1D))load("glCompressedTextureSubImage1D");
+	glCompressedTextureSubImage2D = cast(typeof(glCompressedTextureSubImage2D))load("glCompressedTextureSubImage2D");
+	glCompressedTextureSubImage3D = cast(typeof(glCompressedTextureSubImage3D))load("glCompressedTextureSubImage3D");
+	glCopyTextureSubImage1D = cast(typeof(glCopyTextureSubImage1D))load("glCopyTextureSubImage1D");
+	glCopyTextureSubImage2D = cast(typeof(glCopyTextureSubImage2D))load("glCopyTextureSubImage2D");
+	glCopyTextureSubImage3D = cast(typeof(glCopyTextureSubImage3D))load("glCopyTextureSubImage3D");
+	glTextureParameterf = cast(typeof(glTextureParameterf))load("glTextureParameterf");
+	glTextureParameterfv = cast(typeof(glTextureParameterfv))load("glTextureParameterfv");
+	glTextureParameteri = cast(typeof(glTextureParameteri))load("glTextureParameteri");
+	glTextureParameterIiv = cast(typeof(glTextureParameterIiv))load("glTextureParameterIiv");
+	glTextureParameterIuiv = cast(typeof(glTextureParameterIuiv))load("glTextureParameterIuiv");
+	glTextureParameteriv = cast(typeof(glTextureParameteriv))load("glTextureParameteriv");
+	glGenerateTextureMipmap = cast(typeof(glGenerateTextureMipmap))load("glGenerateTextureMipmap");
+	glBindTextureUnit = cast(typeof(glBindTextureUnit))load("glBindTextureUnit");
+	glGetTextureImage = cast(typeof(glGetTextureImage))load("glGetTextureImage");
+	glGetCompressedTextureImage = cast(typeof(glGetCompressedTextureImage))load("glGetCompressedTextureImage");
+	glGetTextureLevelParameterfv = cast(typeof(glGetTextureLevelParameterfv))load("glGetTextureLevelParameterfv");
+	glGetTextureLevelParameteriv = cast(typeof(glGetTextureLevelParameteriv))load("glGetTextureLevelParameteriv");
+	glGetTextureParameterfv = cast(typeof(glGetTextureParameterfv))load("glGetTextureParameterfv");
+	glGetTextureParameterIiv = cast(typeof(glGetTextureParameterIiv))load("glGetTextureParameterIiv");
+	glGetTextureParameterIuiv = cast(typeof(glGetTextureParameterIuiv))load("glGetTextureParameterIuiv");
+	glGetTextureParameteriv = cast(typeof(glGetTextureParameteriv))load("glGetTextureParameteriv");
+	glCreateVertexArrays = cast(typeof(glCreateVertexArrays))load("glCreateVertexArrays");
+	glDisableVertexArrayAttrib = cast(typeof(glDisableVertexArrayAttrib))load("glDisableVertexArrayAttrib");
+	glEnableVertexArrayAttrib = cast(typeof(glEnableVertexArrayAttrib))load("glEnableVertexArrayAttrib");
+	glVertexArrayElementBuffer = cast(typeof(glVertexArrayElementBuffer))load("glVertexArrayElementBuffer");
+	glVertexArrayVertexBuffer = cast(typeof(glVertexArrayVertexBuffer))load("glVertexArrayVertexBuffer");
+	glVertexArrayVertexBuffers = cast(typeof(glVertexArrayVertexBuffers))load("glVertexArrayVertexBuffers");
+	glVertexArrayAttribBinding = cast(typeof(glVertexArrayAttribBinding))load("glVertexArrayAttribBinding");
+	glVertexArrayAttribFormat = cast(typeof(glVertexArrayAttribFormat))load("glVertexArrayAttribFormat");
+	glVertexArrayAttribIFormat = cast(typeof(glVertexArrayAttribIFormat))load("glVertexArrayAttribIFormat");
+	glVertexArrayAttribLFormat = cast(typeof(glVertexArrayAttribLFormat))load("glVertexArrayAttribLFormat");
+	glVertexArrayBindingDivisor = cast(typeof(glVertexArrayBindingDivisor))load("glVertexArrayBindingDivisor");
+	glGetVertexArrayiv = cast(typeof(glGetVertexArrayiv))load("glGetVertexArrayiv");
+	glGetVertexArrayIndexediv = cast(typeof(glGetVertexArrayIndexediv))load("glGetVertexArrayIndexediv");
+	glGetVertexArrayIndexed64iv = cast(typeof(glGetVertexArrayIndexed64iv))load("glGetVertexArrayIndexed64iv");
+	glCreateSamplers = cast(typeof(glCreateSamplers))load("glCreateSamplers");
+	glCreateProgramPipelines = cast(typeof(glCreateProgramPipelines))load("glCreateProgramPipelines");
+	glCreateQueries = cast(typeof(glCreateQueries))load("glCreateQueries");
+	glGetQueryBufferObjecti64v = cast(typeof(glGetQueryBufferObjecti64v))load("glGetQueryBufferObjecti64v");
+	glGetQueryBufferObjectiv = cast(typeof(glGetQueryBufferObjectiv))load("glGetQueryBufferObjectiv");
+	glGetQueryBufferObjectui64v = cast(typeof(glGetQueryBufferObjectui64v))load("glGetQueryBufferObjectui64v");
+	glGetQueryBufferObjectuiv = cast(typeof(glGetQueryBufferObjectuiv))load("glGetQueryBufferObjectuiv");
+	glMemoryBarrierByRegion = cast(typeof(glMemoryBarrierByRegion))load("glMemoryBarrierByRegion");
+	glGetTextureSubImage = cast(typeof(glGetTextureSubImage))load("glGetTextureSubImage");
+	glGetCompressedTextureSubImage = cast(typeof(glGetCompressedTextureSubImage))load("glGetCompressedTextureSubImage");
+	glGetGraphicsResetStatus = cast(typeof(glGetGraphicsResetStatus))load("glGetGraphicsResetStatus");
+	glGetnCompressedTexImage = cast(typeof(glGetnCompressedTexImage))load("glGetnCompressedTexImage");
+	glGetnTexImage = cast(typeof(glGetnTexImage))load("glGetnTexImage");
+	glGetnUniformdv = cast(typeof(glGetnUniformdv))load("glGetnUniformdv");
+	glGetnUniformfv = cast(typeof(glGetnUniformfv))load("glGetnUniformfv");
+	glGetnUniformiv = cast(typeof(glGetnUniformiv))load("glGetnUniformiv");
+	glGetnUniformuiv = cast(typeof(glGetnUniformuiv))load("glGetnUniformuiv");
+	glReadnPixels = cast(typeof(glReadnPixels))load("glReadnPixels");
+	glGetnMapdv = cast(typeof(glGetnMapdv))load("glGetnMapdv");
+	glGetnMapfv = cast(typeof(glGetnMapfv))load("glGetnMapfv");
+	glGetnMapiv = cast(typeof(glGetnMapiv))load("glGetnMapiv");
+	glGetnPixelMapfv = cast(typeof(glGetnPixelMapfv))load("glGetnPixelMapfv");
+	glGetnPixelMapuiv = cast(typeof(glGetnPixelMapuiv))load("glGetnPixelMapuiv");
+	glGetnPixelMapusv = cast(typeof(glGetnPixelMapusv))load("glGetnPixelMapusv");
+	glGetnPolygonStipple = cast(typeof(glGetnPolygonStipple))load("glGetnPolygonStipple");
+	glGetnColorTable = cast(typeof(glGetnColorTable))load("glGetnColorTable");
+	glGetnConvolutionFilter = cast(typeof(glGetnConvolutionFilter))load("glGetnConvolutionFilter");
+	glGetnSeparableFilter = cast(typeof(glGetnSeparableFilter))load("glGetnSeparableFilter");
+	glGetnHistogram = cast(typeof(glGetnHistogram))load("glGetnHistogram");
+	glGetnMinmax = cast(typeof(glGetnMinmax))load("glGetnMinmax");
+	glTextureBarrier = cast(typeof(glTextureBarrier))load("glTextureBarrier");
 	return;
 }
+
 void load_GL_APPLE_element_array(Loader load) {
 	if(!GL_APPLE_element_array) return;
 	glElementPointerAPPLE = cast(typeof(glElementPointerAPPLE))load("glElementPointerAPPLE");
@@ -1965,6 +2190,12 @@ void load_GL_AMD_multi_draw_indirect(Loader load) {
 void load_GL_SGIX_tag_sample_buffer(Loader load) {
 	if(!GL_SGIX_tag_sample_buffer) return;
 	glTagSampleBufferSGIX = cast(typeof(glTagSampleBufferSGIX))load("glTagSampleBufferSGIX");
+	return;
+}
+void load_GL_NV_point_sprite(Loader load) {
+	if(!GL_NV_point_sprite) return;
+	glPointParameteriNV = cast(typeof(glPointParameteriNV))load("glPointParameteriNV");
+	glPointParameterivNV = cast(typeof(glPointParameterivNV))load("glPointParameterivNV");
 	return;
 }
 void load_GL_ATI_separate_stencil(Loader load) {
@@ -2148,32 +2379,15 @@ void load_GL_AMD_draw_buffers_blend(Loader load) {
 	glBlendEquationSeparateIndexedAMD = cast(typeof(glBlendEquationSeparateIndexedAMD))load("glBlendEquationSeparateIndexedAMD");
 	return;
 }
-void load_GL_MESA_window_pos(Loader load) {
-	if(!GL_MESA_window_pos) return;
-	glWindowPos2dMESA = cast(typeof(glWindowPos2dMESA))load("glWindowPos2dMESA");
-	glWindowPos2dvMESA = cast(typeof(glWindowPos2dvMESA))load("glWindowPos2dvMESA");
-	glWindowPos2fMESA = cast(typeof(glWindowPos2fMESA))load("glWindowPos2fMESA");
-	glWindowPos2fvMESA = cast(typeof(glWindowPos2fvMESA))load("glWindowPos2fvMESA");
-	glWindowPos2iMESA = cast(typeof(glWindowPos2iMESA))load("glWindowPos2iMESA");
-	glWindowPos2ivMESA = cast(typeof(glWindowPos2ivMESA))load("glWindowPos2ivMESA");
-	glWindowPos2sMESA = cast(typeof(glWindowPos2sMESA))load("glWindowPos2sMESA");
-	glWindowPos2svMESA = cast(typeof(glWindowPos2svMESA))load("glWindowPos2svMESA");
-	glWindowPos3dMESA = cast(typeof(glWindowPos3dMESA))load("glWindowPos3dMESA");
-	glWindowPos3dvMESA = cast(typeof(glWindowPos3dvMESA))load("glWindowPos3dvMESA");
-	glWindowPos3fMESA = cast(typeof(glWindowPos3fMESA))load("glWindowPos3fMESA");
-	glWindowPos3fvMESA = cast(typeof(glWindowPos3fvMESA))load("glWindowPos3fvMESA");
-	glWindowPos3iMESA = cast(typeof(glWindowPos3iMESA))load("glWindowPos3iMESA");
-	glWindowPos3ivMESA = cast(typeof(glWindowPos3ivMESA))load("glWindowPos3ivMESA");
-	glWindowPos3sMESA = cast(typeof(glWindowPos3sMESA))load("glWindowPos3sMESA");
-	glWindowPos3svMESA = cast(typeof(glWindowPos3svMESA))load("glWindowPos3svMESA");
-	glWindowPos4dMESA = cast(typeof(glWindowPos4dMESA))load("glWindowPos4dMESA");
-	glWindowPos4dvMESA = cast(typeof(glWindowPos4dvMESA))load("glWindowPos4dvMESA");
-	glWindowPos4fMESA = cast(typeof(glWindowPos4fMESA))load("glWindowPos4fMESA");
-	glWindowPos4fvMESA = cast(typeof(glWindowPos4fvMESA))load("glWindowPos4fvMESA");
-	glWindowPos4iMESA = cast(typeof(glWindowPos4iMESA))load("glWindowPos4iMESA");
-	glWindowPos4ivMESA = cast(typeof(glWindowPos4ivMESA))load("glWindowPos4ivMESA");
-	glWindowPos4sMESA = cast(typeof(glWindowPos4sMESA))load("glWindowPos4sMESA");
-	glWindowPos4svMESA = cast(typeof(glWindowPos4svMESA))load("glWindowPos4svMESA");
+void load_GL_APPLE_texture_range(Loader load) {
+	if(!GL_APPLE_texture_range) return;
+	glTextureRangeAPPLE = cast(typeof(glTextureRangeAPPLE))load("glTextureRangeAPPLE");
+	glGetTexParameterPointervAPPLE = cast(typeof(glGetTexParameterPointervAPPLE))load("glGetTexParameterPointervAPPLE");
+	return;
+}
+void load_GL_EXT_texture_array(Loader load) {
+	if(!GL_EXT_texture_array) return;
+	glFramebufferTextureLayerEXT = cast(typeof(glFramebufferTextureLayerEXT))load("glFramebufferTextureLayerEXT");
 	return;
 }
 void load_GL_NV_texture_barrier(Loader load) {
@@ -2274,6 +2488,21 @@ void load_GL_EXT_separate_shader_objects(Loader load) {
 	glProgramUniformMatrix4fvEXT = cast(typeof(glProgramUniformMatrix4fvEXT))load("glProgramUniformMatrix4fvEXT");
 	glUseProgramStagesEXT = cast(typeof(glUseProgramStagesEXT))load("glUseProgramStagesEXT");
 	glValidateProgramPipelineEXT = cast(typeof(glValidateProgramPipelineEXT))load("glValidateProgramPipelineEXT");
+	glProgramUniform1uiEXT = cast(typeof(glProgramUniform1uiEXT))load("glProgramUniform1uiEXT");
+	glProgramUniform2uiEXT = cast(typeof(glProgramUniform2uiEXT))load("glProgramUniform2uiEXT");
+	glProgramUniform3uiEXT = cast(typeof(glProgramUniform3uiEXT))load("glProgramUniform3uiEXT");
+	glProgramUniform4uiEXT = cast(typeof(glProgramUniform4uiEXT))load("glProgramUniform4uiEXT");
+	glProgramUniform1uivEXT = cast(typeof(glProgramUniform1uivEXT))load("glProgramUniform1uivEXT");
+	glProgramUniform2uivEXT = cast(typeof(glProgramUniform2uivEXT))load("glProgramUniform2uivEXT");
+	glProgramUniform3uivEXT = cast(typeof(glProgramUniform3uivEXT))load("glProgramUniform3uivEXT");
+	glProgramUniform4uivEXT = cast(typeof(glProgramUniform4uivEXT))load("glProgramUniform4uivEXT");
+	glProgramUniformMatrix4fvEXT = cast(typeof(glProgramUniformMatrix4fvEXT))load("glProgramUniformMatrix4fvEXT");
+	glProgramUniformMatrix2x3fvEXT = cast(typeof(glProgramUniformMatrix2x3fvEXT))load("glProgramUniformMatrix2x3fvEXT");
+	glProgramUniformMatrix3x2fvEXT = cast(typeof(glProgramUniformMatrix3x2fvEXT))load("glProgramUniformMatrix3x2fvEXT");
+	glProgramUniformMatrix2x4fvEXT = cast(typeof(glProgramUniformMatrix2x4fvEXT))load("glProgramUniformMatrix2x4fvEXT");
+	glProgramUniformMatrix4x2fvEXT = cast(typeof(glProgramUniformMatrix4x2fvEXT))load("glProgramUniformMatrix4x2fvEXT");
+	glProgramUniformMatrix3x4fvEXT = cast(typeof(glProgramUniformMatrix3x4fvEXT))load("glProgramUniformMatrix3x4fvEXT");
+	glProgramUniformMatrix4x3fvEXT = cast(typeof(glProgramUniformMatrix4x3fvEXT))load("glProgramUniformMatrix4x3fvEXT");
 	return;
 }
 void load_GL_NV_texture_multisample(Loader load) {
@@ -2442,6 +2671,12 @@ void load_GL_EXT_subtexture(Loader load) {
 	glTexSubImage2DEXT = cast(typeof(glTexSubImage2DEXT))load("glTexSubImage2DEXT");
 	return;
 }
+void load_GL_EXT_gpu_program_parameters(Loader load) {
+	if(!GL_EXT_gpu_program_parameters) return;
+	glProgramEnvParameters4fvEXT = cast(typeof(glProgramEnvParameters4fvEXT))load("glProgramEnvParameters4fvEXT");
+	glProgramLocalParameters4fvEXT = cast(typeof(glProgramLocalParameters4fvEXT))load("glProgramLocalParameters4fvEXT");
+	return;
+}
 void load_GL_NV_evaluators(Loader load) {
 	if(!GL_NV_evaluators) return;
 	glMapControlPointsNV = cast(typeof(glMapControlPointsNV))load("glMapControlPointsNV");
@@ -2491,20 +2726,9 @@ void load_GL_NV_present_video(Loader load) {
 	glGetVideoui64vNV = cast(typeof(glGetVideoui64vNV))load("glGetVideoui64vNV");
 	return;
 }
-void load_GL_EXT_gpu_program_parameters(Loader load) {
-	if(!GL_EXT_gpu_program_parameters) return;
-	glProgramEnvParameters4fvEXT = cast(typeof(glProgramEnvParameters4fvEXT))load("glProgramEnvParameters4fvEXT");
-	glProgramLocalParameters4fvEXT = cast(typeof(glProgramLocalParameters4fvEXT))load("glProgramLocalParameters4fvEXT");
-	return;
-}
-void load_GL_SGIX_list_priority(Loader load) {
-	if(!GL_SGIX_list_priority) return;
-	glGetListParameterfvSGIX = cast(typeof(glGetListParameterfvSGIX))load("glGetListParameterfvSGIX");
-	glGetListParameterivSGIX = cast(typeof(glGetListParameterivSGIX))load("glGetListParameterivSGIX");
-	glListParameterfSGIX = cast(typeof(glListParameterfSGIX))load("glListParameterfSGIX");
-	glListParameterfvSGIX = cast(typeof(glListParameterfvSGIX))load("glListParameterfvSGIX");
-	glListParameteriSGIX = cast(typeof(glListParameteriSGIX))load("glListParameteriSGIX");
-	glListParameterivSGIX = cast(typeof(glListParameterivSGIX))load("glListParameterivSGIX");
+void load_GL_SGIX_framezoom(Loader load) {
+	if(!GL_SGIX_framezoom) return;
+	glFrameZoomSGIX = cast(typeof(glFrameZoomSGIX))load("glFrameZoomSGIX");
 	return;
 }
 void load_GL_ARB_draw_elements_base_vertex(Loader load) {
@@ -2551,15 +2775,40 @@ void load_GL_ARB_instanced_arrays(Loader load) {
 	glVertexAttribDivisorARB = cast(typeof(glVertexAttribDivisorARB))load("glVertexAttribDivisorARB");
 	return;
 }
-void load_GL_EXT_polygon_offset(Loader load) {
-	if(!GL_EXT_polygon_offset) return;
-	glPolygonOffsetEXT = cast(typeof(glPolygonOffsetEXT))load("glPolygonOffsetEXT");
+void load_GL_ARB_get_texture_sub_image(Loader load) {
+	if(!GL_ARB_get_texture_sub_image) return;
+	glGetTextureSubImage = cast(typeof(glGetTextureSubImage))load("glGetTextureSubImage");
+	glGetCompressedTextureSubImage = cast(typeof(glGetCompressedTextureSubImage))load("glGetCompressedTextureSubImage");
+	return;
+}
+void load_GL_KHR_robustness(Loader load) {
+	if(!GL_KHR_robustness) return;
+	glGetGraphicsResetStatus = cast(typeof(glGetGraphicsResetStatus))load("glGetGraphicsResetStatus");
+	glReadnPixels = cast(typeof(glReadnPixels))load("glReadnPixels");
+	glGetnUniformfv = cast(typeof(glGetnUniformfv))load("glGetnUniformfv");
+	glGetnUniformiv = cast(typeof(glGetnUniformiv))load("glGetnUniformiv");
+	glGetnUniformuiv = cast(typeof(glGetnUniformuiv))load("glGetnUniformuiv");
+	glGetGraphicsResetStatusKHR = cast(typeof(glGetGraphicsResetStatusKHR))load("glGetGraphicsResetStatusKHR");
+	glReadnPixelsKHR = cast(typeof(glReadnPixelsKHR))load("glReadnPixelsKHR");
+	glGetnUniformfvKHR = cast(typeof(glGetnUniformfvKHR))load("glGetnUniformfvKHR");
+	glGetnUniformivKHR = cast(typeof(glGetnUniformivKHR))load("glGetnUniformivKHR");
+	glGetnUniformuivKHR = cast(typeof(glGetnUniformuivKHR))load("glGetnUniformuivKHR");
 	return;
 }
 void load_GL_AMD_sparse_texture(Loader load) {
 	if(!GL_AMD_sparse_texture) return;
 	glTexStorageSparseAMD = cast(typeof(glTexStorageSparseAMD))load("glTexStorageSparseAMD");
 	glTextureStorageSparseAMD = cast(typeof(glTextureStorageSparseAMD))load("glTextureStorageSparseAMD");
+	return;
+}
+void load_GL_ARB_clip_control(Loader load) {
+	if(!GL_ARB_clip_control) return;
+	glClipControl = cast(typeof(glClipControl))load("glClipControl");
+	return;
+}
+void load_GL_NV_fragment_coverage_to_color(Loader load) {
+	if(!GL_NV_fragment_coverage_to_color) return;
+	glFragmentCoverageColorNV = cast(typeof(glFragmentCoverageColorNV))load("glFragmentCoverageColorNV");
 	return;
 }
 void load_GL_NV_fence(Loader load) {
@@ -2675,6 +2924,16 @@ void load_GL_ARB_multi_bind(Loader load) {
 	glBindVertexBuffers = cast(typeof(glBindVertexBuffers))load("glBindVertexBuffers");
 	return;
 }
+void load_GL_SGIX_list_priority(Loader load) {
+	if(!GL_SGIX_list_priority) return;
+	glGetListParameterfvSGIX = cast(typeof(glGetListParameterfvSGIX))load("glGetListParameterfvSGIX");
+	glGetListParameterivSGIX = cast(typeof(glGetListParameterivSGIX))load("glGetListParameterivSGIX");
+	glListParameterfSGIX = cast(typeof(glListParameterfSGIX))load("glListParameterfSGIX");
+	glListParameterfvSGIX = cast(typeof(glListParameterfvSGIX))load("glListParameterfvSGIX");
+	glListParameteriSGIX = cast(typeof(glListParameteriSGIX))load("glListParameteriSGIX");
+	glListParameterivSGIX = cast(typeof(glListParameterivSGIX))load("glListParameterivSGIX");
+	return;
+}
 void load_GL_NV_vertex_buffer_unified_memory(Loader load) {
 	if(!GL_NV_vertex_buffer_unified_memory) return;
 	glBufferAddressRangeNV = cast(typeof(glBufferAddressRangeNV))load("glBufferAddressRangeNV");
@@ -2689,6 +2948,12 @@ void load_GL_NV_vertex_buffer_unified_memory(Loader load) {
 	glVertexAttribFormatNV = cast(typeof(glVertexAttribFormatNV))load("glVertexAttribFormatNV");
 	glVertexAttribIFormatNV = cast(typeof(glVertexAttribIFormatNV))load("glVertexAttribIFormatNV");
 	glGetIntegerui64i_vNV = cast(typeof(glGetIntegerui64i_vNV))load("glGetIntegerui64i_vNV");
+	return;
+}
+void load_GL_ARB_clear_texture(Loader load) {
+	if(!GL_ARB_clear_texture) return;
+	glClearTexImage = cast(typeof(glClearTexImage))load("glClearTexImage");
+	glClearTexSubImage = cast(typeof(glClearTexSubImage))load("glClearTexSubImage");
 	return;
 }
 void load_GL_NV_blend_equation_advanced(Loader load) {
@@ -2885,6 +3150,11 @@ void load_GL_EXT_bindable_uniform(Loader load) {
 	glGetUniformOffsetEXT = cast(typeof(glGetUniformOffsetEXT))load("glGetUniformOffsetEXT");
 	return;
 }
+void load_GL_KHR_blend_equation_advanced(Loader load) {
+	if(!GL_KHR_blend_equation_advanced) return;
+	glBlendBarrierKHR = cast(typeof(glBlendBarrierKHR))load("glBlendBarrierKHR");
+	return;
+}
 void load_GL_ATI_element_array(Loader load) {
 	if(!GL_ATI_element_array) return;
 	glElementPointerATI = cast(typeof(glElementPointerATI))load("glElementPointerATI");
@@ -2932,9 +3202,52 @@ void load_GL_PGI_misc_hints(Loader load) {
 }
 void load_GL_ARB_vertex_shader(Loader load) {
 	if(!GL_ARB_vertex_shader) return;
+	glVertexAttrib1fARB = cast(typeof(glVertexAttrib1fARB))load("glVertexAttrib1fARB");
+	glVertexAttrib1sARB = cast(typeof(glVertexAttrib1sARB))load("glVertexAttrib1sARB");
+	glVertexAttrib1dARB = cast(typeof(glVertexAttrib1dARB))load("glVertexAttrib1dARB");
+	glVertexAttrib2fARB = cast(typeof(glVertexAttrib2fARB))load("glVertexAttrib2fARB");
+	glVertexAttrib2sARB = cast(typeof(glVertexAttrib2sARB))load("glVertexAttrib2sARB");
+	glVertexAttrib2dARB = cast(typeof(glVertexAttrib2dARB))load("glVertexAttrib2dARB");
+	glVertexAttrib3fARB = cast(typeof(glVertexAttrib3fARB))load("glVertexAttrib3fARB");
+	glVertexAttrib3sARB = cast(typeof(glVertexAttrib3sARB))load("glVertexAttrib3sARB");
+	glVertexAttrib3dARB = cast(typeof(glVertexAttrib3dARB))load("glVertexAttrib3dARB");
+	glVertexAttrib4fARB = cast(typeof(glVertexAttrib4fARB))load("glVertexAttrib4fARB");
+	glVertexAttrib4sARB = cast(typeof(glVertexAttrib4sARB))load("glVertexAttrib4sARB");
+	glVertexAttrib4dARB = cast(typeof(glVertexAttrib4dARB))load("glVertexAttrib4dARB");
+	glVertexAttrib4NubARB = cast(typeof(glVertexAttrib4NubARB))load("glVertexAttrib4NubARB");
+	glVertexAttrib1fvARB = cast(typeof(glVertexAttrib1fvARB))load("glVertexAttrib1fvARB");
+	glVertexAttrib1svARB = cast(typeof(glVertexAttrib1svARB))load("glVertexAttrib1svARB");
+	glVertexAttrib1dvARB = cast(typeof(glVertexAttrib1dvARB))load("glVertexAttrib1dvARB");
+	glVertexAttrib2fvARB = cast(typeof(glVertexAttrib2fvARB))load("glVertexAttrib2fvARB");
+	glVertexAttrib2svARB = cast(typeof(glVertexAttrib2svARB))load("glVertexAttrib2svARB");
+	glVertexAttrib2dvARB = cast(typeof(glVertexAttrib2dvARB))load("glVertexAttrib2dvARB");
+	glVertexAttrib3fvARB = cast(typeof(glVertexAttrib3fvARB))load("glVertexAttrib3fvARB");
+	glVertexAttrib3svARB = cast(typeof(glVertexAttrib3svARB))load("glVertexAttrib3svARB");
+	glVertexAttrib3dvARB = cast(typeof(glVertexAttrib3dvARB))load("glVertexAttrib3dvARB");
+	glVertexAttrib4fvARB = cast(typeof(glVertexAttrib4fvARB))load("glVertexAttrib4fvARB");
+	glVertexAttrib4svARB = cast(typeof(glVertexAttrib4svARB))load("glVertexAttrib4svARB");
+	glVertexAttrib4dvARB = cast(typeof(glVertexAttrib4dvARB))load("glVertexAttrib4dvARB");
+	glVertexAttrib4ivARB = cast(typeof(glVertexAttrib4ivARB))load("glVertexAttrib4ivARB");
+	glVertexAttrib4bvARB = cast(typeof(glVertexAttrib4bvARB))load("glVertexAttrib4bvARB");
+	glVertexAttrib4ubvARB = cast(typeof(glVertexAttrib4ubvARB))load("glVertexAttrib4ubvARB");
+	glVertexAttrib4usvARB = cast(typeof(glVertexAttrib4usvARB))load("glVertexAttrib4usvARB");
+	glVertexAttrib4uivARB = cast(typeof(glVertexAttrib4uivARB))load("glVertexAttrib4uivARB");
+	glVertexAttrib4NbvARB = cast(typeof(glVertexAttrib4NbvARB))load("glVertexAttrib4NbvARB");
+	glVertexAttrib4NsvARB = cast(typeof(glVertexAttrib4NsvARB))load("glVertexAttrib4NsvARB");
+	glVertexAttrib4NivARB = cast(typeof(glVertexAttrib4NivARB))load("glVertexAttrib4NivARB");
+	glVertexAttrib4NubvARB = cast(typeof(glVertexAttrib4NubvARB))load("glVertexAttrib4NubvARB");
+	glVertexAttrib4NusvARB = cast(typeof(glVertexAttrib4NusvARB))load("glVertexAttrib4NusvARB");
+	glVertexAttrib4NuivARB = cast(typeof(glVertexAttrib4NuivARB))load("glVertexAttrib4NuivARB");
+	glVertexAttribPointerARB = cast(typeof(glVertexAttribPointerARB))load("glVertexAttribPointerARB");
+	glEnableVertexAttribArrayARB = cast(typeof(glEnableVertexAttribArrayARB))load("glEnableVertexAttribArrayARB");
+	glDisableVertexAttribArrayARB = cast(typeof(glDisableVertexAttribArrayARB))load("glDisableVertexAttribArrayARB");
 	glBindAttribLocationARB = cast(typeof(glBindAttribLocationARB))load("glBindAttribLocationARB");
 	glGetActiveAttribARB = cast(typeof(glGetActiveAttribARB))load("glGetActiveAttribARB");
 	glGetAttribLocationARB = cast(typeof(glGetAttribLocationARB))load("glGetAttribLocationARB");
+	glGetVertexAttribdvARB = cast(typeof(glGetVertexAttribdvARB))load("glGetVertexAttribdvARB");
+	glGetVertexAttribfvARB = cast(typeof(glGetVertexAttribfvARB))load("glGetVertexAttribfvARB");
+	glGetVertexAttribivARB = cast(typeof(glGetVertexAttribivARB))load("glGetVertexAttribivARB");
+	glGetVertexAttribPointervARB = cast(typeof(glGetVertexAttribPointervARB))load("glGetVertexAttribPointervARB");
 	return;
 }
 void load_GL_ARB_tessellation_shader(Loader load) {
@@ -2965,6 +3278,11 @@ void load_GL_ARB_vertex_attrib_64bit(Loader load) {
 	glVertexAttribL4dv = cast(typeof(glVertexAttribL4dv))load("glVertexAttribL4dv");
 	glVertexAttribLPointer = cast(typeof(glVertexAttribLPointer))load("glVertexAttribLPointer");
 	glGetVertexAttribLdv = cast(typeof(glGetVertexAttribLdv))load("glGetVertexAttribLdv");
+	return;
+}
+void load_GL_EXT_texture_filter_minmax(Loader load) {
+	if(!GL_EXT_texture_filter_minmax) return;
+	glRasterSamplesEXT = cast(typeof(glRasterSamplesEXT))load("glRasterSamplesEXT");
 	return;
 }
 void load_GL_AMD_interleaved_elements(Loader load) {
@@ -3044,6 +3362,11 @@ void load_GL_ARB_base_instance(Loader load) {
 	glDrawElementsInstancedBaseVertexBaseInstance = cast(typeof(glDrawElementsInstancedBaseVertexBaseInstance))load("glDrawElementsInstancedBaseVertexBaseInstance");
 	return;
 }
+void load_GL_ARB_ES3_1_compatibility(Loader load) {
+	if(!GL_ARB_ES3_1_compatibility) return;
+	glMemoryBarrierByRegion = cast(typeof(glMemoryBarrierByRegion))load("glMemoryBarrierByRegion");
+	return;
+}
 void load_GL_EXT_texture_integer(Loader load) {
 	if(!GL_EXT_texture_integer) return;
 	glTexParameterIivEXT = cast(typeof(glTexParameterIivEXT))load("glTexParameterIivEXT");
@@ -3060,6 +3383,44 @@ void load_GL_ARB_texture_multisample(Loader load) {
 	glTexImage3DMultisample = cast(typeof(glTexImage3DMultisample))load("glTexImage3DMultisample");
 	glGetMultisamplefv = cast(typeof(glGetMultisamplefv))load("glGetMultisamplefv");
 	glSampleMaski = cast(typeof(glSampleMaski))load("glSampleMaski");
+	return;
+}
+void load_GL_AMD_gpu_shader_int64(Loader load) {
+	if(!GL_AMD_gpu_shader_int64) return;
+	glUniform1i64NV = cast(typeof(glUniform1i64NV))load("glUniform1i64NV");
+	glUniform2i64NV = cast(typeof(glUniform2i64NV))load("glUniform2i64NV");
+	glUniform3i64NV = cast(typeof(glUniform3i64NV))load("glUniform3i64NV");
+	glUniform4i64NV = cast(typeof(glUniform4i64NV))load("glUniform4i64NV");
+	glUniform1i64vNV = cast(typeof(glUniform1i64vNV))load("glUniform1i64vNV");
+	glUniform2i64vNV = cast(typeof(glUniform2i64vNV))load("glUniform2i64vNV");
+	glUniform3i64vNV = cast(typeof(glUniform3i64vNV))load("glUniform3i64vNV");
+	glUniform4i64vNV = cast(typeof(glUniform4i64vNV))load("glUniform4i64vNV");
+	glUniform1ui64NV = cast(typeof(glUniform1ui64NV))load("glUniform1ui64NV");
+	glUniform2ui64NV = cast(typeof(glUniform2ui64NV))load("glUniform2ui64NV");
+	glUniform3ui64NV = cast(typeof(glUniform3ui64NV))load("glUniform3ui64NV");
+	glUniform4ui64NV = cast(typeof(glUniform4ui64NV))load("glUniform4ui64NV");
+	glUniform1ui64vNV = cast(typeof(glUniform1ui64vNV))load("glUniform1ui64vNV");
+	glUniform2ui64vNV = cast(typeof(glUniform2ui64vNV))load("glUniform2ui64vNV");
+	glUniform3ui64vNV = cast(typeof(glUniform3ui64vNV))load("glUniform3ui64vNV");
+	glUniform4ui64vNV = cast(typeof(glUniform4ui64vNV))load("glUniform4ui64vNV");
+	glGetUniformi64vNV = cast(typeof(glGetUniformi64vNV))load("glGetUniformi64vNV");
+	glGetUniformui64vNV = cast(typeof(glGetUniformui64vNV))load("glGetUniformui64vNV");
+	glProgramUniform1i64NV = cast(typeof(glProgramUniform1i64NV))load("glProgramUniform1i64NV");
+	glProgramUniform2i64NV = cast(typeof(glProgramUniform2i64NV))load("glProgramUniform2i64NV");
+	glProgramUniform3i64NV = cast(typeof(glProgramUniform3i64NV))load("glProgramUniform3i64NV");
+	glProgramUniform4i64NV = cast(typeof(glProgramUniform4i64NV))load("glProgramUniform4i64NV");
+	glProgramUniform1i64vNV = cast(typeof(glProgramUniform1i64vNV))load("glProgramUniform1i64vNV");
+	glProgramUniform2i64vNV = cast(typeof(glProgramUniform2i64vNV))load("glProgramUniform2i64vNV");
+	glProgramUniform3i64vNV = cast(typeof(glProgramUniform3i64vNV))load("glProgramUniform3i64vNV");
+	glProgramUniform4i64vNV = cast(typeof(glProgramUniform4i64vNV))load("glProgramUniform4i64vNV");
+	glProgramUniform1ui64NV = cast(typeof(glProgramUniform1ui64NV))load("glProgramUniform1ui64NV");
+	glProgramUniform2ui64NV = cast(typeof(glProgramUniform2ui64NV))load("glProgramUniform2ui64NV");
+	glProgramUniform3ui64NV = cast(typeof(glProgramUniform3ui64NV))load("glProgramUniform3ui64NV");
+	glProgramUniform4ui64NV = cast(typeof(glProgramUniform4ui64NV))load("glProgramUniform4ui64NV");
+	glProgramUniform1ui64vNV = cast(typeof(glProgramUniform1ui64vNV))load("glProgramUniform1ui64vNV");
+	glProgramUniform2ui64vNV = cast(typeof(glProgramUniform2ui64vNV))load("glProgramUniform2ui64vNV");
+	glProgramUniform3ui64vNV = cast(typeof(glProgramUniform3ui64vNV))load("glProgramUniform3ui64vNV");
+	glProgramUniform4ui64vNV = cast(typeof(glProgramUniform4ui64vNV))load("glProgramUniform4ui64vNV");
 	return;
 }
 void load_GL_AMD_vertex_shader_tessellator(Loader load) {
@@ -3115,6 +3476,107 @@ void load_GL_NV_parameter_buffer_object(Loader load) {
 	glProgramBufferParametersIuivNV = cast(typeof(glProgramBufferParametersIuivNV))load("glProgramBufferParametersIuivNV");
 	return;
 }
+void load_GL_ARB_direct_state_access(Loader load) {
+	if(!GL_ARB_direct_state_access) return;
+	glCreateTransformFeedbacks = cast(typeof(glCreateTransformFeedbacks))load("glCreateTransformFeedbacks");
+	glTransformFeedbackBufferBase = cast(typeof(glTransformFeedbackBufferBase))load("glTransformFeedbackBufferBase");
+	glTransformFeedbackBufferRange = cast(typeof(glTransformFeedbackBufferRange))load("glTransformFeedbackBufferRange");
+	glGetTransformFeedbackiv = cast(typeof(glGetTransformFeedbackiv))load("glGetTransformFeedbackiv");
+	glGetTransformFeedbacki_v = cast(typeof(glGetTransformFeedbacki_v))load("glGetTransformFeedbacki_v");
+	glGetTransformFeedbacki64_v = cast(typeof(glGetTransformFeedbacki64_v))load("glGetTransformFeedbacki64_v");
+	glCreateBuffers = cast(typeof(glCreateBuffers))load("glCreateBuffers");
+	glNamedBufferStorage = cast(typeof(glNamedBufferStorage))load("glNamedBufferStorage");
+	glNamedBufferData = cast(typeof(glNamedBufferData))load("glNamedBufferData");
+	glNamedBufferSubData = cast(typeof(glNamedBufferSubData))load("glNamedBufferSubData");
+	glCopyNamedBufferSubData = cast(typeof(glCopyNamedBufferSubData))load("glCopyNamedBufferSubData");
+	glClearNamedBufferData = cast(typeof(glClearNamedBufferData))load("glClearNamedBufferData");
+	glClearNamedBufferSubData = cast(typeof(glClearNamedBufferSubData))load("glClearNamedBufferSubData");
+	glMapNamedBuffer = cast(typeof(glMapNamedBuffer))load("glMapNamedBuffer");
+	glMapNamedBufferRange = cast(typeof(glMapNamedBufferRange))load("glMapNamedBufferRange");
+	glUnmapNamedBuffer = cast(typeof(glUnmapNamedBuffer))load("glUnmapNamedBuffer");
+	glFlushMappedNamedBufferRange = cast(typeof(glFlushMappedNamedBufferRange))load("glFlushMappedNamedBufferRange");
+	glGetNamedBufferParameteriv = cast(typeof(glGetNamedBufferParameteriv))load("glGetNamedBufferParameteriv");
+	glGetNamedBufferParameteri64v = cast(typeof(glGetNamedBufferParameteri64v))load("glGetNamedBufferParameteri64v");
+	glGetNamedBufferPointerv = cast(typeof(glGetNamedBufferPointerv))load("glGetNamedBufferPointerv");
+	glGetNamedBufferSubData = cast(typeof(glGetNamedBufferSubData))load("glGetNamedBufferSubData");
+	glCreateFramebuffers = cast(typeof(glCreateFramebuffers))load("glCreateFramebuffers");
+	glNamedFramebufferRenderbuffer = cast(typeof(glNamedFramebufferRenderbuffer))load("glNamedFramebufferRenderbuffer");
+	glNamedFramebufferParameteri = cast(typeof(glNamedFramebufferParameteri))load("glNamedFramebufferParameteri");
+	glNamedFramebufferTexture = cast(typeof(glNamedFramebufferTexture))load("glNamedFramebufferTexture");
+	glNamedFramebufferTextureLayer = cast(typeof(glNamedFramebufferTextureLayer))load("glNamedFramebufferTextureLayer");
+	glNamedFramebufferDrawBuffer = cast(typeof(glNamedFramebufferDrawBuffer))load("glNamedFramebufferDrawBuffer");
+	glNamedFramebufferDrawBuffers = cast(typeof(glNamedFramebufferDrawBuffers))load("glNamedFramebufferDrawBuffers");
+	glNamedFramebufferReadBuffer = cast(typeof(glNamedFramebufferReadBuffer))load("glNamedFramebufferReadBuffer");
+	glInvalidateNamedFramebufferData = cast(typeof(glInvalidateNamedFramebufferData))load("glInvalidateNamedFramebufferData");
+	glInvalidateNamedFramebufferSubData = cast(typeof(glInvalidateNamedFramebufferSubData))load("glInvalidateNamedFramebufferSubData");
+	glClearNamedFramebufferiv = cast(typeof(glClearNamedFramebufferiv))load("glClearNamedFramebufferiv");
+	glClearNamedFramebufferuiv = cast(typeof(glClearNamedFramebufferuiv))load("glClearNamedFramebufferuiv");
+	glClearNamedFramebufferfv = cast(typeof(glClearNamedFramebufferfv))load("glClearNamedFramebufferfv");
+	glClearNamedFramebufferfi = cast(typeof(glClearNamedFramebufferfi))load("glClearNamedFramebufferfi");
+	glBlitNamedFramebuffer = cast(typeof(glBlitNamedFramebuffer))load("glBlitNamedFramebuffer");
+	glCheckNamedFramebufferStatus = cast(typeof(glCheckNamedFramebufferStatus))load("glCheckNamedFramebufferStatus");
+	glGetNamedFramebufferParameteriv = cast(typeof(glGetNamedFramebufferParameteriv))load("glGetNamedFramebufferParameteriv");
+	glGetNamedFramebufferAttachmentParameteriv = cast(typeof(glGetNamedFramebufferAttachmentParameteriv))load("glGetNamedFramebufferAttachmentParameteriv");
+	glCreateRenderbuffers = cast(typeof(glCreateRenderbuffers))load("glCreateRenderbuffers");
+	glNamedRenderbufferStorage = cast(typeof(glNamedRenderbufferStorage))load("glNamedRenderbufferStorage");
+	glNamedRenderbufferStorageMultisample = cast(typeof(glNamedRenderbufferStorageMultisample))load("glNamedRenderbufferStorageMultisample");
+	glGetNamedRenderbufferParameteriv = cast(typeof(glGetNamedRenderbufferParameteriv))load("glGetNamedRenderbufferParameteriv");
+	glCreateTextures = cast(typeof(glCreateTextures))load("glCreateTextures");
+	glTextureBuffer = cast(typeof(glTextureBuffer))load("glTextureBuffer");
+	glTextureBufferRange = cast(typeof(glTextureBufferRange))load("glTextureBufferRange");
+	glTextureStorage1D = cast(typeof(glTextureStorage1D))load("glTextureStorage1D");
+	glTextureStorage2D = cast(typeof(glTextureStorage2D))load("glTextureStorage2D");
+	glTextureStorage3D = cast(typeof(glTextureStorage3D))load("glTextureStorage3D");
+	glTextureStorage2DMultisample = cast(typeof(glTextureStorage2DMultisample))load("glTextureStorage2DMultisample");
+	glTextureStorage3DMultisample = cast(typeof(glTextureStorage3DMultisample))load("glTextureStorage3DMultisample");
+	glTextureSubImage1D = cast(typeof(glTextureSubImage1D))load("glTextureSubImage1D");
+	glTextureSubImage2D = cast(typeof(glTextureSubImage2D))load("glTextureSubImage2D");
+	glTextureSubImage3D = cast(typeof(glTextureSubImage3D))load("glTextureSubImage3D");
+	glCompressedTextureSubImage1D = cast(typeof(glCompressedTextureSubImage1D))load("glCompressedTextureSubImage1D");
+	glCompressedTextureSubImage2D = cast(typeof(glCompressedTextureSubImage2D))load("glCompressedTextureSubImage2D");
+	glCompressedTextureSubImage3D = cast(typeof(glCompressedTextureSubImage3D))load("glCompressedTextureSubImage3D");
+	glCopyTextureSubImage1D = cast(typeof(glCopyTextureSubImage1D))load("glCopyTextureSubImage1D");
+	glCopyTextureSubImage2D = cast(typeof(glCopyTextureSubImage2D))load("glCopyTextureSubImage2D");
+	glCopyTextureSubImage3D = cast(typeof(glCopyTextureSubImage3D))load("glCopyTextureSubImage3D");
+	glTextureParameterf = cast(typeof(glTextureParameterf))load("glTextureParameterf");
+	glTextureParameterfv = cast(typeof(glTextureParameterfv))load("glTextureParameterfv");
+	glTextureParameteri = cast(typeof(glTextureParameteri))load("glTextureParameteri");
+	glTextureParameterIiv = cast(typeof(glTextureParameterIiv))load("glTextureParameterIiv");
+	glTextureParameterIuiv = cast(typeof(glTextureParameterIuiv))load("glTextureParameterIuiv");
+	glTextureParameteriv = cast(typeof(glTextureParameteriv))load("glTextureParameteriv");
+	glGenerateTextureMipmap = cast(typeof(glGenerateTextureMipmap))load("glGenerateTextureMipmap");
+	glBindTextureUnit = cast(typeof(glBindTextureUnit))load("glBindTextureUnit");
+	glGetTextureImage = cast(typeof(glGetTextureImage))load("glGetTextureImage");
+	glGetCompressedTextureImage = cast(typeof(glGetCompressedTextureImage))load("glGetCompressedTextureImage");
+	glGetTextureLevelParameterfv = cast(typeof(glGetTextureLevelParameterfv))load("glGetTextureLevelParameterfv");
+	glGetTextureLevelParameteriv = cast(typeof(glGetTextureLevelParameteriv))load("glGetTextureLevelParameteriv");
+	glGetTextureParameterfv = cast(typeof(glGetTextureParameterfv))load("glGetTextureParameterfv");
+	glGetTextureParameterIiv = cast(typeof(glGetTextureParameterIiv))load("glGetTextureParameterIiv");
+	glGetTextureParameterIuiv = cast(typeof(glGetTextureParameterIuiv))load("glGetTextureParameterIuiv");
+	glGetTextureParameteriv = cast(typeof(glGetTextureParameteriv))load("glGetTextureParameteriv");
+	glCreateVertexArrays = cast(typeof(glCreateVertexArrays))load("glCreateVertexArrays");
+	glDisableVertexArrayAttrib = cast(typeof(glDisableVertexArrayAttrib))load("glDisableVertexArrayAttrib");
+	glEnableVertexArrayAttrib = cast(typeof(glEnableVertexArrayAttrib))load("glEnableVertexArrayAttrib");
+	glVertexArrayElementBuffer = cast(typeof(glVertexArrayElementBuffer))load("glVertexArrayElementBuffer");
+	glVertexArrayVertexBuffer = cast(typeof(glVertexArrayVertexBuffer))load("glVertexArrayVertexBuffer");
+	glVertexArrayVertexBuffers = cast(typeof(glVertexArrayVertexBuffers))load("glVertexArrayVertexBuffers");
+	glVertexArrayAttribBinding = cast(typeof(glVertexArrayAttribBinding))load("glVertexArrayAttribBinding");
+	glVertexArrayAttribFormat = cast(typeof(glVertexArrayAttribFormat))load("glVertexArrayAttribFormat");
+	glVertexArrayAttribIFormat = cast(typeof(glVertexArrayAttribIFormat))load("glVertexArrayAttribIFormat");
+	glVertexArrayAttribLFormat = cast(typeof(glVertexArrayAttribLFormat))load("glVertexArrayAttribLFormat");
+	glVertexArrayBindingDivisor = cast(typeof(glVertexArrayBindingDivisor))load("glVertexArrayBindingDivisor");
+	glGetVertexArrayiv = cast(typeof(glGetVertexArrayiv))load("glGetVertexArrayiv");
+	glGetVertexArrayIndexediv = cast(typeof(glGetVertexArrayIndexediv))load("glGetVertexArrayIndexediv");
+	glGetVertexArrayIndexed64iv = cast(typeof(glGetVertexArrayIndexed64iv))load("glGetVertexArrayIndexed64iv");
+	glCreateSamplers = cast(typeof(glCreateSamplers))load("glCreateSamplers");
+	glCreateProgramPipelines = cast(typeof(glCreateProgramPipelines))load("glCreateProgramPipelines");
+	glCreateQueries = cast(typeof(glCreateQueries))load("glCreateQueries");
+	glGetQueryBufferObjecti64v = cast(typeof(glGetQueryBufferObjecti64v))load("glGetQueryBufferObjecti64v");
+	glGetQueryBufferObjectiv = cast(typeof(glGetQueryBufferObjectiv))load("glGetQueryBufferObjectiv");
+	glGetQueryBufferObjectui64v = cast(typeof(glGetQueryBufferObjectui64v))load("glGetQueryBufferObjectui64v");
+	glGetQueryBufferObjectuiv = cast(typeof(glGetQueryBufferObjectuiv))load("glGetQueryBufferObjectuiv");
+	return;
+}
 void load_GL_ARB_uniform_buffer_object(Loader load) {
 	if(!GL_ARB_uniform_buffer_object) return;
 	glGetUniformIndices = cast(typeof(glGetUniformIndices))load("glGetUniformIndices");
@@ -3154,6 +3616,11 @@ void load_GL_EXT_histogram(Loader load) {
 	glMinmaxEXT = cast(typeof(glMinmaxEXT))load("glMinmaxEXT");
 	glResetHistogramEXT = cast(typeof(glResetHistogramEXT))load("glResetHistogramEXT");
 	glResetMinmaxEXT = cast(typeof(glResetMinmaxEXT))load("glResetMinmaxEXT");
+	return;
+}
+void load_GL_EXT_polygon_offset(Loader load) {
+	if(!GL_EXT_polygon_offset) return;
+	glPolygonOffsetEXT = cast(typeof(glPolygonOffsetEXT))load("glPolygonOffsetEXT");
 	return;
 }
 void load_GL_SGIS_point_parameters(Loader load) {
@@ -3382,6 +3849,7 @@ void load_GL_EXT_direct_state_access(Loader load) {
 	glGetVertexArrayPointeri_vEXT = cast(typeof(glGetVertexArrayPointeri_vEXT))load("glGetVertexArrayPointeri_vEXT");
 	glMapNamedBufferRangeEXT = cast(typeof(glMapNamedBufferRangeEXT))load("glMapNamedBufferRangeEXT");
 	glFlushMappedNamedBufferRangeEXT = cast(typeof(glFlushMappedNamedBufferRangeEXT))load("glFlushMappedNamedBufferRangeEXT");
+	glNamedBufferStorageEXT = cast(typeof(glNamedBufferStorageEXT))load("glNamedBufferStorageEXT");
 	glClearNamedBufferDataEXT = cast(typeof(glClearNamedBufferDataEXT))load("glClearNamedBufferDataEXT");
 	glClearNamedBufferSubDataEXT = cast(typeof(glClearNamedBufferSubDataEXT))load("glClearNamedBufferSubDataEXT");
 	glNamedFramebufferParameteriEXT = cast(typeof(glNamedFramebufferParameteriEXT))load("glNamedFramebufferParameteriEXT");
@@ -3417,6 +3885,7 @@ void load_GL_EXT_direct_state_access(Loader load) {
 	glVertexArrayVertexBindingDivisorEXT = cast(typeof(glVertexArrayVertexBindingDivisorEXT))load("glVertexArrayVertexBindingDivisorEXT");
 	glVertexArrayVertexAttribLOffsetEXT = cast(typeof(glVertexArrayVertexAttribLOffsetEXT))load("glVertexArrayVertexAttribLOffsetEXT");
 	glTexturePageCommitmentEXT = cast(typeof(glTexturePageCommitmentEXT))load("glTexturePageCommitmentEXT");
+	glVertexArrayVertexAttribDivisorEXT = cast(typeof(glVertexArrayVertexAttribDivisorEXT))load("glVertexArrayVertexAttribDivisorEXT");
 	return;
 }
 void load_GL_AMD_sample_positions(Loader load) {
@@ -3490,12 +3959,6 @@ void load_GL_NV_vertex_program(Loader load) {
 	glVertexAttribs4fvNV = cast(typeof(glVertexAttribs4fvNV))load("glVertexAttribs4fvNV");
 	glVertexAttribs4svNV = cast(typeof(glVertexAttribs4svNV))load("glVertexAttribs4svNV");
 	glVertexAttribs4ubvNV = cast(typeof(glVertexAttribs4ubvNV))load("glVertexAttribs4ubvNV");
-	return;
-}
-void load_GL_NVX_conditional_render(Loader load) {
-	if(!GL_NVX_conditional_render) return;
-	glBeginConditionalRenderNVX = cast(typeof(glBeginConditionalRenderNVX))load("glBeginConditionalRenderNVX");
-	glEndConditionalRenderNVX = cast(typeof(glEndConditionalRenderNVX))load("glEndConditionalRenderNVX");
 	return;
 }
 void load_GL_EXT_vertex_shader(Loader load) {
@@ -3627,10 +4090,29 @@ void load_GL_EXT_blend_equation_separate(Loader load) {
 	glBlendEquationSeparateEXT = cast(typeof(glBlendEquationSeparateEXT))load("glBlendEquationSeparateEXT");
 	return;
 }
+void load_GL_NV_framebuffer_mixed_samples(Loader load) {
+	if(!GL_NV_framebuffer_mixed_samples) return;
+	glRasterSamplesEXT = cast(typeof(glRasterSamplesEXT))load("glRasterSamplesEXT");
+	glCoverageModulationTableNV = cast(typeof(glCoverageModulationTableNV))load("glCoverageModulationTableNV");
+	glGetCoverageModulationTableNV = cast(typeof(glGetCoverageModulationTableNV))load("glGetCoverageModulationTableNV");
+	glCoverageModulationNV = cast(typeof(glCoverageModulationNV))load("glCoverageModulationNV");
+	return;
+}
+void load_GL_NVX_conditional_render(Loader load) {
+	if(!GL_NVX_conditional_render) return;
+	glBeginConditionalRenderNVX = cast(typeof(glBeginConditionalRenderNVX))load("glBeginConditionalRenderNVX");
+	glEndConditionalRenderNVX = cast(typeof(glEndConditionalRenderNVX))load("glEndConditionalRenderNVX");
+	return;
+}
 void load_GL_ARB_multi_draw_indirect(Loader load) {
 	if(!GL_ARB_multi_draw_indirect) return;
 	glMultiDrawArraysIndirect = cast(typeof(glMultiDrawArraysIndirect))load("glMultiDrawArraysIndirect");
 	glMultiDrawElementsIndirect = cast(typeof(glMultiDrawElementsIndirect))load("glMultiDrawElementsIndirect");
+	return;
+}
+void load_GL_EXT_raster_multisample(Loader load) {
+	if(!GL_EXT_raster_multisample) return;
+	glRasterSamplesEXT = cast(typeof(glRasterSamplesEXT))load("glRasterSamplesEXT");
 	return;
 }
 void load_GL_NV_copy_image(Loader load) {
@@ -3655,6 +4137,13 @@ void load_GL_ARB_transform_feedback3(Loader load) {
 	glBeginQueryIndexed = cast(typeof(glBeginQueryIndexed))load("glBeginQueryIndexed");
 	glEndQueryIndexed = cast(typeof(glEndQueryIndexed))load("glEndQueryIndexed");
 	glGetQueryIndexediv = cast(typeof(glGetQueryIndexediv))load("glGetQueryIndexediv");
+	return;
+}
+void load_GL_EXT_debug_marker(Loader load) {
+	if(!GL_EXT_debug_marker) return;
+	glInsertEventMarkerEXT = cast(typeof(glInsertEventMarkerEXT))load("glInsertEventMarkerEXT");
+	glPushGroupMarkerEXT = cast(typeof(glPushGroupMarkerEXT))load("glPushGroupMarkerEXT");
+	glPopGroupMarkerEXT = cast(typeof(glPopGroupMarkerEXT))load("glPopGroupMarkerEXT");
 	return;
 }
 void load_GL_EXT_pixel_transform(Loader load) {
@@ -3720,6 +4209,20 @@ void load_GL_SGIX_async(Loader load) {
 	glIsAsyncMarkerSGIX = cast(typeof(glIsAsyncMarkerSGIX))load("glIsAsyncMarkerSGIX");
 	return;
 }
+void load_GL_INTEL_performance_query(Loader load) {
+	if(!GL_INTEL_performance_query) return;
+	glBeginPerfQueryINTEL = cast(typeof(glBeginPerfQueryINTEL))load("glBeginPerfQueryINTEL");
+	glCreatePerfQueryINTEL = cast(typeof(glCreatePerfQueryINTEL))load("glCreatePerfQueryINTEL");
+	glDeletePerfQueryINTEL = cast(typeof(glDeletePerfQueryINTEL))load("glDeletePerfQueryINTEL");
+	glEndPerfQueryINTEL = cast(typeof(glEndPerfQueryINTEL))load("glEndPerfQueryINTEL");
+	glGetFirstPerfQueryIdINTEL = cast(typeof(glGetFirstPerfQueryIdINTEL))load("glGetFirstPerfQueryIdINTEL");
+	glGetNextPerfQueryIdINTEL = cast(typeof(glGetNextPerfQueryIdINTEL))load("glGetNextPerfQueryIdINTEL");
+	glGetPerfCounterInfoINTEL = cast(typeof(glGetPerfCounterInfoINTEL))load("glGetPerfCounterInfoINTEL");
+	glGetPerfQueryDataINTEL = cast(typeof(glGetPerfQueryDataINTEL))load("glGetPerfQueryDataINTEL");
+	glGetPerfQueryIdByNameINTEL = cast(typeof(glGetPerfQueryIdByNameINTEL))load("glGetPerfQueryIdByNameINTEL");
+	glGetPerfQueryInfoINTEL = cast(typeof(glGetPerfQueryInfoINTEL))load("glGetPerfQueryInfoINTEL");
+	return;
+}
 void load_GL_NV_gpu_shader5(Loader load) {
 	if(!GL_NV_gpu_shader5) return;
 	glUniform1i64NV = cast(typeof(glUniform1i64NV))load("glUniform1i64NV");
@@ -3755,6 +4258,12 @@ void load_GL_NV_gpu_shader5(Loader load) {
 	glProgramUniform2ui64vNV = cast(typeof(glProgramUniform2ui64vNV))load("glProgramUniform2ui64vNV");
 	glProgramUniform3ui64vNV = cast(typeof(glProgramUniform3ui64vNV))load("glProgramUniform3ui64vNV");
 	glProgramUniform4ui64vNV = cast(typeof(glProgramUniform4ui64vNV))load("glProgramUniform4ui64vNV");
+	return;
+}
+void load_GL_NV_bindless_multi_draw_indirect_count(Loader load) {
+	if(!GL_NV_bindless_multi_draw_indirect_count) return;
+	glMultiDrawArraysIndirectBindlessCountNV = cast(typeof(glMultiDrawArraysIndirectBindlessCountNV))load("glMultiDrawArraysIndirectBindlessCountNV");
+	glMultiDrawElementsIndirectBindlessCountNV = cast(typeof(glMultiDrawElementsIndirectBindlessCountNV))load("glMultiDrawElementsIndirectBindlessCountNV");
 	return;
 }
 void load_GL_ARB_ES2_compatibility(Loader load) {
@@ -3848,6 +4357,11 @@ void load_GL_EXT_coordinate_frame(Loader load) {
 	glBinormalPointerEXT = cast(typeof(glBinormalPointerEXT))load("glBinormalPointerEXT");
 	return;
 }
+void load_GL_EXT_polygon_offset_clamp(Loader load) {
+	if(!GL_EXT_polygon_offset_clamp) return;
+	glPolygonOffsetClampEXT = cast(typeof(glPolygonOffsetClampEXT))load("glPolygonOffsetClampEXT");
+	return;
+}
 void load_GL_EXT_compiled_vertex_array(Loader load) {
 	if(!GL_EXT_compiled_vertex_array) return;
 	glLockArraysEXT = cast(typeof(glLockArraysEXT))load("glLockArraysEXT");
@@ -3880,6 +4394,8 @@ void load_GL_APPLE_flush_buffer_range(Loader load) {
 }
 void load_GL_ARB_imaging(Loader load) {
 	if(!GL_ARB_imaging) return;
+	glBlendColor = cast(typeof(glBlendColor))load("glBlendColor");
+	glBlendEquation = cast(typeof(glBlendEquation))load("glBlendEquation");
 	glColorTable = cast(typeof(glColorTable))load("glColorTable");
 	glColorTableParameterfv = cast(typeof(glColorTableParameterfv))load("glColorTableParameterfv");
 	glColorTableParameteriv = cast(typeof(glColorTableParameteriv))load("glColorTableParameteriv");
@@ -3933,9 +4449,20 @@ void load_GL_ARB_multisample(Loader load) {
 	glSampleCoverageARB = cast(typeof(glSampleCoverageARB))load("glSampleCoverageARB");
 	return;
 }
+void load_GL_EXT_debug_label(Loader load) {
+	if(!GL_EXT_debug_label) return;
+	glLabelObjectEXT = cast(typeof(glLabelObjectEXT))load("glLabelObjectEXT");
+	glGetObjectLabelEXT = cast(typeof(glGetObjectLabelEXT))load("glGetObjectLabelEXT");
+	return;
+}
 void load_GL_ARB_sample_shading(Loader load) {
 	if(!GL_ARB_sample_shading) return;
 	glMinSampleShadingARB = cast(typeof(glMinSampleShadingARB))load("glMinSampleShadingARB");
+	return;
+}
+void load_GL_NV_internalformat_sample_query(Loader load) {
+	if(!GL_NV_internalformat_sample_query) return;
+	glGetInternalformatSampleivNV = cast(typeof(glGetInternalformatSampleivNV))load("glGetInternalformatSampleivNV");
 	return;
 }
 void load_GL_INTEL_map_texture(Loader load) {
@@ -4234,10 +4761,32 @@ void load_GL_OES_query_matrix(Loader load) {
 	glQueryMatrixxOES = cast(typeof(glQueryMatrixxOES))load("glQueryMatrixxOES");
 	return;
 }
-void load_GL_APPLE_texture_range(Loader load) {
-	if(!GL_APPLE_texture_range) return;
-	glTextureRangeAPPLE = cast(typeof(glTextureRangeAPPLE))load("glTextureRangeAPPLE");
-	glGetTexParameterPointervAPPLE = cast(typeof(glGetTexParameterPointervAPPLE))load("glGetTexParameterPointervAPPLE");
+void load_GL_MESA_window_pos(Loader load) {
+	if(!GL_MESA_window_pos) return;
+	glWindowPos2dMESA = cast(typeof(glWindowPos2dMESA))load("glWindowPos2dMESA");
+	glWindowPos2dvMESA = cast(typeof(glWindowPos2dvMESA))load("glWindowPos2dvMESA");
+	glWindowPos2fMESA = cast(typeof(glWindowPos2fMESA))load("glWindowPos2fMESA");
+	glWindowPos2fvMESA = cast(typeof(glWindowPos2fvMESA))load("glWindowPos2fvMESA");
+	glWindowPos2iMESA = cast(typeof(glWindowPos2iMESA))load("glWindowPos2iMESA");
+	glWindowPos2ivMESA = cast(typeof(glWindowPos2ivMESA))load("glWindowPos2ivMESA");
+	glWindowPos2sMESA = cast(typeof(glWindowPos2sMESA))load("glWindowPos2sMESA");
+	glWindowPos2svMESA = cast(typeof(glWindowPos2svMESA))load("glWindowPos2svMESA");
+	glWindowPos3dMESA = cast(typeof(glWindowPos3dMESA))load("glWindowPos3dMESA");
+	glWindowPos3dvMESA = cast(typeof(glWindowPos3dvMESA))load("glWindowPos3dvMESA");
+	glWindowPos3fMESA = cast(typeof(glWindowPos3fMESA))load("glWindowPos3fMESA");
+	glWindowPos3fvMESA = cast(typeof(glWindowPos3fvMESA))load("glWindowPos3fvMESA");
+	glWindowPos3iMESA = cast(typeof(glWindowPos3iMESA))load("glWindowPos3iMESA");
+	glWindowPos3ivMESA = cast(typeof(glWindowPos3ivMESA))load("glWindowPos3ivMESA");
+	glWindowPos3sMESA = cast(typeof(glWindowPos3sMESA))load("glWindowPos3sMESA");
+	glWindowPos3svMESA = cast(typeof(glWindowPos3svMESA))load("glWindowPos3svMESA");
+	glWindowPos4dMESA = cast(typeof(glWindowPos4dMESA))load("glWindowPos4dMESA");
+	glWindowPos4dvMESA = cast(typeof(glWindowPos4dvMESA))load("glWindowPos4dvMESA");
+	glWindowPos4fMESA = cast(typeof(glWindowPos4fMESA))load("glWindowPos4fMESA");
+	glWindowPos4fvMESA = cast(typeof(glWindowPos4fvMESA))load("glWindowPos4fvMESA");
+	glWindowPos4iMESA = cast(typeof(glWindowPos4iMESA))load("glWindowPos4iMESA");
+	glWindowPos4ivMESA = cast(typeof(glWindowPos4ivMESA))load("glWindowPos4ivMESA");
+	glWindowPos4sMESA = cast(typeof(glWindowPos4sMESA))load("glWindowPos4sMESA");
+	glWindowPos4svMESA = cast(typeof(glWindowPos4svMESA))load("glWindowPos4svMESA");
 	return;
 }
 void load_GL_ARB_copy_buffer(Loader load) {
@@ -4369,9 +4918,9 @@ void load_GL_ARB_shader_image_load_store(Loader load) {
 	glMemoryBarrier = cast(typeof(glMemoryBarrier))load("glMemoryBarrier");
 	return;
 }
-void load_GL_SGIX_framezoom(Loader load) {
-	if(!GL_SGIX_framezoom) return;
-	glFrameZoomSGIX = cast(typeof(glFrameZoomSGIX))load("glFrameZoomSGIX");
+void load_GL_ARB_texture_barrier(Loader load) {
+	if(!GL_ARB_texture_barrier) return;
+	glTextureBarrier = cast(typeof(glTextureBarrier))load("glTextureBarrier");
 	return;
 }
 void load_GL_NV_bindless_multi_draw_indirect(Loader load) {
@@ -4425,6 +4974,11 @@ void load_GL_ARB_geometry_shader4(Loader load) {
 	glFramebufferTextureFaceARB = cast(typeof(glFramebufferTextureFaceARB))load("glFramebufferTextureFaceARB");
 	return;
 }
+void load_GL_NV_conservative_raster(Loader load) {
+	if(!GL_NV_conservative_raster) return;
+	glSubpixelPrecisionBiasNV = cast(typeof(glSubpixelPrecisionBiasNV))load("glSubpixelPrecisionBiasNV");
+	return;
+}
 void load_GL_SGIX_sprite(Loader load) {
 	if(!GL_SGIX_sprite) return;
 	glSpriteParameterfSGIX = cast(typeof(glSpriteParameterfSGIX))load("glSpriteParameterfSGIX");
@@ -4438,6 +4992,11 @@ void load_GL_ARB_get_program_binary(Loader load) {
 	glGetProgramBinary = cast(typeof(glGetProgramBinary))load("glGetProgramBinary");
 	glProgramBinary = cast(typeof(glProgramBinary))load("glProgramBinary");
 	glProgramParameteri = cast(typeof(glProgramParameteri))load("glProgramParameteri");
+	return;
+}
+void load_GL_AMD_occlusion_query_event(Loader load) {
+	if(!GL_AMD_occlusion_query_event) return;
+	glQueryObjectParameteruiAMD = cast(typeof(glQueryObjectParameteruiAMD))load("glQueryObjectParameteruiAMD");
 	return;
 }
 void load_GL_SGIS_multisample(Loader load) {
@@ -4494,12 +5053,6 @@ void load_GL_NV_register_combiners(Loader load) {
 void load_GL_ARB_draw_buffers(Loader load) {
 	if(!GL_ARB_draw_buffers) return;
 	glDrawBuffersARB = cast(typeof(glDrawBuffersARB))load("glDrawBuffersARB");
-	return;
-}
-void load_GL_ARB_clear_texture(Loader load) {
-	if(!GL_ARB_clear_texture) return;
-	glClearTexImage = cast(typeof(glClearTexImage))load("glClearTexImage");
-	glClearTexSubImage = cast(typeof(glClearTexSubImage))load("glClearTexSubImage");
 	return;
 }
 void load_GL_ARB_debug_output(Loader load) {
@@ -4585,9 +5138,6 @@ void load_GL_NV_path_rendering(Loader load) {
 	glStencilFillPathInstancedNV = cast(typeof(glStencilFillPathInstancedNV))load("glStencilFillPathInstancedNV");
 	glStencilStrokePathInstancedNV = cast(typeof(glStencilStrokePathInstancedNV))load("glStencilStrokePathInstancedNV");
 	glPathCoverDepthFuncNV = cast(typeof(glPathCoverDepthFuncNV))load("glPathCoverDepthFuncNV");
-	glPathColorGenNV = cast(typeof(glPathColorGenNV))load("glPathColorGenNV");
-	glPathTexGenNV = cast(typeof(glPathTexGenNV))load("glPathTexGenNV");
-	glPathFogGenNV = cast(typeof(glPathFogGenNV))load("glPathFogGenNV");
 	glCoverFillPathNV = cast(typeof(glCoverFillPathNV))load("glCoverFillPathNV");
 	glCoverStrokePathNV = cast(typeof(glCoverStrokePathNV))load("glCoverStrokePathNV");
 	glCoverFillPathInstancedNV = cast(typeof(glCoverFillPathInstancedNV))load("glCoverFillPathInstancedNV");
@@ -4600,14 +5150,32 @@ void load_GL_NV_path_rendering(Loader load) {
 	glGetPathMetricsNV = cast(typeof(glGetPathMetricsNV))load("glGetPathMetricsNV");
 	glGetPathMetricRangeNV = cast(typeof(glGetPathMetricRangeNV))load("glGetPathMetricRangeNV");
 	glGetPathSpacingNV = cast(typeof(glGetPathSpacingNV))load("glGetPathSpacingNV");
-	glGetPathColorGenivNV = cast(typeof(glGetPathColorGenivNV))load("glGetPathColorGenivNV");
-	glGetPathColorGenfvNV = cast(typeof(glGetPathColorGenfvNV))load("glGetPathColorGenfvNV");
-	glGetPathTexGenivNV = cast(typeof(glGetPathTexGenivNV))load("glGetPathTexGenivNV");
-	glGetPathTexGenfvNV = cast(typeof(glGetPathTexGenfvNV))load("glGetPathTexGenfvNV");
 	glIsPointInFillPathNV = cast(typeof(glIsPointInFillPathNV))load("glIsPointInFillPathNV");
 	glIsPointInStrokePathNV = cast(typeof(glIsPointInStrokePathNV))load("glIsPointInStrokePathNV");
 	glGetPathLengthNV = cast(typeof(glGetPathLengthNV))load("glGetPathLengthNV");
 	glPointAlongPathNV = cast(typeof(glPointAlongPathNV))load("glPointAlongPathNV");
+	glMatrixLoad3x2fNV = cast(typeof(glMatrixLoad3x2fNV))load("glMatrixLoad3x2fNV");
+	glMatrixLoad3x3fNV = cast(typeof(glMatrixLoad3x3fNV))load("glMatrixLoad3x3fNV");
+	glMatrixLoadTranspose3x3fNV = cast(typeof(glMatrixLoadTranspose3x3fNV))load("glMatrixLoadTranspose3x3fNV");
+	glMatrixMult3x2fNV = cast(typeof(glMatrixMult3x2fNV))load("glMatrixMult3x2fNV");
+	glMatrixMult3x3fNV = cast(typeof(glMatrixMult3x3fNV))load("glMatrixMult3x3fNV");
+	glMatrixMultTranspose3x3fNV = cast(typeof(glMatrixMultTranspose3x3fNV))load("glMatrixMultTranspose3x3fNV");
+	glStencilThenCoverFillPathNV = cast(typeof(glStencilThenCoverFillPathNV))load("glStencilThenCoverFillPathNV");
+	glStencilThenCoverStrokePathNV = cast(typeof(glStencilThenCoverStrokePathNV))load("glStencilThenCoverStrokePathNV");
+	glStencilThenCoverFillPathInstancedNV = cast(typeof(glStencilThenCoverFillPathInstancedNV))load("glStencilThenCoverFillPathInstancedNV");
+	glStencilThenCoverStrokePathInstancedNV = cast(typeof(glStencilThenCoverStrokePathInstancedNV))load("glStencilThenCoverStrokePathInstancedNV");
+	glPathGlyphIndexRangeNV = cast(typeof(glPathGlyphIndexRangeNV))load("glPathGlyphIndexRangeNV");
+	glPathGlyphIndexArrayNV = cast(typeof(glPathGlyphIndexArrayNV))load("glPathGlyphIndexArrayNV");
+	glPathMemoryGlyphIndexArrayNV = cast(typeof(glPathMemoryGlyphIndexArrayNV))load("glPathMemoryGlyphIndexArrayNV");
+	glProgramPathFragmentInputGenNV = cast(typeof(glProgramPathFragmentInputGenNV))load("glProgramPathFragmentInputGenNV");
+	glGetProgramResourcefvNV = cast(typeof(glGetProgramResourcefvNV))load("glGetProgramResourcefvNV");
+	glPathColorGenNV = cast(typeof(glPathColorGenNV))load("glPathColorGenNV");
+	glPathTexGenNV = cast(typeof(glPathTexGenNV))load("glPathTexGenNV");
+	glPathFogGenNV = cast(typeof(glPathFogGenNV))load("glPathFogGenNV");
+	glGetPathColorGenivNV = cast(typeof(glGetPathColorGenivNV))load("glGetPathColorGenivNV");
+	glGetPathColorGenfvNV = cast(typeof(glGetPathColorGenfvNV))load("glGetPathColorGenfvNV");
+	glGetPathTexGenivNV = cast(typeof(glGetPathTexGenivNV))load("glGetPathTexGenivNV");
+	glGetPathTexGenfvNV = cast(typeof(glGetPathTexGenfvNV))load("glGetPathTexGenfvNV");
 	return;
 }
 void load_GL_ATI_vertex_streams(Loader load) {
@@ -4780,6 +5348,13 @@ void load_GL_ARB_sync(Loader load) {
 	glWaitSync = cast(typeof(glWaitSync))load("glWaitSync");
 	glGetInteger64v = cast(typeof(glGetInteger64v))load("glGetInteger64v");
 	glGetSynciv = cast(typeof(glGetSynciv))load("glGetSynciv");
+	return;
+}
+void load_GL_NV_sample_locations(Loader load) {
+	if(!GL_NV_sample_locations) return;
+	glFramebufferSampleLocationsfvNV = cast(typeof(glFramebufferSampleLocationsfvNV))load("glFramebufferSampleLocationsfvNV");
+	glNamedFramebufferSampleLocationsfvNV = cast(typeof(glNamedFramebufferSampleLocationsfvNV))load("glNamedFramebufferSampleLocationsfvNV");
+	glResolveDepthValuesNV = cast(typeof(glResolveDepthValuesNV))load("glResolveDepthValuesNV");
 	return;
 }
 void load_GL_ARB_compute_variable_group_size(Loader load) {
@@ -4964,6 +5539,13 @@ void load_GL_ARB_sparse_texture(Loader load) {
 	glTexPageCommitmentARB = cast(typeof(glTexPageCommitmentARB))load("glTexPageCommitmentARB");
 	return;
 }
+void load_GL_ARB_sparse_buffer(Loader load) {
+	if(!GL_ARB_sparse_buffer) return;
+	glBufferPageCommitmentARB = cast(typeof(glBufferPageCommitmentARB))load("glBufferPageCommitmentARB");
+	glNamedBufferPageCommitmentEXT = cast(typeof(glNamedBufferPageCommitmentEXT))load("glNamedBufferPageCommitmentEXT");
+	glNamedBufferPageCommitmentARB = cast(typeof(glNamedBufferPageCommitmentARB))load("glNamedBufferPageCommitmentARB");
+	return;
+}
 void load_GL_EXT_draw_range_elements(Loader load) {
 	if(!GL_EXT_draw_range_elements) return;
 	glDrawRangeElementsEXT = cast(typeof(glDrawRangeElementsEXT))load("glDrawRangeElementsEXT");
@@ -4977,56 +5559,103 @@ bool gladLoadGLES2(Loader load) {
 	find_coreGLES2();
 	load_GL_ES_VERSION_2_0(load);
 	load_GL_ES_VERSION_3_0(load);
+	load_GL_ES_VERSION_3_1(load);
 
 	find_extensionsGLES2();
 	load_GL_EXT_multi_draw_arrays(load);
+	load_GL_NV_conditional_render(load);
 	load_GL_EXT_separate_shader_objects(load);
 	load_GL_AMD_performance_monitor(load);
+	load_GL_KHR_robustness(load);
 	load_GL_NV_fence(load);
+	load_GL_NV_blend_equation_advanced(load);
+	load_GL_NV_bindless_texture(load);
 	load_GL_KHR_debug(load);
+	load_GL_KHR_blend_equation_advanced(load);
 	load_GL_EXT_blend_minmax(load);
-	load_GL_QCOM_tiled_rendering(load);
-	load_GL_NV_fence(load);
-	load_GL_ANGLE_translated_shader_source(load);
-	load_GL_EXT_robustness(load);
+	load_GL_EXT_debug_marker(load);
+	load_GL_INTEL_performance_query(load);
+	load_GL_EXT_debug_label(load);
+	load_GL_NV_internalformat_sample_query(load);
+	load_GL_EXT_draw_instanced(load);
+	load_GL_NV_path_rendering(load);
+	load_GL_NV_non_square_matrices(load);
 	load_GL_NV_draw_instanced(load);
+	load_GL_NV_viewport_array(load);
+	load_GL_NV_fence(load);
+	load_GL_EXT_base_instance(load);
+	load_GL_EXT_instanced_arrays(load);
+	load_GL_EXT_draw_buffers_indexed(load);
+	load_GL_ANGLE_translated_shader_source(load);
 	load_GL_NV_coverage_sample(load);
+	load_GL_OES_vertex_array_object(load);
+	load_GL_QCOM_tiled_rendering(load);
+	load_GL_EXT_robustness(load);
+	load_GL_KHR_robustness(load);
 	load_GL_EXT_disjoint_timer_query(load);
+	load_GL_EXT_primitive_bounding_box(load);
 	load_GL_EXT_multi_draw_arrays(load);
 	load_GL_QCOM_driver_control(load);
 	load_GL_EXT_debug_marker(load);
+	load_GL_OES_geometry_shader(load);
+	load_GL_OES_tessellation_shader(load);
+	load_GL_OES_texture_view(load);
 	load_GL_EXT_multisampled_render_to_texture(load);
 	load_GL_ANGLE_framebuffer_multisample(load);
+	load_GL_OES_texture_buffer(load);
 	load_GL_OES_get_program_binary(load);
 	load_GL_APPLE_framebuffer_multisample(load);
+	load_GL_NV_copy_buffer(load);
+	load_GL_EXT_texture_view(load);
 	load_GL_NV_framebuffer_blit(load);
 	load_GL_QCOM_alpha_test(load);
+	load_GL_INTEL_performance_query(load);
 	load_GL_KHR_debug(load);
+	load_GL_OES_texture_border_clamp(load);
 	load_GL_EXT_occlusion_query_boolean(load);
+	load_GL_NV_bindless_texture(load);
+	load_GL_EXT_multi_draw_indirect(load);
+	load_GL_KHR_blend_equation_advanced(load);
 	load_GL_APPLE_sync(load);
+	load_GL_OES_copy_image(load);
 	load_GL_QCOM_extended_get2(load);
+	load_GL_EXT_draw_elements_base_vertex(load);
 	load_GL_EXT_separate_shader_objects(load);
 	load_GL_NV_framebuffer_multisample(load);
 	load_GL_NV_draw_buffers(load);
-	load_GL_EXT_debug_label(load);
+	load_GL_NV_path_rendering(load);
+	load_GL_OES_texture_storage_multisample_2d_array(load);
+	load_GL_OES_draw_buffers_indexed(load);
 	load_GL_OES_EGL_image(load);
-	load_GL_EXT_blend_minmax(load);
-	load_GL_EXT_texture_storage(load);
+	load_GL_NV_blend_equation_advanced(load);
 	load_GL_EXT_draw_buffers(load);
+	load_GL_EXT_debug_label(load);
+	load_GL_NV_conditional_render(load);
+	load_GL_EXT_blend_minmax(load);
+	load_GL_NV_internalformat_sample_query(load);
+	load_GL_NV_instanced_arrays(load);
+	load_GL_EXT_texture_storage(load);
+	load_GL_EXT_copy_image(load);
+	load_GL_OES_sample_shading(load);
 	load_GL_EXT_map_buffer_range(load);
 	load_GL_OES_mapbuffer(load);
 	load_GL_AMD_performance_monitor(load);
 	load_GL_IMG_multisampled_render_to_texture(load);
+	load_GL_OES_draw_elements_base_vertex(load);
 	load_GL_APPLE_copy_texture_levels(load);
 	load_GL_EXT_multiview_draw_buffers(load);
 	load_GL_QCOM_extended_get(load);
+	load_GL_EXT_geometry_shader(load);
+	load_GL_EXT_texture_border_clamp(load);
 	load_GL_ANGLE_framebuffer_blit(load);
+	load_GL_EXT_draw_instanced(load);
 	load_GL_OES_texture_3D(load);
+	load_GL_EXT_tessellation_shader(load);
+	load_GL_OES_primitive_bounding_box(load);
 	load_GL_NV_read_buffer(load);
-	load_GL_NV_instanced_arrays(load);
 	load_GL_ANGLE_instanced_arrays(load);
 	load_GL_EXT_discard_framebuffer(load);
-	load_GL_OES_vertex_array_object(load);
+	load_GL_EXT_texture_buffer(load);
 	load_GL_EXT_multi_draw_arrays(load);
 	load_GL_NV_fence(load);
 	load_GL_EXT_map_buffer_range(load);
@@ -5058,77 +5687,133 @@ void find_coreGLES2() {
 	GL_MAJOR = major; GL_MINOR = minor;
 	GL_ES_VERSION_2_0 = (major == 2 && minor >= 0) || major > 2;
 	GL_ES_VERSION_3_0 = (major == 3 && minor >= 0) || major > 3;
+	GL_ES_VERSION_3_1 = (major == 3 && minor >= 1) || major > 3;
 	return;
 }
 
 void find_extensionsGLES2() {
 	GL_OES_compressed_paletted_texture = has_ext("GL_OES_compressed_paletted_texture");
 	GL_EXT_multi_draw_arrays = has_ext("GL_EXT_multi_draw_arrays");
+	GL_NV_conditional_render = has_ext("GL_NV_conditional_render");
 	GL_EXT_separate_shader_objects = has_ext("GL_EXT_separate_shader_objects");
 	GL_AMD_performance_monitor = has_ext("GL_AMD_performance_monitor");
+	GL_EXT_shader_integer_mix = has_ext("GL_EXT_shader_integer_mix");
+	GL_KHR_robustness = has_ext("GL_KHR_robustness");
 	GL_NV_fence = has_ext("GL_NV_fence");
+	GL_NV_blend_equation_advanced = has_ext("GL_NV_blend_equation_advanced");
+	GL_KHR_robust_buffer_access_behavior = has_ext("GL_KHR_robust_buffer_access_behavior");
+	GL_NV_bindless_texture = has_ext("GL_NV_bindless_texture");
 	GL_KHR_debug = has_ext("GL_KHR_debug");
+	GL_KHR_texture_compression_astc_hdr = has_ext("GL_KHR_texture_compression_astc_hdr");
+	GL_KHR_blend_equation_advanced = has_ext("GL_KHR_blend_equation_advanced");
 	GL_EXT_blend_minmax = has_ext("GL_EXT_blend_minmax");
+	GL_NV_blend_equation_advanced_coherent = has_ext("GL_NV_blend_equation_advanced_coherent");
+	GL_EXT_debug_marker = has_ext("GL_EXT_debug_marker");
+	GL_EXT_texture_compression_s3tc = has_ext("GL_EXT_texture_compression_s3tc");
+	GL_INTEL_performance_query = has_ext("GL_INTEL_performance_query");
+	GL_EXT_texture_sRGB_decode = has_ext("GL_EXT_texture_sRGB_decode");
+	GL_EXT_debug_label = has_ext("GL_EXT_debug_label");
+	GL_NV_internalformat_sample_query = has_ext("GL_NV_internalformat_sample_query");
+	GL_EXT_draw_instanced = has_ext("GL_EXT_draw_instanced");
+	GL_KHR_blend_equation_advanced_coherent = has_ext("GL_KHR_blend_equation_advanced_coherent");
 	GL_KHR_texture_compression_astc_ldr = has_ext("GL_KHR_texture_compression_astc_ldr");
+	GL_NV_path_rendering = has_ext("GL_NV_path_rendering");
 	GL_APPLE_rgb_422 = has_ext("GL_APPLE_rgb_422");
 	GL_EXT_texture_filter_anisotropic = has_ext("GL_EXT_texture_filter_anisotropic");
-	GL_NV_sRGB_formats = has_ext("GL_NV_sRGB_formats");
+	GL_KHR_context_flush_control = has_ext("GL_KHR_context_flush_control");
+	GL_NV_non_square_matrices = has_ext("GL_NV_non_square_matrices");
 	GL_OES_packed_depth_stencil = has_ext("GL_OES_packed_depth_stencil");
 	GL_QCOM_perfmon_global_mode = has_ext("GL_QCOM_perfmon_global_mode");
-	GL_QCOM_tiled_rendering = has_ext("GL_QCOM_tiled_rendering");
+	GL_NV_draw_instanced = has_ext("GL_NV_draw_instanced");
 	GL_OES_texture_half_float_linear = has_ext("GL_OES_texture_half_float_linear");
+	GL_KHR_blend_equation_advanced_coherent = has_ext("GL_KHR_blend_equation_advanced_coherent");
+	GL_NV_viewport_array = has_ext("GL_NV_viewport_array");
 	GL_NV_fence = has_ext("GL_NV_fence");
 	GL_NV_texture_border_clamp = has_ext("GL_NV_texture_border_clamp");
 	GL_IMG_texture_compression_pvrtc = has_ext("GL_IMG_texture_compression_pvrtc");
-	GL_OES_texture_half_float = has_ext("GL_OES_texture_half_float");
-	GL_EXT_sRGB = has_ext("GL_EXT_sRGB");
+	GL_NV_sRGB_formats = has_ext("GL_NV_sRGB_formats");
+	GL_EXT_texture_compression_s3tc = has_ext("GL_EXT_texture_compression_s3tc");
+	GL_EXT_base_instance = has_ext("GL_EXT_base_instance");
+	GL_EXT_instanced_arrays = has_ext("GL_EXT_instanced_arrays");
 	GL_QCOM_writeonly_rendering = has_ext("GL_QCOM_writeonly_rendering");
+	GL_DMP_program_binary = has_ext("GL_DMP_program_binary");
+	GL_EXT_draw_buffers_indexed = has_ext("GL_EXT_draw_buffers_indexed");
 	GL_NV_read_depth_stencil = has_ext("GL_NV_read_depth_stencil");
 	GL_ANGLE_translated_shader_source = has_ext("GL_ANGLE_translated_shader_source");
-	GL_ANGLE_texture_usage = has_ext("GL_ANGLE_texture_usage");
+	GL_NV_coverage_sample = has_ext("GL_NV_coverage_sample");
+	GL_OES_vertex_array_object = has_ext("GL_OES_vertex_array_object");
+	GL_QCOM_tiled_rendering = has_ext("GL_QCOM_tiled_rendering");
 	GL_AMD_program_binary_Z400 = has_ext("GL_AMD_program_binary_Z400");
-	GL_ARM_rgba8 = has_ext("GL_ARM_rgba8");
+	GL_APPLE_color_buffer_packed_float = has_ext("GL_APPLE_color_buffer_packed_float");
 	GL_EXT_robustness = has_ext("GL_EXT_robustness");
 	GL_OES_fbo_render_mipmap = has_ext("GL_OES_fbo_render_mipmap");
-	GL_NV_draw_instanced = has_ext("GL_NV_draw_instanced");
-	GL_NV_coverage_sample = has_ext("GL_NV_coverage_sample");
+	GL_KHR_robustness = has_ext("GL_KHR_robustness");
+	GL_OES_compressed_ETC1_RGB8_sub_texture = has_ext("GL_OES_compressed_ETC1_RGB8_sub_texture");
+	GL_ANGLE_texture_usage = has_ext("GL_ANGLE_texture_usage");
+	GL_EXT_gpu_shader5 = has_ext("GL_EXT_gpu_shader5");
+	GL_OES_shader_io_blocks = has_ext("GL_OES_shader_io_blocks");
 	GL_FJ_shader_binary_GCCSO = has_ext("GL_FJ_shader_binary_GCCSO");
 	GL_EXT_disjoint_timer_query = has_ext("GL_EXT_disjoint_timer_query");
 	GL_OES_compressed_paletted_texture = has_ext("GL_OES_compressed_paletted_texture");
 	GL_EXT_shader_texture_lod = has_ext("GL_EXT_shader_texture_lod");
 	GL_NV_read_buffer_front = has_ext("GL_NV_read_buffer_front");
+	GL_OES_texture_float = has_ext("GL_OES_texture_float");
 	GL_OES_texture_float_linear = has_ext("GL_OES_texture_float_linear");
 	GL_NV_fbo_color_attachments = has_ext("GL_NV_fbo_color_attachments");
+	GL_EXT_primitive_bounding_box = has_ext("GL_EXT_primitive_bounding_box");
 	GL_IMG_read_format = has_ext("GL_IMG_read_format");
+	GL_EXT_shader_integer_mix = has_ext("GL_EXT_shader_integer_mix");
+	GL_ANDROID_extension_pack_es31a = has_ext("GL_ANDROID_extension_pack_es31a");
 	GL_NV_texture_compression_s3tc_update = has_ext("GL_NV_texture_compression_s3tc_update");
 	GL_OES_fragment_precision_high = has_ext("GL_OES_fragment_precision_high");
 	GL_EXT_multi_draw_arrays = has_ext("GL_EXT_multi_draw_arrays");
 	GL_OES_texture_npot = has_ext("GL_OES_texture_npot");
 	GL_EXT_texture_compression_dxt1 = has_ext("GL_EXT_texture_compression_dxt1");
+	GL_APPLE_clip_distance = has_ext("GL_APPLE_clip_distance");
 	GL_QCOM_driver_control = has_ext("GL_QCOM_driver_control");
 	GL_ANGLE_depth_texture = has_ext("GL_ANGLE_depth_texture");
+	GL_KHR_robust_buffer_access_behavior = has_ext("GL_KHR_robust_buffer_access_behavior");
+	GL_EXT_render_snorm = has_ext("GL_EXT_render_snorm");
 	GL_KHR_texture_compression_astc_ldr = has_ext("GL_KHR_texture_compression_astc_ldr");
 	GL_EXT_debug_marker = has_ext("GL_EXT_debug_marker");
+	GL_OES_geometry_shader = has_ext("GL_OES_geometry_shader");
+	GL_OES_tessellation_shader = has_ext("GL_OES_tessellation_shader");
+	GL_OES_texture_view = has_ext("GL_OES_texture_view");
 	GL_EXT_multisampled_render_to_texture = has_ext("GL_EXT_multisampled_render_to_texture");
 	GL_ANGLE_framebuffer_multisample = has_ext("GL_ANGLE_framebuffer_multisample");
+	GL_OES_texture_buffer = has_ext("GL_OES_texture_buffer");
+	GL_NV_blend_equation_advanced_coherent = has_ext("GL_NV_blend_equation_advanced_coherent");
+	GL_EXT_tessellation_point_size = has_ext("GL_EXT_tessellation_point_size");
 	GL_EXT_color_buffer_half_float = has_ext("GL_EXT_color_buffer_half_float");
 	GL_OES_get_program_binary = has_ext("GL_OES_get_program_binary");
+	GL_OES_geometry_point_size = has_ext("GL_OES_geometry_point_size");
 	GL_APPLE_framebuffer_multisample = has_ext("GL_APPLE_framebuffer_multisample");
-	GL_OES_texture_float = has_ext("GL_OES_texture_float");
+	GL_OES_stencil4 = has_ext("GL_OES_stencil4");
+	GL_NV_copy_buffer = has_ext("GL_NV_copy_buffer");
+	GL_OES_texture_half_float = has_ext("GL_OES_texture_half_float");
+	GL_EXT_texture_view = has_ext("GL_EXT_texture_view");
 	GL_OES_vertex_half_float = has_ext("GL_OES_vertex_half_float");
 	GL_NV_framebuffer_blit = has_ext("GL_NV_framebuffer_blit");
 	GL_OES_stencil1 = has_ext("GL_OES_stencil1");
 	GL_QCOM_alpha_test = has_ext("GL_QCOM_alpha_test");
-	GL_ANGLE_pack_reverse_row_order = has_ext("GL_ANGLE_pack_reverse_row_order");
+	GL_EXT_shader_implicit_conversions = has_ext("GL_EXT_shader_implicit_conversions");
+	GL_INTEL_performance_query = has_ext("GL_INTEL_performance_query");
 	GL_KHR_debug = has_ext("GL_KHR_debug");
-	GL_OES_rgb8_rgba8 = has_ext("GL_OES_rgb8_rgba8");
+	GL_EXT_sRGB = has_ext("GL_EXT_sRGB");
+	GL_OES_texture_border_clamp = has_ext("GL_OES_texture_border_clamp");
+	GL_ANGLE_pack_reverse_row_order = has_ext("GL_ANGLE_pack_reverse_row_order");
 	GL_EXT_occlusion_query_boolean = has_ext("GL_EXT_occlusion_query_boolean");
+	GL_NV_bindless_texture = has_ext("GL_NV_bindless_texture");
+	GL_EXT_multi_draw_indirect = has_ext("GL_EXT_multi_draw_indirect");
+	GL_OES_tessellation_point_size = has_ext("GL_OES_tessellation_point_size");
 	GL_OES_depth_texture = has_ext("GL_OES_depth_texture");
 	GL_QCOM_binning_control = has_ext("GL_QCOM_binning_control");
+	GL_KHR_texture_compression_astc_hdr = has_ext("GL_KHR_texture_compression_astc_hdr");
+	GL_KHR_blend_equation_advanced = has_ext("GL_KHR_blend_equation_advanced");
 	GL_OES_surfaceless_context = has_ext("GL_OES_surfaceless_context");
 	GL_APPLE_sync = has_ext("GL_APPLE_sync");
 	GL_IMG_program_binary = has_ext("GL_IMG_program_binary");
-	GL_ARM_mali_program_binary = has_ext("GL_ARM_mali_program_binary");
+	GL_EXT_geometry_point_size = has_ext("GL_EXT_geometry_point_size");
 	GL_EXT_shader_framebuffer_fetch = has_ext("GL_EXT_shader_framebuffer_fetch");
 	GL_ANGLE_program_binary = has_ext("GL_ANGLE_program_binary");
 	GL_EXT_unpack_subimage = has_ext("GL_EXT_unpack_subimage");
@@ -5136,59 +5821,99 @@ void find_extensionsGLES2() {
 	GL_ANGLE_texture_compression_dxt5 = has_ext("GL_ANGLE_texture_compression_dxt5");
 	GL_EXT_read_format_bgra = has_ext("GL_EXT_read_format_bgra");
 	GL_OES_compressed_ETC1_RGB8_texture = has_ext("GL_OES_compressed_ETC1_RGB8_texture");
+	GL_OES_copy_image = has_ext("GL_OES_copy_image");
+	GL_EXT_pvrtc_sRGB = has_ext("GL_EXT_pvrtc_sRGB");
 	GL_QCOM_extended_get2 = has_ext("GL_QCOM_extended_get2");
+	GL_EXT_shader_pixel_local_storage = has_ext("GL_EXT_shader_pixel_local_storage");
 	GL_NV_shadow_samplers_cube = has_ext("GL_NV_shadow_samplers_cube");
+	GL_OES_texture_compression_astc = has_ext("GL_OES_texture_compression_astc");
 	GL_APPLE_texture_max_level = has_ext("GL_APPLE_texture_max_level");
+	GL_OES_shader_multisample_interpolation = has_ext("GL_OES_shader_multisample_interpolation");
 	GL_EXT_shadow_samplers = has_ext("GL_EXT_shadow_samplers");
 	GL_IMG_shader_binary = has_ext("GL_IMG_shader_binary");
+	GL_EXT_draw_elements_base_vertex = has_ext("GL_EXT_draw_elements_base_vertex");
 	GL_OES_depth32 = has_ext("GL_OES_depth32");
 	GL_EXT_separate_shader_objects = has_ext("GL_EXT_separate_shader_objects");
+	GL_EXT_shader_io_blocks = has_ext("GL_EXT_shader_io_blocks");
 	GL_NV_framebuffer_multisample = has_ext("GL_NV_framebuffer_multisample");
 	GL_NV_draw_buffers = has_ext("GL_NV_draw_buffers");
-	GL_NV_read_stencil = has_ext("GL_NV_read_stencil");
-	GL_VIV_shader_binary = has_ext("GL_VIV_shader_binary");
+	GL_ARM_shader_framebuffer_fetch = has_ext("GL_ARM_shader_framebuffer_fetch");
+	GL_NV_path_rendering = has_ext("GL_NV_path_rendering");
+	GL_OES_texture_storage_multisample_2d_array = has_ext("GL_OES_texture_storage_multisample_2d_array");
+	GL_OES_draw_buffers_indexed = has_ext("GL_OES_draw_buffers_indexed");
+	GL_OES_EGL_image = has_ext("GL_OES_EGL_image");
 	GL_OES_vertex_type_10_10_10_2 = has_ext("GL_OES_vertex_type_10_10_10_2");
 	GL_APPLE_rgb_422 = has_ext("GL_APPLE_rgb_422");
+	GL_DMP_shader_binary = has_ext("GL_DMP_shader_binary");
 	GL_NV_texture_npot_2D_mipmap = has_ext("GL_NV_texture_npot_2D_mipmap");
+	GL_OES_sample_variables = has_ext("GL_OES_sample_variables");
+	GL_NV_explicit_attrib_location = has_ext("GL_NV_explicit_attrib_location");
+	GL_NV_blend_equation_advanced = has_ext("GL_NV_blend_equation_advanced");
+	GL_EXT_draw_buffers = has_ext("GL_EXT_draw_buffers");
 	GL_EXT_debug_label = has_ext("GL_EXT_debug_label");
-	GL_OES_EGL_image = has_ext("GL_OES_EGL_image");
+	GL_NV_read_stencil = has_ext("GL_NV_read_stencil");
+	GL_NV_conditional_render = has_ext("GL_NV_conditional_render");
 	GL_EXT_texture_filter_anisotropic = has_ext("GL_EXT_texture_filter_anisotropic");
 	GL_EXT_blend_minmax = has_ext("GL_EXT_blend_minmax");
+	GL_NV_internalformat_sample_query = has_ext("GL_NV_internalformat_sample_query");
 	GL_OES_depth24 = has_ext("GL_OES_depth24");
+	GL_NV_instanced_arrays = has_ext("GL_NV_instanced_arrays");
 	GL_EXT_texture_storage = has_ext("GL_EXT_texture_storage");
+	GL_OES_gpu_shader5 = has_ext("GL_OES_gpu_shader5");
 	GL_OES_required_internalformat = has_ext("GL_OES_required_internalformat");
-	GL_EXT_draw_buffers = has_ext("GL_EXT_draw_buffers");
+	GL_EXT_sRGB_write_control = has_ext("GL_EXT_sRGB_write_control");
+	GL_EXT_copy_image = has_ext("GL_EXT_copy_image");
 	GL_AMD_compressed_3DC_texture = has_ext("GL_AMD_compressed_3DC_texture");
 	GL_OES_element_index_uint = has_ext("GL_OES_element_index_uint");
+	GL_OES_sample_shading = has_ext("GL_OES_sample_shading");
 	GL_IMG_texture_compression_pvrtc2 = has_ext("GL_IMG_texture_compression_pvrtc2");
+	GL_OES_rgb8_rgba8 = has_ext("GL_OES_rgb8_rgba8");
 	GL_EXT_map_buffer_range = has_ext("GL_EXT_map_buffer_range");
 	GL_OES_mapbuffer = has_ext("GL_OES_mapbuffer");
+	GL_ARM_shader_framebuffer_fetch_depth_stencil = has_ext("GL_ARM_shader_framebuffer_fetch_depth_stencil");
+	GL_NV_image_formats = has_ext("GL_NV_image_formats");
 	GL_OES_EGL_image_external = has_ext("GL_OES_EGL_image_external");
 	GL_APPLE_texture_format_BGRA8888 = has_ext("GL_APPLE_texture_format_BGRA8888");
 	GL_AMD_performance_monitor = has_ext("GL_AMD_performance_monitor");
+	GL_VIV_shader_binary = has_ext("GL_VIV_shader_binary");
 	GL_NV_shadow_samplers_array = has_ext("GL_NV_shadow_samplers_array");
 	GL_IMG_multisampled_render_to_texture = has_ext("GL_IMG_multisampled_render_to_texture");
 	GL_NV_depth_nonlinear = has_ext("GL_NV_depth_nonlinear");
+	GL_OES_draw_elements_base_vertex = has_ext("GL_OES_draw_elements_base_vertex");
+	GL_NV_shader_noperspective_interpolation = has_ext("GL_NV_shader_noperspective_interpolation");
 	GL_EXT_texture_format_BGRA8888 = has_ext("GL_EXT_texture_format_BGRA8888");
+	GL_OES_texture_cube_map_array = has_ext("GL_OES_texture_cube_map_array");
 	GL_APPLE_copy_texture_levels = has_ext("GL_APPLE_copy_texture_levels");
 	GL_ARM_mali_shader_binary = has_ext("GL_ARM_mali_shader_binary");
 	GL_EXT_multiview_draw_buffers = has_ext("GL_EXT_multiview_draw_buffers");
+	GL_OES_texture_stencil8 = has_ext("GL_OES_texture_stencil8");
 	GL_QCOM_extended_get = has_ext("GL_QCOM_extended_get");
+	GL_EXT_geometry_shader = has_ext("GL_EXT_geometry_shader");
+	GL_EXT_texture_norm16 = has_ext("GL_EXT_texture_norm16");
 	GL_EXT_texture_rg = has_ext("GL_EXT_texture_rg");
 	GL_OES_standard_derivatives = has_ext("GL_OES_standard_derivatives");
-	GL_OES_stencil4 = has_ext("GL_OES_stencil4");
+	GL_EXT_texture_border_clamp = has_ext("GL_EXT_texture_border_clamp");
+	GL_OES_shader_image_atomic = has_ext("GL_OES_shader_image_atomic");
 	GL_ANGLE_framebuffer_blit = has_ext("GL_ANGLE_framebuffer_blit");
+	GL_EXT_draw_instanced = has_ext("GL_EXT_draw_instanced");
 	GL_OES_texture_3D = has_ext("GL_OES_texture_3D");
+	GL_ARM_rgba8 = has_ext("GL_ARM_rgba8");
+	GL_EXT_tessellation_shader = has_ext("GL_EXT_tessellation_shader");
+	GL_OES_primitive_bounding_box = has_ext("GL_OES_primitive_bounding_box");
 	GL_NV_read_buffer = has_ext("GL_NV_read_buffer");
 	GL_NV_generate_mipmap_sRGB = has_ext("GL_NV_generate_mipmap_sRGB");
-	GL_DMP_shader_binary = has_ext("GL_DMP_shader_binary");
-	GL_NV_instanced_arrays = has_ext("GL_NV_instanced_arrays");
+	GL_EXT_texture_cube_map_array = has_ext("GL_EXT_texture_cube_map_array");
+	GL_OES_EGL_image_external_essl3 = has_ext("GL_OES_EGL_image_external_essl3");
+	GL_KHR_context_flush_control = has_ext("GL_KHR_context_flush_control");
 	GL_EXT_texture_type_2_10_10_10_REV = has_ext("GL_EXT_texture_type_2_10_10_10_REV");
 	GL_ANGLE_instanced_arrays = has_ext("GL_ANGLE_instanced_arrays");
 	GL_EXT_discard_framebuffer = has_ext("GL_EXT_discard_framebuffer");
+	GL_EXT_texture_sRGB_decode = has_ext("GL_EXT_texture_sRGB_decode");
 	GL_NV_read_depth = has_ext("GL_NV_read_depth");
+	GL_ARM_mali_program_binary = has_ext("GL_ARM_mali_program_binary");
 	GL_AMD_compressed_ATC_texture = has_ext("GL_AMD_compressed_ATC_texture");
-	GL_OES_vertex_array_object = has_ext("GL_OES_vertex_array_object");
+	GL_APPLE_texture_packed_float = has_ext("GL_APPLE_texture_packed_float");
+	GL_EXT_texture_buffer = has_ext("GL_EXT_texture_buffer");
 	GL_EXT_multi_draw_arrays = has_ext("GL_EXT_multi_draw_arrays");
 	GL_AMD_compressed_3DC_texture = has_ext("GL_AMD_compressed_3DC_texture");
 	GL_EXT_texture_compression_dxt1 = has_ext("GL_EXT_texture_compression_dxt1");
@@ -5221,6 +5946,7 @@ void find_extensionsGLES2() {
 	GL_ARM_rgba8 = has_ext("GL_ARM_rgba8");
 	GL_EXT_robustness = has_ext("GL_EXT_robustness");
 	GL_EXT_sRGB = has_ext("GL_EXT_sRGB");
+	GL_OES_compressed_ETC1_RGB8_sub_texture = has_ext("GL_OES_compressed_ETC1_RGB8_sub_texture");
 	GL_OES_rgb8_rgba8 = has_ext("GL_OES_rgb8_rgba8");
 	GL_OES_fbo_render_mipmap = has_ext("GL_OES_fbo_render_mipmap");
 	GL_OES_compressed_paletted_texture = has_ext("GL_OES_compressed_paletted_texture");
@@ -5493,15 +6219,160 @@ void load_GL_ES_VERSION_3_0(Loader load) {
 	return;
 }
 
-void load_GL_QCOM_tiled_rendering(Loader load) {
-	if(!GL_QCOM_tiled_rendering) return;
-	glStartTilingQCOM = cast(typeof(glStartTilingQCOM))load("glStartTilingQCOM");
-	glEndTilingQCOM = cast(typeof(glEndTilingQCOM))load("glEndTilingQCOM");
+void load_GL_ES_VERSION_3_1(Loader load) {
+	if(!GL_ES_VERSION_3_1) return;
+	glDispatchCompute = cast(typeof(glDispatchCompute))load("glDispatchCompute");
+	glDispatchComputeIndirect = cast(typeof(glDispatchComputeIndirect))load("glDispatchComputeIndirect");
+	glDrawArraysIndirect = cast(typeof(glDrawArraysIndirect))load("glDrawArraysIndirect");
+	glDrawElementsIndirect = cast(typeof(glDrawElementsIndirect))load("glDrawElementsIndirect");
+	glFramebufferParameteri = cast(typeof(glFramebufferParameteri))load("glFramebufferParameteri");
+	glGetFramebufferParameteriv = cast(typeof(glGetFramebufferParameteriv))load("glGetFramebufferParameteriv");
+	glGetProgramInterfaceiv = cast(typeof(glGetProgramInterfaceiv))load("glGetProgramInterfaceiv");
+	glGetProgramResourceIndex = cast(typeof(glGetProgramResourceIndex))load("glGetProgramResourceIndex");
+	glGetProgramResourceName = cast(typeof(glGetProgramResourceName))load("glGetProgramResourceName");
+	glGetProgramResourceiv = cast(typeof(glGetProgramResourceiv))load("glGetProgramResourceiv");
+	glGetProgramResourceLocation = cast(typeof(glGetProgramResourceLocation))load("glGetProgramResourceLocation");
+	glUseProgramStages = cast(typeof(glUseProgramStages))load("glUseProgramStages");
+	glActiveShaderProgram = cast(typeof(glActiveShaderProgram))load("glActiveShaderProgram");
+	glCreateShaderProgramv = cast(typeof(glCreateShaderProgramv))load("glCreateShaderProgramv");
+	glBindProgramPipeline = cast(typeof(glBindProgramPipeline))load("glBindProgramPipeline");
+	glDeleteProgramPipelines = cast(typeof(glDeleteProgramPipelines))load("glDeleteProgramPipelines");
+	glGenProgramPipelines = cast(typeof(glGenProgramPipelines))load("glGenProgramPipelines");
+	glIsProgramPipeline = cast(typeof(glIsProgramPipeline))load("glIsProgramPipeline");
+	glGetProgramPipelineiv = cast(typeof(glGetProgramPipelineiv))load("glGetProgramPipelineiv");
+	glProgramUniform1i = cast(typeof(glProgramUniform1i))load("glProgramUniform1i");
+	glProgramUniform2i = cast(typeof(glProgramUniform2i))load("glProgramUniform2i");
+	glProgramUniform3i = cast(typeof(glProgramUniform3i))load("glProgramUniform3i");
+	glProgramUniform4i = cast(typeof(glProgramUniform4i))load("glProgramUniform4i");
+	glProgramUniform1ui = cast(typeof(glProgramUniform1ui))load("glProgramUniform1ui");
+	glProgramUniform2ui = cast(typeof(glProgramUniform2ui))load("glProgramUniform2ui");
+	glProgramUniform3ui = cast(typeof(glProgramUniform3ui))load("glProgramUniform3ui");
+	glProgramUniform4ui = cast(typeof(glProgramUniform4ui))load("glProgramUniform4ui");
+	glProgramUniform1f = cast(typeof(glProgramUniform1f))load("glProgramUniform1f");
+	glProgramUniform2f = cast(typeof(glProgramUniform2f))load("glProgramUniform2f");
+	glProgramUniform3f = cast(typeof(glProgramUniform3f))load("glProgramUniform3f");
+	glProgramUniform4f = cast(typeof(glProgramUniform4f))load("glProgramUniform4f");
+	glProgramUniform1iv = cast(typeof(glProgramUniform1iv))load("glProgramUniform1iv");
+	glProgramUniform2iv = cast(typeof(glProgramUniform2iv))load("glProgramUniform2iv");
+	glProgramUniform3iv = cast(typeof(glProgramUniform3iv))load("glProgramUniform3iv");
+	glProgramUniform4iv = cast(typeof(glProgramUniform4iv))load("glProgramUniform4iv");
+	glProgramUniform1uiv = cast(typeof(glProgramUniform1uiv))load("glProgramUniform1uiv");
+	glProgramUniform2uiv = cast(typeof(glProgramUniform2uiv))load("glProgramUniform2uiv");
+	glProgramUniform3uiv = cast(typeof(glProgramUniform3uiv))load("glProgramUniform3uiv");
+	glProgramUniform4uiv = cast(typeof(glProgramUniform4uiv))load("glProgramUniform4uiv");
+	glProgramUniform1fv = cast(typeof(glProgramUniform1fv))load("glProgramUniform1fv");
+	glProgramUniform2fv = cast(typeof(glProgramUniform2fv))load("glProgramUniform2fv");
+	glProgramUniform3fv = cast(typeof(glProgramUniform3fv))load("glProgramUniform3fv");
+	glProgramUniform4fv = cast(typeof(glProgramUniform4fv))load("glProgramUniform4fv");
+	glProgramUniformMatrix2fv = cast(typeof(glProgramUniformMatrix2fv))load("glProgramUniformMatrix2fv");
+	glProgramUniformMatrix3fv = cast(typeof(glProgramUniformMatrix3fv))load("glProgramUniformMatrix3fv");
+	glProgramUniformMatrix4fv = cast(typeof(glProgramUniformMatrix4fv))load("glProgramUniformMatrix4fv");
+	glProgramUniformMatrix2x3fv = cast(typeof(glProgramUniformMatrix2x3fv))load("glProgramUniformMatrix2x3fv");
+	glProgramUniformMatrix3x2fv = cast(typeof(glProgramUniformMatrix3x2fv))load("glProgramUniformMatrix3x2fv");
+	glProgramUniformMatrix2x4fv = cast(typeof(glProgramUniformMatrix2x4fv))load("glProgramUniformMatrix2x4fv");
+	glProgramUniformMatrix4x2fv = cast(typeof(glProgramUniformMatrix4x2fv))load("glProgramUniformMatrix4x2fv");
+	glProgramUniformMatrix3x4fv = cast(typeof(glProgramUniformMatrix3x4fv))load("glProgramUniformMatrix3x4fv");
+	glProgramUniformMatrix4x3fv = cast(typeof(glProgramUniformMatrix4x3fv))load("glProgramUniformMatrix4x3fv");
+	glValidateProgramPipeline = cast(typeof(glValidateProgramPipeline))load("glValidateProgramPipeline");
+	glGetProgramPipelineInfoLog = cast(typeof(glGetProgramPipelineInfoLog))load("glGetProgramPipelineInfoLog");
+	glBindImageTexture = cast(typeof(glBindImageTexture))load("glBindImageTexture");
+	glGetBooleani_v = cast(typeof(glGetBooleani_v))load("glGetBooleani_v");
+	glMemoryBarrier = cast(typeof(glMemoryBarrier))load("glMemoryBarrier");
+	glMemoryBarrierByRegion = cast(typeof(glMemoryBarrierByRegion))load("glMemoryBarrierByRegion");
+	glTexStorage2DMultisample = cast(typeof(glTexStorage2DMultisample))load("glTexStorage2DMultisample");
+	glGetMultisamplefv = cast(typeof(glGetMultisamplefv))load("glGetMultisamplefv");
+	glSampleMaski = cast(typeof(glSampleMaski))load("glSampleMaski");
+	glGetTexLevelParameteriv = cast(typeof(glGetTexLevelParameteriv))load("glGetTexLevelParameteriv");
+	glGetTexLevelParameterfv = cast(typeof(glGetTexLevelParameterfv))load("glGetTexLevelParameterfv");
+	glBindVertexBuffer = cast(typeof(glBindVertexBuffer))load("glBindVertexBuffer");
+	glVertexAttribFormat = cast(typeof(glVertexAttribFormat))load("glVertexAttribFormat");
+	glVertexAttribIFormat = cast(typeof(glVertexAttribIFormat))load("glVertexAttribIFormat");
+	glVertexAttribBinding = cast(typeof(glVertexAttribBinding))load("glVertexAttribBinding");
+	glVertexBindingDivisor = cast(typeof(glVertexBindingDivisor))load("glVertexBindingDivisor");
+	return;
+}
+
+void load_GL_NV_non_square_matrices(Loader load) {
+	if(!GL_NV_non_square_matrices) return;
+	glUniformMatrix2x3fvNV = cast(typeof(glUniformMatrix2x3fvNV))load("glUniformMatrix2x3fvNV");
+	glUniformMatrix3x2fvNV = cast(typeof(glUniformMatrix3x2fvNV))load("glUniformMatrix3x2fvNV");
+	glUniformMatrix2x4fvNV = cast(typeof(glUniformMatrix2x4fvNV))load("glUniformMatrix2x4fvNV");
+	glUniformMatrix4x2fvNV = cast(typeof(glUniformMatrix4x2fvNV))load("glUniformMatrix4x2fvNV");
+	glUniformMatrix3x4fvNV = cast(typeof(glUniformMatrix3x4fvNV))load("glUniformMatrix3x4fvNV");
+	glUniformMatrix4x3fvNV = cast(typeof(glUniformMatrix4x3fvNV))load("glUniformMatrix4x3fvNV");
+	return;
+}
+void load_GL_NV_draw_instanced(Loader load) {
+	if(!GL_NV_draw_instanced) return;
+	glDrawArraysInstancedNV = cast(typeof(glDrawArraysInstancedNV))load("glDrawArraysInstancedNV");
+	glDrawElementsInstancedNV = cast(typeof(glDrawElementsInstancedNV))load("glDrawElementsInstancedNV");
+	return;
+}
+void load_GL_NV_viewport_array(Loader load) {
+	if(!GL_NV_viewport_array) return;
+	glViewportArrayvNV = cast(typeof(glViewportArrayvNV))load("glViewportArrayvNV");
+	glViewportIndexedfNV = cast(typeof(glViewportIndexedfNV))load("glViewportIndexedfNV");
+	glViewportIndexedfvNV = cast(typeof(glViewportIndexedfvNV))load("glViewportIndexedfvNV");
+	glScissorArrayvNV = cast(typeof(glScissorArrayvNV))load("glScissorArrayvNV");
+	glScissorIndexedNV = cast(typeof(glScissorIndexedNV))load("glScissorIndexedNV");
+	glScissorIndexedvNV = cast(typeof(glScissorIndexedvNV))load("glScissorIndexedvNV");
+	glDepthRangeArrayfvNV = cast(typeof(glDepthRangeArrayfvNV))load("glDepthRangeArrayfvNV");
+	glDepthRangeIndexedfNV = cast(typeof(glDepthRangeIndexedfNV))load("glDepthRangeIndexedfNV");
+	glGetFloati_vNV = cast(typeof(glGetFloati_vNV))load("glGetFloati_vNV");
+	glEnableiNV = cast(typeof(glEnableiNV))load("glEnableiNV");
+	glDisableiNV = cast(typeof(glDisableiNV))load("glDisableiNV");
+	glIsEnablediNV = cast(typeof(glIsEnablediNV))load("glIsEnablediNV");
+	return;
+}
+void load_GL_EXT_base_instance(Loader load) {
+	if(!GL_EXT_base_instance) return;
+	glDrawArraysInstancedBaseInstanceEXT = cast(typeof(glDrawArraysInstancedBaseInstanceEXT))load("glDrawArraysInstancedBaseInstanceEXT");
+	glDrawElementsInstancedBaseInstanceEXT = cast(typeof(glDrawElementsInstancedBaseInstanceEXT))load("glDrawElementsInstancedBaseInstanceEXT");
+	glDrawElementsInstancedBaseVertexBaseInstanceEXT = cast(typeof(glDrawElementsInstancedBaseVertexBaseInstanceEXT))load("glDrawElementsInstancedBaseVertexBaseInstanceEXT");
+	return;
+}
+void load_GL_EXT_instanced_arrays(Loader load) {
+	if(!GL_EXT_instanced_arrays) return;
+	glDrawArraysInstancedEXT = cast(typeof(glDrawArraysInstancedEXT))load("glDrawArraysInstancedEXT");
+	glDrawElementsInstancedEXT = cast(typeof(glDrawElementsInstancedEXT))load("glDrawElementsInstancedEXT");
+	glVertexAttribDivisorEXT = cast(typeof(glVertexAttribDivisorEXT))load("glVertexAttribDivisorEXT");
+	return;
+}
+void load_GL_EXT_draw_buffers_indexed(Loader load) {
+	if(!GL_EXT_draw_buffers_indexed) return;
+	glEnableiEXT = cast(typeof(glEnableiEXT))load("glEnableiEXT");
+	glDisableiEXT = cast(typeof(glDisableiEXT))load("glDisableiEXT");
+	glBlendEquationiEXT = cast(typeof(glBlendEquationiEXT))load("glBlendEquationiEXT");
+	glBlendEquationSeparateiEXT = cast(typeof(glBlendEquationSeparateiEXT))load("glBlendEquationSeparateiEXT");
+	glBlendFunciEXT = cast(typeof(glBlendFunciEXT))load("glBlendFunciEXT");
+	glBlendFuncSeparateiEXT = cast(typeof(glBlendFuncSeparateiEXT))load("glBlendFuncSeparateiEXT");
+	glColorMaskiEXT = cast(typeof(glColorMaskiEXT))load("glColorMaskiEXT");
+	glIsEnablediEXT = cast(typeof(glIsEnablediEXT))load("glIsEnablediEXT");
 	return;
 }
 void load_GL_ANGLE_translated_shader_source(Loader load) {
 	if(!GL_ANGLE_translated_shader_source) return;
 	glGetTranslatedShaderSourceANGLE = cast(typeof(glGetTranslatedShaderSourceANGLE))load("glGetTranslatedShaderSourceANGLE");
+	return;
+}
+void load_GL_NV_coverage_sample(Loader load) {
+	if(!GL_NV_coverage_sample) return;
+	glCoverageMaskNV = cast(typeof(glCoverageMaskNV))load("glCoverageMaskNV");
+	glCoverageOperationNV = cast(typeof(glCoverageOperationNV))load("glCoverageOperationNV");
+	return;
+}
+void load_GL_OES_vertex_array_object(Loader load) {
+	if(!GL_OES_vertex_array_object) return;
+	glBindVertexArrayOES = cast(typeof(glBindVertexArrayOES))load("glBindVertexArrayOES");
+	glDeleteVertexArraysOES = cast(typeof(glDeleteVertexArraysOES))load("glDeleteVertexArraysOES");
+	glGenVertexArraysOES = cast(typeof(glGenVertexArraysOES))load("glGenVertexArraysOES");
+	glIsVertexArrayOES = cast(typeof(glIsVertexArrayOES))load("glIsVertexArrayOES");
+	return;
+}
+void load_GL_QCOM_tiled_rendering(Loader load) {
+	if(!GL_QCOM_tiled_rendering) return;
+	glStartTilingQCOM = cast(typeof(glStartTilingQCOM))load("glStartTilingQCOM");
+	glEndTilingQCOM = cast(typeof(glEndTilingQCOM))load("glEndTilingQCOM");
 	return;
 }
 void load_GL_EXT_robustness(Loader load) {
@@ -5512,21 +6383,8 @@ void load_GL_EXT_robustness(Loader load) {
 	glGetnUniformivEXT = cast(typeof(glGetnUniformivEXT))load("glGetnUniformivEXT");
 	return;
 }
-void load_GL_NV_draw_instanced(Loader load) {
-	if(!GL_NV_draw_instanced) return;
-	glDrawArraysInstancedNV = cast(typeof(glDrawArraysInstancedNV))load("glDrawArraysInstancedNV");
-	glDrawElementsInstancedNV = cast(typeof(glDrawElementsInstancedNV))load("glDrawElementsInstancedNV");
-	return;
-}
-void load_GL_NV_coverage_sample(Loader load) {
-	if(!GL_NV_coverage_sample) return;
-	glCoverageMaskNV = cast(typeof(glCoverageMaskNV))load("glCoverageMaskNV");
-	glCoverageOperationNV = cast(typeof(glCoverageOperationNV))load("glCoverageOperationNV");
-	return;
-}
 void load_GL_EXT_disjoint_timer_query(Loader load) {
 	if(!GL_EXT_disjoint_timer_query) return;
-	glDiscardFramebufferEXT = cast(typeof(glDiscardFramebufferEXT))load("glDiscardFramebufferEXT");
 	glGenQueriesEXT = cast(typeof(glGenQueriesEXT))load("glGenQueriesEXT");
 	glDeleteQueriesEXT = cast(typeof(glDeleteQueriesEXT))load("glDeleteQueriesEXT");
 	glIsQueryEXT = cast(typeof(glIsQueryEXT))load("glIsQueryEXT");
@@ -5540,6 +6398,11 @@ void load_GL_EXT_disjoint_timer_query(Loader load) {
 	glGetQueryObjectui64vEXT = cast(typeof(glGetQueryObjectui64vEXT))load("glGetQueryObjectui64vEXT");
 	return;
 }
+void load_GL_EXT_primitive_bounding_box(Loader load) {
+	if(!GL_EXT_primitive_bounding_box) return;
+	glPrimitiveBoundingBoxEXT = cast(typeof(glPrimitiveBoundingBoxEXT))load("glPrimitiveBoundingBoxEXT");
+	return;
+}
 void load_GL_QCOM_driver_control(Loader load) {
 	if(!GL_QCOM_driver_control) return;
 	glGetDriverControlsQCOM = cast(typeof(glGetDriverControlsQCOM))load("glGetDriverControlsQCOM");
@@ -5548,11 +6411,19 @@ void load_GL_QCOM_driver_control(Loader load) {
 	glDisableDriverControlQCOM = cast(typeof(glDisableDriverControlQCOM))load("glDisableDriverControlQCOM");
 	return;
 }
-void load_GL_EXT_debug_marker(Loader load) {
-	if(!GL_EXT_debug_marker) return;
-	glInsertEventMarkerEXT = cast(typeof(glInsertEventMarkerEXT))load("glInsertEventMarkerEXT");
-	glPushGroupMarkerEXT = cast(typeof(glPushGroupMarkerEXT))load("glPushGroupMarkerEXT");
-	glPopGroupMarkerEXT = cast(typeof(glPopGroupMarkerEXT))load("glPopGroupMarkerEXT");
+void load_GL_OES_geometry_shader(Loader load) {
+	if(!GL_OES_geometry_shader) return;
+	glFramebufferTextureOES = cast(typeof(glFramebufferTextureOES))load("glFramebufferTextureOES");
+	return;
+}
+void load_GL_OES_tessellation_shader(Loader load) {
+	if(!GL_OES_tessellation_shader) return;
+	glPatchParameteriOES = cast(typeof(glPatchParameteriOES))load("glPatchParameteriOES");
+	return;
+}
+void load_GL_OES_texture_view(Loader load) {
+	if(!GL_OES_texture_view) return;
+	glTextureViewOES = cast(typeof(glTextureViewOES))load("glTextureViewOES");
 	return;
 }
 void load_GL_EXT_multisampled_render_to_texture(Loader load) {
@@ -5564,6 +6435,12 @@ void load_GL_EXT_multisampled_render_to_texture(Loader load) {
 void load_GL_ANGLE_framebuffer_multisample(Loader load) {
 	if(!GL_ANGLE_framebuffer_multisample) return;
 	glRenderbufferStorageMultisampleANGLE = cast(typeof(glRenderbufferStorageMultisampleANGLE))load("glRenderbufferStorageMultisampleANGLE");
+	return;
+}
+void load_GL_OES_texture_buffer(Loader load) {
+	if(!GL_OES_texture_buffer) return;
+	glTexBufferOES = cast(typeof(glTexBufferOES))load("glTexBufferOES");
+	glTexBufferRangeOES = cast(typeof(glTexBufferRangeOES))load("glTexBufferRangeOES");
 	return;
 }
 void load_GL_OES_get_program_binary(Loader load) {
@@ -5578,6 +6455,16 @@ void load_GL_APPLE_framebuffer_multisample(Loader load) {
 	glResolveMultisampleFramebufferAPPLE = cast(typeof(glResolveMultisampleFramebufferAPPLE))load("glResolveMultisampleFramebufferAPPLE");
 	return;
 }
+void load_GL_NV_copy_buffer(Loader load) {
+	if(!GL_NV_copy_buffer) return;
+	glCopyBufferSubDataNV = cast(typeof(glCopyBufferSubDataNV))load("glCopyBufferSubDataNV");
+	return;
+}
+void load_GL_EXT_texture_view(Loader load) {
+	if(!GL_EXT_texture_view) return;
+	glTextureViewEXT = cast(typeof(glTextureViewEXT))load("glTextureViewEXT");
+	return;
+}
 void load_GL_NV_framebuffer_blit(Loader load) {
 	if(!GL_NV_framebuffer_blit) return;
 	glBlitFramebufferNV = cast(typeof(glBlitFramebufferNV))load("glBlitFramebufferNV");
@@ -5586,6 +6473,18 @@ void load_GL_NV_framebuffer_blit(Loader load) {
 void load_GL_QCOM_alpha_test(Loader load) {
 	if(!GL_QCOM_alpha_test) return;
 	glAlphaFuncQCOM = cast(typeof(glAlphaFuncQCOM))load("glAlphaFuncQCOM");
+	return;
+}
+void load_GL_OES_texture_border_clamp(Loader load) {
+	if(!GL_OES_texture_border_clamp) return;
+	glTexParameterIivOES = cast(typeof(glTexParameterIivOES))load("glTexParameterIivOES");
+	glTexParameterIuivOES = cast(typeof(glTexParameterIuivOES))load("glTexParameterIuivOES");
+	glGetTexParameterIivOES = cast(typeof(glGetTexParameterIivOES))load("glGetTexParameterIivOES");
+	glGetTexParameterIuivOES = cast(typeof(glGetTexParameterIuivOES))load("glGetTexParameterIuivOES");
+	glSamplerParameterIivOES = cast(typeof(glSamplerParameterIivOES))load("glSamplerParameterIivOES");
+	glSamplerParameterIuivOES = cast(typeof(glSamplerParameterIuivOES))load("glSamplerParameterIuivOES");
+	glGetSamplerParameterIivOES = cast(typeof(glGetSamplerParameterIivOES))load("glGetSamplerParameterIivOES");
+	glGetSamplerParameterIuivOES = cast(typeof(glGetSamplerParameterIuivOES))load("glGetSamplerParameterIuivOES");
 	return;
 }
 void load_GL_EXT_occlusion_query_boolean(Loader load) {
@@ -5599,6 +6498,12 @@ void load_GL_EXT_occlusion_query_boolean(Loader load) {
 	glGetQueryObjectuivEXT = cast(typeof(glGetQueryObjectuivEXT))load("glGetQueryObjectuivEXT");
 	return;
 }
+void load_GL_EXT_multi_draw_indirect(Loader load) {
+	if(!GL_EXT_multi_draw_indirect) return;
+	glMultiDrawArraysIndirectEXT = cast(typeof(glMultiDrawArraysIndirectEXT))load("glMultiDrawArraysIndirectEXT");
+	glMultiDrawElementsIndirectEXT = cast(typeof(glMultiDrawElementsIndirectEXT))load("glMultiDrawElementsIndirectEXT");
+	return;
+}
 void load_GL_APPLE_sync(Loader load) {
 	if(!GL_APPLE_sync) return;
 	glFenceSyncAPPLE = cast(typeof(glFenceSyncAPPLE))load("glFenceSyncAPPLE");
@@ -5610,12 +6515,25 @@ void load_GL_APPLE_sync(Loader load) {
 	glGetSyncivAPPLE = cast(typeof(glGetSyncivAPPLE))load("glGetSyncivAPPLE");
 	return;
 }
+void load_GL_OES_copy_image(Loader load) {
+	if(!GL_OES_copy_image) return;
+	glCopyImageSubDataOES = cast(typeof(glCopyImageSubDataOES))load("glCopyImageSubDataOES");
+	return;
+}
 void load_GL_QCOM_extended_get2(Loader load) {
 	if(!GL_QCOM_extended_get2) return;
 	glExtGetShadersQCOM = cast(typeof(glExtGetShadersQCOM))load("glExtGetShadersQCOM");
 	glExtGetProgramsQCOM = cast(typeof(glExtGetProgramsQCOM))load("glExtGetProgramsQCOM");
 	glExtIsProgramBinaryQCOM = cast(typeof(glExtIsProgramBinaryQCOM))load("glExtIsProgramBinaryQCOM");
 	glExtGetProgramBinarySourceQCOM = cast(typeof(glExtGetProgramBinarySourceQCOM))load("glExtGetProgramBinarySourceQCOM");
+	return;
+}
+void load_GL_EXT_draw_elements_base_vertex(Loader load) {
+	if(!GL_EXT_draw_elements_base_vertex) return;
+	glDrawElementsBaseVertexEXT = cast(typeof(glDrawElementsBaseVertexEXT))load("glDrawElementsBaseVertexEXT");
+	glDrawRangeElementsBaseVertexEXT = cast(typeof(glDrawRangeElementsBaseVertexEXT))load("glDrawRangeElementsBaseVertexEXT");
+	glDrawElementsInstancedBaseVertexEXT = cast(typeof(glDrawElementsInstancedBaseVertexEXT))load("glDrawElementsInstancedBaseVertexEXT");
+	glMultiDrawElementsBaseVertexEXT = cast(typeof(glMultiDrawElementsBaseVertexEXT))load("glMultiDrawElementsBaseVertexEXT");
 	return;
 }
 void load_GL_NV_framebuffer_multisample(Loader load) {
@@ -5628,16 +6546,37 @@ void load_GL_NV_draw_buffers(Loader load) {
 	glDrawBuffersNV = cast(typeof(glDrawBuffersNV))load("glDrawBuffersNV");
 	return;
 }
-void load_GL_EXT_debug_label(Loader load) {
-	if(!GL_EXT_debug_label) return;
-	glLabelObjectEXT = cast(typeof(glLabelObjectEXT))load("glLabelObjectEXT");
-	glGetObjectLabelEXT = cast(typeof(glGetObjectLabelEXT))load("glGetObjectLabelEXT");
+void load_GL_OES_texture_storage_multisample_2d_array(Loader load) {
+	if(!GL_OES_texture_storage_multisample_2d_array) return;
+	glTexStorage3DMultisampleOES = cast(typeof(glTexStorage3DMultisampleOES))load("glTexStorage3DMultisampleOES");
+	return;
+}
+void load_GL_OES_draw_buffers_indexed(Loader load) {
+	if(!GL_OES_draw_buffers_indexed) return;
+	glEnableiOES = cast(typeof(glEnableiOES))load("glEnableiOES");
+	glDisableiOES = cast(typeof(glDisableiOES))load("glDisableiOES");
+	glBlendEquationiOES = cast(typeof(glBlendEquationiOES))load("glBlendEquationiOES");
+	glBlendEquationSeparateiOES = cast(typeof(glBlendEquationSeparateiOES))load("glBlendEquationSeparateiOES");
+	glBlendFunciOES = cast(typeof(glBlendFunciOES))load("glBlendFunciOES");
+	glBlendFuncSeparateiOES = cast(typeof(glBlendFuncSeparateiOES))load("glBlendFuncSeparateiOES");
+	glColorMaskiOES = cast(typeof(glColorMaskiOES))load("glColorMaskiOES");
+	glIsEnablediOES = cast(typeof(glIsEnablediOES))load("glIsEnablediOES");
 	return;
 }
 void load_GL_OES_EGL_image(Loader load) {
 	if(!GL_OES_EGL_image) return;
 	glEGLImageTargetTexture2DOES = cast(typeof(glEGLImageTargetTexture2DOES))load("glEGLImageTargetTexture2DOES");
 	glEGLImageTargetRenderbufferStorageOES = cast(typeof(glEGLImageTargetRenderbufferStorageOES))load("glEGLImageTargetRenderbufferStorageOES");
+	return;
+}
+void load_GL_EXT_draw_buffers(Loader load) {
+	if(!GL_EXT_draw_buffers) return;
+	glDrawBuffersEXT = cast(typeof(glDrawBuffersEXT))load("glDrawBuffersEXT");
+	return;
+}
+void load_GL_NV_instanced_arrays(Loader load) {
+	if(!GL_NV_instanced_arrays) return;
+	glVertexAttribDivisorNV = cast(typeof(glVertexAttribDivisorNV))load("glVertexAttribDivisorNV");
 	return;
 }
 void load_GL_EXT_texture_storage(Loader load) {
@@ -5650,9 +6589,14 @@ void load_GL_EXT_texture_storage(Loader load) {
 	glTextureStorage3DEXT = cast(typeof(glTextureStorage3DEXT))load("glTextureStorage3DEXT");
 	return;
 }
-void load_GL_EXT_draw_buffers(Loader load) {
-	if(!GL_EXT_draw_buffers) return;
-	glDrawBuffersEXT = cast(typeof(glDrawBuffersEXT))load("glDrawBuffersEXT");
+void load_GL_EXT_copy_image(Loader load) {
+	if(!GL_EXT_copy_image) return;
+	glCopyImageSubDataEXT = cast(typeof(glCopyImageSubDataEXT))load("glCopyImageSubDataEXT");
+	return;
+}
+void load_GL_OES_sample_shading(Loader load) {
+	if(!GL_OES_sample_shading) return;
+	glMinSampleShadingOES = cast(typeof(glMinSampleShadingOES))load("glMinSampleShadingOES");
 	return;
 }
 void load_GL_EXT_map_buffer_range(Loader load) {
@@ -5672,6 +6616,14 @@ void load_GL_IMG_multisampled_render_to_texture(Loader load) {
 	if(!GL_IMG_multisampled_render_to_texture) return;
 	glRenderbufferStorageMultisampleIMG = cast(typeof(glRenderbufferStorageMultisampleIMG))load("glRenderbufferStorageMultisampleIMG");
 	glFramebufferTexture2DMultisampleIMG = cast(typeof(glFramebufferTexture2DMultisampleIMG))load("glFramebufferTexture2DMultisampleIMG");
+	return;
+}
+void load_GL_OES_draw_elements_base_vertex(Loader load) {
+	if(!GL_OES_draw_elements_base_vertex) return;
+	glDrawElementsBaseVertexOES = cast(typeof(glDrawElementsBaseVertexOES))load("glDrawElementsBaseVertexOES");
+	glDrawRangeElementsBaseVertexOES = cast(typeof(glDrawRangeElementsBaseVertexOES))load("glDrawRangeElementsBaseVertexOES");
+	glDrawElementsInstancedBaseVertexOES = cast(typeof(glDrawElementsInstancedBaseVertexOES))load("glDrawElementsInstancedBaseVertexOES");
+	glMultiDrawElementsBaseVertexOES = cast(typeof(glMultiDrawElementsBaseVertexOES))load("glMultiDrawElementsBaseVertexOES");
 	return;
 }
 void load_GL_APPLE_copy_texture_levels(Loader load) {
@@ -5698,6 +6650,23 @@ void load_GL_QCOM_extended_get(Loader load) {
 	glExtGetBufferPointervQCOM = cast(typeof(glExtGetBufferPointervQCOM))load("glExtGetBufferPointervQCOM");
 	return;
 }
+void load_GL_EXT_geometry_shader(Loader load) {
+	if(!GL_EXT_geometry_shader) return;
+	glFramebufferTextureEXT = cast(typeof(glFramebufferTextureEXT))load("glFramebufferTextureEXT");
+	return;
+}
+void load_GL_EXT_texture_border_clamp(Loader load) {
+	if(!GL_EXT_texture_border_clamp) return;
+	glTexParameterIivEXT = cast(typeof(glTexParameterIivEXT))load("glTexParameterIivEXT");
+	glTexParameterIuivEXT = cast(typeof(glTexParameterIuivEXT))load("glTexParameterIuivEXT");
+	glGetTexParameterIivEXT = cast(typeof(glGetTexParameterIivEXT))load("glGetTexParameterIivEXT");
+	glGetTexParameterIuivEXT = cast(typeof(glGetTexParameterIuivEXT))load("glGetTexParameterIuivEXT");
+	glSamplerParameterIivEXT = cast(typeof(glSamplerParameterIivEXT))load("glSamplerParameterIivEXT");
+	glSamplerParameterIuivEXT = cast(typeof(glSamplerParameterIuivEXT))load("glSamplerParameterIuivEXT");
+	glGetSamplerParameterIivEXT = cast(typeof(glGetSamplerParameterIivEXT))load("glGetSamplerParameterIivEXT");
+	glGetSamplerParameterIuivEXT = cast(typeof(glGetSamplerParameterIuivEXT))load("glGetSamplerParameterIuivEXT");
+	return;
+}
 void load_GL_ANGLE_framebuffer_blit(Loader load) {
 	if(!GL_ANGLE_framebuffer_blit) return;
 	glBlitFramebufferANGLE = cast(typeof(glBlitFramebufferANGLE))load("glBlitFramebufferANGLE");
@@ -5713,14 +6682,19 @@ void load_GL_OES_texture_3D(Loader load) {
 	glFramebufferTexture3DOES = cast(typeof(glFramebufferTexture3DOES))load("glFramebufferTexture3DOES");
 	return;
 }
+void load_GL_EXT_tessellation_shader(Loader load) {
+	if(!GL_EXT_tessellation_shader) return;
+	glPatchParameteriEXT = cast(typeof(glPatchParameteriEXT))load("glPatchParameteriEXT");
+	return;
+}
+void load_GL_OES_primitive_bounding_box(Loader load) {
+	if(!GL_OES_primitive_bounding_box) return;
+	glPrimitiveBoundingBoxOES = cast(typeof(glPrimitiveBoundingBoxOES))load("glPrimitiveBoundingBoxOES");
+	return;
+}
 void load_GL_NV_read_buffer(Loader load) {
 	if(!GL_NV_read_buffer) return;
 	glReadBufferNV = cast(typeof(glReadBufferNV))load("glReadBufferNV");
-	return;
-}
-void load_GL_NV_instanced_arrays(Loader load) {
-	if(!GL_NV_instanced_arrays) return;
-	glVertexAttribDivisorNV = cast(typeof(glVertexAttribDivisorNV))load("glVertexAttribDivisorNV");
 	return;
 }
 void load_GL_ANGLE_instanced_arrays(Loader load) {
@@ -5735,12 +6709,10 @@ void load_GL_EXT_discard_framebuffer(Loader load) {
 	glDiscardFramebufferEXT = cast(typeof(glDiscardFramebufferEXT))load("glDiscardFramebufferEXT");
 	return;
 }
-void load_GL_OES_vertex_array_object(Loader load) {
-	if(!GL_OES_vertex_array_object) return;
-	glBindVertexArrayOES = cast(typeof(glBindVertexArrayOES))load("glBindVertexArrayOES");
-	glDeleteVertexArraysOES = cast(typeof(glDeleteVertexArraysOES))load("glDeleteVertexArraysOES");
-	glGenVertexArraysOES = cast(typeof(glGenVertexArraysOES))load("glGenVertexArraysOES");
-	glIsVertexArrayOES = cast(typeof(glIsVertexArrayOES))load("glIsVertexArrayOES");
+void load_GL_EXT_texture_buffer(Loader load) {
+	if(!GL_EXT_texture_buffer) return;
+	glTexBufferEXT = cast(typeof(glTexBufferEXT))load("glTexBufferEXT");
+	glTexBufferRangeEXT = cast(typeof(glTexBufferRangeEXT))load("glTexBufferRangeEXT");
 	return;
 }
 bool gladLoadGLES1(Loader load) {
@@ -5759,8 +6731,9 @@ bool gladLoadGLES1(Loader load) {
 	load_GL_OES_byte_coordinates(load);
 	load_GL_OES_query_matrix(load);
 	load_GL_OES_fixed_point(load);
-	load_GL_QCOM_tiled_rendering(load);
 	load_GL_NV_fence(load);
+	load_GL_OES_vertex_array_object(load);
+	load_GL_QCOM_tiled_rendering(load);
 	load_GL_EXT_robustness(load);
 	load_GL_EXT_multi_draw_arrays(load);
 	load_GL_QCOM_driver_control(load);
@@ -5777,7 +6750,6 @@ bool gladLoadGLES1(Loader load) {
 	load_GL_APPLE_copy_texture_levels(load);
 	load_GL_QCOM_extended_get(load);
 	load_GL_EXT_discard_framebuffer(load);
-	load_GL_OES_vertex_array_object(load);
 	load_GL_EXT_multi_draw_arrays(load);
 	load_GL_OES_single_precision(load);
 	load_GL_OES_point_size_array(load);
@@ -5838,14 +6810,14 @@ void find_extensionsGLES1() {
 	GL_OES_fixed_point = has_ext("GL_OES_fixed_point");
 	GL_OES_packed_depth_stencil = has_ext("GL_OES_packed_depth_stencil");
 	GL_QCOM_perfmon_global_mode = has_ext("GL_QCOM_perfmon_global_mode");
-	GL_QCOM_tiled_rendering = has_ext("GL_QCOM_tiled_rendering");
 	GL_NV_fence = has_ext("GL_NV_fence");
 	GL_IMG_texture_compression_pvrtc = has_ext("GL_IMG_texture_compression_pvrtc");
-	GL_EXT_sRGB = has_ext("GL_EXT_sRGB");
 	GL_QCOM_writeonly_rendering = has_ext("GL_QCOM_writeonly_rendering");
-	GL_ARM_rgba8 = has_ext("GL_ARM_rgba8");
+	GL_OES_vertex_array_object = has_ext("GL_OES_vertex_array_object");
+	GL_QCOM_tiled_rendering = has_ext("GL_QCOM_tiled_rendering");
 	GL_EXT_robustness = has_ext("GL_EXT_robustness");
 	GL_OES_fbo_render_mipmap = has_ext("GL_OES_fbo_render_mipmap");
+	GL_OES_compressed_ETC1_RGB8_sub_texture = has_ext("GL_OES_compressed_ETC1_RGB8_sub_texture");
 	GL_OES_compressed_paletted_texture = has_ext("GL_OES_compressed_paletted_texture");
 	GL_IMG_read_format = has_ext("GL_IMG_read_format");
 	GL_EXT_multi_draw_arrays = has_ext("GL_EXT_multi_draw_arrays");
@@ -5853,8 +6825,9 @@ void find_extensionsGLES1() {
 	GL_QCOM_driver_control = has_ext("GL_QCOM_driver_control");
 	GL_EXT_multisampled_render_to_texture = has_ext("GL_EXT_multisampled_render_to_texture");
 	GL_APPLE_framebuffer_multisample = has_ext("GL_APPLE_framebuffer_multisample");
+	GL_OES_stencil4 = has_ext("GL_OES_stencil4");
 	GL_OES_stencil1 = has_ext("GL_OES_stencil1");
-	GL_OES_rgb8_rgba8 = has_ext("GL_OES_rgb8_rgba8");
+	GL_EXT_sRGB = has_ext("GL_EXT_sRGB");
 	GL_APPLE_sync = has_ext("GL_APPLE_sync");
 	GL_EXT_read_format_bgra = has_ext("GL_EXT_read_format_bgra");
 	GL_OES_compressed_ETC1_RGB8_texture = has_ext("GL_OES_compressed_ETC1_RGB8_texture");
@@ -5869,6 +6842,7 @@ void find_extensionsGLES1() {
 	GL_OES_required_internalformat = has_ext("GL_OES_required_internalformat");
 	GL_AMD_compressed_3DC_texture = has_ext("GL_AMD_compressed_3DC_texture");
 	GL_OES_element_index_uint = has_ext("GL_OES_element_index_uint");
+	GL_OES_rgb8_rgba8 = has_ext("GL_OES_rgb8_rgba8");
 	GL_EXT_map_buffer_range = has_ext("GL_EXT_map_buffer_range");
 	GL_OES_mapbuffer = has_ext("GL_OES_mapbuffer");
 	GL_OES_EGL_image_external = has_ext("GL_OES_EGL_image_external");
@@ -5877,10 +6851,9 @@ void find_extensionsGLES1() {
 	GL_EXT_texture_format_BGRA8888 = has_ext("GL_EXT_texture_format_BGRA8888");
 	GL_APPLE_copy_texture_levels = has_ext("GL_APPLE_copy_texture_levels");
 	GL_QCOM_extended_get = has_ext("GL_QCOM_extended_get");
-	GL_OES_stencil4 = has_ext("GL_OES_stencil4");
+	GL_ARM_rgba8 = has_ext("GL_ARM_rgba8");
 	GL_EXT_discard_framebuffer = has_ext("GL_EXT_discard_framebuffer");
 	GL_AMD_compressed_ATC_texture = has_ext("GL_AMD_compressed_ATC_texture");
-	GL_OES_vertex_array_object = has_ext("GL_OES_vertex_array_object");
 	GL_OES_texture_mirrored_repeat = has_ext("GL_OES_texture_mirrored_repeat");
 	GL_EXT_multi_draw_arrays = has_ext("GL_EXT_multi_draw_arrays");
 	GL_AMD_compressed_3DC_texture = has_ext("GL_AMD_compressed_3DC_texture");
@@ -5931,6 +6904,7 @@ void find_extensionsGLES1() {
 	GL_EXT_robustness = has_ext("GL_EXT_robustness");
 	GL_EXT_sRGB = has_ext("GL_EXT_sRGB");
 	GL_EXT_texture_lod_bias = has_ext("GL_EXT_texture_lod_bias");
+	GL_OES_compressed_ETC1_RGB8_sub_texture = has_ext("GL_OES_compressed_ETC1_RGB8_sub_texture");
 	GL_OES_draw_texture = has_ext("GL_OES_draw_texture");
 	GL_OES_blend_func_separate = has_ext("GL_OES_blend_func_separate");
 	GL_OES_texture_env_crossbar = has_ext("GL_OES_texture_env_crossbar");

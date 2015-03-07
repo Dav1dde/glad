@@ -97,33 +97,37 @@ bool gladLoadGLX(Loader load) {
 
 	find_extensionsGLX();
 	load_GLX_EXT_import_context(load);
+	load_GLX_SGIX_dmbuffer(load);
 	load_GLX_SGIX_pbuffer(load);
-	load_GLX_NV_swap_group(load);
 	load_GLX_SGIX_hyperpipe(load);
-	load_GLX_SGIX_video_resize(load);
-	load_GLX_NV_copy_image(load);
-	load_GLX_OML_sync_control(load);
-	load_GLX_SGI_make_current_read(load);
-	load_GLX_SGI_swap_control(load);
-	load_GLX_SGI_video_sync(load);
-	load_GLX_MESA_agp_offset(load);
 	load_GLX_MESA_set_3dfx_mode(load);
-	load_GLX_EXT_texture_from_pixmap(load);
+	load_GLX_SGIX_video_resize(load);
+	load_GLX_MESA_pixmap_colormap(load);
+	load_GLX_NV_copy_image(load);
+	load_GLX_NV_swap_group(load);
+	load_GLX_OML_sync_control(load);
+	load_GLX_SGI_video_sync(load);
 	load_GLX_NV_video_capture(load);
+	load_GLX_EXT_texture_from_pixmap(load);
+	load_GLX_NV_video_out(load);
+	load_GLX_NV_delay_before_swap(load);
+	load_GLX_SGI_make_current_read(load);
 	load_GLX_SGIX_swap_group(load);
 	load_GLX_EXT_swap_control(load);
 	load_GLX_SGIX_video_source(load);
+	load_GLX_MESA_query_renderer(load);
 	load_GLX_ARB_create_context(load);
+	load_GLX_SGI_swap_control(load);
 	load_GLX_SGIX_fbconfig(load);
-	load_GLX_MESA_pixmap_colormap(load);
-	load_GLX_NV_video_output(load);
-	load_GLX_SGIX_dmbuffer(load);
-	load_GLX_SGIX_swap_barrier(load);
+	load_GLX_SGI_cushion(load);
 	load_GLX_MESA_release_buffers(load);
 	load_GLX_MESA_copy_sub_buffer(load);
-	load_GLX_SGI_cushion(load);
+	load_GLX_MESA_agp_offset(load);
+	load_GLX_NV_copy_buffer(load);
 	load_GLX_NV_present_video(load);
 	load_GLX_SUN_get_transparent_index(load);
+	load_GLX_AMD_gpu_association(load);
+	load_GLX_SGIX_swap_barrier(load);
 	load_GLX_ARB_get_proc_address(load);
 	return true;
 }
@@ -205,21 +209,16 @@ void load_GLX_EXT_import_context(Loader load) {
 	glXFreeContextEXT = cast(typeof(glXFreeContextEXT))load("glXFreeContextEXT");
 	return;
 }
+void load_GLX_SGIX_dmbuffer(Loader load) {
+	glXAssociateDMPbufferSGIX = cast(typeof(glXAssociateDMPbufferSGIX))load("glXAssociateDMPbufferSGIX");
+	return;
+}
 void load_GLX_SGIX_pbuffer(Loader load) {
 	glXCreateGLXPbufferSGIX = cast(typeof(glXCreateGLXPbufferSGIX))load("glXCreateGLXPbufferSGIX");
 	glXDestroyGLXPbufferSGIX = cast(typeof(glXDestroyGLXPbufferSGIX))load("glXDestroyGLXPbufferSGIX");
 	glXQueryGLXPbufferSGIX = cast(typeof(glXQueryGLXPbufferSGIX))load("glXQueryGLXPbufferSGIX");
 	glXSelectEventSGIX = cast(typeof(glXSelectEventSGIX))load("glXSelectEventSGIX");
 	glXGetSelectedEventSGIX = cast(typeof(glXGetSelectedEventSGIX))load("glXGetSelectedEventSGIX");
-	return;
-}
-void load_GLX_NV_swap_group(Loader load) {
-	glXJoinSwapGroupNV = cast(typeof(glXJoinSwapGroupNV))load("glXJoinSwapGroupNV");
-	glXBindSwapBarrierNV = cast(typeof(glXBindSwapBarrierNV))load("glXBindSwapBarrierNV");
-	glXQuerySwapGroupNV = cast(typeof(glXQuerySwapGroupNV))load("glXQuerySwapGroupNV");
-	glXQueryMaxSwapGroupsNV = cast(typeof(glXQueryMaxSwapGroupsNV))load("glXQueryMaxSwapGroupsNV");
-	glXQueryFrameCountNV = cast(typeof(glXQueryFrameCountNV))load("glXQueryFrameCountNV");
-	glXResetFrameCountNV = cast(typeof(glXResetFrameCountNV))load("glXResetFrameCountNV");
 	return;
 }
 void load_GLX_SGIX_hyperpipe(Loader load) {
@@ -233,6 +232,10 @@ void load_GLX_SGIX_hyperpipe(Loader load) {
 	glXQueryHyperpipeAttribSGIX = cast(typeof(glXQueryHyperpipeAttribSGIX))load("glXQueryHyperpipeAttribSGIX");
 	return;
 }
+void load_GLX_MESA_set_3dfx_mode(Loader load) {
+	glXSet3DfxModeMESA = cast(typeof(glXSet3DfxModeMESA))load("glXSet3DfxModeMESA");
+	return;
+}
 void load_GLX_SGIX_video_resize(Loader load) {
 	glXBindChannelToWindowSGIX = cast(typeof(glXBindChannelToWindowSGIX))load("glXBindChannelToWindowSGIX");
 	glXChannelRectSGIX = cast(typeof(glXChannelRectSGIX))load("glXChannelRectSGIX");
@@ -241,8 +244,21 @@ void load_GLX_SGIX_video_resize(Loader load) {
 	glXChannelRectSyncSGIX = cast(typeof(glXChannelRectSyncSGIX))load("glXChannelRectSyncSGIX");
 	return;
 }
+void load_GLX_MESA_pixmap_colormap(Loader load) {
+	glXCreateGLXPixmapMESA = cast(typeof(glXCreateGLXPixmapMESA))load("glXCreateGLXPixmapMESA");
+	return;
+}
 void load_GLX_NV_copy_image(Loader load) {
 	glXCopyImageSubDataNV = cast(typeof(glXCopyImageSubDataNV))load("glXCopyImageSubDataNV");
+	return;
+}
+void load_GLX_NV_swap_group(Loader load) {
+	glXJoinSwapGroupNV = cast(typeof(glXJoinSwapGroupNV))load("glXJoinSwapGroupNV");
+	glXBindSwapBarrierNV = cast(typeof(glXBindSwapBarrierNV))load("glXBindSwapBarrierNV");
+	glXQuerySwapGroupNV = cast(typeof(glXQuerySwapGroupNV))load("glXQuerySwapGroupNV");
+	glXQueryMaxSwapGroupsNV = cast(typeof(glXQueryMaxSwapGroupsNV))load("glXQueryMaxSwapGroupsNV");
+	glXQueryFrameCountNV = cast(typeof(glXQueryFrameCountNV))load("glXQueryFrameCountNV");
+	glXResetFrameCountNV = cast(typeof(glXResetFrameCountNV))load("glXResetFrameCountNV");
 	return;
 }
 void load_GLX_OML_sync_control(Loader load) {
@@ -253,31 +269,9 @@ void load_GLX_OML_sync_control(Loader load) {
 	glXWaitForSbcOML = cast(typeof(glXWaitForSbcOML))load("glXWaitForSbcOML");
 	return;
 }
-void load_GLX_SGI_make_current_read(Loader load) {
-	glXMakeCurrentReadSGI = cast(typeof(glXMakeCurrentReadSGI))load("glXMakeCurrentReadSGI");
-	glXGetCurrentReadDrawableSGI = cast(typeof(glXGetCurrentReadDrawableSGI))load("glXGetCurrentReadDrawableSGI");
-	return;
-}
-void load_GLX_SGI_swap_control(Loader load) {
-	glXSwapIntervalSGI = cast(typeof(glXSwapIntervalSGI))load("glXSwapIntervalSGI");
-	return;
-}
 void load_GLX_SGI_video_sync(Loader load) {
 	glXGetVideoSyncSGI = cast(typeof(glXGetVideoSyncSGI))load("glXGetVideoSyncSGI");
 	glXWaitVideoSyncSGI = cast(typeof(glXWaitVideoSyncSGI))load("glXWaitVideoSyncSGI");
-	return;
-}
-void load_GLX_MESA_agp_offset(Loader load) {
-	glXGetAGPOffsetMESA = cast(typeof(glXGetAGPOffsetMESA))load("glXGetAGPOffsetMESA");
-	return;
-}
-void load_GLX_MESA_set_3dfx_mode(Loader load) {
-	glXSet3DfxModeMESA = cast(typeof(glXSet3DfxModeMESA))load("glXSet3DfxModeMESA");
-	return;
-}
-void load_GLX_EXT_texture_from_pixmap(Loader load) {
-	glXBindTexImageEXT = cast(typeof(glXBindTexImageEXT))load("glXBindTexImageEXT");
-	glXReleaseTexImageEXT = cast(typeof(glXReleaseTexImageEXT))load("glXReleaseTexImageEXT");
 	return;
 }
 void load_GLX_NV_video_capture(Loader load) {
@@ -286,6 +280,29 @@ void load_GLX_NV_video_capture(Loader load) {
 	glXLockVideoCaptureDeviceNV = cast(typeof(glXLockVideoCaptureDeviceNV))load("glXLockVideoCaptureDeviceNV");
 	glXQueryVideoCaptureDeviceNV = cast(typeof(glXQueryVideoCaptureDeviceNV))load("glXQueryVideoCaptureDeviceNV");
 	glXReleaseVideoCaptureDeviceNV = cast(typeof(glXReleaseVideoCaptureDeviceNV))load("glXReleaseVideoCaptureDeviceNV");
+	return;
+}
+void load_GLX_EXT_texture_from_pixmap(Loader load) {
+	glXBindTexImageEXT = cast(typeof(glXBindTexImageEXT))load("glXBindTexImageEXT");
+	glXReleaseTexImageEXT = cast(typeof(glXReleaseTexImageEXT))load("glXReleaseTexImageEXT");
+	return;
+}
+void load_GLX_NV_video_out(Loader load) {
+	glXGetVideoDeviceNV = cast(typeof(glXGetVideoDeviceNV))load("glXGetVideoDeviceNV");
+	glXReleaseVideoDeviceNV = cast(typeof(glXReleaseVideoDeviceNV))load("glXReleaseVideoDeviceNV");
+	glXBindVideoImageNV = cast(typeof(glXBindVideoImageNV))load("glXBindVideoImageNV");
+	glXReleaseVideoImageNV = cast(typeof(glXReleaseVideoImageNV))load("glXReleaseVideoImageNV");
+	glXSendPbufferToVideoNV = cast(typeof(glXSendPbufferToVideoNV))load("glXSendPbufferToVideoNV");
+	glXGetVideoInfoNV = cast(typeof(glXGetVideoInfoNV))load("glXGetVideoInfoNV");
+	return;
+}
+void load_GLX_NV_delay_before_swap(Loader load) {
+	glXDelayBeforeSwapNV = cast(typeof(glXDelayBeforeSwapNV))load("glXDelayBeforeSwapNV");
+	return;
+}
+void load_GLX_SGI_make_current_read(Loader load) {
+	glXMakeCurrentReadSGI = cast(typeof(glXMakeCurrentReadSGI))load("glXMakeCurrentReadSGI");
+	glXGetCurrentReadDrawableSGI = cast(typeof(glXGetCurrentReadDrawableSGI))load("glXGetCurrentReadDrawableSGI");
 	return;
 }
 void load_GLX_SGIX_swap_group(Loader load) {
@@ -301,8 +318,19 @@ void load_GLX_SGIX_video_source(Loader load) {
 	glXDestroyGLXVideoSourceSGIX = cast(typeof(glXDestroyGLXVideoSourceSGIX))load("glXDestroyGLXVideoSourceSGIX");
 	return;
 }
+void load_GLX_MESA_query_renderer(Loader load) {
+	glXQueryCurrentRendererIntegerMESA = cast(typeof(glXQueryCurrentRendererIntegerMESA))load("glXQueryCurrentRendererIntegerMESA");
+	glXQueryCurrentRendererStringMESA = cast(typeof(glXQueryCurrentRendererStringMESA))load("glXQueryCurrentRendererStringMESA");
+	glXQueryRendererIntegerMESA = cast(typeof(glXQueryRendererIntegerMESA))load("glXQueryRendererIntegerMESA");
+	glXQueryRendererStringMESA = cast(typeof(glXQueryRendererStringMESA))load("glXQueryRendererStringMESA");
+	return;
+}
 void load_GLX_ARB_create_context(Loader load) {
 	glXCreateContextAttribsARB = cast(typeof(glXCreateContextAttribsARB))load("glXCreateContextAttribsARB");
+	return;
+}
+void load_GLX_SGI_swap_control(Loader load) {
+	glXSwapIntervalSGI = cast(typeof(glXSwapIntervalSGI))load("glXSwapIntervalSGI");
 	return;
 }
 void load_GLX_SGIX_fbconfig(Loader load) {
@@ -314,26 +342,8 @@ void load_GLX_SGIX_fbconfig(Loader load) {
 	glXGetFBConfigFromVisualSGIX = cast(typeof(glXGetFBConfigFromVisualSGIX))load("glXGetFBConfigFromVisualSGIX");
 	return;
 }
-void load_GLX_MESA_pixmap_colormap(Loader load) {
-	glXCreateGLXPixmapMESA = cast(typeof(glXCreateGLXPixmapMESA))load("glXCreateGLXPixmapMESA");
-	return;
-}
-void load_GLX_NV_video_output(Loader load) {
-	glXGetVideoDeviceNV = cast(typeof(glXGetVideoDeviceNV))load("glXGetVideoDeviceNV");
-	glXReleaseVideoDeviceNV = cast(typeof(glXReleaseVideoDeviceNV))load("glXReleaseVideoDeviceNV");
-	glXBindVideoImageNV = cast(typeof(glXBindVideoImageNV))load("glXBindVideoImageNV");
-	glXReleaseVideoImageNV = cast(typeof(glXReleaseVideoImageNV))load("glXReleaseVideoImageNV");
-	glXSendPbufferToVideoNV = cast(typeof(glXSendPbufferToVideoNV))load("glXSendPbufferToVideoNV");
-	glXGetVideoInfoNV = cast(typeof(glXGetVideoInfoNV))load("glXGetVideoInfoNV");
-	return;
-}
-void load_GLX_SGIX_dmbuffer(Loader load) {
-	glXAssociateDMPbufferSGIX = cast(typeof(glXAssociateDMPbufferSGIX))load("glXAssociateDMPbufferSGIX");
-	return;
-}
-void load_GLX_SGIX_swap_barrier(Loader load) {
-	glXBindSwapBarrierSGIX = cast(typeof(glXBindSwapBarrierSGIX))load("glXBindSwapBarrierSGIX");
-	glXQueryMaxSwapBarriersSGIX = cast(typeof(glXQueryMaxSwapBarriersSGIX))load("glXQueryMaxSwapBarriersSGIX");
+void load_GLX_SGI_cushion(Loader load) {
+	glXCushionSGI = cast(typeof(glXCushionSGI))load("glXCushionSGI");
 	return;
 }
 void load_GLX_MESA_release_buffers(Loader load) {
@@ -344,8 +354,13 @@ void load_GLX_MESA_copy_sub_buffer(Loader load) {
 	glXCopySubBufferMESA = cast(typeof(glXCopySubBufferMESA))load("glXCopySubBufferMESA");
 	return;
 }
-void load_GLX_SGI_cushion(Loader load) {
-	glXCushionSGI = cast(typeof(glXCushionSGI))load("glXCushionSGI");
+void load_GLX_MESA_agp_offset(Loader load) {
+	glXGetAGPOffsetMESA = cast(typeof(glXGetAGPOffsetMESA))load("glXGetAGPOffsetMESA");
+	return;
+}
+void load_GLX_NV_copy_buffer(Loader load) {
+	glXCopyBufferSubDataNV = cast(typeof(glXCopyBufferSubDataNV))load("glXCopyBufferSubDataNV");
+	glXNamedCopyBufferSubDataNV = cast(typeof(glXNamedCopyBufferSubDataNV))load("glXNamedCopyBufferSubDataNV");
 	return;
 }
 void load_GLX_NV_present_video(Loader load) {
@@ -355,6 +370,23 @@ void load_GLX_NV_present_video(Loader load) {
 }
 void load_GLX_SUN_get_transparent_index(Loader load) {
 	glXGetTransparentIndexSUN = cast(typeof(glXGetTransparentIndexSUN))load("glXGetTransparentIndexSUN");
+	return;
+}
+void load_GLX_AMD_gpu_association(Loader load) {
+	glXGetGPUIDsAMD = cast(typeof(glXGetGPUIDsAMD))load("glXGetGPUIDsAMD");
+	glXGetGPUInfoAMD = cast(typeof(glXGetGPUInfoAMD))load("glXGetGPUInfoAMD");
+	glXGetContextGPUIDAMD = cast(typeof(glXGetContextGPUIDAMD))load("glXGetContextGPUIDAMD");
+	glXCreateAssociatedContextAMD = cast(typeof(glXCreateAssociatedContextAMD))load("glXCreateAssociatedContextAMD");
+	glXCreateAssociatedContextAttribsAMD = cast(typeof(glXCreateAssociatedContextAttribsAMD))load("glXCreateAssociatedContextAttribsAMD");
+	glXDeleteAssociatedContextAMD = cast(typeof(glXDeleteAssociatedContextAMD))load("glXDeleteAssociatedContextAMD");
+	glXMakeAssociatedContextCurrentAMD = cast(typeof(glXMakeAssociatedContextCurrentAMD))load("glXMakeAssociatedContextCurrentAMD");
+	glXGetCurrentAssociatedContextAMD = cast(typeof(glXGetCurrentAssociatedContextAMD))load("glXGetCurrentAssociatedContextAMD");
+	glXBlitContextFramebufferAMD = cast(typeof(glXBlitContextFramebufferAMD))load("glXBlitContextFramebufferAMD");
+	return;
+}
+void load_GLX_SGIX_swap_barrier(Loader load) {
+	glXBindSwapBarrierSGIX = cast(typeof(glXBindSwapBarrierSGIX))load("glXBindSwapBarrierSGIX");
+	glXQueryMaxSwapBarriersSGIX = cast(typeof(glXQueryMaxSwapBarriersSGIX))load("glXQueryMaxSwapBarriersSGIX");
 	return;
 }
 void load_GLX_ARB_get_proc_address(Loader load) {

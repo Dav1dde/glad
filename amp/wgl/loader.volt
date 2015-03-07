@@ -94,16 +94,15 @@ bool gladLoadWGL(Loader load) {
 	load_WGL_I3D_image_buffer(load);
 	load_WGL_I3D_swap_frame_usage(load);
 	load_WGL_OML_sync_control(load);
-	load_WGL_ARB_create_context(load);
+	load_WGL_NV_delay_before_swap(load);
+	load_WGL_NV_video_capture(load);
 	load_WGL_NV_swap_group(load);
 	load_WGL_NV_gpu_affinity(load);
 	load_WGL_EXT_pixel_format(load);
 	load_WGL_ARB_extensions_string(load);
-	load_WGL_NV_video_capture(load);
-	load_WGL_ARB_render_texture(load);
 	load_WGL_ARB_pixel_format(load);
 	load_WGL_I3D_genlock(load);
-	load_WGL_NV_DX_interop(load);
+	load_WGL_NV_vertex_array_range(load);
 	load_WGL_3DL_stereo_control(load);
 	load_WGL_EXT_pbuffer(load);
 	load_WGL_EXT_display_color_table(load);
@@ -111,12 +110,14 @@ bool gladLoadWGL(Loader load) {
 	load_WGL_I3D_gamma(load);
 	load_WGL_NV_copy_image(load);
 	load_WGL_NV_present_video(load);
+	load_WGL_ARB_render_texture(load);
 	load_WGL_ARB_make_current_read(load);
+	load_WGL_ARB_create_context(load);
 	load_WGL_EXT_extensions_string(load);
 	load_WGL_EXT_swap_control(load);
 	load_WGL_I3D_digital_video_control(load);
 	load_WGL_ARB_pbuffer(load);
-	load_WGL_NV_vertex_array_range(load);
+	load_WGL_NV_DX_interop(load);
 	load_WGL_AMD_gpu_association(load);
 	load_WGL_EXT_make_current_read(load);
 	load_WGL_I3D_swap_frame_lock(load);
@@ -157,8 +158,16 @@ void load_WGL_OML_sync_control(Loader load) {
 	wglWaitForSbcOML = cast(typeof(wglWaitForSbcOML))load("wglWaitForSbcOML");
 	return;
 }
-void load_WGL_ARB_create_context(Loader load) {
-	wglCreateContextAttribsARB = cast(typeof(wglCreateContextAttribsARB))load("wglCreateContextAttribsARB");
+void load_WGL_NV_delay_before_swap(Loader load) {
+	wglDelayBeforeSwapNV = cast(typeof(wglDelayBeforeSwapNV))load("wglDelayBeforeSwapNV");
+	return;
+}
+void load_WGL_NV_video_capture(Loader load) {
+	wglBindVideoCaptureDeviceNV = cast(typeof(wglBindVideoCaptureDeviceNV))load("wglBindVideoCaptureDeviceNV");
+	wglEnumerateVideoCaptureDevicesNV = cast(typeof(wglEnumerateVideoCaptureDevicesNV))load("wglEnumerateVideoCaptureDevicesNV");
+	wglLockVideoCaptureDeviceNV = cast(typeof(wglLockVideoCaptureDeviceNV))load("wglLockVideoCaptureDeviceNV");
+	wglQueryVideoCaptureDeviceNV = cast(typeof(wglQueryVideoCaptureDeviceNV))load("wglQueryVideoCaptureDeviceNV");
+	wglReleaseVideoCaptureDeviceNV = cast(typeof(wglReleaseVideoCaptureDeviceNV))load("wglReleaseVideoCaptureDeviceNV");
 	return;
 }
 void load_WGL_NV_swap_group(Loader load) {
@@ -188,20 +197,6 @@ void load_WGL_ARB_extensions_string(Loader load) {
 	wglGetExtensionsStringARB = cast(typeof(wglGetExtensionsStringARB))load("wglGetExtensionsStringARB");
 	return;
 }
-void load_WGL_NV_video_capture(Loader load) {
-	wglBindVideoCaptureDeviceNV = cast(typeof(wglBindVideoCaptureDeviceNV))load("wglBindVideoCaptureDeviceNV");
-	wglEnumerateVideoCaptureDevicesNV = cast(typeof(wglEnumerateVideoCaptureDevicesNV))load("wglEnumerateVideoCaptureDevicesNV");
-	wglLockVideoCaptureDeviceNV = cast(typeof(wglLockVideoCaptureDeviceNV))load("wglLockVideoCaptureDeviceNV");
-	wglQueryVideoCaptureDeviceNV = cast(typeof(wglQueryVideoCaptureDeviceNV))load("wglQueryVideoCaptureDeviceNV");
-	wglReleaseVideoCaptureDeviceNV = cast(typeof(wglReleaseVideoCaptureDeviceNV))load("wglReleaseVideoCaptureDeviceNV");
-	return;
-}
-void load_WGL_ARB_render_texture(Loader load) {
-	wglBindTexImageARB = cast(typeof(wglBindTexImageARB))load("wglBindTexImageARB");
-	wglReleaseTexImageARB = cast(typeof(wglReleaseTexImageARB))load("wglReleaseTexImageARB");
-	wglSetPbufferAttribARB = cast(typeof(wglSetPbufferAttribARB))load("wglSetPbufferAttribARB");
-	return;
-}
 void load_WGL_ARB_pixel_format(Loader load) {
 	wglGetPixelFormatAttribivARB = cast(typeof(wglGetPixelFormatAttribivARB))load("wglGetPixelFormatAttribivARB");
 	wglGetPixelFormatAttribfvARB = cast(typeof(wglGetPixelFormatAttribfvARB))load("wglGetPixelFormatAttribfvARB");
@@ -223,15 +218,9 @@ void load_WGL_I3D_genlock(Loader load) {
 	wglQueryGenlockMaxSourceDelayI3D = cast(typeof(wglQueryGenlockMaxSourceDelayI3D))load("wglQueryGenlockMaxSourceDelayI3D");
 	return;
 }
-void load_WGL_NV_DX_interop(Loader load) {
-	wglDXSetResourceShareHandleNV = cast(typeof(wglDXSetResourceShareHandleNV))load("wglDXSetResourceShareHandleNV");
-	wglDXOpenDeviceNV = cast(typeof(wglDXOpenDeviceNV))load("wglDXOpenDeviceNV");
-	wglDXCloseDeviceNV = cast(typeof(wglDXCloseDeviceNV))load("wglDXCloseDeviceNV");
-	wglDXRegisterObjectNV = cast(typeof(wglDXRegisterObjectNV))load("wglDXRegisterObjectNV");
-	wglDXUnregisterObjectNV = cast(typeof(wglDXUnregisterObjectNV))load("wglDXUnregisterObjectNV");
-	wglDXObjectAccessNV = cast(typeof(wglDXObjectAccessNV))load("wglDXObjectAccessNV");
-	wglDXLockObjectsNV = cast(typeof(wglDXLockObjectsNV))load("wglDXLockObjectsNV");
-	wglDXUnlockObjectsNV = cast(typeof(wglDXUnlockObjectsNV))load("wglDXUnlockObjectsNV");
+void load_WGL_NV_vertex_array_range(Loader load) {
+	wglAllocateMemoryNV = cast(typeof(wglAllocateMemoryNV))load("wglAllocateMemoryNV");
+	wglFreeMemoryNV = cast(typeof(wglFreeMemoryNV))load("wglFreeMemoryNV");
 	return;
 }
 void load_WGL_3DL_stereo_control(Loader load) {
@@ -279,9 +268,19 @@ void load_WGL_NV_present_video(Loader load) {
 	wglQueryCurrentContextNV = cast(typeof(wglQueryCurrentContextNV))load("wglQueryCurrentContextNV");
 	return;
 }
+void load_WGL_ARB_render_texture(Loader load) {
+	wglBindTexImageARB = cast(typeof(wglBindTexImageARB))load("wglBindTexImageARB");
+	wglReleaseTexImageARB = cast(typeof(wglReleaseTexImageARB))load("wglReleaseTexImageARB");
+	wglSetPbufferAttribARB = cast(typeof(wglSetPbufferAttribARB))load("wglSetPbufferAttribARB");
+	return;
+}
 void load_WGL_ARB_make_current_read(Loader load) {
 	wglMakeContextCurrentARB = cast(typeof(wglMakeContextCurrentARB))load("wglMakeContextCurrentARB");
 	wglGetCurrentReadDCARB = cast(typeof(wglGetCurrentReadDCARB))load("wglGetCurrentReadDCARB");
+	return;
+}
+void load_WGL_ARB_create_context(Loader load) {
+	wglCreateContextAttribsARB = cast(typeof(wglCreateContextAttribsARB))load("wglCreateContextAttribsARB");
 	return;
 }
 void load_WGL_EXT_extensions_string(Loader load) {
@@ -306,9 +305,15 @@ void load_WGL_ARB_pbuffer(Loader load) {
 	wglQueryPbufferARB = cast(typeof(wglQueryPbufferARB))load("wglQueryPbufferARB");
 	return;
 }
-void load_WGL_NV_vertex_array_range(Loader load) {
-	wglAllocateMemoryNV = cast(typeof(wglAllocateMemoryNV))load("wglAllocateMemoryNV");
-	wglFreeMemoryNV = cast(typeof(wglFreeMemoryNV))load("wglFreeMemoryNV");
+void load_WGL_NV_DX_interop(Loader load) {
+	wglDXSetResourceShareHandleNV = cast(typeof(wglDXSetResourceShareHandleNV))load("wglDXSetResourceShareHandleNV");
+	wglDXOpenDeviceNV = cast(typeof(wglDXOpenDeviceNV))load("wglDXOpenDeviceNV");
+	wglDXCloseDeviceNV = cast(typeof(wglDXCloseDeviceNV))load("wglDXCloseDeviceNV");
+	wglDXRegisterObjectNV = cast(typeof(wglDXRegisterObjectNV))load("wglDXRegisterObjectNV");
+	wglDXUnregisterObjectNV = cast(typeof(wglDXUnregisterObjectNV))load("wglDXUnregisterObjectNV");
+	wglDXObjectAccessNV = cast(typeof(wglDXObjectAccessNV))load("wglDXObjectAccessNV");
+	wglDXLockObjectsNV = cast(typeof(wglDXLockObjectsNV))load("wglDXLockObjectsNV");
+	wglDXUnlockObjectsNV = cast(typeof(wglDXUnlockObjectsNV))load("wglDXUnlockObjectsNV");
 	return;
 }
 void load_WGL_AMD_gpu_association(Loader load) {

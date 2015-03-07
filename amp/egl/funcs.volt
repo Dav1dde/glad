@@ -37,4 +37,14 @@ EGLSurface eglCreatePbufferFromClientBuffer(EGLDisplay, EGLenum, EGLClientBuffer
 EGLBoolean eglReleaseThread();
 EGLBoolean eglWaitClient();
 EGLContext eglGetCurrentContext();
+EGLSync eglCreateSync(EGLDisplay, EGLenum, const(EGLAttrib)*);
+EGLBoolean eglDestroySync(EGLDisplay, EGLSync);
+EGLint eglClientWaitSync(EGLDisplay, EGLSync, EGLint, EGLTime);
+EGLBoolean eglGetSyncAttrib(EGLDisplay, EGLSync, EGLint, EGLAttrib*);
+EGLImage eglCreateImage(EGLDisplay, EGLContext, EGLenum, EGLClientBuffer, const(EGLAttrib)*);
+EGLBoolean eglDestroyImage(EGLDisplay, EGLImage);
+EGLDisplay eglGetPlatformDisplay(EGLenum, void*, const(EGLAttrib)*);
+EGLSurface eglCreatePlatformWindowSurface(EGLDisplay, EGLConfig, void*, const(EGLAttrib)*);
+EGLSurface eglCreatePlatformPixmapSurface(EGLDisplay, EGLConfig, void*, const(EGLAttrib)*);
+EGLBoolean eglWaitSync(EGLDisplay, EGLSync, EGLint);
 }
