@@ -7,11 +7,15 @@ from collections import defaultdict, OrderedDict
 from contextlib import closing
 from itertools import chain
 import sys
+import re
 
 if sys.version_info >= (3, 0):
     from urllib.request import urlopen
 else:
     from urllib2 import urlopen
+
+
+_ARRAY_RE = re.compile(r'\[\d+\]')
 
 
 class Spec(object):
@@ -199,7 +203,10 @@ class OGLType(object):
         self.type = (text.replace('const', '').replace('unsigned', '')
                      .replace('struct', '').strip().split(None, 1)[0]
                 if element.find('ptype') is None else element.find('ptype').text)
+        # 0 if no pointer, 1 if *, 2 if **
         self.is_pointer = 0 if text is None else text.count('*')
+        # it can be a pointer to an array, or just an array
+        self.is_pointer = self.is_pointer + len(_ARRAY_RE.findall(text))
         self.is_const = False if text is None else 'const' in text
         self.is_unsigned = False if text is None else 'unsigned' in text
 
@@ -235,9 +242,10 @@ class Extension(object):
 
         self.require = []
         for required in chain.from_iterable(element.findall('require')):
-            if required.tag == 'type': continue
+            if required.tag == 'type':
+                continue
 
-            data = { 'enum' : spec.enums, 'command' : spec.commands }[required.tag]
+            data = {'enum': spec.enums, 'command': spec.commands}[required.tag]
             try:
                 self.require.append(data[required.attrib['name']])
             except KeyError:
@@ -271,9 +279,10 @@ class Feature(Extension):
         # not every spec has a ._remove member, but there shouldn't be a remove
         # tag without that member, if there is, blame me!
         for removed in chain.from_iterable(element.findall('remove')):
-            if removed.tag == 'type': continue
+            if removed.tag == 'type':
+                continue
 
-            data = {'enum' : spec.enums, 'command' : spec.commands}[removed.tag]
+            data = {'enum': spec.enums, 'command': spec.commands}[removed.tag]
             try:
                 spec._remove.add(data[removed.attrib['name']])
             except KeyError:
