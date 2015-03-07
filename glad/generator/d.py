@@ -18,20 +18,26 @@ def _gl_types(gen, f):
     gen.write_opaque_struct(f, '_cl_context')
     gen.write_opaque_struct(f, '_cl_event')
     gen.write_extern(f)
-    gen.write_alias(f, 'GLDEBUGPROC', 'void function(GLenum, GLenum, '
-        'GLuint, GLenum, GLsizei, in GLchar*, GLvoid*)')
+    gen.write_alias(
+        f,
+        'GLDEBUGPROC', 'void function(GLenum, GLenum, '
+        'GLuint, GLenum, GLsizei, in GLchar*, GLvoid*)'
+    )
     gen.write_alias(f, 'GLDEBUGPROCARB', 'GLDEBUGPROC')
     gen.write_alias(f, 'GLDEBUGPROCKHR', 'GLDEBUGPROC')
-    gen.write_alias(f, 'GLDEBUGPROCAMD', 'void function(GLuint, GLenum, '
-        'GLenum, GLsizei, in GLchar*, GLvoid*)')
+    gen.write_alias(
+        f,
+        'GLDEBUGPROCAMD', 'void function(GLuint, GLenum, '
+        'GLenum, GLsizei, in GLchar*, GLvoid*)'
+    )
     gen.write_extern_end(f)
+
 
 def _egl_types(gen, f):
     io = StringIO()
     gen.write_opaque_struct(io, 'egl_native_pixmap_t')
 
-    f.write(
-'''
+    f.write('''
 // Thanks to @jpf91 (github) for these declarations
 version(Windows) {
     import std.c.windows.windows;
@@ -80,9 +86,9 @@ struct EGLClientPixmapHI {
     gen.write_opaque_struct(f, '_cl_event')
     gen.write_extern_end(f)
 
+
 def _glx_types(gen, f):
-    f.write(
-'''
+    f.write('''
 version(Xlib) {
     import X11.Xlib;
     import X11.Xutil;
@@ -240,8 +246,7 @@ extern(System) {
 
 
 def _wgl_types(gen, f):
-    f.write(
-'''
+    f.write('''
 version(Windows) {
     public import core.sys.windows.windows;
 } else {
@@ -365,90 +370,102 @@ extern(System) {
     gen.write_opaque_struct(f, 'HVIDEOINPUTDEVICENV')
 
 
-
 DTYPES = {
     '__pre': {
         'egl': 'import core.stdc.stdint : intptr_t;\n\n'
     },
 
-    '__other' : {
-        'gl' : _gl_types,
-        'egl' : _egl_types,
-        'glx' : _glx_types,
-        'wgl' : _wgl_types
+    '__other': {
+        'gl': _gl_types,
+        'egl': _egl_types,
+        'glx': _glx_types,
+        'wgl': _wgl_types
     },
 
-    'gl' : { 'GLenum' : 'uint', 'GLvoid' : 'void', 'GLboolean' : 'ubyte',
-             'GLbitfield' : 'uint', 'GLchar' : 'char', 'GLbyte' : 'byte',
-             'GLshort' : 'short', 'GLint' : 'int', 'GLclampx' : 'int',
-             'GLsizei' : 'int', 'GLubyte' : 'ubyte', 'GLushort' : 'ushort',
-             'GLuint' : 'uint', 'GLhalf' : 'ushort', 'GLfloat' : 'float',
-             'GLclampf' : 'float', 'GLdouble' : 'double', 'GLclampd' : 'double',
-             'GLfixed' : 'int', 'GLintptr' : 'ptrdiff_t', 'GLsizeiptr' : 'ptrdiff_t',
-             'GLintptrARB' : 'ptrdiff_t', 'GLsizeiptrARB' : 'ptrdiff_t',
-             'GLcharARB' : 'byte', 'GLhandleARB' : 'uint', 'GLhalfARB' : 'ushort',
-             'GLhalfNV' : 'ushort', 'GLint64EXT' : 'long', 'GLuint64EXT' : 'ulong',
-             'GLint64' : 'long', 'GLuint64' : 'ulong', 'GLvdpauSurfaceNV' : 'ptrdiff_t',
-             'GLeglImageOES' : 'void*'
+    'gl': {
+        'GLenum': 'uint', 'GLvoid': 'void', 'GLboolean': 'ubyte',
+        'GLbitfield': 'uint', 'GLchar': 'char', 'GLbyte': 'byte',
+        'GLshort': 'short', 'GLint': 'int', 'GLclampx': 'int',
+        'GLsizei': 'int', 'GLubyte': 'ubyte', 'GLushort': 'ushort',
+        'GLuint': 'uint', 'GLhalf': 'ushort', 'GLfloat': 'float',
+        'GLclampf': 'float', 'GLdouble': 'double', 'GLclampd': 'double',
+        'GLfixed': 'int', 'GLintptr': 'ptrdiff_t', 'GLsizeiptr': 'ptrdiff_t',
+        'GLintptrARB': 'ptrdiff_t', 'GLsizeiptrARB': 'ptrdiff_t',
+        'GLcharARB': 'byte', 'GLhandleARB': 'uint', 'GLhalfARB': 'ushort',
+        'GLhalfNV': 'ushort', 'GLint64EXT': 'long', 'GLuint64EXT': 'ulong',
+        'GLint64': 'long', 'GLuint64': 'ulong',
+        'GLvdpauSurfaceNV': 'ptrdiff_t', 'GLeglImageOES': 'void*'
     },
-    'egl' : { 'EGLBoolean' : 'uint', 'EGLenum' : 'uint', 'EGLAttribKHR': 'intptr_t',
-              'EGLAttrib': 'intptr_t', 'EGLClientBuffer' : 'void*', 'EGLConfig' : 'void*',
-              'EGLContext' : 'void*', 'EGLDeviceEXT': 'void*', 'EGLDisplay' : 'void*',
-              'EGLImage': 'void*', 'EGLImageKHR' : 'void*', 'EGLOutputLayerEXT': 'void*',
-              'EGLOutputPortEXT': 'void*', 'EGLStreamKHR' : 'void*', 'EGLSurface' : 'void*',
-              'EGLSync': 'void*', 'EGLSyncKHR' : 'void*', 'EGLSyncNV' : 'void*',
-              '__eglMustCastToProperFunctionPointerType' : 'void function()',
-              'EGLint' : 'int', 'EGLTimeKHR' : 'ulong', 'EGLTime' : 'ulong',
-              'EGLTimeNV' : 'ulong', 'EGLuint64NV' : 'ulong',
-              'EGLuint64KHR' : 'ulong',
-              'EGLsizeiANDROID' : 'ptrdiff_t', 'EGLNativeFileDescriptorKHR' : 'int'
+    'egl': {
+        'EGLBoolean': 'uint', 'EGLenum': 'uint', 'EGLAttribKHR': 'intptr_t',
+        'EGLAttrib': 'intptr_t', 'EGLClientBuffer': 'void*', 'EGLConfig': 'void*',
+        'EGLContext': 'void*', 'EGLDeviceEXT': 'void*', 'EGLDisplay': 'void*',
+        'EGLImage': 'void*', 'EGLImageKHR': 'void*', 'EGLOutputLayerEXT': 'void*',
+        'EGLOutputPortEXT': 'void*', 'EGLStreamKHR': 'void*', 'EGLSurface': 'void*',
+        'EGLSync': 'void*', 'EGLSyncKHR': 'void*', 'EGLSyncNV': 'void*',
+        '__eglMustCastToProperFunctionPointerType': 'void function()',
+        'EGLint': 'int', 'EGLTimeKHR': 'ulong', 'EGLTime': 'ulong',
+        'EGLTimeNV': 'ulong', 'EGLuint64NV': 'ulong',
+        'EGLuint64KHR': 'ulong',
+        'EGLsizeiANDROID': 'ptrdiff_t', 'EGLNativeFileDescriptorKHR': 'int'
     },
-    'glx' : { 'GLboolean' : 'ubyte', 'GLenum' : 'uint', 'GLint' : 'int',
-              'GLsizei' : 'int', 'GLubyte' : 'ubyte', 'GLuint' : 'uint',
-              'GLfloat': 'float', 'GLbitfield': 'uint', 'GLintptr': 'ptrdiff_t',
-              'GLsizeiptr': 'ptrdiff_t'
+    'glx': {
+        'GLboolean': 'ubyte', 'GLenum': 'uint', 'GLint': 'int',
+        'GLsizei': 'int', 'GLubyte': 'ubyte', 'GLuint': 'uint',
+        'GLfloat': 'float', 'GLbitfield': 'uint', 'GLintptr': 'ptrdiff_t',
+        'GLsizeiptr': 'ptrdiff_t'
 
     },
-    'wgl' : { 'GLbitfield' : 'uint', 'GLenum' : 'uint', 'GLfloat' : 'float',
-              'GLint' : 'int', 'GLsizei' : 'int', 'GLuint' : 'uint',
-              'GLushort' : 'ushort', 'INT32' : 'int', 'INT64' : 'long',
-              'GLboolean' : 'ubyte'
+    'wgl': {
+        'GLbitfield': 'uint', 'GLenum': 'uint', 'GLfloat': 'float',
+        'GLint': 'int', 'GLsizei': 'int', 'GLuint': 'uint',
+        'GLushort': 'ushort', 'INT32': 'int', 'INT64': 'long',
+        'GLboolean': 'ubyte'
     },
 
-    'SpecialNumbers' : {
-        'gl' : [('GL_FALSE', '0', 'ubyte'), ('GL_TRUE', '1', 'ubyte'),
-                ('GL_NO_ERROR', '0', 'uint'), ('GL_NONE', '0', 'uint'),
-                ('GL_ZERO', '0', 'uint'), ('GL_ONE', '1', 'uint'),
-                ('GL_INVALID_INDEX', '0xFFFFFFFF', 'uint'),
-                ('GL_TIMEOUT_IGNORED', '0xFFFFFFFFFFFFFFFF', 'ulong'),
-                ('GL_TIMEOUT_IGNORED_APPLE', '0xFFFFFFFFFFFFFFFF', 'ulong'),
-                ('GL_VERSION_ES_CL_1_0', '1', 'uint'), ('GL_VERSION_ES_CM_1_1', '1', 'uint'),
-                ('GL_VERSION_ES_CL_1_1', '1', 'uint')],
-        'egl' : [('EGL_DONT_CARE', '-1', 'int'), ('EGL_UNKNOWN', '-1', 'int'),
-                 ('EGL_NO_NATIVE_FENCE_FD_ANDROID', '-1', 'uint'),
-                 ('EGL_DEPTH_ENCODING_NONE_NV', '0', 'uint'),
-                 ('EGL_NO_CONTEXT', 'cast(EGLContext)0', 'EGLContext'),
-                 ('EGL_NO_DEVICE_EXT', 'cast(EGLDeviceEXT)0', 'EGLDeviceEXT'),
-                 ('EGL_NO_DISPLAY', 'cast(EGLDisplay)0', 'EGLDisplay'),
-                 ('EGL_NO_IMAGE', 'cast(EGLImage)0', 'EGLImage'),
-                 ('EGL_NO_IMAGE_KHR', 'cast(EGLImageKHR)0', 'EGLImageKHR'),
-                 ('EGL_DEFAULT_DISPLAY', 'cast(EGLNativeDisplayType)0', 'EGLNativeDisplayType'),
-                 ('EGL_NO_FILE_DESCRIPTOR_KHR', 'cast(EGLNativeFileDescriptorKHR)-1', 'EGLNativeFileDescriptorKHR'),
-                 ('EGL_NO_OUTPUT_LAYER_EXT', 'cast(EGLOutputLayerEXT)0', 'EGLOutputLayerEXT'),
-                 ('EGL_NO_OUTPUT_PORT_EXT', 'cast(EGLOutputPortEXT)0', 'EGLOutputPortEXT'),
-                 ('EGL_NO_STREAM_KHR', 'cast(EGLStreamKHR)0', 'EGLStreamKHR'),
-                 ('EGL_NO_SURFACE', 'cast(EGLSurface)0', 'EGLSurface'),
-                 ('EGL_NO_SYNC', 'cast(EGLSync)0', 'EGLSync'),
-                 ('EGL_NO_SYNC_KHR', 'cast(EGLSyncKHR)0', 'EGLSyncKHR'),
-                 ('EGL_NO_SYNC_NV', 'cast(EGLSyncNV)0', 'EGLSyncNV'),
-                 ('EGL_DISPLAY_SCALING', '10000', 'uint'),
-                 ('EGL_FOREVER', '0xFFFFFFFFFFFFFFFF', 'ulong'),
-                 ('EGL_FOREVER_KHR', '0xFFFFFFFFFFFFFFFF', 'ulong'),
-                 ('EGL_FOREVER_NV', '0xFFFFFFFFFFFFFFFF', 'ulong')],
-        'glx' : [('GLX_DONT_CARE', '0xFFFFFFFF', 'uint'),
-                 ('GLX_CONTEXT_RELEASE_BEHAVIOR_NONE_ARB', '0', 'uint')],
-        'wgl' : [('WGL_CONTEXT_RELEASE_BEHAVIOR_NONE_ARB', '0', 'uint'),
-                 ('WGL_FONT_LINES', '0', 'uint'), ('WGL_FONT_POLYGONS', 1, 'uint')]
+    'SpecialNumbers': {
+        'gl': [
+            ('GL_FALSE', '0', 'ubyte'), ('GL_TRUE', '1', 'ubyte'),
+            ('GL_NO_ERROR', '0', 'uint'), ('GL_NONE', '0', 'uint'),
+            ('GL_ZERO', '0', 'uint'), ('GL_ONE', '1', 'uint'),
+            ('GL_INVALID_INDEX', '0xFFFFFFFF', 'uint'),
+            ('GL_TIMEOUT_IGNORED', '0xFFFFFFFFFFFFFFFF', 'ulong'),
+            ('GL_TIMEOUT_IGNORED_APPLE', '0xFFFFFFFFFFFFFFFF', 'ulong'),
+            ('GL_VERSION_ES_CL_1_0', '1', 'uint'), ('GL_VERSION_ES_CM_1_1', '1', 'uint'),
+            ('GL_VERSION_ES_CL_1_1', '1', 'uint')
+        ],
+        'egl': [
+            ('EGL_DONT_CARE', '-1', 'int'), ('EGL_UNKNOWN', '-1', 'int'),
+            ('EGL_NO_NATIVE_FENCE_FD_ANDROID', '-1', 'uint'),
+            ('EGL_DEPTH_ENCODING_NONE_NV', '0', 'uint'),
+            ('EGL_NO_CONTEXT', 'cast(EGLContext)0', 'EGLContext'),
+            ('EGL_NO_DEVICE_EXT', 'cast(EGLDeviceEXT)0', 'EGLDeviceEXT'),
+            ('EGL_NO_DISPLAY', 'cast(EGLDisplay)0', 'EGLDisplay'),
+            ('EGL_NO_IMAGE', 'cast(EGLImage)0', 'EGLImage'),
+            ('EGL_NO_IMAGE_KHR', 'cast(EGLImageKHR)0', 'EGLImageKHR'),
+            ('EGL_DEFAULT_DISPLAY', 'cast(EGLNativeDisplayType)0', 'EGLNativeDisplayType'),
+            ('EGL_NO_FILE_DESCRIPTOR_KHR', 'cast(EGLNativeFileDescriptorKHR)-1', 'EGLNativeFileDescriptorKHR'),
+            ('EGL_NO_OUTPUT_LAYER_EXT', 'cast(EGLOutputLayerEXT)0', 'EGLOutputLayerEXT'),
+            ('EGL_NO_OUTPUT_PORT_EXT', 'cast(EGLOutputPortEXT)0', 'EGLOutputPortEXT'),
+            ('EGL_NO_STREAM_KHR', 'cast(EGLStreamKHR)0', 'EGLStreamKHR'),
+            ('EGL_NO_SURFACE', 'cast(EGLSurface)0', 'EGLSurface'),
+            ('EGL_NO_SYNC', 'cast(EGLSync)0', 'EGLSync'),
+            ('EGL_NO_SYNC_KHR', 'cast(EGLSyncKHR)0', 'EGLSyncKHR'),
+            ('EGL_NO_SYNC_NV', 'cast(EGLSyncNV)0', 'EGLSyncNV'),
+            ('EGL_DISPLAY_SCALING', '10000', 'uint'),
+            ('EGL_FOREVER', '0xFFFFFFFFFFFFFFFF', 'ulong'),
+            ('EGL_FOREVER_KHR', '0xFFFFFFFFFFFFFFFF', 'ulong'),
+            ('EGL_FOREVER_NV', '0xFFFFFFFFFFFFFFFF', 'ulong')
+        ],
+        'glx': [
+            ('GLX_DONT_CARE', '0xFFFFFFFF', 'uint'),
+            ('GLX_CONTEXT_RELEASE_BEHAVIOR_NONE_ARB', '0', 'uint')
+        ],
+        'wgl': [
+            ('WGL_CONTEXT_RELEASE_BEHAVIOR_NONE_ARB', '0', 'uint'),
+            ('WGL_FONT_LINES', '0', 'uint'),
+            ('WGL_FONT_POLYGONS', 1, 'uint')
+        ]
     }
 }
 
@@ -479,7 +496,7 @@ class BaseDGenerator(Generator):
 
         rfeatures = features
         if self.spec.NAME in ('egl', 'wgl'):
-            features = {'egl' : [], 'wgl' : []}
+            features = {'egl': [], 'wgl': []}
 
         self.write_module(f, self.LOADER)
         self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES])

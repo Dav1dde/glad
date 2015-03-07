@@ -80,7 +80,7 @@ class Spec(object):
 
     @property
     def enums(self):
-        if not self._enums is None:
+        if self._enums is not None:
             return self._enums
 
         self._enums = dict()
@@ -104,7 +104,7 @@ class Spec(object):
 
     @property
     def features(self):
-        if not self._features is None:
+        if self._features is not None:
             return self._features
 
         self._features = defaultdict(OrderedDict)
@@ -116,7 +116,7 @@ class Spec(object):
 
     @property
     def extensions(self):
-        if not self._extensions is None:
+        if self._extensions is not None:
             return self._extensions
 
         self._extensions = defaultdict(dict)
@@ -130,7 +130,8 @@ class Spec(object):
 class Type(object):
     def __init__(self, element):
         apientry = element.find('apientry')
-        if apientry != None: apientry.text = 'APIENTRY'
+        if apientry is not None:
+            apientry.text = 'APIENTRY'
         self.raw = ''.join(element.itertext())
         self.api = element.get('api')
         self.name = element.get('name')
@@ -146,8 +147,8 @@ class Group(object):
 
 
 class Enum(object):
-    def __init__(self, name, value, namespace, type = None,
-                 group = None, vendor = None, comment = ''):
+    def __init__(self, name, value, namespace, type=None,
+                 group=None, vendor=None, comment=''):
         self.name = name
         self.value = value
         self.namespace = namespace
@@ -192,7 +193,6 @@ class Param(object):
         self.type = OGLType(element)
         self.name = element.find('name').text
 
-
     def __str__(self):
         return '{0!r} {1}'.format(self.type, self.name)
 
@@ -210,7 +210,7 @@ class OGLType(object):
         self.is_const = False if text is None else 'const' in text
         self.is_unsigned = False if text is None else 'unsigned' in text
 
-        if 'struct' in text and not 'struct' in self.type:
+        if 'struct' in text and 'struct' not in self.type:
             self.type = 'struct {}'.format(self.type)
 
     def to_d(self):
@@ -249,7 +249,7 @@ class Extension(object):
             try:
                 self.require.append(data[required.attrib['name']])
             except KeyError:
-                pass # TODO
+                pass  # TODO
 
     @property
     def enums(self):
@@ -286,7 +286,7 @@ class Feature(Extension):
             try:
                 spec._remove.add(data[removed.attrib['name']])
             except KeyError:
-                pass # TODO
+                pass  # TODO
 
         self.number = tuple(map(int, element.attrib['number'].split('.')))
         self.api = element.attrib['api']
@@ -297,12 +297,13 @@ class Feature(Extension):
     @property
     def enums(self):
         for enum in super(Feature, self).enums:
-            if not enum in getattr(self.spec, 'removed', []):
+            if enum not in getattr(self.spec, 'removed', []):
                 yield enum
+
     @property
     def functions(self):
         for func in super(Feature, self).functions:
-            if not func in getattr(self.spec, 'removed', []):
+            if func not in getattr(self.spec, 'removed', []):
                 yield func
 
     __repr__ = __str__
