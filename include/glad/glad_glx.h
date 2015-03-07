@@ -139,6 +139,16 @@ typedef union __GLXEvent {
 } GLXEvent;
 typedef struct {
     int type;
+    unsigned long serial;
+    Bool send_event;
+    Display *display;
+    int extension;
+    int evtype;
+    GLXDrawable window;
+    Bool stereo_tree;
+} GLXStereoNotifyEventEXT;
+typedef struct {
+    int type;
     unsigned long serial;   /* # of last request processed by server */
     Bool send_event; /* true if this came for SendEvent request */
     Display *display;       /* display the event was read from */
@@ -399,8 +409,7 @@ GLAPI PFNGLXGETPROCADDRESSPROC glad_glXGetProcAddress;
 #define GLX_SHARE_CONTEXT_EXT 0x800A
 #define GLX_VISUAL_ID_EXT 0x800B
 #define GLX_SCREEN_EXT 0x800C
-#define GLX_COVERAGE_SAMPLES_NV 100001
-#define GLX_COLOR_SAMPLES_NV 0x20B3
+#define GLX_DIGITAL_MEDIA_PBUFFER_SGIX 0x8024
 #define GLX_MULTISAMPLE_SUB_RECT_WIDTH_SGIS 0x8026
 #define GLX_MULTISAMPLE_SUB_RECT_HEIGHT_SGIS 0x8027
 #define GLX_PBUFFER_BIT_SGIX 0x00000004
@@ -428,6 +437,7 @@ GLAPI PFNGLXGETPROCADDRESSPROC glad_glXGetProcAddress;
 #define GLX_SAVED_SGIX 0x8021
 #define GLX_WINDOW_SGIX 0x8022
 #define GLX_PBUFFER_SGIX 0x8023
+#define GLX_LATE_SWAPS_TEAR_EXT 0x20F3
 #define GLX_RGBA_FLOAT_TYPE_ARB 0x20B9
 #define GLX_RGBA_FLOAT_BIT_ARB 0x00000004
 #define GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX 80
@@ -440,7 +450,8 @@ GLAPI PFNGLXGETPROCADDRESSPROC glad_glXGetProcAddress;
 #define GLX_HYPERPIPE_STEREO_SGIX 0x00000003
 #define GLX_HYPERPIPE_PIXEL_AVERAGE_SGIX 0x00000004
 #define GLX_HYPERPIPE_ID_SGIX 0x8030
-#define GLX_CONTEXT_RESET_ISOLATION_BIT_ARB 0x00000008
+#define GLX_3DFX_WINDOW_MODE_MESA 0x1
+#define GLX_3DFX_FULLSCREEN_MODE_MESA 0x2
 #define GLX_BUFFER_SWAP_COMPLETE_INTEL_MASK 0x04000000
 #define GLX_EXCHANGE_COMPLETE_INTEL 0x8180
 #define GLX_COPY_COMPLETE_INTEL 0x8181
@@ -448,7 +459,16 @@ GLAPI PFNGLXGETPROCADDRESSPROC glad_glXGetProcAddress;
 #define GLX_SYNC_FRAME_SGIX 0x00000000
 #define GLX_SYNC_SWAP_SGIX 0x00000001
 #define GLX_CONTEXT_ES2_PROFILE_BIT_EXT 0x00000004
+#define GLX_CONTEXT_RESET_ISOLATION_BIT_ARB 0x00000008
 #define GLX_FRAMEBUFFER_SRGB_CAPABLE_EXT 0x20B2
+#define GLX_CONTEXT_ROBUST_ACCESS_BIT_ARB 0x00000004
+#define GLX_LOSE_CONTEXT_ON_RESET_ARB 0x8252
+#define GLX_CONTEXT_RESET_NOTIFICATION_STRATEGY_ARB 0x8256
+#define GLX_NO_RESET_NOTIFICATION_ARB 0x8261
+#define GLX_SWAP_METHOD_OML 0x8060
+#define GLX_SWAP_EXCHANGE_OML 0x8061
+#define GLX_SWAP_COPY_OML 0x8062
+#define GLX_SWAP_UNDEFINED_OML 0x8063
 #define GLX_RGBA_UNSIGNED_FLOAT_TYPE_EXT 0x20B1
 #define GLX_RGBA_UNSIGNED_FLOAT_BIT_EXT 0x00000008
 #define GLX_BACK_BUFFER_AGE_EXT 0x20F4
@@ -470,10 +490,11 @@ GLAPI PFNGLXGETPROCADDRESSPROC glad_glXGetProcAddress;
 #define GLX_STATIC_GRAY_EXT 0x8007
 #define GLX_TRANSPARENT_RGB_EXT 0x8008
 #define GLX_TRANSPARENT_INDEX_EXT 0x8009
+#define GLX_DEVICE_ID_NV 0x20CD
+#define GLX_UNIQUE_ID_NV 0x20CE
+#define GLX_NUM_VIDEO_CAPTURE_SLOTS_NV 0x20CF
 #define GLX_SAMPLE_BUFFERS_SGIS 100000
 #define GLX_SAMPLES_SGIS 100001
-#define GLX_3DFX_WINDOW_MODE_MESA 0x1
-#define GLX_3DFX_FULLSCREEN_MODE_MESA 0x2
 #define GLX_TEXTURE_1D_BIT_EXT 0x00000001
 #define GLX_TEXTURE_2D_BIT_EXT 0x00000002
 #define GLX_TEXTURE_RECTANGLE_BIT_EXT 0x00000004
@@ -507,18 +528,47 @@ GLAPI PFNGLXGETPROCADDRESSPROC glad_glXGetProcAddress;
 #define GLX_AUX7_EXT 0x20E9
 #define GLX_AUX8_EXT 0x20EA
 #define GLX_AUX9_EXT 0x20EB
-#define GLX_DEVICE_ID_NV 0x20CD
-#define GLX_UNIQUE_ID_NV 0x20CE
-#define GLX_NUM_VIDEO_CAPTURE_SLOTS_NV 0x20CF
+#define GLX_VIDEO_OUT_COLOR_NV 0x20C3
+#define GLX_VIDEO_OUT_ALPHA_NV 0x20C4
+#define GLX_VIDEO_OUT_DEPTH_NV 0x20C5
+#define GLX_VIDEO_OUT_COLOR_AND_ALPHA_NV 0x20C6
+#define GLX_VIDEO_OUT_COLOR_AND_DEPTH_NV 0x20C7
+#define GLX_VIDEO_OUT_FRAME_NV 0x20C8
+#define GLX_VIDEO_OUT_FIELD_1_NV 0x20C9
+#define GLX_VIDEO_OUT_FIELD_2_NV 0x20CA
+#define GLX_VIDEO_OUT_STACKED_FIELDS_1_2_NV 0x20CB
+#define GLX_VIDEO_OUT_STACKED_FIELDS_2_1_NV 0x20CC
 #define GLX_SAMPLE_BUFFERS_ARB 100000
 #define GLX_SAMPLES_ARB 100001
 #define GLX_SWAP_INTERVAL_EXT 0x20F1
 #define GLX_MAX_SWAP_INTERVAL_EXT 0x20F2
+#define GLX_RENDERER_VENDOR_ID_MESA 0x8183
+#define GLX_RENDERER_DEVICE_ID_MESA 0x8184
+#define GLX_RENDERER_VERSION_MESA 0x8185
+#define GLX_RENDERER_ACCELERATED_MESA 0x8186
+#define GLX_RENDERER_VIDEO_MEMORY_MESA 0x8187
+#define GLX_RENDERER_UNIFIED_MEMORY_ARCHITECTURE_MESA 0x8188
+#define GLX_RENDERER_PREFERRED_PROFILE_MESA 0x8189
+#define GLX_RENDERER_OPENGL_CORE_PROFILE_VERSION_MESA 0x818A
+#define GLX_RENDERER_OPENGL_COMPATIBILITY_PROFILE_VERSION_MESA 0x818B
+#define GLX_RENDERER_OPENGL_ES_PROFILE_VERSION_MESA 0x818C
+#define GLX_RENDERER_OPENGL_ES2_PROFILE_VERSION_MESA 0x818D
+#define GLX_RENDERER_ID_MESA 0x818E
 #define GLX_CONTEXT_DEBUG_BIT_ARB 0x00000001
 #define GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x00000002
 #define GLX_CONTEXT_MAJOR_VERSION_ARB 0x2091
 #define GLX_CONTEXT_MINOR_VERSION_ARB 0x2092
 #define GLX_CONTEXT_FLAGS_ARB 0x2094
+#define GLX_CONTEXT_RELEASE_BEHAVIOR_ARB 0x2097
+#define GLX_CONTEXT_RELEASE_BEHAVIOR_NONE_ARB 0
+#define GLX_CONTEXT_RELEASE_BEHAVIOR_FLUSH_ARB 0x2098
+#define GLX_STEREO_TREE_EXT 0x20F5
+#define GLX_STEREO_NOTIFY_MASK_EXT 0x00000001
+#define GLX_STEREO_NOTIFY_EXT 0x00000000
+#define GLX_VISUAL_SELECT_GROUP_SGIX 0x8028
+#define GLX_BLENDED_RGBA_SGIS 0x8025
+#define GLX_COVERAGE_SAMPLES_NV 100001
+#define GLX_COLOR_SAMPLES_NV 0x20B3
 #define GLX_CONTEXT_ES_PROFILE_BIT_EXT 0x00000004
 #define GLX_WINDOW_BIT_SGIX 0x00000001
 #define GLX_PIXMAP_BIT_SGIX 0x00000002
@@ -530,32 +580,10 @@ GLAPI PFNGLXGETPROCADDRESSPROC glad_glXGetProcAddress;
 #define GLX_FBCONFIG_ID_SGIX 0x8013
 #define GLX_RGBA_TYPE_SGIX 0x8014
 #define GLX_COLOR_INDEX_TYPE_SGIX 0x8015
-#define GLX_VISUAL_SELECT_GROUP_SGIX 0x8028
-#define GLX_VIDEO_OUT_COLOR_NV 0x20C3
-#define GLX_VIDEO_OUT_ALPHA_NV 0x20C4
-#define GLX_VIDEO_OUT_DEPTH_NV 0x20C5
-#define GLX_VIDEO_OUT_COLOR_AND_ALPHA_NV 0x20C6
-#define GLX_VIDEO_OUT_COLOR_AND_DEPTH_NV 0x20C7
-#define GLX_VIDEO_OUT_FRAME_NV 0x20C8
-#define GLX_VIDEO_OUT_FIELD_1_NV 0x20C9
-#define GLX_VIDEO_OUT_FIELD_2_NV 0x20CA
-#define GLX_VIDEO_OUT_STACKED_FIELDS_1_2_NV 0x20CB
-#define GLX_VIDEO_OUT_STACKED_FIELDS_2_1_NV 0x20CC
-#define GLX_BLENDED_RGBA_SGIS 0x8025
-#define GLX_DIGITAL_MEDIA_PBUFFER_SGIX 0x8024
-#define GLX_CONTEXT_ROBUST_ACCESS_BIT_ARB 0x00000004
-#define GLX_LOSE_CONTEXT_ON_RESET_ARB 0x8252
-#define GLX_CONTEXT_RESET_NOTIFICATION_STRATEGY_ARB 0x8256
-#define GLX_NO_RESET_NOTIFICATION_ARB 0x8261
-#define GLX_LATE_SWAPS_TEAR_EXT 0x20F3
+#define GLX_FLOAT_COMPONENTS_NV 0x20B0
 #define GLX_VISUAL_CAVEAT_EXT 0x20
 #define GLX_SLOW_VISUAL_EXT 0x8001
 #define GLX_NON_CONFORMANT_VISUAL_EXT 0x800D
-#define GLX_FLOAT_COMPONENTS_NV 0x20B0
-#define GLX_SWAP_METHOD_OML 0x8060
-#define GLX_SWAP_EXCHANGE_OML 0x8061
-#define GLX_SWAP_COPY_OML 0x8062
-#define GLX_SWAP_UNDEFINED_OML 0x8063
 #define GLX_NUM_VIDEO_SLOTS_NV 0x20F0
 #define GLX_GPU_VENDOR_AMD 0x1F00
 #define GLX_GPU_RENDERER_STRING_AMD 0x1F01
@@ -594,9 +622,14 @@ typedef void (APIENTRYP PFNGLXFREECONTEXTEXTPROC)(Display*, GLXContext);
 GLAPI PFNGLXFREECONTEXTEXTPROC glad_glXFreeContextEXT;
 #define glXFreeContextEXT glad_glXFreeContextEXT
 #endif
-#ifndef GLX_NV_multisample_coverage
-#define GLX_NV_multisample_coverage 1
-GLAPI int GLAD_GLX_NV_multisample_coverage;
+#ifndef GLX_SGIX_dmbuffer
+#define GLX_SGIX_dmbuffer 1
+GLAPI int GLAD_GLX_SGIX_dmbuffer;
+#ifdef _DM_BUFFER_H_
+typedef Bool (APIENTRYP PFNGLXASSOCIATEDMPBUFFERSGIXPROC)(Display*, GLXPbufferSGIX, DMparams*, DMbuffer);
+GLAPI PFNGLXASSOCIATEDMPBUFFERSGIXPROC glad_glXAssociateDMPbufferSGIX;
+#define glXAssociateDMPbufferSGIX glad_glXAssociateDMPbufferSGIX
+#endif
 #endif
 #ifndef GLX_SGIS_shared_multisample
 #define GLX_SGIS_shared_multisample 1
@@ -621,27 +654,9 @@ typedef void (APIENTRYP PFNGLXGETSELECTEDEVENTSGIXPROC)(Display*, GLXDrawable, u
 GLAPI PFNGLXGETSELECTEDEVENTSGIXPROC glad_glXGetSelectedEventSGIX;
 #define glXGetSelectedEventSGIX glad_glXGetSelectedEventSGIX
 #endif
-#ifndef GLX_NV_swap_group
-#define GLX_NV_swap_group 1
-GLAPI int GLAD_GLX_NV_swap_group;
-typedef Bool (APIENTRYP PFNGLXJOINSWAPGROUPNVPROC)(Display*, GLXDrawable, GLuint);
-GLAPI PFNGLXJOINSWAPGROUPNVPROC glad_glXJoinSwapGroupNV;
-#define glXJoinSwapGroupNV glad_glXJoinSwapGroupNV
-typedef Bool (APIENTRYP PFNGLXBINDSWAPBARRIERNVPROC)(Display*, GLuint, GLuint);
-GLAPI PFNGLXBINDSWAPBARRIERNVPROC glad_glXBindSwapBarrierNV;
-#define glXBindSwapBarrierNV glad_glXBindSwapBarrierNV
-typedef Bool (APIENTRYP PFNGLXQUERYSWAPGROUPNVPROC)(Display*, GLXDrawable, GLuint*, GLuint*);
-GLAPI PFNGLXQUERYSWAPGROUPNVPROC glad_glXQuerySwapGroupNV;
-#define glXQuerySwapGroupNV glad_glXQuerySwapGroupNV
-typedef Bool (APIENTRYP PFNGLXQUERYMAXSWAPGROUPSNVPROC)(Display*, int, GLuint*, GLuint*);
-GLAPI PFNGLXQUERYMAXSWAPGROUPSNVPROC glad_glXQueryMaxSwapGroupsNV;
-#define glXQueryMaxSwapGroupsNV glad_glXQueryMaxSwapGroupsNV
-typedef Bool (APIENTRYP PFNGLXQUERYFRAMECOUNTNVPROC)(Display*, int, GLuint*);
-GLAPI PFNGLXQUERYFRAMECOUNTNVPROC glad_glXQueryFrameCountNV;
-#define glXQueryFrameCountNV glad_glXQueryFrameCountNV
-typedef Bool (APIENTRYP PFNGLXRESETFRAMECOUNTNVPROC)(Display*, int);
-GLAPI PFNGLXRESETFRAMECOUNTNVPROC glad_glXResetFrameCountNV;
-#define glXResetFrameCountNV glad_glXResetFrameCountNV
+#ifndef GLX_EXT_swap_control_tear
+#define GLX_EXT_swap_control_tear 1
+GLAPI int GLAD_GLX_EXT_swap_control_tear;
 #endif
 #ifndef GLX_ARB_fbconfig_float
 #define GLX_ARB_fbconfig_float 1
@@ -675,9 +690,12 @@ typedef int (APIENTRYP PFNGLXQUERYHYPERPIPEATTRIBSGIXPROC)(Display*, int, int, i
 GLAPI PFNGLXQUERYHYPERPIPEATTRIBSGIXPROC glad_glXQueryHyperpipeAttribSGIX;
 #define glXQueryHyperpipeAttribSGIX glad_glXQueryHyperpipeAttribSGIX
 #endif
-#ifndef GLX_ARB_robustness_share_group_isolation
-#define GLX_ARB_robustness_share_group_isolation 1
-GLAPI int GLAD_GLX_ARB_robustness_share_group_isolation;
+#ifndef GLX_MESA_set_3dfx_mode
+#define GLX_MESA_set_3dfx_mode 1
+GLAPI int GLAD_GLX_MESA_set_3dfx_mode;
+typedef Bool (APIENTRYP PFNGLXSET3DFXMODEMESAPROC)(int);
+GLAPI PFNGLXSET3DFXMODEMESAPROC glad_glXSet3DfxModeMESA;
+#define glXSet3DfxModeMESA glad_glXSet3DfxModeMESA
 #endif
 #ifndef GLX_INTEL_swap_event
 #define GLX_INTEL_swap_event 1
@@ -702,6 +720,13 @@ typedef int (APIENTRYP PFNGLXCHANNELRECTSYNCSGIXPROC)(Display*, int, int, GLenum
 GLAPI PFNGLXCHANNELRECTSYNCSGIXPROC glad_glXChannelRectSyncSGIX;
 #define glXChannelRectSyncSGIX glad_glXChannelRectSyncSGIX
 #endif
+#ifndef GLX_MESA_pixmap_colormap
+#define GLX_MESA_pixmap_colormap 1
+GLAPI int GLAD_GLX_MESA_pixmap_colormap;
+typedef GLXPixmap (APIENTRYP PFNGLXCREATEGLXPIXMAPMESAPROC)(Display*, XVisualInfo*, Pixmap, Colormap);
+GLAPI PFNGLXCREATEGLXPIXMAPMESAPROC glad_glXCreateGLXPixmapMESA;
+#define glXCreateGLXPixmapMESA glad_glXCreateGLXPixmapMESA
+#endif
 #ifndef GLX_EXT_create_context_es2_profile
 #define GLX_EXT_create_context_es2_profile 1
 GLAPI int GLAD_GLX_EXT_create_context_es2_profile;
@@ -716,6 +741,28 @@ GLAPI int GLAD_GLX_NV_copy_image;
 typedef void (APIENTRYP PFNGLXCOPYIMAGESUBDATANVPROC)(Display*, GLXContext, GLuint, GLenum, GLint, GLint, GLint, GLint, GLXContext, GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei);
 GLAPI PFNGLXCOPYIMAGESUBDATANVPROC glad_glXCopyImageSubDataNV;
 #define glXCopyImageSubDataNV glad_glXCopyImageSubDataNV
+#endif
+#ifndef GLX_NV_swap_group
+#define GLX_NV_swap_group 1
+GLAPI int GLAD_GLX_NV_swap_group;
+typedef Bool (APIENTRYP PFNGLXJOINSWAPGROUPNVPROC)(Display*, GLXDrawable, GLuint);
+GLAPI PFNGLXJOINSWAPGROUPNVPROC glad_glXJoinSwapGroupNV;
+#define glXJoinSwapGroupNV glad_glXJoinSwapGroupNV
+typedef Bool (APIENTRYP PFNGLXBINDSWAPBARRIERNVPROC)(Display*, GLuint, GLuint);
+GLAPI PFNGLXBINDSWAPBARRIERNVPROC glad_glXBindSwapBarrierNV;
+#define glXBindSwapBarrierNV glad_glXBindSwapBarrierNV
+typedef Bool (APIENTRYP PFNGLXQUERYSWAPGROUPNVPROC)(Display*, GLXDrawable, GLuint*, GLuint*);
+GLAPI PFNGLXQUERYSWAPGROUPNVPROC glad_glXQuerySwapGroupNV;
+#define glXQuerySwapGroupNV glad_glXQuerySwapGroupNV
+typedef Bool (APIENTRYP PFNGLXQUERYMAXSWAPGROUPSNVPROC)(Display*, int, GLuint*, GLuint*);
+GLAPI PFNGLXQUERYMAXSWAPGROUPSNVPROC glad_glXQueryMaxSwapGroupsNV;
+#define glXQueryMaxSwapGroupsNV glad_glXQueryMaxSwapGroupsNV
+typedef Bool (APIENTRYP PFNGLXQUERYFRAMECOUNTNVPROC)(Display*, int, GLuint*);
+GLAPI PFNGLXQUERYFRAMECOUNTNVPROC glad_glXQueryFrameCountNV;
+#define glXQueryFrameCountNV glad_glXQueryFrameCountNV
+typedef Bool (APIENTRYP PFNGLXRESETFRAMECOUNTNVPROC)(Display*, int);
+GLAPI PFNGLXRESETFRAMECOUNTNVPROC glad_glXResetFrameCountNV;
+#define glXResetFrameCountNV glad_glXResetFrameCountNV
 #endif
 #ifndef GLX_OML_sync_control
 #define GLX_OML_sync_control 1
@@ -740,22 +787,13 @@ GLAPI PFNGLXWAITFORSBCOMLPROC glad_glXWaitForSbcOML;
 #define GLX_EXT_framebuffer_sRGB 1
 GLAPI int GLAD_GLX_EXT_framebuffer_sRGB;
 #endif
-#ifndef GLX_SGI_make_current_read
-#define GLX_SGI_make_current_read 1
-GLAPI int GLAD_GLX_SGI_make_current_read;
-typedef Bool (APIENTRYP PFNGLXMAKECURRENTREADSGIPROC)(Display*, GLXDrawable, GLXDrawable, GLXContext);
-GLAPI PFNGLXMAKECURRENTREADSGIPROC glad_glXMakeCurrentReadSGI;
-#define glXMakeCurrentReadSGI glad_glXMakeCurrentReadSGI
-typedef GLXDrawable (APIENTRYP PFNGLXGETCURRENTREADDRAWABLESGIPROC)();
-GLAPI PFNGLXGETCURRENTREADDRAWABLESGIPROC glad_glXGetCurrentReadDrawableSGI;
-#define glXGetCurrentReadDrawableSGI glad_glXGetCurrentReadDrawableSGI
+#ifndef GLX_ARB_create_context_robustness
+#define GLX_ARB_create_context_robustness 1
+GLAPI int GLAD_GLX_ARB_create_context_robustness;
 #endif
-#ifndef GLX_SGI_swap_control
-#define GLX_SGI_swap_control 1
-GLAPI int GLAD_GLX_SGI_swap_control;
-typedef int (APIENTRYP PFNGLXSWAPINTERVALSGIPROC)(int);
-GLAPI PFNGLXSWAPINTERVALSGIPROC glad_glXSwapIntervalSGI;
-#define glXSwapIntervalSGI glad_glXSwapIntervalSGI
+#ifndef GLX_OML_swap_method
+#define GLX_OML_swap_method 1
+GLAPI int GLAD_GLX_OML_swap_method;
 #endif
 #ifndef GLX_EXT_fbconfig_packed_float
 #define GLX_EXT_fbconfig_packed_float 1
@@ -783,34 +821,6 @@ typedef int (APIENTRYP PFNGLXWAITVIDEOSYNCSGIPROC)(int, int, unsigned int*);
 GLAPI PFNGLXWAITVIDEOSYNCSGIPROC glad_glXWaitVideoSyncSGI;
 #define glXWaitVideoSyncSGI glad_glXWaitVideoSyncSGI
 #endif
-#ifndef GLX_MESA_agp_offset
-#define GLX_MESA_agp_offset 1
-GLAPI int GLAD_GLX_MESA_agp_offset;
-typedef unsigned int (APIENTRYP PFNGLXGETAGPOFFSETMESAPROC)(const void*);
-GLAPI PFNGLXGETAGPOFFSETMESAPROC glad_glXGetAGPOffsetMESA;
-#define glXGetAGPOffsetMESA glad_glXGetAGPOffsetMESA
-#endif
-#ifndef GLX_SGIS_multisample
-#define GLX_SGIS_multisample 1
-GLAPI int GLAD_GLX_SGIS_multisample;
-#endif
-#ifndef GLX_MESA_set_3dfx_mode
-#define GLX_MESA_set_3dfx_mode 1
-GLAPI int GLAD_GLX_MESA_set_3dfx_mode;
-typedef Bool (APIENTRYP PFNGLXSET3DFXMODEMESAPROC)(int);
-GLAPI PFNGLXSET3DFXMODEMESAPROC glad_glXSet3DfxModeMESA;
-#define glXSet3DfxModeMESA glad_glXSet3DfxModeMESA
-#endif
-#ifndef GLX_EXT_texture_from_pixmap
-#define GLX_EXT_texture_from_pixmap 1
-GLAPI int GLAD_GLX_EXT_texture_from_pixmap;
-typedef void (APIENTRYP PFNGLXBINDTEXIMAGEEXTPROC)(Display*, GLXDrawable, int, const int*);
-GLAPI PFNGLXBINDTEXIMAGEEXTPROC glad_glXBindTexImageEXT;
-#define glXBindTexImageEXT glad_glXBindTexImageEXT
-typedef void (APIENTRYP PFNGLXRELEASETEXIMAGEEXTPROC)(Display*, GLXDrawable, int);
-GLAPI PFNGLXRELEASETEXIMAGEEXTPROC glad_glXReleaseTexImageEXT;
-#define glXReleaseTexImageEXT glad_glXReleaseTexImageEXT
-#endif
 #ifndef GLX_NV_video_capture
 #define GLX_NV_video_capture 1
 GLAPI int GLAD_GLX_NV_video_capture;
@@ -830,9 +840,62 @@ typedef void (APIENTRYP PFNGLXRELEASEVIDEOCAPTUREDEVICENVPROC)(Display*, GLXVide
 GLAPI PFNGLXRELEASEVIDEOCAPTUREDEVICENVPROC glad_glXReleaseVideoCaptureDeviceNV;
 #define glXReleaseVideoCaptureDeviceNV glad_glXReleaseVideoCaptureDeviceNV
 #endif
+#ifndef GLX_SGIS_multisample
+#define GLX_SGIS_multisample 1
+GLAPI int GLAD_GLX_SGIS_multisample;
+#endif
+#ifndef GLX_EXT_texture_from_pixmap
+#define GLX_EXT_texture_from_pixmap 1
+GLAPI int GLAD_GLX_EXT_texture_from_pixmap;
+typedef void (APIENTRYP PFNGLXBINDTEXIMAGEEXTPROC)(Display*, GLXDrawable, int, const int*);
+GLAPI PFNGLXBINDTEXIMAGEEXTPROC glad_glXBindTexImageEXT;
+#define glXBindTexImageEXT glad_glXBindTexImageEXT
+typedef void (APIENTRYP PFNGLXRELEASETEXIMAGEEXTPROC)(Display*, GLXDrawable, int);
+GLAPI PFNGLXRELEASETEXIMAGEEXTPROC glad_glXReleaseTexImageEXT;
+#define glXReleaseTexImageEXT glad_glXReleaseTexImageEXT
+#endif
+#ifndef GLX_NV_video_out
+#define GLX_NV_video_out 1
+GLAPI int GLAD_GLX_NV_video_out;
+typedef int (APIENTRYP PFNGLXGETVIDEODEVICENVPROC)(Display*, int, int, GLXVideoDeviceNV*);
+GLAPI PFNGLXGETVIDEODEVICENVPROC glad_glXGetVideoDeviceNV;
+#define glXGetVideoDeviceNV glad_glXGetVideoDeviceNV
+typedef int (APIENTRYP PFNGLXRELEASEVIDEODEVICENVPROC)(Display*, int, GLXVideoDeviceNV);
+GLAPI PFNGLXRELEASEVIDEODEVICENVPROC glad_glXReleaseVideoDeviceNV;
+#define glXReleaseVideoDeviceNV glad_glXReleaseVideoDeviceNV
+typedef int (APIENTRYP PFNGLXBINDVIDEOIMAGENVPROC)(Display*, GLXVideoDeviceNV, GLXPbuffer, int);
+GLAPI PFNGLXBINDVIDEOIMAGENVPROC glad_glXBindVideoImageNV;
+#define glXBindVideoImageNV glad_glXBindVideoImageNV
+typedef int (APIENTRYP PFNGLXRELEASEVIDEOIMAGENVPROC)(Display*, GLXPbuffer);
+GLAPI PFNGLXRELEASEVIDEOIMAGENVPROC glad_glXReleaseVideoImageNV;
+#define glXReleaseVideoImageNV glad_glXReleaseVideoImageNV
+typedef int (APIENTRYP PFNGLXSENDPBUFFERTOVIDEONVPROC)(Display*, GLXPbuffer, int, unsigned long*, GLboolean);
+GLAPI PFNGLXSENDPBUFFERTOVIDEONVPROC glad_glXSendPbufferToVideoNV;
+#define glXSendPbufferToVideoNV glad_glXSendPbufferToVideoNV
+typedef int (APIENTRYP PFNGLXGETVIDEOINFONVPROC)(Display*, int, GLXVideoDeviceNV, unsigned long*, unsigned long*);
+GLAPI PFNGLXGETVIDEOINFONVPROC glad_glXGetVideoInfoNV;
+#define glXGetVideoInfoNV glad_glXGetVideoInfoNV
+#endif
 #ifndef GLX_ARB_multisample
 #define GLX_ARB_multisample 1
 GLAPI int GLAD_GLX_ARB_multisample;
+#endif
+#ifndef GLX_NV_delay_before_swap
+#define GLX_NV_delay_before_swap 1
+GLAPI int GLAD_GLX_NV_delay_before_swap;
+typedef Bool (APIENTRYP PFNGLXDELAYBEFORESWAPNVPROC)(Display*, GLXDrawable, GLfloat);
+GLAPI PFNGLXDELAYBEFORESWAPNVPROC glad_glXDelayBeforeSwapNV;
+#define glXDelayBeforeSwapNV glad_glXDelayBeforeSwapNV
+#endif
+#ifndef GLX_SGI_make_current_read
+#define GLX_SGI_make_current_read 1
+GLAPI int GLAD_GLX_SGI_make_current_read;
+typedef Bool (APIENTRYP PFNGLXMAKECURRENTREADSGIPROC)(Display*, GLXDrawable, GLXDrawable, GLXContext);
+GLAPI PFNGLXMAKECURRENTREADSGIPROC glad_glXMakeCurrentReadSGI;
+#define glXMakeCurrentReadSGI glad_glXMakeCurrentReadSGI
+typedef GLXDrawable (APIENTRYP PFNGLXGETCURRENTREADDRAWABLESGIPROC)();
+GLAPI PFNGLXGETCURRENTREADDRAWABLESGIPROC glad_glXGetCurrentReadDrawableSGI;
+#define glXGetCurrentReadDrawableSGI glad_glXGetCurrentReadDrawableSGI
 #endif
 #ifndef GLX_SGIX_swap_group
 #define GLX_SGIX_swap_group 1
@@ -860,12 +923,59 @@ GLAPI PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC glad_glXDestroyGLXVideoSourceSGIX;
 #define glXDestroyGLXVideoSourceSGIX glad_glXDestroyGLXVideoSourceSGIX
 #endif
 #endif
+#ifndef GLX_MESA_query_renderer
+#define GLX_MESA_query_renderer 1
+GLAPI int GLAD_GLX_MESA_query_renderer;
+typedef Bool (APIENTRYP PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC)(int, unsigned int*);
+GLAPI PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC glad_glXQueryCurrentRendererIntegerMESA;
+#define glXQueryCurrentRendererIntegerMESA glad_glXQueryCurrentRendererIntegerMESA
+typedef const char* (APIENTRYP PFNGLXQUERYCURRENTRENDERERSTRINGMESAPROC)(int);
+GLAPI PFNGLXQUERYCURRENTRENDERERSTRINGMESAPROC glad_glXQueryCurrentRendererStringMESA;
+#define glXQueryCurrentRendererStringMESA glad_glXQueryCurrentRendererStringMESA
+typedef Bool (APIENTRYP PFNGLXQUERYRENDERERINTEGERMESAPROC)(Display*, int, int, int, unsigned int*);
+GLAPI PFNGLXQUERYRENDERERINTEGERMESAPROC glad_glXQueryRendererIntegerMESA;
+#define glXQueryRendererIntegerMESA glad_glXQueryRendererIntegerMESA
+typedef const char* (APIENTRYP PFNGLXQUERYRENDERERSTRINGMESAPROC)(Display*, int, int, int);
+GLAPI PFNGLXQUERYRENDERERSTRINGMESAPROC glad_glXQueryRendererStringMESA;
+#define glXQueryRendererStringMESA glad_glXQueryRendererStringMESA
+#endif
 #ifndef GLX_ARB_create_context
 #define GLX_ARB_create_context 1
 GLAPI int GLAD_GLX_ARB_create_context;
 typedef GLXContext (APIENTRYP PFNGLXCREATECONTEXTATTRIBSARBPROC)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
 GLAPI PFNGLXCREATECONTEXTATTRIBSARBPROC glad_glXCreateContextAttribsARB;
 #define glXCreateContextAttribsARB glad_glXCreateContextAttribsARB
+#endif
+#ifndef GLX_ARB_context_flush_control
+#define GLX_ARB_context_flush_control 1
+GLAPI int GLAD_GLX_ARB_context_flush_control;
+#endif
+#ifndef GLX_ARB_robustness_share_group_isolation
+#define GLX_ARB_robustness_share_group_isolation 1
+GLAPI int GLAD_GLX_ARB_robustness_share_group_isolation;
+#endif
+#ifndef GLX_EXT_stereo_tree
+#define GLX_EXT_stereo_tree 1
+GLAPI int GLAD_GLX_EXT_stereo_tree;
+#endif
+#ifndef GLX_SGI_swap_control
+#define GLX_SGI_swap_control 1
+GLAPI int GLAD_GLX_SGI_swap_control;
+typedef int (APIENTRYP PFNGLXSWAPINTERVALSGIPROC)(int);
+GLAPI PFNGLXSWAPINTERVALSGIPROC glad_glXSwapIntervalSGI;
+#define glXSwapIntervalSGI glad_glXSwapIntervalSGI
+#endif
+#ifndef GLX_SGIX_visual_select_group
+#define GLX_SGIX_visual_select_group 1
+GLAPI int GLAD_GLX_SGIX_visual_select_group;
+#endif
+#ifndef GLX_SGIS_blended_overlay
+#define GLX_SGIS_blended_overlay 1
+GLAPI int GLAD_GLX_SGIS_blended_overlay;
+#endif
+#ifndef GLX_NV_multisample_coverage
+#define GLX_NV_multisample_coverage 1
+GLAPI int GLAD_GLX_NV_multisample_coverage;
 #endif
 #ifndef GLX_EXT_create_context_es_profile
 #define GLX_EXT_create_context_es_profile 1
@@ -893,69 +1003,16 @@ typedef GLXFBConfigSGIX (APIENTRYP PFNGLXGETFBCONFIGFROMVISUALSGIXPROC)(Display*
 GLAPI PFNGLXGETFBCONFIGFROMVISUALSGIXPROC glad_glXGetFBConfigFromVisualSGIX;
 #define glXGetFBConfigFromVisualSGIX glad_glXGetFBConfigFromVisualSGIX
 #endif
-#ifndef GLX_MESA_pixmap_colormap
-#define GLX_MESA_pixmap_colormap 1
-GLAPI int GLAD_GLX_MESA_pixmap_colormap;
-typedef GLXPixmap (APIENTRYP PFNGLXCREATEGLXPIXMAPMESAPROC)(Display*, XVisualInfo*, Pixmap, Colormap);
-GLAPI PFNGLXCREATEGLXPIXMAPMESAPROC glad_glXCreateGLXPixmapMESA;
-#define glXCreateGLXPixmapMESA glad_glXCreateGLXPixmapMESA
+#ifndef GLX_NV_float_buffer
+#define GLX_NV_float_buffer 1
+GLAPI int GLAD_GLX_NV_float_buffer;
 #endif
-#ifndef GLX_SGIX_visual_select_group
-#define GLX_SGIX_visual_select_group 1
-GLAPI int GLAD_GLX_SGIX_visual_select_group;
-#endif
-#ifndef GLX_NV_video_output
-#define GLX_NV_video_output 1
-GLAPI int GLAD_GLX_NV_video_output;
-typedef int (APIENTRYP PFNGLXGETVIDEODEVICENVPROC)(Display*, int, int, GLXVideoDeviceNV*);
-GLAPI PFNGLXGETVIDEODEVICENVPROC glad_glXGetVideoDeviceNV;
-#define glXGetVideoDeviceNV glad_glXGetVideoDeviceNV
-typedef int (APIENTRYP PFNGLXRELEASEVIDEODEVICENVPROC)(Display*, int, GLXVideoDeviceNV);
-GLAPI PFNGLXRELEASEVIDEODEVICENVPROC glad_glXReleaseVideoDeviceNV;
-#define glXReleaseVideoDeviceNV glad_glXReleaseVideoDeviceNV
-typedef int (APIENTRYP PFNGLXBINDVIDEOIMAGENVPROC)(Display*, GLXVideoDeviceNV, GLXPbuffer, int);
-GLAPI PFNGLXBINDVIDEOIMAGENVPROC glad_glXBindVideoImageNV;
-#define glXBindVideoImageNV glad_glXBindVideoImageNV
-typedef int (APIENTRYP PFNGLXRELEASEVIDEOIMAGENVPROC)(Display*, GLXPbuffer);
-GLAPI PFNGLXRELEASEVIDEOIMAGENVPROC glad_glXReleaseVideoImageNV;
-#define glXReleaseVideoImageNV glad_glXReleaseVideoImageNV
-typedef int (APIENTRYP PFNGLXSENDPBUFFERTOVIDEONVPROC)(Display*, GLXPbuffer, int, unsigned long*, GLboolean);
-GLAPI PFNGLXSENDPBUFFERTOVIDEONVPROC glad_glXSendPbufferToVideoNV;
-#define glXSendPbufferToVideoNV glad_glXSendPbufferToVideoNV
-typedef int (APIENTRYP PFNGLXGETVIDEOINFONVPROC)(Display*, int, GLXVideoDeviceNV, unsigned long*, unsigned long*);
-GLAPI PFNGLXGETVIDEOINFONVPROC glad_glXGetVideoInfoNV;
-#define glXGetVideoInfoNV glad_glXGetVideoInfoNV
-#endif
-#ifndef GLX_SGIS_blended_overlay
-#define GLX_SGIS_blended_overlay 1
-GLAPI int GLAD_GLX_SGIS_blended_overlay;
-#endif
-#ifndef GLX_SGIX_dmbuffer
-#define GLX_SGIX_dmbuffer 1
-GLAPI int GLAD_GLX_SGIX_dmbuffer;
-#ifdef _DM_BUFFER_H_
-typedef Bool (APIENTRYP PFNGLXASSOCIATEDMPBUFFERSGIXPROC)(Display*, GLXPbufferSGIX, DMparams*, DMbuffer);
-GLAPI PFNGLXASSOCIATEDMPBUFFERSGIXPROC glad_glXAssociateDMPbufferSGIX;
-#define glXAssociateDMPbufferSGIX glad_glXAssociateDMPbufferSGIX
-#endif
-#endif
-#ifndef GLX_ARB_create_context_robustness
-#define GLX_ARB_create_context_robustness 1
-GLAPI int GLAD_GLX_ARB_create_context_robustness;
-#endif
-#ifndef GLX_SGIX_swap_barrier
-#define GLX_SGIX_swap_barrier 1
-GLAPI int GLAD_GLX_SGIX_swap_barrier;
-typedef void (APIENTRYP PFNGLXBINDSWAPBARRIERSGIXPROC)(Display*, GLXDrawable, int);
-GLAPI PFNGLXBINDSWAPBARRIERSGIXPROC glad_glXBindSwapBarrierSGIX;
-#define glXBindSwapBarrierSGIX glad_glXBindSwapBarrierSGIX
-typedef Bool (APIENTRYP PFNGLXQUERYMAXSWAPBARRIERSSGIXPROC)(Display*, int, int*);
-GLAPI PFNGLXQUERYMAXSWAPBARRIERSSGIXPROC glad_glXQueryMaxSwapBarriersSGIX;
-#define glXQueryMaxSwapBarriersSGIX glad_glXQueryMaxSwapBarriersSGIX
-#endif
-#ifndef GLX_EXT_swap_control_tear
-#define GLX_EXT_swap_control_tear 1
-GLAPI int GLAD_GLX_EXT_swap_control_tear;
+#ifndef GLX_SGI_cushion
+#define GLX_SGI_cushion 1
+GLAPI int GLAD_GLX_SGI_cushion;
+typedef void (APIENTRYP PFNGLXCUSHIONSGIPROC)(Display*, Window, float);
+GLAPI PFNGLXCUSHIONSGIPROC glad_glXCushionSGI;
+#define glXCushionSGI glad_glXCushionSGI
 #endif
 #ifndef GLX_MESA_release_buffers
 #define GLX_MESA_release_buffers 1
@@ -975,20 +1032,22 @@ typedef void (APIENTRYP PFNGLXCOPYSUBBUFFERMESAPROC)(Display*, GLXDrawable, int,
 GLAPI PFNGLXCOPYSUBBUFFERMESAPROC glad_glXCopySubBufferMESA;
 #define glXCopySubBufferMESA glad_glXCopySubBufferMESA
 #endif
-#ifndef GLX_SGI_cushion
-#define GLX_SGI_cushion 1
-GLAPI int GLAD_GLX_SGI_cushion;
-typedef void (APIENTRYP PFNGLXCUSHIONSGIPROC)(Display*, Window, float);
-GLAPI PFNGLXCUSHIONSGIPROC glad_glXCushionSGI;
-#define glXCushionSGI glad_glXCushionSGI
+#ifndef GLX_MESA_agp_offset
+#define GLX_MESA_agp_offset 1
+GLAPI int GLAD_GLX_MESA_agp_offset;
+typedef unsigned int (APIENTRYP PFNGLXGETAGPOFFSETMESAPROC)(const void*);
+GLAPI PFNGLXGETAGPOFFSETMESAPROC glad_glXGetAGPOffsetMESA;
+#define glXGetAGPOffsetMESA glad_glXGetAGPOffsetMESA
 #endif
-#ifndef GLX_NV_float_buffer
-#define GLX_NV_float_buffer 1
-GLAPI int GLAD_GLX_NV_float_buffer;
-#endif
-#ifndef GLX_OML_swap_method
-#define GLX_OML_swap_method 1
-GLAPI int GLAD_GLX_OML_swap_method;
+#ifndef GLX_NV_copy_buffer
+#define GLX_NV_copy_buffer 1
+GLAPI int GLAD_GLX_NV_copy_buffer;
+typedef void (APIENTRYP PFNGLXCOPYBUFFERSUBDATANVPROC)(Display*, GLXContext, GLXContext, GLenum, GLenum, GLintptr, GLintptr, GLsizeiptr);
+GLAPI PFNGLXCOPYBUFFERSUBDATANVPROC glad_glXCopyBufferSubDataNV;
+#define glXCopyBufferSubDataNV glad_glXCopyBufferSubDataNV
+typedef void (APIENTRYP PFNGLXNAMEDCOPYBUFFERSUBDATANVPROC)(Display*, GLXContext, GLXContext, GLuint, GLuint, GLintptr, GLintptr, GLsizeiptr);
+GLAPI PFNGLXNAMEDCOPYBUFFERSUBDATANVPROC glad_glXNamedCopyBufferSubDataNV;
+#define glXNamedCopyBufferSubDataNV glad_glXNamedCopyBufferSubDataNV
 #endif
 #ifndef GLX_NV_present_video
 #define GLX_NV_present_video 1
@@ -1010,10 +1069,47 @@ GLAPI PFNGLXGETTRANSPARENTINDEXSUNPROC glad_glXGetTransparentIndexSUN;
 #ifndef GLX_AMD_gpu_association
 #define GLX_AMD_gpu_association 1
 GLAPI int GLAD_GLX_AMD_gpu_association;
+typedef unsigned int (APIENTRYP PFNGLXGETGPUIDSAMDPROC)(unsigned int, unsigned int*);
+GLAPI PFNGLXGETGPUIDSAMDPROC glad_glXGetGPUIDsAMD;
+#define glXGetGPUIDsAMD glad_glXGetGPUIDsAMD
+typedef int (APIENTRYP PFNGLXGETGPUINFOAMDPROC)(unsigned int, int, GLenum, unsigned int, void*);
+GLAPI PFNGLXGETGPUINFOAMDPROC glad_glXGetGPUInfoAMD;
+#define glXGetGPUInfoAMD glad_glXGetGPUInfoAMD
+typedef unsigned int (APIENTRYP PFNGLXGETCONTEXTGPUIDAMDPROC)(GLXContext);
+GLAPI PFNGLXGETCONTEXTGPUIDAMDPROC glad_glXGetContextGPUIDAMD;
+#define glXGetContextGPUIDAMD glad_glXGetContextGPUIDAMD
+typedef GLXContext (APIENTRYP PFNGLXCREATEASSOCIATEDCONTEXTAMDPROC)(unsigned int, GLXContext);
+GLAPI PFNGLXCREATEASSOCIATEDCONTEXTAMDPROC glad_glXCreateAssociatedContextAMD;
+#define glXCreateAssociatedContextAMD glad_glXCreateAssociatedContextAMD
+typedef GLXContext (APIENTRYP PFNGLXCREATEASSOCIATEDCONTEXTATTRIBSAMDPROC)(unsigned int, GLXContext, const int*);
+GLAPI PFNGLXCREATEASSOCIATEDCONTEXTATTRIBSAMDPROC glad_glXCreateAssociatedContextAttribsAMD;
+#define glXCreateAssociatedContextAttribsAMD glad_glXCreateAssociatedContextAttribsAMD
+typedef Bool (APIENTRYP PFNGLXDELETEASSOCIATEDCONTEXTAMDPROC)(GLXContext);
+GLAPI PFNGLXDELETEASSOCIATEDCONTEXTAMDPROC glad_glXDeleteAssociatedContextAMD;
+#define glXDeleteAssociatedContextAMD glad_glXDeleteAssociatedContextAMD
+typedef Bool (APIENTRYP PFNGLXMAKEASSOCIATEDCONTEXTCURRENTAMDPROC)(GLXContext);
+GLAPI PFNGLXMAKEASSOCIATEDCONTEXTCURRENTAMDPROC glad_glXMakeAssociatedContextCurrentAMD;
+#define glXMakeAssociatedContextCurrentAMD glad_glXMakeAssociatedContextCurrentAMD
+typedef GLXContext (APIENTRYP PFNGLXGETCURRENTASSOCIATEDCONTEXTAMDPROC)();
+GLAPI PFNGLXGETCURRENTASSOCIATEDCONTEXTAMDPROC glad_glXGetCurrentAssociatedContextAMD;
+#define glXGetCurrentAssociatedContextAMD glad_glXGetCurrentAssociatedContextAMD
+typedef void (APIENTRYP PFNGLXBLITCONTEXTFRAMEBUFFERAMDPROC)(GLXContext, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
+GLAPI PFNGLXBLITCONTEXTFRAMEBUFFERAMDPROC glad_glXBlitContextFramebufferAMD;
+#define glXBlitContextFramebufferAMD glad_glXBlitContextFramebufferAMD
 #endif
 #ifndef GLX_ARB_create_context_profile
 #define GLX_ARB_create_context_profile 1
 GLAPI int GLAD_GLX_ARB_create_context_profile;
+#endif
+#ifndef GLX_SGIX_swap_barrier
+#define GLX_SGIX_swap_barrier 1
+GLAPI int GLAD_GLX_SGIX_swap_barrier;
+typedef void (APIENTRYP PFNGLXBINDSWAPBARRIERSGIXPROC)(Display*, GLXDrawable, int);
+GLAPI PFNGLXBINDSWAPBARRIERSGIXPROC glad_glXBindSwapBarrierSGIX;
+#define glXBindSwapBarrierSGIX glad_glXBindSwapBarrierSGIX
+typedef Bool (APIENTRYP PFNGLXQUERYMAXSWAPBARRIERSSGIXPROC)(Display*, int, int*);
+GLAPI PFNGLXQUERYMAXSWAPBARRIERSSGIXPROC glad_glXQueryMaxSwapBarriersSGIX;
+#define glXQueryMaxSwapBarriersSGIX glad_glXQueryMaxSwapBarriersSGIX
 #endif
 #ifndef GLX_ARB_get_proc_address
 #define GLX_ARB_get_proc_address 1

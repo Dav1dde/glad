@@ -89,14 +89,13 @@ typedef struct _GPU_DEVICE *PGPU_DEVICE;
 #define WGL_TEXTURE_FLOAT_RG_NV 0x20B6
 #define WGL_TEXTURE_FLOAT_RGB_NV 0x20B7
 #define WGL_TEXTURE_FLOAT_RGBA_NV 0x20B8
+#define WGL_UNIQUE_ID_NV 0x20CE
+#define WGL_NUM_VIDEO_CAPTURE_SLOTS_NV 0x20CF
 #define WGL_TYPE_RGBA_FLOAT_ARB 0x21A0
-#define WGL_CONTEXT_DEBUG_BIT_ARB 0x00000001
-#define WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x00000002
-#define WGL_CONTEXT_MAJOR_VERSION_ARB 0x2091
-#define WGL_CONTEXT_MINOR_VERSION_ARB 0x2092
-#define WGL_CONTEXT_LAYER_PLANE_ARB 0x2093
-#define WGL_CONTEXT_FLAGS_ARB 0x2094
-#define ERROR_INVALID_VERSION_ARB 0x2095
+#define WGL_CONTEXT_PROFILE_MASK_ARB 0x9126
+#define WGL_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
+#define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
+#define ERROR_INVALID_PROFILE_ARB 0x2096
 #define ERROR_INCOMPATIBLE_AFFINITY_MASKS_NV 0x20D0
 #define ERROR_MISSING_AFFINITY_MASK_NV 0x20D1
 #define WGL_NUMBER_PIXEL_FORMATS_EXT 0x2000
@@ -144,47 +143,19 @@ typedef struct _GPU_DEVICE *PGPU_DEVICE;
 #define WGL_SWAP_UNDEFINED_EXT 0x202A
 #define WGL_TYPE_RGBA_EXT 0x202B
 #define WGL_TYPE_COLORINDEX_EXT 0x202C
-#define WGL_UNIQUE_ID_NV 0x20CE
-#define WGL_NUM_VIDEO_CAPTURE_SLOTS_NV 0x20CF
 #define WGL_BIND_TO_TEXTURE_RECTANGLE_RGB_NV 0x20A0
 #define WGL_BIND_TO_TEXTURE_RECTANGLE_RGBA_NV 0x20A1
 #define WGL_TEXTURE_RECTANGLE_NV 0x20A2
 #define WGL_CONTEXT_ES_PROFILE_BIT_EXT 0x00000004
 #define WGL_CONTEXT_RESET_ISOLATION_BIT_ARB 0x00000008
-#define WGL_BIND_TO_TEXTURE_RGB_ARB 0x2070
-#define WGL_BIND_TO_TEXTURE_RGBA_ARB 0x2071
-#define WGL_TEXTURE_FORMAT_ARB 0x2072
-#define WGL_TEXTURE_TARGET_ARB 0x2073
-#define WGL_MIPMAP_TEXTURE_ARB 0x2074
-#define WGL_TEXTURE_RGB_ARB 0x2075
-#define WGL_TEXTURE_RGBA_ARB 0x2076
-#define WGL_NO_TEXTURE_ARB 0x2077
-#define WGL_TEXTURE_CUBE_MAP_ARB 0x2078
-#define WGL_TEXTURE_1D_ARB 0x2079
-#define WGL_TEXTURE_2D_ARB 0x207A
-#define WGL_MIPMAP_LEVEL_ARB 0x207B
-#define WGL_CUBE_MAP_FACE_ARB 0x207C
-#define WGL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB 0x207D
-#define WGL_TEXTURE_CUBE_MAP_NEGATIVE_X_ARB 0x207E
-#define WGL_TEXTURE_CUBE_MAP_POSITIVE_Y_ARB 0x207F
-#define WGL_TEXTURE_CUBE_MAP_NEGATIVE_Y_ARB 0x2080
-#define WGL_TEXTURE_CUBE_MAP_POSITIVE_Z_ARB 0x2081
-#define WGL_TEXTURE_CUBE_MAP_NEGATIVE_Z_ARB 0x2082
-#define WGL_FRONT_LEFT_ARB 0x2083
-#define WGL_FRONT_RIGHT_ARB 0x2084
-#define WGL_BACK_LEFT_ARB 0x2085
-#define WGL_BACK_RIGHT_ARB 0x2086
-#define WGL_AUX0_ARB 0x2087
-#define WGL_AUX1_ARB 0x2088
-#define WGL_AUX2_ARB 0x2089
-#define WGL_AUX3_ARB 0x208A
-#define WGL_AUX4_ARB 0x208B
-#define WGL_AUX5_ARB 0x208C
-#define WGL_AUX6_ARB 0x208D
-#define WGL_AUX7_ARB 0x208E
-#define WGL_AUX8_ARB 0x208F
-#define WGL_AUX9_ARB 0x2090
+#define WGL_CONTEXT_ROBUST_ACCESS_BIT_ARB 0x00000004
+#define WGL_LOSE_CONTEXT_ON_RESET_ARB 0x8252
+#define WGL_CONTEXT_RESET_NOTIFICATION_STRATEGY_ARB 0x8256
+#define WGL_NO_RESET_NOTIFICATION_ARB 0x8261
 #define WGL_DEPTH_FLOAT_EXT 0x2040
+#define WGL_CONTEXT_RELEASE_BEHAVIOR_ARB 0x2097
+#define WGL_CONTEXT_RELEASE_BEHAVIOR_NONE_ARB 0
+#define WGL_CONTEXT_RELEASE_BEHAVIOR_FLUSH_ARB 0x2098
 #define WGL_NUMBER_PIXEL_FORMATS_ARB 0x2000
 #define WGL_DRAW_TO_WINDOW_ARB 0x2001
 #define WGL_DRAW_TO_BITMAP_ARB 0x2002
@@ -245,9 +216,6 @@ typedef struct _GPU_DEVICE *PGPU_DEVICE;
 #define WGL_GENLOCK_SOURCE_EDGE_FALLING_I3D 0x204A
 #define WGL_GENLOCK_SOURCE_EDGE_RISING_I3D 0x204B
 #define WGL_GENLOCK_SOURCE_EDGE_BOTH_I3D 0x204C
-#define WGL_ACCESS_READ_ONLY_NV 0x00000000
-#define WGL_ACCESS_READ_WRITE_NV 0x00000001
-#define WGL_ACCESS_WRITE_DISCARD_NV 0x00000002
 #define WGL_STEREO_EMITTER_ENABLE_3DL 0x2055
 #define WGL_STEREO_EMITTER_DISABLE_3DL 0x2056
 #define WGL_STEREO_POLARITY_NORMAL_3DL 0x2057
@@ -282,24 +250,56 @@ typedef struct _GPU_DEVICE *PGPU_DEVICE;
 #define WGL_FRAMEBUFFER_SRGB_CAPABLE_EXT 0x20A9
 #define WGL_NUM_VIDEO_SLOTS_NV 0x20F0
 #define WGL_CONTEXT_ES2_PROFILE_BIT_EXT 0x00000004
-#define WGL_CONTEXT_ROBUST_ACCESS_BIT_ARB 0x00000004
-#define WGL_LOSE_CONTEXT_ON_RESET_ARB 0x8252
-#define WGL_CONTEXT_RESET_NOTIFICATION_STRATEGY_ARB 0x8256
-#define WGL_NO_RESET_NOTIFICATION_ARB 0x8261
+#define WGL_BIND_TO_TEXTURE_RGB_ARB 0x2070
+#define WGL_BIND_TO_TEXTURE_RGBA_ARB 0x2071
+#define WGL_TEXTURE_FORMAT_ARB 0x2072
+#define WGL_TEXTURE_TARGET_ARB 0x2073
+#define WGL_MIPMAP_TEXTURE_ARB 0x2074
+#define WGL_TEXTURE_RGB_ARB 0x2075
+#define WGL_TEXTURE_RGBA_ARB 0x2076
+#define WGL_NO_TEXTURE_ARB 0x2077
+#define WGL_TEXTURE_CUBE_MAP_ARB 0x2078
+#define WGL_TEXTURE_1D_ARB 0x2079
+#define WGL_TEXTURE_2D_ARB 0x207A
+#define WGL_MIPMAP_LEVEL_ARB 0x207B
+#define WGL_CUBE_MAP_FACE_ARB 0x207C
+#define WGL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB 0x207D
+#define WGL_TEXTURE_CUBE_MAP_NEGATIVE_X_ARB 0x207E
+#define WGL_TEXTURE_CUBE_MAP_POSITIVE_Y_ARB 0x207F
+#define WGL_TEXTURE_CUBE_MAP_NEGATIVE_Y_ARB 0x2080
+#define WGL_TEXTURE_CUBE_MAP_POSITIVE_Z_ARB 0x2081
+#define WGL_TEXTURE_CUBE_MAP_NEGATIVE_Z_ARB 0x2082
+#define WGL_FRONT_LEFT_ARB 0x2083
+#define WGL_FRONT_RIGHT_ARB 0x2084
+#define WGL_BACK_LEFT_ARB 0x2085
+#define WGL_BACK_RIGHT_ARB 0x2086
+#define WGL_AUX0_ARB 0x2087
+#define WGL_AUX1_ARB 0x2088
+#define WGL_AUX2_ARB 0x2089
+#define WGL_AUX3_ARB 0x208A
+#define WGL_AUX4_ARB 0x208B
+#define WGL_AUX5_ARB 0x208C
+#define WGL_AUX6_ARB 0x208D
+#define WGL_AUX7_ARB 0x208E
+#define WGL_AUX8_ARB 0x208F
+#define WGL_AUX9_ARB 0x2090
 #define ERROR_INVALID_PIXEL_TYPE_ARB 0x2043
 #define ERROR_INCOMPATIBLE_DEVICE_CONTEXTS_ARB 0x2054
 #define WGL_SAMPLE_BUFFERS_EXT 0x2041
 #define WGL_SAMPLES_EXT 0x2042
+#define WGL_CONTEXT_DEBUG_BIT_ARB 0x00000001
+#define WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x00000002
+#define WGL_CONTEXT_MAJOR_VERSION_ARB 0x2091
+#define WGL_CONTEXT_MINOR_VERSION_ARB 0x2092
+#define WGL_CONTEXT_LAYER_PLANE_ARB 0x2093
+#define WGL_CONTEXT_FLAGS_ARB 0x2094
+#define ERROR_INVALID_VERSION_ARB 0x2095
 #define WGL_BIND_TO_TEXTURE_DEPTH_NV 0x20A3
 #define WGL_BIND_TO_TEXTURE_RECTANGLE_DEPTH_NV 0x20A4
 #define WGL_DEPTH_TEXTURE_FORMAT_NV 0x20A5
 #define WGL_TEXTURE_DEPTH_COMPONENT_NV 0x20A6
 #define WGL_DEPTH_COMPONENT_NV 0x20A7
 #define WGL_TYPE_RGBA_FLOAT_ATI 0x21A0
-#define WGL_CONTEXT_PROFILE_MASK_ARB 0x9126
-#define WGL_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
-#define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
-#define ERROR_INVALID_PROFILE_ARB 0x2096
 #define WGL_DIGITAL_VIDEO_CURSOR_ALPHA_FRAMEBUFFER_I3D 0x2050
 #define WGL_DIGITAL_VIDEO_CURSOR_ALPHA_VALUE_I3D 0x2051
 #define WGL_DIGITAL_VIDEO_CURSOR_INCLUDED_I3D 0x2052
@@ -312,6 +312,9 @@ typedef struct _GPU_DEVICE *PGPU_DEVICE;
 #define WGL_PBUFFER_WIDTH_ARB 0x2034
 #define WGL_PBUFFER_HEIGHT_ARB 0x2035
 #define WGL_PBUFFER_LOST_ARB 0x2036
+#define WGL_ACCESS_READ_ONLY_NV 0x00000000
+#define WGL_ACCESS_READ_WRITE_NV 0x00000001
+#define WGL_ACCESS_WRITE_DISCARD_NV 0x00000002
 #define WGL_GPU_VENDOR_AMD 0x1F00
 #define WGL_GPU_RENDERER_STRING_AMD 0x1F01
 #define WGL_GPU_OPENGL_VERSION_STRING_AMD 0x1F02
@@ -368,10 +371,6 @@ GLAPI PFNWGLQUERYFRAMETRACKINGI3DPROC glad_wglQueryFrameTrackingI3D;
 #define WGL_NV_DX_interop2 1
 GLAPI int GLAD_WGL_NV_DX_interop2;
 #endif
-#ifndef WGL_NV_float_buffer
-#define WGL_NV_float_buffer 1
-GLAPI int GLAD_WGL_NV_float_buffer;
-#endif
 #ifndef WGL_OML_sync_control
 #define WGL_OML_sync_control 1
 GLAPI int GLAD_WGL_OML_sync_control;
@@ -394,16 +393,43 @@ typedef BOOL (APIENTRYP PFNWGLWAITFORSBCOMLPROC)(HDC, INT64, INT64*, INT64*, INT
 GLAPI PFNWGLWAITFORSBCOMLPROC glad_wglWaitForSbcOML;
 #define wglWaitForSbcOML glad_wglWaitForSbcOML
 #endif
+#ifndef WGL_NV_float_buffer
+#define WGL_NV_float_buffer 1
+GLAPI int GLAD_WGL_NV_float_buffer;
+#endif
+#ifndef WGL_NV_delay_before_swap
+#define WGL_NV_delay_before_swap 1
+GLAPI int GLAD_WGL_NV_delay_before_swap;
+typedef BOOL (APIENTRYP PFNWGLDELAYBEFORESWAPNVPROC)(HDC, GLfloat);
+GLAPI PFNWGLDELAYBEFORESWAPNVPROC glad_wglDelayBeforeSwapNV;
+#define wglDelayBeforeSwapNV glad_wglDelayBeforeSwapNV
+#endif
+#ifndef WGL_NV_video_capture
+#define WGL_NV_video_capture 1
+GLAPI int GLAD_WGL_NV_video_capture;
+typedef BOOL (APIENTRYP PFNWGLBINDVIDEOCAPTUREDEVICENVPROC)(UINT, HVIDEOINPUTDEVICENV);
+GLAPI PFNWGLBINDVIDEOCAPTUREDEVICENVPROC glad_wglBindVideoCaptureDeviceNV;
+#define wglBindVideoCaptureDeviceNV glad_wglBindVideoCaptureDeviceNV
+typedef UINT (APIENTRYP PFNWGLENUMERATEVIDEOCAPTUREDEVICESNVPROC)(HDC, HVIDEOINPUTDEVICENV*);
+GLAPI PFNWGLENUMERATEVIDEOCAPTUREDEVICESNVPROC glad_wglEnumerateVideoCaptureDevicesNV;
+#define wglEnumerateVideoCaptureDevicesNV glad_wglEnumerateVideoCaptureDevicesNV
+typedef BOOL (APIENTRYP PFNWGLLOCKVIDEOCAPTUREDEVICENVPROC)(HDC, HVIDEOINPUTDEVICENV);
+GLAPI PFNWGLLOCKVIDEOCAPTUREDEVICENVPROC glad_wglLockVideoCaptureDeviceNV;
+#define wglLockVideoCaptureDeviceNV glad_wglLockVideoCaptureDeviceNV
+typedef BOOL (APIENTRYP PFNWGLQUERYVIDEOCAPTUREDEVICENVPROC)(HDC, HVIDEOINPUTDEVICENV, int, int*);
+GLAPI PFNWGLQUERYVIDEOCAPTUREDEVICENVPROC glad_wglQueryVideoCaptureDeviceNV;
+#define wglQueryVideoCaptureDeviceNV glad_wglQueryVideoCaptureDeviceNV
+typedef BOOL (APIENTRYP PFNWGLRELEASEVIDEOCAPTUREDEVICENVPROC)(HDC, HVIDEOINPUTDEVICENV);
+GLAPI PFNWGLRELEASEVIDEOCAPTUREDEVICENVPROC glad_wglReleaseVideoCaptureDeviceNV;
+#define wglReleaseVideoCaptureDeviceNV glad_wglReleaseVideoCaptureDeviceNV
+#endif
 #ifndef WGL_ARB_pixel_format_float
 #define WGL_ARB_pixel_format_float 1
 GLAPI int GLAD_WGL_ARB_pixel_format_float;
 #endif
-#ifndef WGL_ARB_create_context
-#define WGL_ARB_create_context 1
-GLAPI int GLAD_WGL_ARB_create_context;
-typedef HGLRC (APIENTRYP PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC, HGLRC, const int*);
-GLAPI PFNWGLCREATECONTEXTATTRIBSARBPROC glad_wglCreateContextAttribsARB;
-#define wglCreateContextAttribsARB glad_wglCreateContextAttribsARB
+#ifndef WGL_ARB_create_context_profile
+#define WGL_ARB_create_context_profile 1
+GLAPI int GLAD_WGL_ARB_create_context_profile;
 #endif
 #ifndef WGL_NV_swap_group
 #define WGL_NV_swap_group 1
@@ -466,25 +492,6 @@ typedef const char* (APIENTRYP PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC);
 GLAPI PFNWGLGETEXTENSIONSSTRINGARBPROC glad_wglGetExtensionsStringARB;
 #define wglGetExtensionsStringARB glad_wglGetExtensionsStringARB
 #endif
-#ifndef WGL_NV_video_capture
-#define WGL_NV_video_capture 1
-GLAPI int GLAD_WGL_NV_video_capture;
-typedef BOOL (APIENTRYP PFNWGLBINDVIDEOCAPTUREDEVICENVPROC)(UINT, HVIDEOINPUTDEVICENV);
-GLAPI PFNWGLBINDVIDEOCAPTUREDEVICENVPROC glad_wglBindVideoCaptureDeviceNV;
-#define wglBindVideoCaptureDeviceNV glad_wglBindVideoCaptureDeviceNV
-typedef UINT (APIENTRYP PFNWGLENUMERATEVIDEOCAPTUREDEVICESNVPROC)(HDC, HVIDEOINPUTDEVICENV*);
-GLAPI PFNWGLENUMERATEVIDEOCAPTUREDEVICESNVPROC glad_wglEnumerateVideoCaptureDevicesNV;
-#define wglEnumerateVideoCaptureDevicesNV glad_wglEnumerateVideoCaptureDevicesNV
-typedef BOOL (APIENTRYP PFNWGLLOCKVIDEOCAPTUREDEVICENVPROC)(HDC, HVIDEOINPUTDEVICENV);
-GLAPI PFNWGLLOCKVIDEOCAPTUREDEVICENVPROC glad_wglLockVideoCaptureDeviceNV;
-#define wglLockVideoCaptureDeviceNV glad_wglLockVideoCaptureDeviceNV
-typedef BOOL (APIENTRYP PFNWGLQUERYVIDEOCAPTUREDEVICENVPROC)(HDC, HVIDEOINPUTDEVICENV, int, int*);
-GLAPI PFNWGLQUERYVIDEOCAPTUREDEVICENVPROC glad_wglQueryVideoCaptureDeviceNV;
-#define wglQueryVideoCaptureDeviceNV glad_wglQueryVideoCaptureDeviceNV
-typedef BOOL (APIENTRYP PFNWGLRELEASEVIDEOCAPTUREDEVICENVPROC)(HDC, HVIDEOINPUTDEVICENV);
-GLAPI PFNWGLRELEASEVIDEOCAPTUREDEVICENVPROC glad_wglReleaseVideoCaptureDeviceNV;
-#define wglReleaseVideoCaptureDeviceNV glad_wglReleaseVideoCaptureDeviceNV
-#endif
 #ifndef WGL_NV_render_texture_rectangle
 #define WGL_NV_render_texture_rectangle 1
 GLAPI int GLAD_WGL_NV_render_texture_rectangle;
@@ -497,18 +504,9 @@ GLAPI int GLAD_WGL_EXT_create_context_es_profile;
 #define WGL_ARB_robustness_share_group_isolation 1
 GLAPI int GLAD_WGL_ARB_robustness_share_group_isolation;
 #endif
-#ifndef WGL_ARB_render_texture
-#define WGL_ARB_render_texture 1
-GLAPI int GLAD_WGL_ARB_render_texture;
-typedef BOOL (APIENTRYP PFNWGLBINDTEXIMAGEARBPROC)(HPBUFFERARB, int);
-GLAPI PFNWGLBINDTEXIMAGEARBPROC glad_wglBindTexImageARB;
-#define wglBindTexImageARB glad_wglBindTexImageARB
-typedef BOOL (APIENTRYP PFNWGLRELEASETEXIMAGEARBPROC)(HPBUFFERARB, int);
-GLAPI PFNWGLRELEASETEXIMAGEARBPROC glad_wglReleaseTexImageARB;
-#define wglReleaseTexImageARB glad_wglReleaseTexImageARB
-typedef BOOL (APIENTRYP PFNWGLSETPBUFFERATTRIBARBPROC)(HPBUFFERARB, const int*);
-GLAPI PFNWGLSETPBUFFERATTRIBARBPROC glad_wglSetPbufferAttribARB;
-#define wglSetPbufferAttribARB glad_wglSetPbufferAttribARB
+#ifndef WGL_ARB_create_context_robustness
+#define WGL_ARB_create_context_robustness 1
+GLAPI int GLAD_WGL_ARB_create_context_robustness;
 #endif
 #ifndef WGL_EXT_depth_float
 #define WGL_EXT_depth_float 1
@@ -517,6 +515,10 @@ GLAPI int GLAD_WGL_EXT_depth_float;
 #ifndef WGL_EXT_swap_control_tear
 #define WGL_EXT_swap_control_tear 1
 GLAPI int GLAD_WGL_EXT_swap_control_tear;
+#endif
+#ifndef WGL_ARB_context_flush_control
+#define WGL_ARB_context_flush_control 1
+GLAPI int GLAD_WGL_ARB_context_flush_control;
 #endif
 #ifndef WGL_ARB_pixel_format
 #define WGL_ARB_pixel_format 1
@@ -575,33 +577,15 @@ typedef BOOL (APIENTRYP PFNWGLQUERYGENLOCKMAXSOURCEDELAYI3DPROC)(HDC, UINT*, UIN
 GLAPI PFNWGLQUERYGENLOCKMAXSOURCEDELAYI3DPROC glad_wglQueryGenlockMaxSourceDelayI3D;
 #define wglQueryGenlockMaxSourceDelayI3D glad_wglQueryGenlockMaxSourceDelayI3D
 #endif
-#ifndef WGL_NV_DX_interop
-#define WGL_NV_DX_interop 1
-GLAPI int GLAD_WGL_NV_DX_interop;
-typedef BOOL (APIENTRYP PFNWGLDXSETRESOURCESHAREHANDLENVPROC)(void*, HANDLE);
-GLAPI PFNWGLDXSETRESOURCESHAREHANDLENVPROC glad_wglDXSetResourceShareHandleNV;
-#define wglDXSetResourceShareHandleNV glad_wglDXSetResourceShareHandleNV
-typedef HANDLE (APIENTRYP PFNWGLDXOPENDEVICENVPROC)(void*);
-GLAPI PFNWGLDXOPENDEVICENVPROC glad_wglDXOpenDeviceNV;
-#define wglDXOpenDeviceNV glad_wglDXOpenDeviceNV
-typedef BOOL (APIENTRYP PFNWGLDXCLOSEDEVICENVPROC)(HANDLE);
-GLAPI PFNWGLDXCLOSEDEVICENVPROC glad_wglDXCloseDeviceNV;
-#define wglDXCloseDeviceNV glad_wglDXCloseDeviceNV
-typedef HANDLE (APIENTRYP PFNWGLDXREGISTEROBJECTNVPROC)(HANDLE, void*, GLuint, GLenum, GLenum);
-GLAPI PFNWGLDXREGISTEROBJECTNVPROC glad_wglDXRegisterObjectNV;
-#define wglDXRegisterObjectNV glad_wglDXRegisterObjectNV
-typedef BOOL (APIENTRYP PFNWGLDXUNREGISTEROBJECTNVPROC)(HANDLE, HANDLE);
-GLAPI PFNWGLDXUNREGISTEROBJECTNVPROC glad_wglDXUnregisterObjectNV;
-#define wglDXUnregisterObjectNV glad_wglDXUnregisterObjectNV
-typedef BOOL (APIENTRYP PFNWGLDXOBJECTACCESSNVPROC)(HANDLE, GLenum);
-GLAPI PFNWGLDXOBJECTACCESSNVPROC glad_wglDXObjectAccessNV;
-#define wglDXObjectAccessNV glad_wglDXObjectAccessNV
-typedef BOOL (APIENTRYP PFNWGLDXLOCKOBJECTSNVPROC)(HANDLE, GLint, HANDLE*);
-GLAPI PFNWGLDXLOCKOBJECTSNVPROC glad_wglDXLockObjectsNV;
-#define wglDXLockObjectsNV glad_wglDXLockObjectsNV
-typedef BOOL (APIENTRYP PFNWGLDXUNLOCKOBJECTSNVPROC)(HANDLE, GLint, HANDLE*);
-GLAPI PFNWGLDXUNLOCKOBJECTSNVPROC glad_wglDXUnlockObjectsNV;
-#define wglDXUnlockObjectsNV glad_wglDXUnlockObjectsNV
+#ifndef WGL_NV_vertex_array_range
+#define WGL_NV_vertex_array_range 1
+GLAPI int GLAD_WGL_NV_vertex_array_range;
+typedef void* (APIENTRYP PFNWGLALLOCATEMEMORYNVPROC)(GLsizei, GLfloat, GLfloat, GLfloat);
+GLAPI PFNWGLALLOCATEMEMORYNVPROC glad_wglAllocateMemoryNV;
+#define wglAllocateMemoryNV glad_wglAllocateMemoryNV
+typedef void (APIENTRYP PFNWGLFREEMEMORYNVPROC)(void*);
+GLAPI PFNWGLFREEMEMORYNVPROC glad_wglFreeMemoryNV;
+#define wglFreeMemoryNV glad_wglFreeMemoryNV
 #endif
 #ifndef WGL_3DL_stereo_control
 #define WGL_3DL_stereo_control 1
@@ -723,9 +707,18 @@ GLAPI PFNWGLQUERYCURRENTCONTEXTNVPROC glad_wglQueryCurrentContextNV;
 #define WGL_EXT_create_context_es2_profile 1
 GLAPI int GLAD_WGL_EXT_create_context_es2_profile;
 #endif
-#ifndef WGL_ARB_create_context_robustness
-#define WGL_ARB_create_context_robustness 1
-GLAPI int GLAD_WGL_ARB_create_context_robustness;
+#ifndef WGL_ARB_render_texture
+#define WGL_ARB_render_texture 1
+GLAPI int GLAD_WGL_ARB_render_texture;
+typedef BOOL (APIENTRYP PFNWGLBINDTEXIMAGEARBPROC)(HPBUFFERARB, int);
+GLAPI PFNWGLBINDTEXIMAGEARBPROC glad_wglBindTexImageARB;
+#define wglBindTexImageARB glad_wglBindTexImageARB
+typedef BOOL (APIENTRYP PFNWGLRELEASETEXIMAGEARBPROC)(HPBUFFERARB, int);
+GLAPI PFNWGLRELEASETEXIMAGEARBPROC glad_wglReleaseTexImageARB;
+#define wglReleaseTexImageARB glad_wglReleaseTexImageARB
+typedef BOOL (APIENTRYP PFNWGLSETPBUFFERATTRIBARBPROC)(HPBUFFERARB, const int*);
+GLAPI PFNWGLSETPBUFFERATTRIBARBPROC glad_wglSetPbufferAttribARB;
+#define wglSetPbufferAttribARB glad_wglSetPbufferAttribARB
 #endif
 #ifndef WGL_ARB_make_current_read
 #define WGL_ARB_make_current_read 1
@@ -741,6 +734,13 @@ GLAPI PFNWGLGETCURRENTREADDCARBPROC glad_wglGetCurrentReadDCARB;
 #define WGL_EXT_multisample 1
 GLAPI int GLAD_WGL_EXT_multisample;
 #endif
+#ifndef WGL_ARB_create_context
+#define WGL_ARB_create_context 1
+GLAPI int GLAD_WGL_ARB_create_context;
+typedef HGLRC (APIENTRYP PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC, HGLRC, const int*);
+GLAPI PFNWGLCREATECONTEXTATTRIBSARBPROC glad_wglCreateContextAttribsARB;
+#define wglCreateContextAttribsARB glad_wglCreateContextAttribsARB
+#endif
 #ifndef WGL_EXT_extensions_string
 #define WGL_EXT_extensions_string 1
 GLAPI int GLAD_WGL_EXT_extensions_string;
@@ -755,10 +755,6 @@ GLAPI int GLAD_WGL_NV_render_depth_texture;
 #ifndef WGL_ATI_pixel_format_float
 #define WGL_ATI_pixel_format_float 1
 GLAPI int GLAD_WGL_ATI_pixel_format_float;
-#endif
-#ifndef WGL_ARB_create_context_profile
-#define WGL_ARB_create_context_profile 1
-GLAPI int GLAD_WGL_ARB_create_context_profile;
 #endif
 #ifndef WGL_EXT_swap_control
 #define WGL_EXT_swap_control 1
@@ -799,15 +795,33 @@ typedef BOOL (APIENTRYP PFNWGLQUERYPBUFFERARBPROC)(HPBUFFERARB, int, int*);
 GLAPI PFNWGLQUERYPBUFFERARBPROC glad_wglQueryPbufferARB;
 #define wglQueryPbufferARB glad_wglQueryPbufferARB
 #endif
-#ifndef WGL_NV_vertex_array_range
-#define WGL_NV_vertex_array_range 1
-GLAPI int GLAD_WGL_NV_vertex_array_range;
-typedef void* (APIENTRYP PFNWGLALLOCATEMEMORYNVPROC)(GLsizei, GLfloat, GLfloat, GLfloat);
-GLAPI PFNWGLALLOCATEMEMORYNVPROC glad_wglAllocateMemoryNV;
-#define wglAllocateMemoryNV glad_wglAllocateMemoryNV
-typedef void (APIENTRYP PFNWGLFREEMEMORYNVPROC)(void*);
-GLAPI PFNWGLFREEMEMORYNVPROC glad_wglFreeMemoryNV;
-#define wglFreeMemoryNV glad_wglFreeMemoryNV
+#ifndef WGL_NV_DX_interop
+#define WGL_NV_DX_interop 1
+GLAPI int GLAD_WGL_NV_DX_interop;
+typedef BOOL (APIENTRYP PFNWGLDXSETRESOURCESHAREHANDLENVPROC)(void*, HANDLE);
+GLAPI PFNWGLDXSETRESOURCESHAREHANDLENVPROC glad_wglDXSetResourceShareHandleNV;
+#define wglDXSetResourceShareHandleNV glad_wglDXSetResourceShareHandleNV
+typedef HANDLE (APIENTRYP PFNWGLDXOPENDEVICENVPROC)(void*);
+GLAPI PFNWGLDXOPENDEVICENVPROC glad_wglDXOpenDeviceNV;
+#define wglDXOpenDeviceNV glad_wglDXOpenDeviceNV
+typedef BOOL (APIENTRYP PFNWGLDXCLOSEDEVICENVPROC)(HANDLE);
+GLAPI PFNWGLDXCLOSEDEVICENVPROC glad_wglDXCloseDeviceNV;
+#define wglDXCloseDeviceNV glad_wglDXCloseDeviceNV
+typedef HANDLE (APIENTRYP PFNWGLDXREGISTEROBJECTNVPROC)(HANDLE, void*, GLuint, GLenum, GLenum);
+GLAPI PFNWGLDXREGISTEROBJECTNVPROC glad_wglDXRegisterObjectNV;
+#define wglDXRegisterObjectNV glad_wglDXRegisterObjectNV
+typedef BOOL (APIENTRYP PFNWGLDXUNREGISTEROBJECTNVPROC)(HANDLE, HANDLE);
+GLAPI PFNWGLDXUNREGISTEROBJECTNVPROC glad_wglDXUnregisterObjectNV;
+#define wglDXUnregisterObjectNV glad_wglDXUnregisterObjectNV
+typedef BOOL (APIENTRYP PFNWGLDXOBJECTACCESSNVPROC)(HANDLE, GLenum);
+GLAPI PFNWGLDXOBJECTACCESSNVPROC glad_wglDXObjectAccessNV;
+#define wglDXObjectAccessNV glad_wglDXObjectAccessNV
+typedef BOOL (APIENTRYP PFNWGLDXLOCKOBJECTSNVPROC)(HANDLE, GLint, HANDLE*);
+GLAPI PFNWGLDXLOCKOBJECTSNVPROC glad_wglDXLockObjectsNV;
+#define wglDXLockObjectsNV glad_wglDXLockObjectsNV
+typedef BOOL (APIENTRYP PFNWGLDXUNLOCKOBJECTSNVPROC)(HANDLE, GLint, HANDLE*);
+GLAPI PFNWGLDXUNLOCKOBJECTSNVPROC glad_wglDXUnlockObjectsNV;
+#define wglDXUnlockObjectsNV glad_wglDXUnlockObjectsNV
 #endif
 #ifndef WGL_AMD_gpu_association
 #define WGL_AMD_gpu_association 1
