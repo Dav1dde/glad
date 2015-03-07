@@ -367,6 +367,10 @@ extern(System) {
 
 
 DTYPES = {
+    '__pre': {
+        'egl': 'import core.stdc.stdint : intptr_t;\n\n'
+    },
+
     '__other' : {
         'gl' : _gl_types,
         'egl' : _egl_types,
@@ -387,17 +391,22 @@ DTYPES = {
              'GLint64' : 'long', 'GLuint64' : 'ulong', 'GLvdpauSurfaceNV' : 'ptrdiff_t',
              'GLeglImageOES' : 'void*'
     },
-    'egl' : { 'EGLBoolean' : 'uint', 'EGLenum' : 'uint', 'EGLConfig' : 'void*',
-              'EGLContext' : 'void*', 'EGLDisplay' : 'void*', 'EGLSurface' : 'void*',
-              'EGLClientBuffer' : 'void*', 'EGLint' : 'int',
+    'egl' : { 'EGLBoolean' : 'uint', 'EGLenum' : 'uint', 'EGLAttribKHR': 'intptr_t',
+              'EGLAttrib': 'intptr_t', 'EGLClientBuffer' : 'void*', 'EGLConfig' : 'void*',
+              'EGLContext' : 'void*', 'EGLDeviceEXT': 'void*', 'EGLDisplay' : 'void*',
+              'EGLImage': 'void*', 'EGLImageKHR' : 'void*', 'EGLOutputLayerEXT': 'void*',
+              'EGLOutputPortEXT': 'void*', 'EGLStreamKHR' : 'void*', 'EGLSurface' : 'void*',
+              'EGLSync': 'void*', 'EGLSyncKHR' : 'void*', 'EGLSyncNV' : 'void*',
               '__eglMustCastToProperFunctionPointerType' : 'void function()',
-              'EGLImageKHR' : 'void*', 'EGLSyncKHR' : 'void*', 'EGLTimeKHR' : 'ulong',
-              'EGLSyncNV' : 'void*', 'EGLTimeNV' : 'ulong', 'EGLuint64NV' : 'ulong',
-              'EGLStreamKHR' : 'void*', 'EGLuint64KHR' : 'ulong',
+              'EGLint' : 'int', 'EGLTimeKHR' : 'ulong', 'EGLTime' : 'ulong',
+              'EGLTimeNV' : 'ulong', 'EGLuint64NV' : 'ulong',
+              'EGLuint64KHR' : 'ulong',
               'EGLsizeiANDROID' : 'ptrdiff_t', 'EGLNativeFileDescriptorKHR' : 'int'
     },
     'glx' : { 'GLboolean' : 'ubyte', 'GLenum' : 'uint', 'GLint' : 'int',
-              'GLsizei' : 'int', 'GLubyte' : 'ubyte', 'GLuint' : 'uint'
+              'GLsizei' : 'int', 'GLubyte' : 'ubyte', 'GLuint' : 'uint',
+              'GLfloat': 'float', 'GLbitfield': 'uint', 'GLintptr': 'ptrdiff_t',
+              'GLsizeiptr': 'ptrdiff_t'
 
     },
     'wgl' : { 'GLbitfield' : 'uint', 'GLenum' : 'uint', 'GLfloat' : 'float',
@@ -419,19 +428,27 @@ DTYPES = {
                  ('EGL_NO_NATIVE_FENCE_FD_ANDROID', '-1', 'uint'),
                  ('EGL_DEPTH_ENCODING_NONE_NV', '0', 'uint'),
                  ('EGL_NO_CONTEXT', 'cast(EGLContext)0', 'EGLContext'),
+                 ('EGL_NO_DEVICE_EXT', 'cast(EGLDeviceEXT)0', 'EGLDeviceEXT'),
                  ('EGL_NO_DISPLAY', 'cast(EGLDisplay)0', 'EGLDisplay'),
+                 ('EGL_NO_IMAGE', 'cast(EGLImage)0', 'EGLImage'),
                  ('EGL_NO_IMAGE_KHR', 'cast(EGLImageKHR)0', 'EGLImageKHR'),
                  ('EGL_DEFAULT_DISPLAY', 'cast(EGLNativeDisplayType)0', 'EGLNativeDisplayType'),
                  ('EGL_NO_FILE_DESCRIPTOR_KHR', 'cast(EGLNativeFileDescriptorKHR)-1', 'EGLNativeFileDescriptorKHR'),
+                 ('EGL_NO_OUTPUT_LAYER_EXT', 'cast(EGLOutputLayerEXT)0', 'EGLOutputLayerEXT'),
+                 ('EGL_NO_OUTPUT_PORT_EXT', 'cast(EGLOutputPortEXT)0', 'EGLOutputPortEXT'),
                  ('EGL_NO_STREAM_KHR', 'cast(EGLStreamKHR)0', 'EGLStreamKHR'),
                  ('EGL_NO_SURFACE', 'cast(EGLSurface)0', 'EGLSurface'),
+                 ('EGL_NO_SYNC', 'cast(EGLSync)0', 'EGLSync'),
                  ('EGL_NO_SYNC_KHR', 'cast(EGLSyncKHR)0', 'EGLSyncKHR'),
                  ('EGL_NO_SYNC_NV', 'cast(EGLSyncNV)0', 'EGLSyncNV'),
                  ('EGL_DISPLAY_SCALING', '10000', 'uint'),
+                 ('EGL_FOREVER', '0xFFFFFFFFFFFFFFFF', 'ulong'),
                  ('EGL_FOREVER_KHR', '0xFFFFFFFFFFFFFFFF', 'ulong'),
                  ('EGL_FOREVER_NV', '0xFFFFFFFFFFFFFFFF', 'ulong')],
-        'glx' : [('GLX_DONT_CARE', '0xFFFFFFFF', 'uint')],
-        'wgl' : [('WGL_FONT_LINES', '0', 'uint'), ('WGL_FONT_POLYGONS', 1, 'uint')]
+        'glx' : [('GLX_DONT_CARE', '0xFFFFFFFF', 'uint'),
+                 ('GLX_CONTEXT_RELEASE_BEHAVIOR_NONE_ARB', '0', 'uint')],
+        'wgl' : [('WGL_CONTEXT_RELEASE_BEHAVIOR_NONE_ARB', '0', 'uint'),
+                 ('WGL_FONT_LINES', '0', 'uint'), ('WGL_FONT_POLYGONS', 1, 'uint')]
     }
 }
 
@@ -571,6 +588,7 @@ class BaseDGenerator(Generator):
 
         self.write_module(f, self.TYPES)
 
+        f.write(self.TYPE_DICT.get('__pre', {}).get(self.spec.NAME,''))
         for ogl, d in self.TYPE_DICT[self.spec.NAME].items():
             self.write_alias(f, ogl, d)
         self.TYPE_DICT['__other'][self.spec.NAME](self, f)
