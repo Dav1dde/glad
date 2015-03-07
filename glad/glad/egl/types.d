@@ -1,25 +1,35 @@
 module glad.egl.types;
 
 
-alias EGLint = int;
-alias EGLuint64KHR = ulong;
-alias EGLenum = uint;
-alias EGLTimeNV = ulong;
-alias EGLTimeKHR = ulong;
+import core.stdc.stdint : intptr_t;
+
 alias EGLConfig = void*;
-alias EGLNativeFileDescriptorKHR = int;
-alias EGLSyncNV = void*;
-alias EGLsizeiANDROID = ptrdiff_t;
-alias EGLStreamKHR = void*;
-alias EGLBoolean = uint;
-alias EGLImageKHR = void*;
 alias EGLClientBuffer = void*;
-alias EGLuint64NV = ulong;
+alias EGLNativeFileDescriptorKHR = int;
+alias EGLuint64KHR = ulong;
+alias EGLTimeKHR = ulong;
+alias EGLOutputLayerEXT = void*;
+alias EGLsizeiANDROID = ptrdiff_t;
+alias EGLBoolean = uint;
+alias EGLAttribKHR = intptr_t;
+alias EGLDisplay = void*;
+alias EGLint = int;
+alias EGLSyncKHR = void*;
+alias EGLTimeNV = ulong;
+alias EGLDeviceEXT = void*;
+alias EGLImageKHR = void*;
 alias EGLSurface = void*;
 alias __eglMustCastToProperFunctionPointerType = void function();
-alias EGLSyncKHR = void*;
-alias EGLDisplay = void*;
+alias EGLAttrib = intptr_t;
 alias EGLContext = void*;
+alias EGLenum = uint;
+alias EGLImage = void*;
+alias EGLSyncNV = void*;
+alias EGLStreamKHR = void*;
+alias EGLSync = void*;
+alias EGLOutputPortEXT = void*;
+alias EGLuint64NV = ulong;
+alias EGLTime = ulong;
 
 // Thanks to @jpf91 (github) for these declarations
 version(Windows) {
