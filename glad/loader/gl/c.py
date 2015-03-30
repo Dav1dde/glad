@@ -144,7 +144,7 @@ _FIND_VERSION = '''
         }
     }
 
-#ifdef _WIN32
+#ifdef _MSC_VER
     sscanf_s(version, "%d.%d", &major, &minor);
 #else
     sscanf(version, "%d.%d", &major, &minor);
