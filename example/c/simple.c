@@ -11,7 +11,7 @@
 // https://github.com/skaslev/gl3w/blob/master/src/test.c
 
 // Compile:
-// gcc example/c/simple.c -Iinclude/glad src/glad/glad.c -lglut -ldl
+// gcc example/c/simple.c -Ibuild/include build/src/glad.c -lglut -ldl
 
 
 static int width = 600, height = 600;

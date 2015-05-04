@@ -14,13 +14,12 @@ if sys.version_info >= (3, 0):
 else:
     from urllib2 import urlopen
 
-
 _ARRAY_RE = re.compile(r'\[\d+\]')
 
 
 class Spec(object):
     API = 'https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/'
-    NAME = None
+    NAME = ''
 
     def __init__(self, root):
         self.root = root
@@ -34,7 +33,6 @@ class Spec(object):
 
     @classmethod
     def from_url(cls, url):
-        raw = ''
         with closing(urlopen(url)) as f:
             raw = f.read()
 
@@ -46,7 +44,7 @@ class Spec(object):
 
     @classmethod
     def fromstring(cls, string):
-        return cls(etree.fromstring(raw))
+        return cls(etree.fromstring(string))
 
     @classmethod
     def from_file(cls, path):
@@ -86,7 +84,7 @@ class Spec(object):
         self._enums = dict()
         for element in self.root.iter('enums'):
             namespace = element.attrib['namespace']
-            type = element.get('type')
+            type_ = element.get('type')
             group = element.get('group')
             vendor = element.get('vendor')
             comment = element.get('comment', '')
@@ -98,7 +96,7 @@ class Spec(object):
 
                 name = enum.attrib['name']
                 self._enums[name] = Enum(name, enum.attrib['value'], namespace,
-                                         type, group, vendor, comment)
+                                         type_, group, vendor, comment)
 
         return self._enums
 
@@ -140,6 +138,7 @@ class Type(object):
     def is_preprocessor(self):
         return '#' in self.raw
 
+
 class Group(object):
     def __init__(self, element):
         self.name = element.attrib['name']
@@ -147,12 +146,12 @@ class Group(object):
 
 
 class Enum(object):
-    def __init__(self, name, value, namespace, type=None,
+    def __init__(self, name, value, namespace, type_=None,
                  group=None, vendor=None, comment=''):
         self.name = name
         self.value = value
         self.namespace = namespace
-        self.type = type
+        self.type = type_
         self.group = group
         self.vendor = vendor
         self.comment = comment
@@ -162,6 +161,7 @@ class Enum(object):
 
     def __str__(self):
         return self.name
+
     __repr__ = __str__
 
 
@@ -175,6 +175,7 @@ class Command(object):
 
     def __str__(self):
         return '{self.proto.name}'.format(self=self)
+
     __repr__ = __str__
 
 
@@ -202,11 +203,11 @@ class OGLType(object):
         text = ''.join(element.itertext())
         self.type = (text.replace('const', '').replace('unsigned', '')
                      .replace('struct', '').strip().split(None, 1)[0]
-                if element.find('ptype') is None else element.find('ptype').text)
+                     if element.find('ptype') is None else element.find('ptype').text)
         # 0 if no pointer, 1 if *, 2 if **
         self.is_pointer = 0 if text is None else text.count('*')
         # it can be a pointer to an array, or just an array
-        self.is_pointer = self.is_pointer + len(_ARRAY_RE.findall(text))
+        self.is_pointer += len(_ARRAY_RE.findall(text))
         self.is_const = False if text is None else 'const' in text
         self.is_unsigned = False if text is None else 'unsigned' in text
 
@@ -217,19 +218,20 @@ class OGLType(object):
 
         if self.is_pointer > 1 and self.is_const:
             s = 'const({}{}*)'.format('u' if self.is_unsigned else '', self.type)
-            s += '*'*(self.is_pointer-1)
+            s += '*' * (self.is_pointer - 1)
         else:
             t = '{}{}'.format('u' if self.is_unsigned else '', self.type)
             s = 'const({})'.format(t) if self.is_const else t
-            s += '*'*self.is_pointer
+            s += '*' * self.is_pointer
         return s.replace('struct ', '')
+
     to_volt = to_d
 
     def to_c(self):
         ut = 'unsigned {}'.format(self.type) if self.is_unsigned else self.type
         s = '{}const {}'.format('unsigned ' if self.is_unsigned else '', self.type) \
-                if self.is_const else ut
-        s += '*'*self.is_pointer
+            if self.is_const else ut
+        s += '*' * self.is_pointer
         return s
 
     __str__ = to_d
@@ -268,6 +270,7 @@ class Extension(object):
 
     def __str__(self):
         return self.name
+
     __repr__ = __str__
 
 

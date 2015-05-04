@@ -12,7 +12,7 @@
 // The code originally used GLEW, I replaced it with Glad
 
 // Compile:
-// g++ hellowindow2.cpp -Iglad/build/include glad/build/src/glad.c -lglfw -ldl
+// g++ example/c++/hellowindow2.cpp -Ibuild/include build/src/glad.c -lglfw -ldl
 
 
 // Function prototypes
@@ -58,7 +58,7 @@ int main()
     // Game loop
     while (!glfwWindowShouldClose(window))
     {
-        // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
+        // Check if any events have been activated (key pressed, mouse moved etc.) and call corresponding response functions
         glfwPollEvents();
 
         // Render
@@ -70,7 +70,7 @@ int main()
         glfwSwapBuffers(window);
     }
 
-    // Terminatest GLFW, clearing any resources allocated by GLFW.
+    // Terminates GLFW, clearing any resources allocated by GLFW.
     glfwTerminate();
     return 0;
 }

@@ -1,6 +1,12 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 set -e
+
+if [ "$1" != "no-download" ]; then
+    ./download.sh
+fi
+
+
 
 rm -rf build
 echo "Generating C"
