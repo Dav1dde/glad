@@ -8,3 +8,5 @@ a.out
 main.c
 *.diff
 .idea
+dist/
+*.egg-info
