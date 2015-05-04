@@ -90,9 +90,11 @@ def main():
     parser.add_argument('--generator', dest='generator', default='d',
                         choices=['c', 'd', 'volt'], required=True,
                         help='Language to generate the binding for')
-    parser.add_argument('--extensions', dest='extensions', default=None,
-                        type=ext_file, help='Path to extensions file or comma '
-                                            'separated list of extensions')
+    parser.add_argument('--extensions', dest='extensions',
+                        default=None, type=ext_file,
+                        help='Path to extensions file or comma separated '
+                             'list of extensions, if missing '
+                             'all extensions are included')
     parser.add_argument('--spec', dest='spec', default='gl',
                         choices=['gl', 'egl', 'glx', 'wgl'],
                         help='Name of the spec')

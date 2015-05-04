@@ -13,36 +13,48 @@ Advantages:
  * Easy way to check if an extension is loaded `if(GL_EXT_framebuffer_multisample) { /* Exists */ }`
  * Can generate a loader which fits exactly your needs, only the extensions and version you need
 
-What a D code using glad (and SDL) could look like:
 
-```d
-import glad.gl; // imports all constants and functions, including extensions
-import glad.loader : gladLoadGL;
-void main() {
-    /* setup OpenGL context with SDL */
-    gladLoadGL(x => SDL_GL_GetProcAddress(x));
-    enforce(GLVersion.major >= 3 && GLVersion.minor >= 2);
-    /* done, use OpenGL here */
-}
-```
-
-Of course you don't need to use SDL, glad provides its own OpenGL loader:
+Example using glut and glad:
 
 ```c
-void main() {
-    /* setup OpenGL context with e.g. glfw */
-    enforce(gladLoadGL());
-    enforce(GLVersion.major == 3 && GLVersion.minor == 2);
-    enforce(GL_EXT_texture_filter_anisotropic, "Extension not supported!");
-    /* done, use OpenGL here */
+int main(int argc, char **argv)
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
+    glutInitWindowSize(width, height);
+    glutCreateWindow("cookie");
+
+    glutReshapeFunc(reshape);
+    glutDisplayFunc(display);
+
+    if(!gladLoadGL()) {
+        printf("Something went wrong!\n");
+        exit(-1);
+    }
+    // gladLoadGLLoader(&glutGetProcAddress);
+    printf("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
+    if (GLVersion.major < 2) {
+        printf("Your system doesn't support OpenGL >= 2!\n");
+        return -1;
+    }
+
+    printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION),
+           glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+    glutMainLoop();
+
+    return 0;
 }
 ```
 
-You're not familiar with D, here is a C example:
-[https://github.com/Dav1dde/glad/blob/master/example/c/simple.c](https://github.com/Dav1dde/glad/blob/master/example/c/simple.c)
+Checkout the full example: [simple.c](https://github.com/Dav1dde/glad/blob/master/example/c/simple.c)
+
+Or the C++ example (using [GLFW](http://glfw.org), which I recommend you to use):
+[hellowindow2.cpp](https://github.com/Dav1dde/glad/blob/master/example/c%2B%2B/hellowindow2.cpp)
 
 
-If you don't want to generate your own loader or just wanna check out the generated code:
+If you don't want to generate your own loader or just wanna check out the generated code
+(these files are extremely bloated, since they contain code for *every* extension):
 
  * C/C++ loader: https://github.com/Dav1dde/glad/tree/c
  * D loader: https://github.com/Dav1dde/glad/tree/d
@@ -54,43 +66,50 @@ If you don't want to generate your own loader or just wanna check out the genera
 
 ### Generator ###
 
-To generate the loader for your language execute `main.py` with a Python 2
-interpreter.
+Either install glad via pip (root might be required):
+
+    pip install --upgrade git+https://github.com/dav1dde/glad.git#egg=glad
+    glad --help
+
+Or launch glad directly
+
+    python -m glad --help
+
 
 Possible commandline options:
 
-    usage: main.py [-h] [--profile {core,compatibility}] --out-path OUT
-                [--api API] [--generator {c,d,volt}] [--extensions EXTENSIONS]
-                [--spec {gl,egl,glx,wgl}] [--no-loader]
-
+    usage: glad [-h] [--profile {core,compatibility}] --out-path OUT
+                     [--api API] --generator {c,d,volt}
+                     [--extensions EXTENSIONS] [--spec {gl,egl,glx,wgl}]
+                     [--no-loader]
+    
     Uses the official Khronos-XML specs to generate a GL/GLES/EGL/GLX/WGL Loader
     made for your needs. Glad currently supports the languages C, D and Volt.
-
+    
     optional arguments:
-    -h, --help            show this help message and exit
-    --profile {core,compatibility}
+      -h, --help            show this help message and exit
+      --profile {core,compatibility}
                             OpenGL profile (defaults to compatibility)
-    --out-path OUT        Output path for loader
-    --api API             API type/version pairs, like "gl=3.2,gles=", no
+      --out-path OUT        Output path for loader
+      --api API             API type/version pairs, like "gl=3.2,gles=", no
                             version means latest
-    --generator {c,d,volt}
-                            Language (defaults to d)
-    --extensions EXTENSIONS
+      --generator {c,d,volt}
+                            Language to generate the binding for
+      --extensions EXTENSIONS
                             Path to extensions file or comma separated list of
-                            extensions
-    --spec {gl,egl,glx,wgl}
-                            Name of spec
-    --no-loader
+                            extensions, if missing all extensions are included
+      --spec {gl,egl,glx,wgl}
+                            Name of the spec
+      --no-loader
 
 
-
-By default a loader for the D programming language will be generated. To generate
-a loader for C with two extensions, it could look like this:
+To generate a loader for C with two extensions, it could look like this:
 
     python main.py --generator=c --extensions=GL_EXT_framebuffer_multisample,GL_EXT_texture_filter_anisotropic --out-path=GL
 
-`--out-path` is the only required option. If the `--extensions` option is missing,
-glad adds support for all extensions found in the OpenGL spec.
+`--out-path` and `--generator` are required!
+If the `--extensions` option is missing, glad adds support for all extensions found in the OpenGL spec.
+
 
 ### API ###
 
@@ -98,10 +117,12 @@ The glad loader API follows this convention (if backend generates a loader, this
 for Volt but any other language (C and D) have a loader)
 
 ```c
-struct {
+struct gladGLversionStruct {
     int major;
     int minor;
-} GLVersion;
+};
+
+extern struct gladGLversionStruct GLVersion;
 
 typedef void* (* GLADloadproc)(const char *name);
 
@@ -157,6 +178,7 @@ the functions needed to initialize `glad` and load the OpenGL functions.
 ```
 
 On non-Windows platforms `glad` requires `libdl`, make sure to link with it (`L-ldl` for dmd)!
+
 
 ## Contribute ##
 
