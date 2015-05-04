@@ -5334,6 +5334,9 @@ GLAPI PFNGLTRANSLATEXPROC glad_glTranslatex;
 #define GL_MODELVIEW29_ARB 0x873D
 #define GL_MODELVIEW30_ARB 0x873E
 #define GL_MODELVIEW31_ARB 0x873F
+#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_NUM_VIEWS_OVR 0x9630
+#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_BASE_VIEW_INDEX_OVR 0x9632
+#define GL_MAX_VIEWS_OVR 0x9631
 #define GL_SAMPLES_ARB 0x80A9
 #define GL_COLOR_SAMPLES_NV 0x8E20
 #define GL_NORMAL_MAP_EXT 0x8511
@@ -5611,6 +5614,25 @@ GLAPI PFNGLTRANSLATEXPROC glad_glTranslatex;
 #define GL_DRAW_FRAMEBUFFER_EXT 0x8CA9
 #define GL_DRAW_FRAMEBUFFER_BINDING_EXT 0x8CA6
 #define GL_READ_FRAMEBUFFER_BINDING_EXT 0x8CAA
+#define GL_TERMINATE_SEQUENCE_COMMAND_NV 0x0000
+#define GL_NOP_COMMAND_NV 0x0001
+#define GL_DRAW_ELEMENTS_COMMAND_NV 0x0002
+#define GL_DRAW_ARRAYS_COMMAND_NV 0x0003
+#define GL_DRAW_ELEMENTS_STRIP_COMMAND_NV 0x0004
+#define GL_DRAW_ARRAYS_STRIP_COMMAND_NV 0x0005
+#define GL_DRAW_ELEMENTS_INSTANCED_COMMAND_NV 0x0006
+#define GL_DRAW_ARRAYS_INSTANCED_COMMAND_NV 0x0007
+#define GL_ELEMENT_ADDRESS_COMMAND_NV 0x0008
+#define GL_ATTRIBUTE_ADDRESS_COMMAND_NV 0x0009
+#define GL_UNIFORM_ADDRESS_COMMAND_NV 0x000A
+#define GL_BLEND_COLOR_COMMAND_NV 0x000B
+#define GL_STENCIL_REF_COMMAND_NV 0x000C
+#define GL_LINE_WIDTH_COMMAND_NV 0x000D
+#define GL_POLYGON_OFFSET_COMMAND_NV 0x000E
+#define GL_ALPHA_REF_COMMAND_NV 0x000F
+#define GL_VIEWPORT_COMMAND_NV 0x0010
+#define GL_SCISSOR_COMMAND_NV 0x0011
+#define GL_FRONT_FACE_COMMAND_NV 0x0012
 #define GL_DEPTH_COMPONENT16_SGIX 0x81A5
 #define GL_DEPTH_COMPONENT24_SGIX 0x81A6
 #define GL_DEPTH_COMPONENT32_SGIX 0x81A7
@@ -6125,6 +6147,7 @@ GLAPI PFNGLTRANSLATEXPROC glad_glTranslatex;
 #define GL_PROGRAM_KHR 0x82E2
 #define GL_VERTEX_ARRAY_KHR 0x8074
 #define GL_QUERY_KHR 0x82E3
+#define GL_PROGRAM_PIPELINE_KHR 0x82E4
 #define GL_SAMPLER_KHR 0x82E6
 #define GL_MAX_LABEL_LENGTH_KHR 0x82E8
 #define GL_MAX_DEBUG_MESSAGE_LENGTH_KHR 0x9143
@@ -8229,10 +8252,18 @@ GLAPI PFNGLTRANSLATEXPROC glad_glTranslatex;
 #define GL_UNSIGNED_INT_24_8_OES 0x84FA
 #define GL_DEPTH24_STENCIL8_OES 0x88F0
 #define GL_PERFMON_GLOBAL_MODE_QCOM 0x8FA0
-#define GL_MAX_VIEWPORTS_NV 0x825B
-#define GL_VIEWPORT_SUBPIXEL_BITS_NV 0x825C
-#define GL_VIEWPORT_BOUNDS_RANGE_NV 0x825D
-#define GL_VIEWPORT_INDEX_PROVOKING_VERTEX_NV 0x825F
+#define GL_TEXTURE_SPARSE_EXT 0x91A6
+#define GL_VIRTUAL_PAGE_SIZE_INDEX_EXT 0x91A7
+#define GL_NUM_SPARSE_LEVELS_EXT 0x91AA
+#define GL_NUM_VIRTUAL_PAGE_SIZES_EXT 0x91A8
+#define GL_VIRTUAL_PAGE_SIZE_X_EXT 0x9195
+#define GL_VIRTUAL_PAGE_SIZE_Y_EXT 0x9196
+#define GL_VIRTUAL_PAGE_SIZE_Z_EXT 0x9197
+#define GL_TEXTURE_CUBE_MAP_ARRAY_OES 0x9009
+#define GL_MAX_SPARSE_TEXTURE_SIZE_EXT 0x9198
+#define GL_MAX_SPARSE_3D_TEXTURE_SIZE_EXT 0x9199
+#define GL_MAX_SPARSE_ARRAY_TEXTURE_LAYERS_EXT 0x919A
+#define GL_SPARSE_TEXTURE_FULL_ARRAY_CUBE_MIPMAPS_EXT 0x91A9
 #define GL_TEXTURE_BORDER_COLOR_NV 0x1004
 #define GL_CLAMP_TO_BORDER_NV 0x812D
 #define GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG 0x8C00
@@ -8264,6 +8295,17 @@ GLAPI PFNGLTRANSLATEXPROC glad_glTranslatex;
 #define GL_COVERAGE_EDGE_FRAGMENTS_NV 0x8ED6
 #define GL_COVERAGE_AUTOMATIC_NV 0x8ED7
 #define GL_COVERAGE_BUFFER_BIT_NV 0x00008000
+#define GL_TEXTURE_BINDING_CUBE_MAP_ARRAY_OES 0x900A
+#define GL_SAMPLER_CUBE_MAP_ARRAY_OES 0x900C
+#define GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW_OES 0x900D
+#define GL_INT_SAMPLER_CUBE_MAP_ARRAY_OES 0x900E
+#define GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY_OES 0x900F
+#define GL_IMAGE_CUBE_MAP_ARRAY_OES 0x9054
+#define GL_INT_IMAGE_CUBE_MAP_ARRAY_OES 0x905F
+#define GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY_OES 0x906A
+#define GL_RENDERBUFFER_SAMPLES_ANGLE 0x8CAB
+#define GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ANGLE 0x8D56
+#define GL_MAX_SAMPLES_ANGLE 0x8D57
 #define GL_VERTEX_ARRAY_BINDING_OES 0x85B5
 #define GL_COLOR_BUFFER_BIT0_QCOM 0x00000001
 #define GL_COLOR_BUFFER_BIT1_QCOM 0x00000002
@@ -8334,6 +8376,7 @@ GLAPI PFNGLTRANSLATEXPROC glad_glTranslatex;
 #define GL_PRIMITIVE_BOUNDING_BOX_EXT 0x92BE
 #define GL_BGRA_IMG 0x80E1
 #define GL_UNSIGNED_SHORT_4_4_4_4_REV_IMG 0x8365
+#define GL_SRG8_EXT 0x8FBE
 #define GL_MAX_CLIP_DISTANCES_APPLE 0x0D32
 #define GL_CLIP_DISTANCE0_APPLE 0x3000
 #define GL_CLIP_DISTANCE1_APPLE 0x3001
@@ -8428,9 +8471,6 @@ GLAPI PFNGLTRANSLATEXPROC glad_glTranslatex;
 #define GL_TEXTURE_VIEW_MIN_LAYER_OES 0x82DD
 #define GL_TEXTURE_VIEW_NUM_LAYERS_OES 0x82DE
 #define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_SAMPLES_EXT 0x8D6C
-#define GL_RENDERBUFFER_SAMPLES_ANGLE 0x8CAB
-#define GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ANGLE 0x8D56
-#define GL_MAX_SAMPLES_ANGLE 0x8D57
 #define GL_TEXTURE_BUFFER_OES 0x8C2A
 #define GL_TEXTURE_BUFFER_BINDING_OES 0x8C2A
 #define GL_MAX_TEXTURE_BUFFER_SIZE_OES 0x8C2B
@@ -8557,6 +8597,13 @@ GLAPI PFNGLTRANSLATEXPROC glad_glTranslatex;
 #define GL_RENDERBUFFER_SAMPLES_NV 0x8CAB
 #define GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_NV 0x8D56
 #define GL_MAX_SAMPLES_NV 0x8D57
+#define GL_FETCH_PER_SAMPLE_ARM 0x8F65
+#define GL_FRAGMENT_SHADER_FRAMEBUFFER_FETCH_MRT_ARM 0x8F66
+#define GL_TEXTURE_2D_MULTISAMPLE_ARRAY_OES 0x9102
+#define GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY_OES 0x9105
+#define GL_SAMPLER_2D_MULTISAMPLE_ARRAY_OES 0x910B
+#define GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY_OES 0x910C
+#define GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY_OES 0x910D
 #define GL_MAX_DRAW_BUFFERS_NV 0x8824
 #define GL_DRAW_BUFFER0_NV 0x8825
 #define GL_DRAW_BUFFER1_NV 0x8826
@@ -8574,13 +8621,6 @@ GLAPI PFNGLTRANSLATEXPROC glad_glTranslatex;
 #define GL_DRAW_BUFFER13_NV 0x8832
 #define GL_DRAW_BUFFER14_NV 0x8833
 #define GL_DRAW_BUFFER15_NV 0x8834
-#define GL_FETCH_PER_SAMPLE_ARM 0x8F65
-#define GL_FRAGMENT_SHADER_FRAMEBUFFER_FETCH_MRT_ARM 0x8F66
-#define GL_TEXTURE_2D_MULTISAMPLE_ARRAY_OES 0x9102
-#define GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY_OES 0x9105
-#define GL_SAMPLER_2D_MULTISAMPLE_ARRAY_OES 0x910B
-#define GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY_OES 0x910C
-#define GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY_OES 0x910D
 #define GL_UNSIGNED_INT_10_10_10_2_OES 0x8DF6
 #define GL_INT_10_10_10_2_OES 0x8DF7
 #define GL_SHADER_BINARY_DMP 0x9250
@@ -8633,6 +8673,10 @@ GLAPI PFNGLTRANSLATEXPROC glad_glTranslatex;
 #define GL_MIN_SAMPLE_SHADING_VALUE_OES 0x8C37
 #define GL_COMPRESSED_RGBA_PVRTC_2BPPV2_IMG 0x9137
 #define GL_COMPRESSED_RGBA_PVRTC_4BPPV2_IMG 0x9138
+#define GL_MAX_VIEWPORTS_NV 0x825B
+#define GL_VIEWPORT_SUBPIXEL_BITS_NV 0x825C
+#define GL_VIEWPORT_BOUNDS_RANGE_NV 0x825D
+#define GL_VIEWPORT_INDEX_PROVOKING_VERTEX_NV 0x825F
 #define GL_MAP_READ_BIT_EXT 0x0001
 #define GL_MAP_WRITE_BIT_EXT 0x0002
 #define GL_MAP_INVALIDATE_RANGE_BIT_EXT 0x0004
@@ -8643,6 +8687,12 @@ GLAPI PFNGLTRANSLATEXPROC glad_glTranslatex;
 #define GL_BUFFER_ACCESS_OES 0x88BB
 #define GL_BUFFER_MAPPED_OES 0x88BC
 #define GL_BUFFER_MAP_POINTER_OES 0x88BD
+#define GL_POLYGON_MODE_NV 0x0B40
+#define GL_POLYGON_OFFSET_POINT_NV 0x2A01
+#define GL_POLYGON_OFFSET_LINE_NV 0x2A02
+#define GL_POINT_NV 0x1B00
+#define GL_LINE_NV 0x1B01
+#define GL_FILL_NV 0x1B02
 #define GL_TEXTURE_EXTERNAL_OES 0x8D65
 #define GL_TEXTURE_BINDING_EXTERNAL_OES 0x8D67
 #define GL_REQUIRED_TEXTURE_IMAGE_UNITS_OES 0x8D68
@@ -8654,15 +8704,7 @@ GLAPI PFNGLTRANSLATEXPROC glad_glTranslatex;
 #define GL_MAX_SAMPLES_IMG 0x9135
 #define GL_TEXTURE_SAMPLES_IMG 0x9136
 #define GL_DEPTH_COMPONENT16_NONLINEAR_NV 0x8E2C
-#define GL_TEXTURE_CUBE_MAP_ARRAY_OES 0x9009
-#define GL_TEXTURE_BINDING_CUBE_MAP_ARRAY_OES 0x900A
-#define GL_SAMPLER_CUBE_MAP_ARRAY_OES 0x900C
-#define GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW_OES 0x900D
-#define GL_INT_SAMPLER_CUBE_MAP_ARRAY_OES 0x900E
-#define GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY_OES 0x900F
-#define GL_IMAGE_CUBE_MAP_ARRAY_OES 0x9054
-#define GL_INT_IMAGE_CUBE_MAP_ARRAY_OES 0x905F
-#define GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY_OES 0x906A
+#define GL_SAMPLER_EXTERNAL_2D_Y2Y_EXT 0x8BE7
 #define GL_MALI_SHADER_BINARY_ARM 0x8F60
 #define GL_COLOR_ATTACHMENT_EXT 0x90F0
 #define GL_MULTIVIEW_EXT 0x90F1
@@ -8762,6 +8804,7 @@ GLAPI PFNGLTRANSLATEXPROC glad_glTranslatex;
 #define GL_TESS_CONTROL_SHADER_BIT_EXT 0x00000008
 #define GL_TESS_EVALUATION_SHADER_BIT_EXT 0x00000010
 #define GL_PRIMITIVE_BOUNDING_BOX_OES 0x92BE
+#define GL_SR8_EXT 0x8FBD
 #define GL_READ_BUFFER_NV 0x0C02
 #define GL_TEXTURE_CUBE_MAP_ARRAY_EXT 0x9009
 #define GL_TEXTURE_BINDING_CUBE_MAP_ARRAY_EXT 0x900A
@@ -9006,6 +9049,13 @@ GLAPI PFNGLWEIGHTPOINTERARBPROC glad_glWeightPointerARB;
 typedef void (APIENTRYP PFNGLVERTEXBLENDARBPROC)(GLint);
 GLAPI PFNGLVERTEXBLENDARBPROC glad_glVertexBlendARB;
 #define glVertexBlendARB glad_glVertexBlendARB
+#endif
+#ifndef GL_OVR_multiview
+#define GL_OVR_multiview 1
+GLAPI int GLAD_GL_OVR_multiview;
+typedef void (APIENTRYP PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC)(GLenum, GLenum, GLuint, GLint, GLint, GLsizei);
+GLAPI PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC glad_glFramebufferTextureMultiviewOVR;
+#define glFramebufferTextureMultiviewOVR glad_glFramebufferTextureMultiviewOVR
 #endif
 #ifndef GL_NV_vertex_program2
 #define GL_NV_vertex_program2 1
@@ -9893,6 +9943,61 @@ GLAPI PFNGLBLITFRAMEBUFFEREXTPROC glad_glBlitFramebufferEXT;
 #ifndef GL_ARB_gpu_shader_fp64
 #define GL_ARB_gpu_shader_fp64 1
 GLAPI int GLAD_GL_ARB_gpu_shader_fp64;
+#endif
+#ifndef GL_NV_command_list
+#define GL_NV_command_list 1
+GLAPI int GLAD_GL_NV_command_list;
+typedef void (APIENTRYP PFNGLCREATESTATESNVPROC)(GLsizei, GLuint*);
+GLAPI PFNGLCREATESTATESNVPROC glad_glCreateStatesNV;
+#define glCreateStatesNV glad_glCreateStatesNV
+typedef void (APIENTRYP PFNGLDELETESTATESNVPROC)(GLsizei, const GLuint*);
+GLAPI PFNGLDELETESTATESNVPROC glad_glDeleteStatesNV;
+#define glDeleteStatesNV glad_glDeleteStatesNV
+typedef GLboolean (APIENTRYP PFNGLISSTATENVPROC)(GLuint);
+GLAPI PFNGLISSTATENVPROC glad_glIsStateNV;
+#define glIsStateNV glad_glIsStateNV
+typedef void (APIENTRYP PFNGLSTATECAPTURENVPROC)(GLuint, GLenum);
+GLAPI PFNGLSTATECAPTURENVPROC glad_glStateCaptureNV;
+#define glStateCaptureNV glad_glStateCaptureNV
+typedef GLuint (APIENTRYP PFNGLGETCOMMANDHEADERNVPROC)(GLenum, GLuint);
+GLAPI PFNGLGETCOMMANDHEADERNVPROC glad_glGetCommandHeaderNV;
+#define glGetCommandHeaderNV glad_glGetCommandHeaderNV
+typedef GLushort (APIENTRYP PFNGLGETSTAGEINDEXNVPROC)(GLenum);
+GLAPI PFNGLGETSTAGEINDEXNVPROC glad_glGetStageIndexNV;
+#define glGetStageIndexNV glad_glGetStageIndexNV
+typedef void (APIENTRYP PFNGLDRAWCOMMANDSNVPROC)(GLenum, GLuint, const GLintptr*, const GLsizei*, GLuint);
+GLAPI PFNGLDRAWCOMMANDSNVPROC glad_glDrawCommandsNV;
+#define glDrawCommandsNV glad_glDrawCommandsNV
+typedef void (APIENTRYP PFNGLDRAWCOMMANDSADDRESSNVPROC)(GLenum, const GLuint64*, const GLsizei*, GLuint);
+GLAPI PFNGLDRAWCOMMANDSADDRESSNVPROC glad_glDrawCommandsAddressNV;
+#define glDrawCommandsAddressNV glad_glDrawCommandsAddressNV
+typedef void (APIENTRYP PFNGLDRAWCOMMANDSSTATESNVPROC)(GLuint, const GLintptr*, const GLsizei*, const GLuint*, const GLuint*, GLuint);
+GLAPI PFNGLDRAWCOMMANDSSTATESNVPROC glad_glDrawCommandsStatesNV;
+#define glDrawCommandsStatesNV glad_glDrawCommandsStatesNV
+typedef void (APIENTRYP PFNGLDRAWCOMMANDSSTATESADDRESSNVPROC)(const GLuint64*, const GLsizei*, const GLuint*, const GLuint*, GLuint);
+GLAPI PFNGLDRAWCOMMANDSSTATESADDRESSNVPROC glad_glDrawCommandsStatesAddressNV;
+#define glDrawCommandsStatesAddressNV glad_glDrawCommandsStatesAddressNV
+typedef void (APIENTRYP PFNGLCREATECOMMANDLISTSNVPROC)(GLsizei, GLuint*);
+GLAPI PFNGLCREATECOMMANDLISTSNVPROC glad_glCreateCommandListsNV;
+#define glCreateCommandListsNV glad_glCreateCommandListsNV
+typedef void (APIENTRYP PFNGLDELETECOMMANDLISTSNVPROC)(GLsizei, const GLuint*);
+GLAPI PFNGLDELETECOMMANDLISTSNVPROC glad_glDeleteCommandListsNV;
+#define glDeleteCommandListsNV glad_glDeleteCommandListsNV
+typedef GLboolean (APIENTRYP PFNGLISCOMMANDLISTNVPROC)(GLuint);
+GLAPI PFNGLISCOMMANDLISTNVPROC glad_glIsCommandListNV;
+#define glIsCommandListNV glad_glIsCommandListNV
+typedef void (APIENTRYP PFNGLLISTDRAWCOMMANDSSTATESCLIENTNVPROC)(GLuint, GLuint, const void**, const GLsizei*, const GLuint*, const GLuint*, GLuint);
+GLAPI PFNGLLISTDRAWCOMMANDSSTATESCLIENTNVPROC glad_glListDrawCommandsStatesClientNV;
+#define glListDrawCommandsStatesClientNV glad_glListDrawCommandsStatesClientNV
+typedef void (APIENTRYP PFNGLCOMMANDLISTSEGMENTSNVPROC)(GLuint, GLuint);
+GLAPI PFNGLCOMMANDLISTSEGMENTSNVPROC glad_glCommandListSegmentsNV;
+#define glCommandListSegmentsNV glad_glCommandListSegmentsNV
+typedef void (APIENTRYP PFNGLCOMPILECOMMANDLISTNVPROC)(GLuint);
+GLAPI PFNGLCOMPILECOMMANDLISTNVPROC glad_glCompileCommandListNV;
+#define glCompileCommandListNV glad_glCompileCommandListNV
+typedef void (APIENTRYP PFNGLCALLCOMMANDLISTNVPROC)(GLuint);
+GLAPI PFNGLCALLCOMMANDLISTNVPROC glad_glCallCommandListNV;
+#define glCallCommandListNV glad_glCallCommandListNV
 #endif
 #ifndef GL_SGIX_depth_texture
 #define GL_SGIX_depth_texture 1
@@ -11681,6 +11786,10 @@ GLAPI int GLAD_GL_EXT_stencil_wrap;
 #ifndef GL_EXT_index_array_formats
 #define GL_EXT_index_array_formats 1
 GLAPI int GLAD_GL_EXT_index_array_formats;
+#endif
+#ifndef GL_OVR_multiview2
+#define GL_OVR_multiview2 1
+GLAPI int GLAD_GL_OVR_multiview2;
 #endif
 #ifndef GL_EXT_histogram
 #define GL_EXT_histogram 1
@@ -15863,9 +15972,6 @@ GLAPI PFNGLPOLYGONOFFSETXOESPROC glad_glPolygonOffsetxOES;
 typedef void (APIENTRYP PFNGLROTATEXOESPROC)(GLfixed, GLfixed, GLfixed, GLfixed);
 GLAPI PFNGLROTATEXOESPROC glad_glRotatexOES;
 #define glRotatexOES glad_glRotatexOES
-typedef void (APIENTRYP PFNGLSAMPLECOVERAGEOESPROC)(GLfixed, GLboolean);
-GLAPI PFNGLSAMPLECOVERAGEOESPROC glad_glSampleCoverageOES;
-#define glSampleCoverageOES glad_glSampleCoverageOES
 typedef void (APIENTRYP PFNGLSCALEXOESPROC)(GLfixed, GLfixed, GLfixed);
 GLAPI PFNGLSCALEXOESPROC glad_glScalexOES;
 #define glScalexOES glad_glScalexOES
@@ -16292,6 +16398,10 @@ GLAPI int GLAD_GL_KHR_context_flush_control;
 #define GL_KHR_blend_equation_advanced_coherent 1
 GLAPI int GLAD_GL_KHR_blend_equation_advanced_coherent;
 #endif
+#ifndef GL_NV_fragment_coverage_to_color
+#define GL_NV_fragment_coverage_to_color 1
+GLAPI int GLAD_GL_NV_fragment_coverage_to_color;
+#endif
 #ifndef GL_NV_fence
 #define GL_NV_fence 1
 GLAPI int GLAD_GL_NV_fence;
@@ -16299,6 +16409,26 @@ GLAPI int GLAD_GL_NV_fence;
 #ifndef GL_EXT_texture_compression_s3tc
 #define GL_EXT_texture_compression_s3tc 1
 GLAPI int GLAD_GL_EXT_texture_compression_s3tc;
+#endif
+#ifndef GL_NV_sample_locations
+#define GL_NV_sample_locations 1
+GLAPI int GLAD_GL_NV_sample_locations;
+#endif
+#ifndef GL_OVR_multiview
+#define GL_OVR_multiview 1
+GLAPI int GLAD_GL_OVR_multiview;
+#endif
+#ifndef GL_NV_fill_rectangle
+#define GL_NV_fill_rectangle 1
+GLAPI int GLAD_GL_NV_fill_rectangle;
+#endif
+#ifndef GL_NV_sample_mask_override_coverage
+#define GL_NV_sample_mask_override_coverage 1
+GLAPI int GLAD_GL_NV_sample_mask_override_coverage;
+#endif
+#ifndef GL_NV_viewport_array2
+#define GL_NV_viewport_array2 1
+GLAPI int GLAD_GL_NV_viewport_array2;
 #endif
 #ifndef GL_KHR_robustness
 #define GL_KHR_robustness 1
@@ -16308,13 +16438,29 @@ GLAPI int GLAD_GL_KHR_robustness;
 #define GL_OES_compressed_paletted_texture 1
 GLAPI int GLAD_GL_OES_compressed_paletted_texture;
 #endif
+#ifndef GL_NV_conservative_raster
+#define GL_NV_conservative_raster 1
+GLAPI int GLAD_GL_NV_conservative_raster;
+#endif
+#ifndef GL_NV_path_rendering_shared_edge
+#define GL_NV_path_rendering_shared_edge 1
+GLAPI int GLAD_GL_NV_path_rendering_shared_edge;
+#endif
 #ifndef GL_EXT_shader_integer_mix
 #define GL_EXT_shader_integer_mix 1
 GLAPI int GLAD_GL_EXT_shader_integer_mix;
 #endif
+#ifndef GL_NV_framebuffer_mixed_samples
+#define GL_NV_framebuffer_mixed_samples 1
+GLAPI int GLAD_GL_NV_framebuffer_mixed_samples;
+#endif
 #ifndef GL_EXT_multi_draw_arrays
 #define GL_EXT_multi_draw_arrays 1
 GLAPI int GLAD_GL_EXT_multi_draw_arrays;
+#endif
+#ifndef GL_EXT_raster_multisample
+#define GL_EXT_raster_multisample 1
+GLAPI int GLAD_GL_EXT_raster_multisample;
 #endif
 #ifndef GL_KHR_robust_buffer_access_behavior
 #define GL_KHR_robust_buffer_access_behavior 1
@@ -16331,6 +16477,14 @@ GLAPI int GLAD_GL_EXT_debug_marker;
 #ifndef GL_NV_blend_equation_advanced_coherent
 #define GL_NV_blend_equation_advanced_coherent 1
 GLAPI int GLAD_GL_NV_blend_equation_advanced_coherent;
+#endif
+#ifndef GL_EXT_post_depth_coverage
+#define GL_EXT_post_depth_coverage 1
+GLAPI int GLAD_GL_EXT_post_depth_coverage;
+#endif
+#ifndef GL_NV_geometry_shader_passthrough
+#define GL_NV_geometry_shader_passthrough 1
+GLAPI int GLAD_GL_NV_geometry_shader_passthrough;
 #endif
 #ifndef GL_INTEL_performance_query
 #define GL_INTEL_performance_query 1
@@ -16352,9 +16506,17 @@ GLAPI int GLAD_GL_KHR_texture_compression_astc_hdr;
 #define GL_KHR_blend_equation_advanced 1
 GLAPI int GLAD_GL_KHR_blend_equation_advanced;
 #endif
+#ifndef GL_NV_fragment_shader_interlock
+#define GL_NV_fragment_shader_interlock 1
+GLAPI int GLAD_GL_NV_fragment_shader_interlock;
+#endif
 #ifndef GL_EXT_separate_shader_objects
 #define GL_EXT_separate_shader_objects 1
 GLAPI int GLAD_GL_EXT_separate_shader_objects;
+#endif
+#ifndef GL_EXT_texture_filter_minmax
+#define GL_EXT_texture_filter_minmax 1
+GLAPI int GLAD_GL_EXT_texture_filter_minmax;
 #endif
 #ifndef GL_NV_path_rendering
 #define GL_NV_path_rendering 1
@@ -16391,6 +16553,10 @@ GLAPI int GLAD_GL_NV_internalformat_sample_query;
 #ifndef GL_AMD_performance_monitor
 #define GL_AMD_performance_monitor 1
 GLAPI int GLAD_GL_AMD_performance_monitor;
+#endif
+#ifndef GL_OVR_multiview2
+#define GL_OVR_multiview2 1
+GLAPI int GLAD_GL_OVR_multiview2;
 #endif
 #ifndef GL_EXT_draw_instanced
 #define GL_EXT_draw_instanced 1
@@ -16448,6 +16614,18 @@ GLAPI int GLAD_GL_EXT_blend_minmax;
 #define GL_OES_byte_coordinates 1
 GLAPI int GLAD_GL_OES_byte_coordinates;
 #endif
+#ifndef GL_EXT_post_depth_coverage
+#define GL_EXT_post_depth_coverage 1
+GLAPI int GLAD_GL_EXT_post_depth_coverage;
+#endif
+#ifndef GL_OVR_multiview
+#define GL_OVR_multiview 1
+GLAPI int GLAD_GL_OVR_multiview;
+#endif
+#ifndef GL_NV_viewport_array2
+#define GL_NV_viewport_array2 1
+GLAPI int GLAD_GL_NV_viewport_array2;
+#endif
 #ifndef GL_OES_compressed_paletted_texture
 #define GL_OES_compressed_paletted_texture 1
 GLAPI int GLAD_GL_OES_compressed_paletted_texture;
@@ -16476,9 +16654,21 @@ GLAPI int GLAD_GL_EXT_shader_integer_mix;
 #define GL_KHR_robustness 1
 GLAPI int GLAD_GL_KHR_robustness;
 #endif
+#ifndef GL_NV_fragment_coverage_to_color
+#define GL_NV_fragment_coverage_to_color 1
+GLAPI int GLAD_GL_NV_fragment_coverage_to_color;
+#endif
 #ifndef GL_NV_fence
 #define GL_NV_fence 1
 GLAPI int GLAD_GL_NV_fence;
+#endif
+#ifndef GL_NV_sample_mask_override_coverage
+#define GL_NV_sample_mask_override_coverage 1
+GLAPI int GLAD_GL_NV_sample_mask_override_coverage;
+#endif
+#ifndef GL_NV_path_rendering_shared_edge
+#define GL_NV_path_rendering_shared_edge 1
+GLAPI int GLAD_GL_NV_path_rendering_shared_edge;
 #endif
 #ifndef GL_NV_blend_equation_advanced
 #define GL_NV_blend_equation_advanced 1
@@ -16487,6 +16677,10 @@ GLAPI int GLAD_GL_NV_blend_equation_advanced;
 #ifndef GL_KHR_robust_buffer_access_behavior
 #define GL_KHR_robust_buffer_access_behavior 1
 GLAPI int GLAD_GL_KHR_robust_buffer_access_behavior;
+#endif
+#ifndef GL_NV_geometry_shader_passthrough
+#define GL_NV_geometry_shader_passthrough 1
+GLAPI int GLAD_GL_NV_geometry_shader_passthrough;
 #endif
 #ifndef GL_NV_bindless_texture
 #define GL_NV_bindless_texture 1
@@ -16504,6 +16698,10 @@ GLAPI int GLAD_GL_KHR_texture_compression_astc_hdr;
 #define GL_KHR_blend_equation_advanced 1
 GLAPI int GLAD_GL_KHR_blend_equation_advanced;
 #endif
+#ifndef GL_EXT_texture_filter_minmax
+#define GL_EXT_texture_filter_minmax 1
+GLAPI int GLAD_GL_EXT_texture_filter_minmax;
+#endif
 #ifndef GL_EXT_blend_minmax
 #define GL_EXT_blend_minmax 1
 GLAPI int GLAD_GL_EXT_blend_minmax;
@@ -16511,6 +16709,18 @@ GLAPI int GLAD_GL_EXT_blend_minmax;
 #ifndef GL_NV_blend_equation_advanced_coherent
 #define GL_NV_blend_equation_advanced_coherent 1
 GLAPI int GLAD_GL_NV_blend_equation_advanced_coherent;
+#endif
+#ifndef GL_OVR_multiview2
+#define GL_OVR_multiview2 1
+GLAPI int GLAD_GL_OVR_multiview2;
+#endif
+#ifndef GL_NV_framebuffer_mixed_samples
+#define GL_NV_framebuffer_mixed_samples 1
+GLAPI int GLAD_GL_NV_framebuffer_mixed_samples;
+#endif
+#ifndef GL_EXT_raster_multisample
+#define GL_EXT_raster_multisample 1
+GLAPI int GLAD_GL_EXT_raster_multisample;
 #endif
 #ifndef GL_EXT_debug_marker
 #define GL_EXT_debug_marker 1
@@ -16544,9 +16754,21 @@ GLAPI int GLAD_GL_EXT_draw_instanced;
 #define GL_KHR_blend_equation_advanced_coherent 1
 GLAPI int GLAD_GL_KHR_blend_equation_advanced_coherent;
 #endif
+#ifndef GL_NV_fill_rectangle
+#define GL_NV_fill_rectangle 1
+GLAPI int GLAD_GL_NV_fill_rectangle;
+#endif
 #ifndef GL_KHR_texture_compression_astc_ldr
 #define GL_KHR_texture_compression_astc_ldr 1
 GLAPI int GLAD_GL_KHR_texture_compression_astc_ldr;
+#endif
+#ifndef GL_NV_conservative_raster
+#define GL_NV_conservative_raster 1
+GLAPI int GLAD_GL_NV_conservative_raster;
+#endif
+#ifndef GL_NV_fragment_shader_interlock
+#define GL_NV_fragment_shader_interlock 1
+GLAPI int GLAD_GL_NV_fragment_shader_interlock;
 #endif
 #ifndef GL_NV_path_rendering
 #define GL_NV_path_rendering 1
@@ -16559,6 +16781,10 @@ GLAPI int GLAD_GL_APPLE_rgb_422;
 #ifndef GL_EXT_texture_filter_anisotropic
 #define GL_EXT_texture_filter_anisotropic 1
 GLAPI int GLAD_GL_EXT_texture_filter_anisotropic;
+#endif
+#ifndef GL_NV_sample_locations
+#define GL_NV_sample_locations 1
+GLAPI int GLAD_GL_NV_sample_locations;
 #endif
 #ifndef GL_KHR_context_flush_control
 #define GL_KHR_context_flush_control 1
@@ -16594,6 +16820,10 @@ GLAPI int GLAD_GL_OES_packed_depth_stencil;
 #define GL_QCOM_perfmon_global_mode 1
 GLAPI int GLAD_GL_QCOM_perfmon_global_mode;
 #endif
+#ifndef GL_EXT_sparse_texture
+#define GL_EXT_sparse_texture 1
+GLAPI int GLAD_GL_EXT_sparse_texture;
+#endif
 #ifndef GL_NV_draw_instanced
 #define GL_NV_draw_instanced 1
 GLAPI int GLAD_GL_NV_draw_instanced;
@@ -16612,45 +16842,9 @@ GLAPI int GLAD_GL_OES_texture_half_float_linear;
 #define GL_KHR_blend_equation_advanced_coherent 1
 GLAPI int GLAD_GL_KHR_blend_equation_advanced_coherent;
 #endif
-#ifndef GL_NV_viewport_array
-#define GL_NV_viewport_array 1
-GLAPI int GLAD_GL_NV_viewport_array;
-typedef void (APIENTRYP PFNGLVIEWPORTARRAYVNVPROC)(GLuint, GLsizei, const GLfloat*);
-GLAPI PFNGLVIEWPORTARRAYVNVPROC glad_glViewportArrayvNV;
-#define glViewportArrayvNV glad_glViewportArrayvNV
-typedef void (APIENTRYP PFNGLVIEWPORTINDEXEDFNVPROC)(GLuint, GLfloat, GLfloat, GLfloat, GLfloat);
-GLAPI PFNGLVIEWPORTINDEXEDFNVPROC glad_glViewportIndexedfNV;
-#define glViewportIndexedfNV glad_glViewportIndexedfNV
-typedef void (APIENTRYP PFNGLVIEWPORTINDEXEDFVNVPROC)(GLuint, const GLfloat*);
-GLAPI PFNGLVIEWPORTINDEXEDFVNVPROC glad_glViewportIndexedfvNV;
-#define glViewportIndexedfvNV glad_glViewportIndexedfvNV
-typedef void (APIENTRYP PFNGLSCISSORARRAYVNVPROC)(GLuint, GLsizei, const GLint*);
-GLAPI PFNGLSCISSORARRAYVNVPROC glad_glScissorArrayvNV;
-#define glScissorArrayvNV glad_glScissorArrayvNV
-typedef void (APIENTRYP PFNGLSCISSORINDEXEDNVPROC)(GLuint, GLint, GLint, GLsizei, GLsizei);
-GLAPI PFNGLSCISSORINDEXEDNVPROC glad_glScissorIndexedNV;
-#define glScissorIndexedNV glad_glScissorIndexedNV
-typedef void (APIENTRYP PFNGLSCISSORINDEXEDVNVPROC)(GLuint, const GLint*);
-GLAPI PFNGLSCISSORINDEXEDVNVPROC glad_glScissorIndexedvNV;
-#define glScissorIndexedvNV glad_glScissorIndexedvNV
-typedef void (APIENTRYP PFNGLDEPTHRANGEARRAYFVNVPROC)(GLuint, GLsizei, const GLfloat*);
-GLAPI PFNGLDEPTHRANGEARRAYFVNVPROC glad_glDepthRangeArrayfvNV;
-#define glDepthRangeArrayfvNV glad_glDepthRangeArrayfvNV
-typedef void (APIENTRYP PFNGLDEPTHRANGEINDEXEDFNVPROC)(GLuint, GLfloat, GLfloat);
-GLAPI PFNGLDEPTHRANGEINDEXEDFNVPROC glad_glDepthRangeIndexedfNV;
-#define glDepthRangeIndexedfNV glad_glDepthRangeIndexedfNV
-typedef void (APIENTRYP PFNGLGETFLOATI_VNVPROC)(GLenum, GLuint, GLfloat*);
-GLAPI PFNGLGETFLOATI_VNVPROC glad_glGetFloati_vNV;
-#define glGetFloati_vNV glad_glGetFloati_vNV
-typedef void (APIENTRYP PFNGLENABLEINVPROC)(GLenum, GLuint);
-GLAPI PFNGLENABLEINVPROC glad_glEnableiNV;
-#define glEnableiNV glad_glEnableiNV
-typedef void (APIENTRYP PFNGLDISABLEINVPROC)(GLenum, GLuint);
-GLAPI PFNGLDISABLEINVPROC glad_glDisableiNV;
-#define glDisableiNV glad_glDisableiNV
-typedef GLboolean (APIENTRYP PFNGLISENABLEDINVPROC)(GLenum, GLuint);
-GLAPI PFNGLISENABLEDINVPROC glad_glIsEnablediNV;
-#define glIsEnablediNV glad_glIsEnablediNV
+#ifndef GL_NV_fragment_coverage_to_color
+#define GL_NV_fragment_coverage_to_color 1
+GLAPI int GLAD_GL_NV_fragment_coverage_to_color;
 #endif
 #ifndef GL_NV_fence
 #define GL_NV_fence 1
@@ -16671,6 +16865,10 @@ GLAPI int GLAD_GL_NV_sRGB_formats;
 #ifndef GL_EXT_texture_compression_s3tc
 #define GL_EXT_texture_compression_s3tc 1
 GLAPI int GLAD_GL_EXT_texture_compression_s3tc;
+#endif
+#ifndef GL_NV_sample_locations
+#define GL_NV_sample_locations 1
+GLAPI int GLAD_GL_NV_sample_locations;
 #endif
 #ifndef GL_EXT_base_instance
 #define GL_EXT_base_instance 1
@@ -16732,12 +16930,20 @@ GLAPI PFNGLISENABLEDIEXTPROC glad_glIsEnablediEXT;
 #define GL_NV_read_depth_stencil 1
 GLAPI int GLAD_GL_NV_read_depth_stencil;
 #endif
+#ifndef GL_OVR_multiview
+#define GL_OVR_multiview 1
+GLAPI int GLAD_GL_OVR_multiview;
+#endif
 #ifndef GL_ANGLE_translated_shader_source
 #define GL_ANGLE_translated_shader_source 1
 GLAPI int GLAD_GL_ANGLE_translated_shader_source;
 typedef void (APIENTRYP PFNGLGETTRANSLATEDSHADERSOURCEANGLEPROC)(GLuint, GLsizei, GLsizei*, GLchar*);
 GLAPI PFNGLGETTRANSLATEDSHADERSOURCEANGLEPROC glad_glGetTranslatedShaderSourceANGLE;
 #define glGetTranslatedShaderSourceANGLE glad_glGetTranslatedShaderSourceANGLE
+#endif
+#ifndef GL_NV_fill_rectangle
+#define GL_NV_fill_rectangle 1
+GLAPI int GLAD_GL_NV_fill_rectangle;
 #endif
 #ifndef GL_NV_coverage_sample
 #define GL_NV_coverage_sample 1
@@ -16748,6 +16954,17 @@ GLAPI PFNGLCOVERAGEMASKNVPROC glad_glCoverageMaskNV;
 typedef void (APIENTRYP PFNGLCOVERAGEOPERATIONNVPROC)(GLenum);
 GLAPI PFNGLCOVERAGEOPERATIONNVPROC glad_glCoverageOperationNV;
 #define glCoverageOperationNV glad_glCoverageOperationNV
+#endif
+#ifndef GL_OES_texture_cube_map_array
+#define GL_OES_texture_cube_map_array 1
+GLAPI int GLAD_GL_OES_texture_cube_map_array;
+#endif
+#ifndef GL_ANGLE_framebuffer_multisample
+#define GL_ANGLE_framebuffer_multisample 1
+GLAPI int GLAD_GL_ANGLE_framebuffer_multisample;
+typedef void (APIENTRYP PFNGLRENDERBUFFERSTORAGEMULTISAMPLEANGLEPROC)(GLenum, GLsizei, GLenum, GLsizei, GLsizei);
+GLAPI PFNGLRENDERBUFFERSTORAGEMULTISAMPLEANGLEPROC glad_glRenderbufferStorageMultisampleANGLE;
+#define glRenderbufferStorageMultisampleANGLE glad_glRenderbufferStorageMultisampleANGLE
 #endif
 #ifndef GL_OES_vertex_array_object
 #define GL_OES_vertex_array_object 1
@@ -16774,6 +16991,10 @@ GLAPI PFNGLSTARTTILINGQCOMPROC glad_glStartTilingQCOM;
 typedef void (APIENTRYP PFNGLENDTILINGQCOMPROC)(GLbitfield);
 GLAPI PFNGLENDTILINGQCOMPROC glad_glEndTilingQCOM;
 #define glEndTilingQCOM glad_glEndTilingQCOM
+#endif
+#ifndef GL_NV_sample_mask_override_coverage
+#define GL_NV_sample_mask_override_coverage 1
+GLAPI int GLAD_GL_NV_sample_mask_override_coverage;
 #endif
 #ifndef GL_AMD_program_binary_Z400
 #define GL_AMD_program_binary_Z400 1
@@ -16802,6 +17023,10 @@ GLAPI PFNGLGETNUNIFORMIVEXTPROC glad_glGetnUniformivEXT;
 #ifndef GL_OES_fbo_render_mipmap
 #define GL_OES_fbo_render_mipmap 1
 GLAPI int GLAD_GL_OES_fbo_render_mipmap;
+#endif
+#ifndef GL_NV_viewport_array2
+#define GL_NV_viewport_array2 1
+GLAPI int GLAD_GL_NV_viewport_array2;
 #endif
 #ifndef GL_KHR_robustness
 #define GL_KHR_robustness 1
@@ -16874,9 +17099,13 @@ GLAPI int GLAD_GL_NV_read_buffer_front;
 #define GL_OES_texture_float 1
 GLAPI int GLAD_GL_OES_texture_float;
 #endif
-#ifndef GL_OES_texture_float_linear
-#define GL_OES_texture_float_linear 1
-GLAPI int GLAD_GL_OES_texture_float_linear;
+#ifndef GL_NV_conservative_raster
+#define GL_NV_conservative_raster 1
+GLAPI int GLAD_GL_NV_conservative_raster;
+#endif
+#ifndef GL_NV_path_rendering_shared_edge
+#define GL_NV_path_rendering_shared_edge 1
+GLAPI int GLAD_GL_NV_path_rendering_shared_edge;
 #endif
 #ifndef GL_NV_fbo_color_attachments
 #define GL_NV_fbo_color_attachments 1
@@ -16901,9 +17130,17 @@ GLAPI int GLAD_GL_EXT_shader_integer_mix;
 #define GL_ANDROID_extension_pack_es31a 1
 GLAPI int GLAD_GL_ANDROID_extension_pack_es31a;
 #endif
+#ifndef GL_NV_framebuffer_mixed_samples
+#define GL_NV_framebuffer_mixed_samples 1
+GLAPI int GLAD_GL_NV_framebuffer_mixed_samples;
+#endif
 #ifndef GL_NV_texture_compression_s3tc_update
 #define GL_NV_texture_compression_s3tc_update 1
 GLAPI int GLAD_GL_NV_texture_compression_s3tc_update;
+#endif
+#ifndef GL_OES_texture_float_linear
+#define GL_OES_texture_float_linear 1
+GLAPI int GLAD_GL_OES_texture_float_linear;
 #endif
 #ifndef GL_OES_fragment_precision_high
 #define GL_OES_fragment_precision_high 1
@@ -16913,13 +17150,17 @@ GLAPI int GLAD_GL_OES_fragment_precision_high;
 #define GL_EXT_multi_draw_arrays 1
 GLAPI int GLAD_GL_EXT_multi_draw_arrays;
 #endif
-#ifndef GL_OES_texture_npot
-#define GL_OES_texture_npot 1
-GLAPI int GLAD_GL_OES_texture_npot;
+#ifndef GL_EXT_raster_multisample
+#define GL_EXT_raster_multisample 1
+GLAPI int GLAD_GL_EXT_raster_multisample;
 #endif
 #ifndef GL_EXT_texture_compression_dxt1
 #define GL_EXT_texture_compression_dxt1 1
 GLAPI int GLAD_GL_EXT_texture_compression_dxt1;
+#endif
+#ifndef GL_EXT_texture_sRGB_RG8
+#define GL_EXT_texture_sRGB_RG8 1
+GLAPI int GLAD_GL_EXT_texture_sRGB_RG8;
 #endif
 #ifndef GL_APPLE_clip_distance
 #define GL_APPLE_clip_distance 1
@@ -16989,12 +17230,12 @@ typedef void (APIENTRYP PFNGLFRAMEBUFFERTEXTURE2DMULTISAMPLEEXTPROC)(GLenum, GLe
 GLAPI PFNGLFRAMEBUFFERTEXTURE2DMULTISAMPLEEXTPROC glad_glFramebufferTexture2DMultisampleEXT;
 #define glFramebufferTexture2DMultisampleEXT glad_glFramebufferTexture2DMultisampleEXT
 #endif
-#ifndef GL_ANGLE_framebuffer_multisample
-#define GL_ANGLE_framebuffer_multisample 1
-GLAPI int GLAD_GL_ANGLE_framebuffer_multisample;
-typedef void (APIENTRYP PFNGLRENDERBUFFERSTORAGEMULTISAMPLEANGLEPROC)(GLenum, GLsizei, GLenum, GLsizei, GLsizei);
-GLAPI PFNGLRENDERBUFFERSTORAGEMULTISAMPLEANGLEPROC glad_glRenderbufferStorageMultisampleANGLE;
-#define glRenderbufferStorageMultisampleANGLE glad_glRenderbufferStorageMultisampleANGLE
+#ifndef GL_EXT_buffer_storage
+#define GL_EXT_buffer_storage 1
+GLAPI int GLAD_GL_EXT_buffer_storage;
+typedef void (APIENTRYP PFNGLBUFFERSTORAGEEXTPROC)(GLenum, GLsizeiptr, const void*, GLbitfield);
+GLAPI PFNGLBUFFERSTORAGEEXTPROC glad_glBufferStorageEXT;
+#define glBufferStorageEXT glad_glBufferStorageEXT
 #endif
 #ifndef GL_OES_texture_buffer
 #define GL_OES_texture_buffer 1
@@ -17009,6 +17250,14 @@ GLAPI PFNGLTEXBUFFERRANGEOESPROC glad_glTexBufferRangeOES;
 #ifndef GL_NV_blend_equation_advanced_coherent
 #define GL_NV_blend_equation_advanced_coherent 1
 GLAPI int GLAD_GL_NV_blend_equation_advanced_coherent;
+#endif
+#ifndef GL_EXT_post_depth_coverage
+#define GL_EXT_post_depth_coverage 1
+GLAPI int GLAD_GL_EXT_post_depth_coverage;
+#endif
+#ifndef GL_NV_geometry_shader_passthrough
+#define GL_NV_geometry_shader_passthrough 1
+GLAPI int GLAD_GL_NV_geometry_shader_passthrough;
 #endif
 #ifndef GL_EXT_tessellation_point_size
 #define GL_EXT_tessellation_point_size 1
@@ -17229,6 +17478,10 @@ GLAPI int GLAD_GL_ANGLE_texture_compression_dxt3;
 #define GL_ANGLE_texture_compression_dxt5 1
 GLAPI int GLAD_GL_ANGLE_texture_compression_dxt5;
 #endif
+#ifndef GL_OES_texture_npot
+#define GL_OES_texture_npot 1
+GLAPI int GLAD_GL_OES_texture_npot;
+#endif
 #ifndef GL_EXT_read_format_bgra
 #define GL_EXT_read_format_bgra 1
 GLAPI int GLAD_GL_EXT_read_format_bgra;
@@ -17276,6 +17529,10 @@ GLAPI int GLAD_GL_NV_shadow_samplers_cube;
 #define GL_OES_texture_compression_astc 1
 GLAPI int GLAD_GL_OES_texture_compression_astc;
 #endif
+#ifndef GL_OES_depth32
+#define GL_OES_depth32 1
+GLAPI int GLAD_GL_OES_depth32;
+#endif
 #ifndef GL_APPLE_texture_max_level
 #define GL_APPLE_texture_max_level 1
 GLAPI int GLAD_GL_APPLE_texture_max_level;
@@ -17308,9 +17565,9 @@ typedef void (APIENTRYP PFNGLMULTIDRAWELEMENTSBASEVERTEXEXTPROC)(GLenum, const G
 GLAPI PFNGLMULTIDRAWELEMENTSBASEVERTEXEXTPROC glad_glMultiDrawElementsBaseVertexEXT;
 #define glMultiDrawElementsBaseVertexEXT glad_glMultiDrawElementsBaseVertexEXT
 #endif
-#ifndef GL_OES_depth32
-#define GL_OES_depth32 1
-GLAPI int GLAD_GL_OES_depth32;
+#ifndef GL_NV_fragment_shader_interlock
+#define GL_NV_fragment_shader_interlock 1
+GLAPI int GLAD_GL_NV_fragment_shader_interlock;
 #endif
 #ifndef GL_EXT_separate_shader_objects
 #define GL_EXT_separate_shader_objects 1
@@ -17327,12 +17584,9 @@ typedef void (APIENTRYP PFNGLRENDERBUFFERSTORAGEMULTISAMPLENVPROC)(GLenum, GLsiz
 GLAPI PFNGLRENDERBUFFERSTORAGEMULTISAMPLENVPROC glad_glRenderbufferStorageMultisampleNV;
 #define glRenderbufferStorageMultisampleNV glad_glRenderbufferStorageMultisampleNV
 #endif
-#ifndef GL_NV_draw_buffers
-#define GL_NV_draw_buffers 1
-GLAPI int GLAD_GL_NV_draw_buffers;
-typedef void (APIENTRYP PFNGLDRAWBUFFERSNVPROC)(GLsizei, const GLenum*);
-GLAPI PFNGLDRAWBUFFERSNVPROC glad_glDrawBuffersNV;
-#define glDrawBuffersNV glad_glDrawBuffersNV
+#ifndef GL_EXT_texture_filter_minmax
+#define GL_EXT_texture_filter_minmax 1
+GLAPI int GLAD_GL_EXT_texture_filter_minmax;
 #endif
 #ifndef GL_ARM_shader_framebuffer_fetch
 #define GL_ARM_shader_framebuffer_fetch 1
@@ -17386,6 +17640,13 @@ GLAPI PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glad_glEGLImageTargetTexture2DOES;
 typedef void (APIENTRYP PFNGLEGLIMAGETARGETRENDERBUFFERSTORAGEOESPROC)(GLenum, GLeglImageOES);
 GLAPI PFNGLEGLIMAGETARGETRENDERBUFFERSTORAGEOESPROC glad_glEGLImageTargetRenderbufferStorageOES;
 #define glEGLImageTargetRenderbufferStorageOES glad_glEGLImageTargetRenderbufferStorageOES
+#endif
+#ifndef GL_NV_draw_buffers
+#define GL_NV_draw_buffers 1
+GLAPI int GLAD_GL_NV_draw_buffers;
+typedef void (APIENTRYP PFNGLDRAWBUFFERSNVPROC)(GLsizei, const GLenum*);
+GLAPI PFNGLDRAWBUFFERSNVPROC glad_glDrawBuffersNV;
+#define glDrawBuffersNV glad_glDrawBuffersNV
 #endif
 #ifndef GL_OES_vertex_type_10_10_10_2
 #define GL_OES_vertex_type_10_10_10_2 1
@@ -17508,6 +17769,46 @@ GLAPI PFNGLMINSAMPLESHADINGOESPROC glad_glMinSampleShadingOES;
 #define GL_IMG_texture_compression_pvrtc2 1
 GLAPI int GLAD_GL_IMG_texture_compression_pvrtc2;
 #endif
+#ifndef GL_NV_viewport_array
+#define GL_NV_viewport_array 1
+GLAPI int GLAD_GL_NV_viewport_array;
+typedef void (APIENTRYP PFNGLVIEWPORTARRAYVNVPROC)(GLuint, GLsizei, const GLfloat*);
+GLAPI PFNGLVIEWPORTARRAYVNVPROC glad_glViewportArrayvNV;
+#define glViewportArrayvNV glad_glViewportArrayvNV
+typedef void (APIENTRYP PFNGLVIEWPORTINDEXEDFNVPROC)(GLuint, GLfloat, GLfloat, GLfloat, GLfloat);
+GLAPI PFNGLVIEWPORTINDEXEDFNVPROC glad_glViewportIndexedfNV;
+#define glViewportIndexedfNV glad_glViewportIndexedfNV
+typedef void (APIENTRYP PFNGLVIEWPORTINDEXEDFVNVPROC)(GLuint, const GLfloat*);
+GLAPI PFNGLVIEWPORTINDEXEDFVNVPROC glad_glViewportIndexedfvNV;
+#define glViewportIndexedfvNV glad_glViewportIndexedfvNV
+typedef void (APIENTRYP PFNGLSCISSORARRAYVNVPROC)(GLuint, GLsizei, const GLint*);
+GLAPI PFNGLSCISSORARRAYVNVPROC glad_glScissorArrayvNV;
+#define glScissorArrayvNV glad_glScissorArrayvNV
+typedef void (APIENTRYP PFNGLSCISSORINDEXEDNVPROC)(GLuint, GLint, GLint, GLsizei, GLsizei);
+GLAPI PFNGLSCISSORINDEXEDNVPROC glad_glScissorIndexedNV;
+#define glScissorIndexedNV glad_glScissorIndexedNV
+typedef void (APIENTRYP PFNGLSCISSORINDEXEDVNVPROC)(GLuint, const GLint*);
+GLAPI PFNGLSCISSORINDEXEDVNVPROC glad_glScissorIndexedvNV;
+#define glScissorIndexedvNV glad_glScissorIndexedvNV
+typedef void (APIENTRYP PFNGLDEPTHRANGEARRAYFVNVPROC)(GLuint, GLsizei, const GLfloat*);
+GLAPI PFNGLDEPTHRANGEARRAYFVNVPROC glad_glDepthRangeArrayfvNV;
+#define glDepthRangeArrayfvNV glad_glDepthRangeArrayfvNV
+typedef void (APIENTRYP PFNGLDEPTHRANGEINDEXEDFNVPROC)(GLuint, GLfloat, GLfloat);
+GLAPI PFNGLDEPTHRANGEINDEXEDFNVPROC glad_glDepthRangeIndexedfNV;
+#define glDepthRangeIndexedfNV glad_glDepthRangeIndexedfNV
+typedef void (APIENTRYP PFNGLGETFLOATI_VNVPROC)(GLenum, GLuint, GLfloat*);
+GLAPI PFNGLGETFLOATI_VNVPROC glad_glGetFloati_vNV;
+#define glGetFloati_vNV glad_glGetFloati_vNV
+typedef void (APIENTRYP PFNGLENABLEINVPROC)(GLenum, GLuint);
+GLAPI PFNGLENABLEINVPROC glad_glEnableiNV;
+#define glEnableiNV glad_glEnableiNV
+typedef void (APIENTRYP PFNGLDISABLEINVPROC)(GLenum, GLuint);
+GLAPI PFNGLDISABLEINVPROC glad_glDisableiNV;
+#define glDisableiNV glad_glDisableiNV
+typedef GLboolean (APIENTRYP PFNGLISENABLEDINVPROC)(GLenum, GLuint);
+GLAPI PFNGLISENABLEDINVPROC glad_glIsEnablediNV;
+#define glIsEnablediNV glad_glIsEnablediNV
+#endif
 #ifndef GL_OES_rgb8_rgba8
 #define GL_OES_rgb8_rgba8 1
 GLAPI int GLAD_GL_OES_rgb8_rgba8;
@@ -17534,6 +17835,17 @@ GLAPI PFNGLUNMAPBUFFEROESPROC glad_glUnmapBufferOES;
 typedef void (APIENTRYP PFNGLGETBUFFERPOINTERVOESPROC)(GLenum, GLenum, void**);
 GLAPI PFNGLGETBUFFERPOINTERVOESPROC glad_glGetBufferPointervOES;
 #define glGetBufferPointervOES glad_glGetBufferPointervOES
+#endif
+#ifndef GL_EXT_float_blend
+#define GL_EXT_float_blend 1
+GLAPI int GLAD_GL_EXT_float_blend;
+#endif
+#ifndef GL_NV_polygon_mode
+#define GL_NV_polygon_mode 1
+GLAPI int GLAD_GL_NV_polygon_mode;
+typedef void (APIENTRYP PFNGLPOLYGONMODENVPROC)(GLenum, GLenum);
+GLAPI PFNGLPOLYGONMODENVPROC glad_glPolygonModeNV;
+#define glPolygonModeNV glad_glPolygonModeNV
 #endif
 #ifndef GL_ARM_shader_framebuffer_fetch_depth_stencil
 #define GL_ARM_shader_framebuffer_fetch_depth_stencil 1
@@ -17562,6 +17874,10 @@ GLAPI int GLAD_GL_VIV_shader_binary;
 #ifndef GL_NV_shadow_samplers_array
 #define GL_NV_shadow_samplers_array 1
 GLAPI int GLAD_GL_NV_shadow_samplers_array;
+#endif
+#ifndef GL_OVR_multiview2
+#define GL_OVR_multiview2 1
+GLAPI int GLAD_GL_OVR_multiview2;
 #endif
 #ifndef GL_IMG_multisampled_render_to_texture
 #define GL_IMG_multisampled_render_to_texture 1
@@ -17601,9 +17917,9 @@ GLAPI int GLAD_GL_NV_shader_noperspective_interpolation;
 #define GL_EXT_texture_format_BGRA8888 1
 GLAPI int GLAD_GL_EXT_texture_format_BGRA8888;
 #endif
-#ifndef GL_OES_texture_cube_map_array
-#define GL_OES_texture_cube_map_array 1
-GLAPI int GLAD_GL_OES_texture_cube_map_array;
+#ifndef GL_EXT_YUV_target
+#define GL_EXT_YUV_target 1
+GLAPI int GLAD_GL_EXT_YUV_target;
 #endif
 #ifndef GL_APPLE_copy_texture_levels
 #define GL_APPLE_copy_texture_levels 1
@@ -17747,6 +18063,10 @@ GLAPI int GLAD_GL_OES_primitive_bounding_box;
 typedef void (APIENTRYP PFNGLPRIMITIVEBOUNDINGBOXOESPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
 GLAPI PFNGLPRIMITIVEBOUNDINGBOXOESPROC glad_glPrimitiveBoundingBoxOES;
 #define glPrimitiveBoundingBoxOES glad_glPrimitiveBoundingBoxOES
+#endif
+#ifndef GL_EXT_texture_sRGB_R8
+#define GL_EXT_texture_sRGB_R8 1
+GLAPI int GLAD_GL_EXT_texture_sRGB_R8;
 #endif
 #ifndef GL_NV_read_buffer
 #define GL_NV_read_buffer 1
@@ -18146,13 +18466,13 @@ GLAPI int GLAD_GL_OES_compressed_ETC1_RGB8_texture;
 #define GL_QCOM_extended_get2 1
 GLAPI int GLAD_GL_QCOM_extended_get2;
 #endif
-#ifndef GL_APPLE_texture_max_level
-#define GL_APPLE_texture_max_level 1
-GLAPI int GLAD_GL_APPLE_texture_max_level;
-#endif
 #ifndef GL_OES_depth32
 #define GL_OES_depth32 1
 GLAPI int GLAD_GL_OES_depth32;
+#endif
+#ifndef GL_APPLE_texture_max_level
+#define GL_APPLE_texture_max_level 1
+GLAPI int GLAD_GL_APPLE_texture_max_level;
 #endif
 #ifndef GL_OES_EGL_image
 #define GL_OES_EGL_image 1
