@@ -73,16 +73,15 @@ glTexCoord3bOES, glFrustumfOES, glTexGeniOES, glGetMaterialxvOES, glWeightPointe
 glOrthofOES, glMapGrid2xOES, glMapGrid1xOES, glFramebufferTexture2DOES, glTestFenceNV, 
 glExtGetFramebuffersQCOM, glTexCoord1bvOES, glLightxOES, glBlendFuncSeparateOES, glBindVertexArrayOES, 
 glLoadTransposeMatrixxOES, glClipPlanexOES, glDrawTexivOES, glMultiTexCoord2bvOES, glExtGetTexturesQCOM, 
-glGenFencesNV, glSampleCoverageOES, glCheckFramebufferStatusOES, glDeleteVertexArraysOES, glClientWaitSyncAPPLE, 
-glEvalCoord2xvOES, glNormal3xvOES, glMapBufferOES, glMultiTexCoord3xvOES, glIsRenderbufferOES, 
-glMultiTexCoord1bOES, glColor3xvOES, glDrawTexxOES, glDeleteSyncAPPLE, glEGLImageTargetRenderbufferStorageOES, 
-glVertex4bOES, glGenerateMipmapOES, glRasterPos3xvOES, glWaitSyncAPPLE, glFenceSyncAPPLE, 
-glExtTexObjectStateOverrideiQCOM, glMatrixIndexPointerOES, glMaterialxvOES, glVertex3xvOES, glMultiDrawElementsEXT, 
-glTexCoord4xvOES, glTextureStorage1DEXT, glEnableDriverControlQCOM, glMultMatrixxOES, glPixelTransferxOES, 
-glGetnUniformivEXT, glDisableDriverControlQCOM, glDrawTexiOES, glClearColorxOES, glPixelStorex, 
-glMultiDrawArraysEXT, glVertex4bvOES, glEvalCoord1xOES, glRenderbufferStorageMultisampleAPPLE, glRectxvOES, 
-glTexParameterxvOES, glVertex2bOES, glAlphaFuncxOES, glMultiTexCoord2xOES, glTexGenfOES
-;
+glGenFencesNV, glCheckFramebufferStatusOES, glDeleteVertexArraysOES, glClientWaitSyncAPPLE, glEvalCoord2xvOES, 
+glNormal3xvOES, glMapBufferOES, glMultiTexCoord3xvOES, glIsRenderbufferOES, glMultiTexCoord1bOES, 
+glColor3xvOES, glDrawTexxOES, glDeleteSyncAPPLE, glEGLImageTargetRenderbufferStorageOES, glVertex4bOES, 
+glGenerateMipmapOES, glRasterPos3xvOES, glWaitSyncAPPLE, glFenceSyncAPPLE, glExtTexObjectStateOverrideiQCOM, 
+glMatrixIndexPointerOES, glMaterialxvOES, glVertex3xvOES, glMultiDrawElementsEXT, glTexCoord4xvOES, 
+glTextureStorage1DEXT, glEnableDriverControlQCOM, glMultMatrixxOES, glPixelTransferxOES, glGetnUniformivEXT, 
+glDisableDriverControlQCOM, glDrawTexiOES, glClearColorxOES, glPixelStorex, glMultiDrawArraysEXT, 
+glVertex4bvOES, glEvalCoord1xOES, glRenderbufferStorageMultisampleAPPLE, glRectxvOES, glTexParameterxvOES, 
+glVertex2bOES, glAlphaFuncxOES, glMultiTexCoord2xOES, glTexGenfOES;
 
 public import amp.gl.enums :
 GL_TEXTURE_CROP_RECT_OES, GL_LUMINANCE4_ALPHA4_OES, GL_UNSIGNED_SHORT_5_6_5, GL_RGB16F_EXT, GL_MAX_CUBE_MAP_TEXTURE_SIZE_OES, 

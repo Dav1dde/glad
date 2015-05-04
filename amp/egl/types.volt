@@ -22,6 +22,7 @@ alias EGLSurface = void*;
 alias __eglMustCastToProperFunctionPointerType = void function();
 alias EGLAttrib = intptr_t;
 alias EGLContext = void*;
+alias EGLuint64MESA = ulong;
 alias EGLenum = uint;
 alias EGLImage = void*;
 alias EGLSyncNV = void*;
