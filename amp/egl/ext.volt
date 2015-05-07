@@ -14,7 +14,7 @@ EGLSurface eglCreateStreamProducerSurfaceKHR(EGLDisplay, EGLConfig, EGLStreamKHR
 EGLBoolean eglQueryDeviceAttribEXT(EGLDeviceEXT, EGLint, EGLAttrib*);
 const(char)* eglQueryDeviceStringEXT(EGLDeviceEXT, EGLint);
 EGLBoolean eglQueryDisplayAttribEXT(EGLDisplay, EGLint, EGLAttrib*);
-EGLBoolean eglExportDMABUFImageQueryMESA(EGLDisplay, EGLImageKHR, int*, int*, EGLuint64MESA*);
+EGLBoolean eglExportDMABUFImageQueryMESA(EGLDisplay, EGLImageKHR, int*, int*, EGLuint64KHR*);
 EGLBoolean eglExportDMABUFImageMESA(EGLDisplay, EGLImageKHR, int*, EGLint*, EGLint*);
 EGLuint64NV eglGetSystemTimeFrequencyNV();
 EGLuint64NV eglGetSystemTimeNV();
