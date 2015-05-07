@@ -145,7 +145,13 @@ _FIND_VERSION = '''
         }
     }
 
+/* PR #18 */
+#ifdef _MSC_VER
+    sscanf_s(version, "%d.%d", &major, &minor);
+#else
     sscanf(version, "%d.%d", &major, &minor);
+#endif
+
     GLVersion.major = major; GLVersion.minor = minor;
 '''
 
