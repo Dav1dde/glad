@@ -8829,7 +8829,13 @@ static void find_coreGL(void) {
         }
     }
 
+/* PR #18 */
+#ifdef _MSC_VER
+    sscanf_s(version, "%d.%d", &major, &minor);
+#else
     sscanf(version, "%d.%d", &major, &minor);
+#endif
+
     GLVersion.major = major; GLVersion.minor = minor;
 	GLAD_GL_VERSION_1_0 = (major == 1 && minor >= 0) || major > 1;
 	GLAD_GL_VERSION_1_1 = (major == 1 && minor >= 1) || major > 1;
@@ -10210,7 +10216,13 @@ static void find_coreGLES2(void) {
         }
     }
 
+/* PR #18 */
+#ifdef _MSC_VER
+    sscanf_s(version, "%d.%d", &major, &minor);
+#else
     sscanf(version, "%d.%d", &major, &minor);
+#endif
+
     GLVersion.major = major; GLVersion.minor = minor;
 	GLAD_GL_ES_VERSION_2_0 = (major == 2 && minor >= 0) || major > 2;
 	GLAD_GL_ES_VERSION_3_0 = (major == 3 && minor >= 0) || major > 3;
@@ -10734,7 +10746,13 @@ static void find_coreGLES1(void) {
         }
     }
 
+/* PR #18 */
+#ifdef _MSC_VER
+    sscanf_s(version, "%d.%d", &major, &minor);
+#else
     sscanf(version, "%d.%d", &major, &minor);
+#endif
+
     GLVersion.major = major; GLVersion.minor = minor;
 	GLAD_GL_VERSION_ES_CM_1_0 = (major == 1 && minor >= 0) || major > 1;
 }

@@ -61,7 +61,6 @@ typedef khronos_utime_nanoseconds_t EGLTime;
 typedef khronos_utime_nanoseconds_t EGLTimeNV;
 typedef khronos_utime_nanoseconds_t EGLuint64NV;
 typedef khronos_uint64_t EGLuint64KHR;
-typedef khronos_uint64_t EGLuint64MESA;
 typedef int EGLNativeFileDescriptorKHR;
 typedef khronos_ssize_t EGLsizeiANDROID;
 typedef void (*EGLSetBlobFuncANDROID) (const void *key, EGLsizeiANDROID keySize, const void *value, EGLsizeiANDROID valueSize);
@@ -409,7 +408,7 @@ GLAPI PFNEGLQUERYDISPLAYATTRIBEXTPROC glad_eglQueryDisplayAttribEXT;
 #endif
 #ifndef EGL_MESA_image_dma_buf_export
 #define EGL_MESA_image_dma_buf_export 1
-typedef EGLBoolean (APIENTRYP PFNEGLEXPORTDMABUFIMAGEQUERYMESAPROC)(EGLDisplay, EGLImageKHR, int*, int*, EGLuint64MESA*);
+typedef EGLBoolean (APIENTRYP PFNEGLEXPORTDMABUFIMAGEQUERYMESAPROC)(EGLDisplay, EGLImageKHR, int*, int*, EGLuint64KHR*);
 GLAPI PFNEGLEXPORTDMABUFIMAGEQUERYMESAPROC glad_eglExportDMABUFImageQueryMESA;
 #define eglExportDMABUFImageQueryMESA glad_eglExportDMABUFImageQueryMESA
 typedef EGLBoolean (APIENTRYP PFNEGLEXPORTDMABUFIMAGEMESAPROC)(EGLDisplay, EGLImageKHR, int*, EGLint*, EGLint*);
