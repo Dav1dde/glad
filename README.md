@@ -2,6 +2,7 @@ glad
 ====
 
 GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.
+Also with an experimental webservice: http://glad.dav1d.de
 
 
 Advantages:
@@ -51,14 +52,6 @@ Checkout the full example: [simple.c](https://github.com/Dav1dde/glad/blob/maste
 
 Or the C++ example (using [GLFW](http://glfw.org), which I recommend you to use):
 [hellowindow2.cpp](https://github.com/Dav1dde/glad/blob/master/example/c%2B%2B/hellowindow2.cpp)
-
-
-If you don't want to generate your own loader or just wanna check out the generated code
-(these files are extremely bloated, since they contain code for *every* extension):
-
- * C/C++ loader: https://github.com/Dav1dde/glad/tree/c
- * D loader: https://github.com/Dav1dde/glad/tree/d
- * Volt bindings: https://github.com/Dav1dde/glad/tree/volt
 
 
 ## Usage ##
