@@ -1,12 +1,17 @@
 try:
     from lxml import etree
     from lxml.etree import ETCompatXMLParser as parser
+
+    def xml_fromstring(argument):
+        return etree.fromstring(argument, parser=parser())
 except ImportError:
     try:
         import xml.etree.cElementTree as etree
     except ImportError:
         import xml.etree.ElementTree as etree
-    parser = etree.XMLParser
+
+    def xml_fromstring(argument):
+        return etree.fromstring(argument)
 
 from collections import defaultdict, OrderedDict
 from contextlib import closing
@@ -42,7 +47,7 @@ class Spec(object):
         with closing(urlopen(url)) as f:
             raw = f.read()
 
-        return cls(etree.fromstring(raw, parser=parser()))
+        return cls(xml_fromstring(raw))
 
     @classmethod
     def from_svn(cls):
@@ -50,7 +55,7 @@ class Spec(object):
 
     @classmethod
     def fromstring(cls, string):
-        return cls(etree.fromstring(string, parser=parser()))
+        return cls(xml_fromstring(string))
 
     @classmethod
     def from_file(cls, path):
