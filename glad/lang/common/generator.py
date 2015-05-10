@@ -2,8 +2,6 @@ from collections import defaultdict
 from itertools import chain
 import os.path
 
-from glad.lang.common.util import enforce
-
 from glad.lang.common.loader import NullLoader
 
 
@@ -12,7 +10,12 @@ class Generator(object):
         self.path = os.path.abspath(path)
 
         self.spec = spec
-        enforce(all(a in self.spec.features for a in api), 'Unknown API', ValueError)
+        for a in api:
+            if a not in self.spec.features:
+                raise ValueError(
+                    'Unknown API "{0}" for specification "{1}"'
+                    .format(a, self.spec.NAME)
+                )
         self.api = api
         self.loader = loader
         if self.loader is None:
@@ -31,9 +34,14 @@ class Generator(object):
             features.extend(self.spec.features[api])
 
             if version is None:
-                version = self.api[api] = list(self.spec.features[api].keys())[-1]
-            enforce(version in self.spec.features[api],
-                    'Unknown version', ValueError)
+                version = list(self.spec.features[api].keys())[-1]
+                self.api[api] = version
+
+            if version not in self.spec.features[api]:
+                raise ValueError(
+                    'Unknown version "{0}" for specification "{1}"'
+                    .format(version, self.spec.NAME)
+                )
 
         if extension_names is None:
             extension_names = list(chain.from_iterable(self.spec.extensions[a]
@@ -41,7 +49,11 @@ class Generator(object):
 
         e = list(chain.from_iterable(self.spec.extensions[a] for a in self.api))
         for ext in extension_names:
-            enforce(ext in e, 'Invalid extension "{}"'.format(ext), ValueError)
+            if ext not in e:
+                raise ValueError(
+                    'Invalid extension "{0}" for specification "{1}"'
+                    .format(ext, self.spec.NAME)
+                )
 
         types = [t for t in self.spec.types if t.api is None or t.api in self.api]
         self.generate_types(types)
@@ -63,8 +75,10 @@ class Generator(object):
         fs = defaultdict(list)
         es = defaultdict(list)
         for api, version in self.api.items():
-            fs[api].extend([value for key, value in self.spec.features[api].items()
-                        if key <= version])
+            fs[api].extend(
+                [value for key, value in
+                 self.spec.features[api].items() if key <= version]
+            )
             es[api].extend(self.spec.extensions[api][ext]
                            for ext in extension_names if ext
                            in self.spec.extensions[api])
@@ -81,8 +95,6 @@ class Generator(object):
 
     def generate_extensions(self, extensions, enums, functions):
         raise NotImplementedError
-
-
 
 
 def merge(features):
