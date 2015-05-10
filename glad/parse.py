@@ -1,7 +1,12 @@
 try:
-    import xml.etree.cElementTree as etree
+    from lxml import etree
+    from lxml.etree import ETCompatXMLParser as parser
 except ImportError:
-    import xml.etree.ElementTree as etree
+    try:
+        import xml.etree.cElementTree as etree
+    except ImportError:
+        import xml.etree.ElementTree as etree
+    parser = etree.XMLParser
 
 from collections import defaultdict, OrderedDict
 from contextlib import closing
@@ -13,6 +18,7 @@ if sys.version_info >= (3, 0):
     from urllib.request import urlopen
 else:
     from urllib2 import urlopen
+
 
 _ARRAY_RE = re.compile(r'\[\d+\]')
 
@@ -36,7 +42,7 @@ class Spec(object):
         with closing(urlopen(url)) as f:
             raw = f.read()
 
-        return cls(etree.fromstring(raw))
+        return cls(etree.fromstring(raw, parser=parser()))
 
     @classmethod
     def from_svn(cls):
@@ -44,11 +50,11 @@ class Spec(object):
 
     @classmethod
     def fromstring(cls, string):
-        return cls(etree.fromstring(string))
+        return cls(etree.fromstring(string, parser=parser()))
 
     @classmethod
     def from_file(cls, path):
-        return cls(etree.parse(path).getroot())
+        return cls(etree.parse(path, parser=parser()).getroot())
 
     @property
     def comment(self):
