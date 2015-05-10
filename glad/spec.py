@@ -1,6 +1,10 @@
 from glad.parse import Spec
 
 
+class EGLSpec(Spec):
+    NAME = 'egl'
+
+
 class GLSpec(Spec):
     NAME = 'gl'
 
@@ -16,7 +20,7 @@ class GLSpec(Spec):
 
     @profile.setter
     def profile(self, value):
-        if not value in ('core', 'compatibility'):
+        if value not in ('core', 'compatibility'):
             raise ValueError('profile must either be core or compatibility')
 
         self._profile = value
@@ -26,3 +30,21 @@ class GLSpec(Spec):
         if self._profile == 'core':
             return frozenset(self._remove)
         return frozenset()
+
+
+class GLXSpec(Spec):
+    NAME = 'glx'
+
+
+class WGLSpec(Spec):
+    NAME = 'wgl'
+
+
+SPECS = dict()
+
+# reflection to fill SPECS
+import sys
+import inspect
+for name, cls in inspect.getmembers(sys.modules[__name__], inspect.isclass):
+    if issubclass(cls, Spec):
+        SPECS[cls.NAME] = cls
