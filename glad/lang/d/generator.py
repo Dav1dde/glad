@@ -522,7 +522,7 @@ class BaseDGenerator(Generator):
             self.loader.write_end_load(f)
             f.write('}\n\n')
 
-            f.write('private:\n\n')
+            f.write('private {\n\n')
 
             f.write('void find_core{}() {{\n'.format(api.upper()))
             self.loader.write_find_core(f)
@@ -566,6 +566,8 @@ class BaseDGenerator(Generator):
                 f.write('}\n')
 
                 written.add(ext.name)
+
+            f.write('\n} /* private */\n\n')
 
         self.write_packages(rfeatures, extensions)
 
@@ -789,7 +791,7 @@ class DGenerator(BaseDGenerator):
         fobj.write('module {}.{}.{};\n\n\n'.format(self.MODULE, self.spec.NAME, name))
 
     def write_prototype_pre(self, fobj):
-        fobj.write('nothrow ')
+        fobj.write('nothrow @nogc ')
         self.write_extern(fobj)
 
     def write_prototype_post(self, fobj):

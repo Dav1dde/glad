@@ -11,11 +11,11 @@ version(Windows) {
 } else {
     private __gshared void* libGL;
 }
-extern(System) private alias gladGetProcAddressPtrType = void* function(const(char)*);
+extern(System) private @nogc alias gladGetProcAddressPtrType = void* function(const(char)*);
 private __gshared gladGetProcAddressPtrType gladGetProcAddressPtr;
 
 %(pre)s
-bool %(init)s() {
+bool %(init)s() @nogc {
     version(Windows) {
         libGL = LoadLibraryA("opengl32.dll");
         if(libGL !is null) {
@@ -55,7 +55,7 @@ bool %(init)s() {
 }
 
 %(pre)s
-void* %(proc)s(const(char)* namez) {
+void* %(proc)s(const(char)* namez) @nogc {
     if(libGL is null) return null;
     void* result;
 
@@ -74,7 +74,7 @@ void* %(proc)s(const(char)* namez) {
 }
 
 %(pre)s
-void %(terminate)s() {
+void %(terminate)s() @nogc {
     version(Windows) {
         if(libGL !is null) {
             FreeLibrary(libGL);

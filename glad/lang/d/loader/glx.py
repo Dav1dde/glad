@@ -18,7 +18,7 @@ bool gladLoadGLX() {
 '''
 
 _GLX_HAS_EXT = '''
-private bool has_ext(const(char)* name) {
+private bool has_ext(const(char)* name) @nogc {
     return true;
 }
 '''

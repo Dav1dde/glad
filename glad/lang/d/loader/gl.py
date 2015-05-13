@@ -19,11 +19,11 @@ bool gladLoadGL() {
 
 _OPENGL_HAS_EXT = '''
 static struct GLVersion { static int major = 0; static int minor = 0; }
-private extern(C) char* strstr(const(char)*, const(char)*);
-private extern(C) int strcmp(const(char)*, const(char)*);
-private extern(C) int strncmp(const(char)*, const(char)*, size_t);
-private extern(C) size_t strlen(const(char)*);
-private bool has_ext(const(char)* ext) {
+private extern(C) char* strstr(const(char)*, const(char)*) @nogc;
+private extern(C) int strcmp(const(char)*, const(char)*) @nogc;
+private extern(C) int strncmp(const(char)*, const(char)*, size_t) @nogc;
+private extern(C) size_t strlen(const(char)*) @nogc;
+private bool has_ext(const(char)* ext) @nogc {
     if(GLVersion.major < 3) {
         const(char)* extensions = cast(const(char)*)glGetString(GL_EXTENSIONS);
         const(char)* loc;

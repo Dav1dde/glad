@@ -8,7 +8,7 @@ bool gladLoadEGL() {
 '''
 
 _EGL_HAS_EXT = '''
-private bool has_ext(const(char)* ext) {
+private bool has_ext(const(char)* ext) @nogc {
     return true;
 }
 '''
