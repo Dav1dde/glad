@@ -50,7 +50,7 @@ dmd -o- build/glad/egl/*.d -c
 
 
 rm -rf build
-python main.py --generator=d --spec=gl --out-path=build
+python main.py --generator=d --spec=gl --api="gl=,gles1=,gles2=" --out-path=build
 dmd -o- build/glad/gl/*.d -c
 
 rm -rf build

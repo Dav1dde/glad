@@ -429,6 +429,7 @@ DTYPES = {
             ('GL_FALSE', '0', 'ubyte'), ('GL_TRUE', '1', 'ubyte'),
             ('GL_NO_ERROR', '0', 'uint'), ('GL_NONE', '0', 'uint'),
             ('GL_ZERO', '0', 'uint'), ('GL_ONE', '1', 'uint'),
+            ('GL_NONE_OES', '0', 'uint'),
             ('GL_INVALID_INDEX', '0xFFFFFFFF', 'uint'),
             ('GL_TIMEOUT_IGNORED', '0xFFFFFFFFFFFFFFFF', 'ulong'),
             ('GL_TIMEOUT_IGNORED_APPLE', '0xFFFFFFFFFFFFFFFF', 'ulong'),
