@@ -16,7 +16,7 @@ from setuptools import setup, find_packages
 if __name__ == '__main__':
     setup(
         name='glad',
-        version='0.1.2a0',
+        version='0.1.3a0',
         description='Multi-Language GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.',
         long_description=__doc__,
         packages=find_packages(),
