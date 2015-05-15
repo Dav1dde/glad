@@ -3,7 +3,7 @@
 set -e
 
 git checkout master
-./generateall.sh
+./utility/generateall.sh
 
 echo "Updating C"
 git checkout c
