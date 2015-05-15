@@ -4,6 +4,9 @@ try:
 
     def xml_fromstring(argument):
         return etree.fromstring(argument, parser=parser())
+
+    def xml_frompath(path):
+        return etree.parse(path, parser=parser()).getroot()
 except ImportError:
     try:
         import xml.etree.cElementTree as etree
@@ -13,11 +16,16 @@ except ImportError:
     def xml_fromstring(argument):
         return etree.fromstring(argument)
 
+    def xml_frompath(path):
+        return etree.parse(path).getroot()
+
+
 from collections import defaultdict, OrderedDict
 from contextlib import closing
 from itertools import chain
 import sys
 import re
+
 
 if sys.version_info >= (3, 0):
     from urllib.request import urlopen
@@ -59,7 +67,7 @@ class Spec(object):
 
     @classmethod
     def from_file(cls, path):
-        return cls(etree.parse(path, parser=parser()).getroot())
+        return cls(xml_frompath(path))
 
     @property
     def comment(self):
