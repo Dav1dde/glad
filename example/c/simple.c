@@ -34,6 +34,14 @@ static void reshape(int w, int h)
     glEnable(GL_DEPTH_TEST);
 }
 
+
+#ifdef GLAD_DEBUG
+void pre_gl_call(const char *name, void *funcptr, int len_args, ...) {
+    printf("Calling: %s (%d arguments)\n", name, len_args);
+}
+#endif
+
+
 int main(int argc, char **argv)
 {
     if(gladLoadGL()) {
@@ -54,6 +62,15 @@ int main(int argc, char **argv)
         printf("Something went wrong!\n");
         exit(-1);
     }
+
+#ifdef GLAD_DEBUG
+    // before every opengl call call pre_gl_call
+    glad_set_pre_callback(pre_gl_call);
+    // don't use the callback for glClear
+    // (glClear could be replaced with your own function)
+    glad_debug_glClear = glad_glClear;
+#endif
+
     // gladLoadGLLoader(&glutGetProcAddress);
     printf("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
     if (GLVersion.major < 2) {

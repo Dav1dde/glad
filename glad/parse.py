@@ -234,7 +234,6 @@ class OGLType(object):
             self.type = 'struct {}'.format(self.type)
 
     def to_d(self):
-
         if self.is_pointer > 1 and self.is_const:
             s = 'const({}{}*)'.format('u' if self.is_unsigned else '', self.type)
             s += '*' * (self.is_pointer - 1)

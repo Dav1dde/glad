@@ -12,6 +12,7 @@ from collections import namedtuple
 import importlib
 
 from glad.spec import SPECS
+import glad.lang
 
 
 Version = namedtuple('Version', ['major', 'minor'])
@@ -88,7 +89,7 @@ def main():
                         help='API type/version pairs, like "gl=3.2,gles=", '
                              'no version means latest')
     parser.add_argument('--generator', dest='generator', default='d',
-                        choices=['c', 'd', 'volt'], required=True,
+                        choices=['c', 'c-debug', 'd', 'volt'], required=True,
                         help='Language to generate the binding for')
     parser.add_argument('--extensions', dest='extensions',
                         default=None, type=ext_file,
@@ -110,17 +111,18 @@ def main():
     if api is None or len(api.keys()) == 0:
         api = {spec.NAME: None}
 
-    lang = importlib.import_module('glad.lang.{0}'.format(ns.generator))
+    generator_cls, loader_cls = glad.lang.get_generator(
+        ns.generator, spec.NAME.lower()
+    )
 
-    try:
-        loader_cls = getattr(lang, '{0}Loader'.format(spec.NAME.upper()))
-        loader = loader_cls()
-        loader.disabled = ns.no_loader
-    except KeyError:
+    if loader_cls is None:
         return parser.error('API/Spec not yet supported')
 
+    loader = loader_cls()
+    loader.disabled = ns.no_loader
+
     print('Generating {spec} bindings...'.format(spec=spec.NAME))
-    with lang.Generator(ns.out, spec, api, loader) as generator:
+    with generator_cls(ns.out, spec, api, loader) as generator:
         generator.generate(ns.extensions)
 
 

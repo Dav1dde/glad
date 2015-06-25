@@ -41,6 +41,17 @@ gcc example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lglut -
 g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw -ldl
 
 rm -rf build
+$PYTHON -m glad --generator=c-debug --spec=gl --out-path=build
+$PYTHON -m glad --generator=c-debug --spec=glx --out-path=build
+gcc -Ibuild/include build/src/glad_glx.c ${GCC_FLAGS}
+g++ -Ibuild/include build/src/glad_glx.c ${GPP_FLAGS}
+
+# Example with debug
+gcc example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lglut -ldl
+g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw -ldl
+
+
+rm -rf build
 $PYTHON -m glad --generator=c --spec=gl --out-path=build
 $PYTHON -m glad --generator=c --spec=wgl --out-path=build
 i686-w64-mingw32-gcc -Ibuild/include build/src/glad_wgl.c ${GCC_FLAGS}
