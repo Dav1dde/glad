@@ -18,6 +18,15 @@ Advantages:
 Example using glut and glad:
 
 ```c
+// GLAD_DEBUG is only defined if the c-debug generator was used
+#ifdef GLAD_DEBUG
+// logs every gl call to the console
+void pre_gl_call(const char *name, void *funcptr, int len_args, ...) {
+    printf("Calling: %s (%d arguments)\n", name, len_args);
+}
+#endif
+
+
 int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
@@ -32,6 +41,18 @@ int main(int argc, char **argv)
         printf("Something went wrong!\n");
         exit(-1);
     }
+    
+#ifdef GLAD_DEBUG
+    // before every opengl call call pre_gl_call
+    glad_set_pre_callback(pre_gl_call);
+    
+    // post callback checks for glGetError by default
+    
+    // don't use the callback for glClear
+    // (glClear could be replaced with your own function)
+    glad_debug_glClear = glad_glClear;
+#endif
+    
     // gladLoadGLLoader(&glutGetProcAddress);
     printf("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
     if (GLVersion.major < 2) {
@@ -55,9 +76,6 @@ Or the C++ example (using [GLFW](http://glfw.org), which I recommend you to use)
 
 
 ## Usage ##
-
-
-### Generator ###
 
 Either install glad via pip (root might be required):
 
@@ -86,7 +104,7 @@ Possible commandline options:
       --out-path OUT        Output path for loader
       --api API             API type/version pairs, like "gl=3.2,gles=", no
                             version means latest
-      --generator {c,d,volt}
+      --generator {c,c-debug,d,volt}
                             Language to generate the binding for
       --extensions EXTENSIONS
                             Path to extensions file or comma separated list of
@@ -104,10 +122,9 @@ To generate a loader for C with two extensions, it could look like this:
 If the `--extensions` option is missing, glad adds support for all extensions found in the OpenGL spec.
 
 
-### API ###
+## Generators ##
 
-The glad loader API follows this convention (if backend generates a loader, this is not the case
-for Volt but any other language (C and D) have a loader)
+### C/C++ ###
 
 ```c
 struct gladGLversionStruct {
@@ -125,52 +142,108 @@ typedef void* (* GLADloadproc)(const char *name);
  *
  */
 int gladLoadGL(void);
+
 /*
  * Load OpenGL using an external loader like SDL_GL_GetProcAddress.
  *
  * Substitute GL with the API you generated
  *
- * Note: in D this function is an overload of gladLoadGL:
- * GLVersion gladLoadGL(void* function(const(char)* name));
- *
  */
 void gladLoadGLLoader(GLADloadproc);
 ```
-
-
-#### C/C++ ####
 
 `glad.h` completely replaces any `gl.h` or `gl3.h` only include `glad.h`.
 
 ```c
     if(!gladLoadGL()) { exit(-1) };
     printf("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
-    if(GLAD_GL_EXT_framebuffer_multisample) { /* GL_EXT_framebuffer_multisample is supported */ }
-    if(GLAD_GL_VERSION_3_0) { /* We support at least OpenGL version 3 */ }
+    
+    if(GLAD_GL_EXT_framebuffer_multisample) {
+        /* GL_EXT_framebuffer_multisample is supported */ 
+    }
+    
+    if(GLAD_GL_VERSION_3_0) {
+        /* We support at least OpenGL version 3 */
+    }
 ```
 
-On non-Windows platforms `glad` requires `libdl`, make sure to link with it (`-ldl` for gcc)!
+On non-Windows platforms glad requires `libdl`, make sure to link with it (`-ldl` for gcc)!
 
 Note, there are two kinds of extension/version symbols, e.g. `GL_VERSION_3_0` and
 `GLAD_VERSION_3_0`. Latter is a runtime boolean (represented as integer), whereas
 the first (not prefixed with `GLAD_`) is a compiletime-constant, indicating that this
-header supports this version (as the official headers define these symbols).
+header supports this version (the official headers define these symbols as well).
 The runtime booleans are only valid *after* a succesful call to `gladLoadGL` or `gladLoadGLLoader`.
 
 
-#### D ####
+### C/C++ Debug ###
 
-Import `glad.gl` for OpenGL functions/extensions, import `glad.loader` to import
-the functions needed to initialize `glad` and load the OpenGL functions.
+The C-Debug generator extends the API by these two functions:
 
-```d
-    enforce(gladLoadGL());
-    writefln("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
-    if(GL_EXT_framebuffer_multisample) { /* GL_EXT_framebuffer_multisample is supported */ }
-    if(GL_VERSION_3_0) { /* We support at least OpenGL version 3 */ }
+```c
+// this symbol only exists if generated with the c-debug generator
+#define GLAD_DEBUG
+typedef void (* GLADcallback)(const char *name, void *funcptr, int len_args, ...);
+
+/*
+ * Sets a callback which will be called before every function call
+ * to a function loaded by glad.
+ *
+ */
+GLAPI void glad_set_pre_callback(GLADcallback cb);
+
+/*
+ * Sets a callback which will be called after every function call
+ * to a function loaded by glad.
+ *
+ */
+GLAPI void glad_set_post_callback(GLADcallback cb);
 ```
 
-On non-Windows platforms `glad` requires `libdl`, make sure to link with it (`L-ldl` for dmd)!
+To call a function like `glGetError` in a callback prefix it with `glad_`, e.g.
+the default post callback looks like this:
+
+```c
+void _post_call_callback_default(const char *name, void *funcptr, int len_args, ...) {
+    GLenum error_code;
+    error_code = glad_glGetError();
+
+    if (error_code != GL_NO_ERROR) {
+        fprintf(stderr, "ERROR %d in %s\n", error_code, name);
+    }
+}
+```
+
+You can also submit own implementations for every call made by overwriting
+the function pointer with the name of the function prefixed by `glad_debug_`.
+
+E.g. you could disable the callbacks for glClear with `glad_debug_glClear = glad_glClear`, where
+`glad_glClear` is the function pointer loaded by glad.
+
+The `glClear` macro is defined as `#define glClear glad_debug_glClear`,
+`glad_debug_glClear` is initialized with a default implementation, which calls 
+the two callbacks and the real function, in this case `glad_glClear`. 
+
+
+### D ###
+
+Import `glad.gl` for OpenGL functions/extensions, import `glad.loader` to import
+the functions needed to initialize glad and load the OpenGL functions.
+
+```d
+    enforce(gladLoadGL()); // optionally you can pass a loader to this function
+    writefln("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
+    
+    if(GL_EXT_framebuffer_multisample) { 
+        /* GL_EXT_framebuffer_multisample is supported */ 
+    }
+    
+    if(GL_VERSION_3_0) {
+        /* We support at least OpenGL version 3 */
+    }
+```
+
+On non-Windows platforms glad requires `libdl`, make sure to link with it (`L-ldl` for dmd)!
 
 
 ## Contribute ##
