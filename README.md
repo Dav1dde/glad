@@ -2,20 +2,8 @@ glad
 ====
 
 GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.
-Also with an experimental webservice: http://glad.dav1d.de
+Checkout the [experimental webservice](http://glad.dav1d.de)!
 
-
-Advantages:
-
- * Always up to date
- * Supports every Extension (GL/EGL/GLX/WGL)
- * Easy to maintain and extend (supporting multiple languages at once)
- * Allows you to use your own loader or e.g. SDL_GL_GetProcAddress instead of the builtin
- * Easy way to check if an extension is loaded `if(GL_EXT_framebuffer_multisample) { /* Exists */ }`
- * Can generate a loader which fits exactly your needs, only the extensions and version you need
-
-
-Example using glut and glad:
 
 ```c
 // GLAD_DEBUG is only defined if the c-debug generator was used
@@ -71,7 +59,7 @@ int main(int argc, char **argv)
 
 Checkout the full example: [simple.c](https://github.com/Dav1dde/glad/blob/master/example/c/simple.c)
 
-Or the C++ example (using [GLFW](http://glfw.org), which I recommend you to use):
+Or the C++ example using [GLFW](http://glfw.org):
 [hellowindow2.cpp](https://github.com/Dav1dde/glad/blob/master/example/c%2B%2B/hellowindow2.cpp)
 
 
