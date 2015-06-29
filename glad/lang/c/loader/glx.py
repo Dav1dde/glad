@@ -61,6 +61,9 @@ _GLX_HAS_EXT = '''
 static Display *GLADGLXDisplay = 0;
 static int GLADGLXscreen = 0;
 
+static void get_exts(void) {
+}
+
 static int has_ext(const char *ext) {
     const char *terminator;
     const char *loc;

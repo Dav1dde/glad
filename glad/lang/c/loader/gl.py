@@ -24,6 +24,32 @@ struct gladGLversionStruct GLVersion;
 #define _GLAD_IS_SOME_NEW_VERSION 1
 #endif
 
+static const char *exts = NULL;
+static int num_exts_i = 0;
+static const char **exts_i = NULL;
+
+static void get_exts(void) {
+#ifdef _GLAD_IS_SOME_NEW_VERSION
+    if(GLVersion.major < 3) {
+#endif
+        exts = (const char *)glGetString(GL_EXTENSIONS);
+#ifdef _GLAD_IS_SOME_NEW_VERSION
+    } else {
+        int index;
+
+        num_exts_i = 0;
+        glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts_i);
+        if (num_exts_i > 0) {
+            exts_i = (const char **)realloc((void *)exts_i, num_exts_i * sizeof *exts_i);
+        }
+
+        for(index = 0; index < num_exts_i; index++) {
+            exts_i[index] = (const char*)glGetStringi(GL_EXTENSIONS, index);
+        }
+    }
+#endif
+}
+
 static int has_ext(const char *ext) {
 #ifdef _GLAD_IS_SOME_NEW_VERSION
     if(GLVersion.major < 3) {
@@ -31,7 +57,7 @@ static int has_ext(const char *ext) {
         const char *extensions;
         const char *loc;
         const char *terminator;
-        extensions = (const char *)glGetString(GL_EXTENSIONS);
+        extensions = exts;
         if(extensions == NULL || ext == NULL) {
             return 0;
         }
@@ -51,12 +77,10 @@ static int has_ext(const char *ext) {
         }
 #ifdef _GLAD_IS_SOME_NEW_VERSION
     } else {
-        int num, index;
+        int index;
 
-        glGetIntegerv(GL_NUM_EXTENSIONS, &num);
-
-        for(index = 0; index < num; index++) {
-            const char *e = (const char*)glGetStringi(GL_EXTENSIONS, index);
+        for(index = 0; index < num_exts_i; index++) {
+            const char *e = exts_i[index];
 
             if(strcmp(e, ext) == 0) {
                 return 1;
