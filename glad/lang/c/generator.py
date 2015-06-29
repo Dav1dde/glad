@@ -79,6 +79,7 @@ class CGenerator(Generator):
 
             f.write('static void find_extensions{}(void) {{\n'.format(api.upper()))
             if self.spec.NAME in ('gl', 'glx', 'wgl'):
+                f.write('\tget_exts();\n')
                 for ext in extensions[api]:
                     f.write('\tGLAD_{0} = has_ext("{0}");\n'.format(ext.name))
             f.write('}\n\n')
@@ -216,7 +217,7 @@ class CGenerator(Generator):
                 f.write('GLAPI int gladLoad{}Loader(GLADloadproc);\n\n'.format(api.upper()))
 
     def write_code_head(self, f):
-        f.write('#include <stdio.h>\n#include <string.h>\n#include {}\n'.format(self.h_include))
+        f.write('#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include {}\n'.format(self.h_include))
 
     def write_extern(self, fobj):
         fobj.write('#ifdef __cplusplus\nextern "C" {\n#endif\n')
