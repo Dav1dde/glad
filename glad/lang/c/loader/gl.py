@@ -24,13 +24,16 @@ struct gladGLversionStruct GLVersion;
 #define _GLAD_IS_SOME_NEW_VERSION 1
 #endif
 
+static int max_loaded_major;
+static int max_loaded_minor;
+
 static const char *exts = NULL;
 static int num_exts_i = 0;
 static const char **exts_i = NULL;
 
 static void get_exts(void) {
 #ifdef _GLAD_IS_SOME_NEW_VERSION
-    if(GLVersion.major < 3) {
+    if(max_loaded_major < 3) {
 #endif
         exts = (const char *)glGetString(GL_EXTENSIONS);
 #ifdef _GLAD_IS_SOME_NEW_VERSION
@@ -52,7 +55,7 @@ static void get_exts(void) {
 
 static int has_ext(const char *ext) {
 #ifdef _GLAD_IS_SOME_NEW_VERSION
-    if(GLVersion.major < 3) {
+    if(max_loaded_major < 3) {
 #endif
         const char *extensions;
         const char *loc;
@@ -177,6 +180,7 @@ _FIND_VERSION = '''
 #endif
 
     GLVersion.major = major; GLVersion.minor = minor;
+    max_loaded_major = major; max_loaded_minor = minor;
 '''
 
 
@@ -195,6 +199,9 @@ class OpenGLCLoader(BaseLoader):
         fobj.write('\treturn GLVersion.major != 0 || GLVersion.minor != 0;\n')
 
     def write_find_core(self, fobj):
+        fobj.write(_FIND_VERSION)
+
+    def write_find_core_end(self, fobj):
         fobj.write(_FIND_VERSION)
 
     def write_has_ext(self, fobj):

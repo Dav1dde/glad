@@ -96,6 +96,11 @@ class CGenerator(Generator):
                 for feature in features[api]:
                     f.write('\tGLAD_{} = (major == {num[0]} && minor >= {num[1]}) ||'
                             ' major > {num[0]};\n'.format(feature.name, num=feature.number))
+            if api == 'gl':
+                f.write('\tif (GLVersion.major > {0} || (GLVersion.major >= {0} && GLVersion.minor >= {1})) {{\n'.format(version[0], version[1]))
+                f.write('\t\tmax_loaded_major = {0};\n'.format(version[0]))
+                f.write('\t\tmax_loaded_minor = {0};\n'.format(version[1]))
+                f.write('\t}\n')
             f.write('}\n\n')
 
             if api == 'glx':
