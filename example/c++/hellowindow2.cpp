@@ -46,7 +46,7 @@ int main()
     // Set the required callback functions
     glfwSetKeyCallback(window, key_callback);
 
-    if (!gladLoadGL())
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
     {
         std::cout << "Failed to initialize OpenGL context" << std::endl;
         return -1;
