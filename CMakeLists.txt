@@ -11,7 +11,7 @@ if (NOT GLAD_GENERATOR)
 endif()
 
 set(GLAD_INCLUDE_DIRS "${GLAD_OUT_DIR}/include")
-set(GLAD_SOURCES "${GLAD_OUT_DIR}/src/glad.c" "${GLAD_INCLUDE_DIRS}/glad.h")
+set(GLAD_SOURCES "${GLAD_OUT_DIR}/src/glad.c" "${GLAD_INCLUDE_DIRS}/glad/glad.h")
 message("GLAD_SOURCES ${GLAD_SOURCES}")
 include_directories(${GLAD_INCLUDE_DIRS})
 add_custom_command(
