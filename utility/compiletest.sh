@@ -9,7 +9,7 @@ fi
 echo "Using python \"$PYTHON\""
 
 if [ "$1" != "no-download" ]; then
-    ./download.sh
+    ./utility/download.sh
 fi
 
 
