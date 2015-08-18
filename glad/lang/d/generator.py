@@ -503,7 +503,7 @@ class BaseDGenerator(Generator):
         self.write_module(f, self.LOADER)
         self.write_imports(f, [self.FUNCS, self.EXT, self.ENUMS, self.TYPES])
 
-        self.loader.write(f, self.api.keys())
+        self.loader.write(f)
         self.loader.write_has_ext(f)
 
         written = set()

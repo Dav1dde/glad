@@ -118,7 +118,7 @@ def main():
     if loader_cls is None:
         return parser.error('API/Spec not yet supported')
 
-    loader = loader_cls()
+    loader = loader_cls(api)
     loader.disabled = ns.no_loader
 
     print('Generating {spec} bindings...'.format(spec=spec.NAME))

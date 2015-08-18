@@ -29,7 +29,7 @@ private bool has_ext(const(char)* name) {
 
 
 class GLXVoltLoader(BaseLoader):
-    def write(self, fobj, apis):
+    def write(self, fobj):
         fobj.write('import watt.library;\n')
         if not self.disabled:
             fobj.write(_GLX_LOADER)

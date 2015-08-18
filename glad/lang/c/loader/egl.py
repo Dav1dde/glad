@@ -39,7 +39,6 @@ extern "C" {
 #endif
 
 typedef void* (* GLADloadproc)(const char *name);
-GLAPI int gladLoadEGLLoader(GLADloadproc);
 '''
 
 _EGL_HEADER_LOADER = '''
@@ -59,7 +58,7 @@ _EGL_HAS_EXT = '''
 
 
 class EGLCLoader(BaseLoader):
-    def write(self, fobj, apis):
+    def write(self, fobj):
         if not self.disabled:
             fobj.write(_EGL_LOADER)
 

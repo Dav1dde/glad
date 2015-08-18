@@ -31,7 +31,7 @@ class GLXDLoader(BaseLoader):
     def write_header(self, fobj):
         pass
 
-    def write(self, fobj, apis):
+    def write(self, fobj):
         fobj.write('alias Loader = void* delegate(const(char)*);\n')
         if not self.disabled:
             fobj.write(_GLX_LOADER)

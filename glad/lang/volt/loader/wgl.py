@@ -17,7 +17,7 @@ class WGLVoltLoader(BaseLoader):
     def write_header(self, fobj):
         pass
 
-    def write(self, fobj, apis):
+    def write(self, fobj):
         fobj.write('import watt.library;\n')
         if not self.disabled:
             fobj.write(_WGL_LOADER)

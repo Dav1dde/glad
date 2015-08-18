@@ -35,9 +35,9 @@ class OpenGLVoltLoader(BaseLoader):
     def write_header(self, fobj):
         pass
 
-    def write(self, fobj, apis):
+    def write(self, fobj):
         fobj.write('import watt.library;\n')
-        if not self.disabled and 'gl' in apis:
+        if not self.disabled and 'gl' in self.apis:
             fobj.write(_OPENGL_LOADER)
 
     def write_begin_load(self, fobj):

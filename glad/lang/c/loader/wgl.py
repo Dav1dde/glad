@@ -102,7 +102,7 @@ static int has_ext(const char *ext) {
 '''
 
 class WGLCLoader(BaseLoader):
-    def write(self, fobj, apis):
+    def write(self, fobj):
         if not self.disabled:
             fobj.write(_WGL_LOADER)
 

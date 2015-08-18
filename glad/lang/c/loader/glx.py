@@ -98,7 +98,7 @@ static int has_ext(const char *ext) {
 
 
 class GLXCLoader(BaseLoader):
-    def write(self, fobj, apis):
+    def write(self, fobj):
         if not self.disabled:
             fobj.write(_GLX_LOADER)
 

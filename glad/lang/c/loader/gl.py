@@ -185,8 +185,8 @@ _FIND_VERSION = '''
 
 
 class OpenGLCLoader(BaseLoader):
-    def write(self, fobj, apis):
-        if not self.disabled and 'gl' in apis:
+    def write(self, fobj):
+        if not self.disabled and 'gl' in self.apis:
             fobj.write(_OPENGL_LOADER)
 
     def write_begin_load(self, fobj):
@@ -209,7 +209,7 @@ class OpenGLCLoader(BaseLoader):
 
     def write_header(self, fobj):
         fobj.write(_OPENGL_HEADER)
-        if not self.disabled:
+        if not self.disabled and 'gl' in self.apis:
             fobj.write(_OPENGL_HEADER_LOADER)
 
     def write_header_end(self, fobj):

@@ -158,7 +158,7 @@ class CGenerator(Generator):
 
         f = self._f_c
         self.write_code_head(f)
-        self.loader.write(f, self.api.keys())
+        self.loader.write(f)
         self.loader.write_has_ext(f)
 
         if self.spec.NAME in ('gl', 'glx', 'wgl'):

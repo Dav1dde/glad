@@ -1,8 +1,9 @@
 class BaseLoader(object):
-    def __init__(self, disabled=False):
+    def __init__(self, apis, disabled=False):
+        self.apis = apis
         self.disabled = disabled
 
-    def write(self, fobj, apis):
+    def write(self, fobj):
         raise NotImplementedError
 
     def write_begin_load(self, fobj):
@@ -37,7 +38,7 @@ class NullLoader(BaseLoader):
     def write_has_ext(self, fobj):
         pass
 
-    def write(self, fobj, apis):
+    def write(self, fobj):
         pass
 
     def write_header(self, fobj):
