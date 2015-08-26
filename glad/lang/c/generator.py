@@ -150,6 +150,8 @@ class CGenerator(Generator):
             # These are already defined in windows.h
             pass
         elif self.spec.NAME in ('egl',):
+            self.write_enums(f, set(), features)
+
             for feature in features:
                 for func in feature.functions:
                     self.write_function_def(f, func)
@@ -192,11 +194,7 @@ class CGenerator(Generator):
             if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'): f.write('#endif\n')
 
     def write_functions(self, f, write, written, extensions):
-        for ext in extensions:
-            for enum in ext.enums:
-                if not enum.name in written:
-                    f.write('#define {} {}\n'.format(enum.name, enum.value))
-                written.add(enum.name)
+        self.write_enums(f, written, extensions)
 
         for ext in extensions:
             f.write('#ifndef {0}\n#define {0} 1\n'.format(ext.name))
@@ -211,6 +209,13 @@ class CGenerator(Generator):
                 written.add(func.proto.name)
             if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'): f.write('#endif\n')
             f.write('#endif\n')
+
+    def write_enums(self, f, written, extensions):
+        for ext in extensions:
+            for enum in ext.enums:
+                if not enum.name in written:
+                    f.write('#define {} {}\n'.format(enum.name, enum.value))
+                written.add(enum.name)
 
     def write_api_header(self, f):
         for api in self.api:
