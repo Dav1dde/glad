@@ -96,16 +96,20 @@ static int has_ext(const char *ext) {
 }
 '''
 
-_OPENGL_HEADER = '''
+
+_OPENGL_HEADER_START = '''
 #ifndef __glad_h_
-
-#ifdef __gl_h_
-#error OpenGL header already included, remove this include, glad already provides it
-#endif
-
 #define __glad_h_
-#define __gl_h_
+'''
 
+_OPENGL_HEADER_INCLUDE_ERROR = '''
+#ifdef __{0}_h_
+#error {1} header already included, remove this include, glad already provides it
+#endif
+#define __{0}_h_
+'''
+
+_OPENGL_HEADER = '''
 #if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
@@ -208,6 +212,14 @@ class OpenGLCLoader(BaseLoader):
         fobj.write(_OPENGL_HAS_EXT)
 
     def write_header(self, fobj):
+        fobj.write(_OPENGL_HEADER_START)
+        for api, hname, name in [
+            ('gl', 'gl', 'OpenGL'), ('gles1', 'gl', 'OpenGL ES 1'),
+            ('gles2', 'gl2', 'OpenGL ES 2'), ('gles2', 'gl3', 'OpenGL ES 3')
+        ]:
+            if api in self.apis:
+                fobj.write(_OPENGL_HEADER_INCLUDE_ERROR.format(hname, name))
+
         fobj.write(_OPENGL_HEADER)
         if not self.disabled and 'gl' in self.apis:
             fobj.write(_OPENGL_HEADER_LOADER)
