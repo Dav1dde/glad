@@ -236,14 +236,16 @@ class CGenerator(Generator):
         fobj.write('#ifdef __cplusplus\n}\n#endif\n')
 
     def write_function_def(self, fobj, func):
+        # write a function definition instead of a prototype.
+        # e.g. egl uses that, since the main functions get linked in and not loaded through a function.
         fobj.write('{} {}('.format(func.proto.ret.to_c(), func.proto.name))
-        fobj.write(', '.join(param.type.to_c() for param in func.params))
+        fobj.write(', '.join('{} {}'.format(param.type.to_c(), param.name) for param in func.params))
         fobj.write(');\n')
 
     def write_function_prototype(self, fobj, func):
         fobj.write('typedef {} (APIENTRYP PFN{}PROC)({});\n'.format(
             func.proto.ret.to_c(), func.proto.name.upper(),
-            ', '.join(param.type.to_c() for param in func.params))
+            ', '.join('{} {}'.format(param.type.to_c(), param.name) for param in func.params))
         )
         fobj.write('GLAPI PFN{}PROC glad_{};\n'.format(func.proto.name.upper(),
                                                        func.proto.name))
