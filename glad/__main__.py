@@ -9,8 +9,8 @@ the languages C, D and Volt.
 from __future__ import print_function
 
 from collections import namedtuple
-import importlib
 
+from glad.opener import URLOpener
 from glad.spec import SPECS
 import glad.lang
 
@@ -23,6 +23,8 @@ def main():
     import argparse
     from argparse import ArgumentParser
 
+    opener = URLOpener()
+
     def get_spec(value):
         if value not in SPECS:
             raise argparse.ArgumentTypeError('Unknown spec')
@@ -33,7 +35,7 @@ def main():
             print('Using local spec: {}.xml'.format(value))
             return spec_cls.from_file(value + '.xml')
         print('Downloading latest spec from svn...')
-        return spec_cls.from_svn()
+        return spec_cls.from_svn(opener=opener)
 
     def ext_file(value):
         msg = 'Invalid extensions argument'
@@ -122,7 +124,7 @@ def main():
     loader.disabled = ns.no_loader
 
     print('Generating {spec} bindings...'.format(spec=spec.NAME))
-    with generator_cls(ns.out, spec, api, loader) as generator:
+    with generator_cls(ns.out, spec, api, loader=loader, opener=opener) as generator:
         generator.generate(ns.extensions)
 
 

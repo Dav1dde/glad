@@ -23,14 +23,9 @@ except ImportError:
 from collections import defaultdict, OrderedDict
 from contextlib import closing
 from itertools import chain
-import sys
 import re
 
-
-if sys.version_info >= (3, 0):
-    from urllib.request import urlopen
-else:
-    from urllib2 import urlopen
+from glad.opener import URLOpener
 
 
 _ARRAY_RE = re.compile(r'\[\d+\]')
@@ -51,15 +46,18 @@ class Spec(object):
         self._extensions = None
 
     @classmethod
-    def from_url(cls, url):
-        with closing(urlopen(url)) as f:
+    def from_url(cls, url, opener=None):
+        if opener is None:
+            opener = URLOpener.default()
+
+        with closing(opener.urlopen(url)) as f:
             raw = f.read()
 
         return cls(xml_fromstring(raw))
 
     @classmethod
-    def from_svn(cls):
-        return cls.from_url(cls.API + cls.NAME + '.xml')
+    def from_svn(cls, opener=None):
+        return cls.from_url(cls.API + cls.NAME + '.xml', opener=opener)
 
     @classmethod
     def fromstring(cls, string):

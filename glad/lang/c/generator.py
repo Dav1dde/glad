@@ -29,7 +29,7 @@ class CGenerator(Generator):
         if not os.path.exists(khrplatform):
             if not os.path.exists(khr):
                 os.makedirs(khr)
-            urlretrieve(KHRPLATFORM, khrplatform)
+            self.opener.urlretrieve(KHRPLATFORM, khrplatform)
 
         return self
 

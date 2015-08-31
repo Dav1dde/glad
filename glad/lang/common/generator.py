@@ -3,10 +3,11 @@ from itertools import chain
 import os.path
 
 from glad.lang.common.loader import NullLoader
+from glad.opener import URLOpener
 
 
 class Generator(object):
-    def __init__(self, path, spec, api, loader=None):
+    def __init__(self, path, spec, api, loader=None, opener=None):
         self.path = os.path.abspath(path)
 
         self.spec = spec
@@ -20,6 +21,10 @@ class Generator(object):
         self.loader = loader
         if self.loader is None:
             self.loader = NullLoader
+
+        self.opener = opener
+        if self.opener is None:
+            self.opener = URLOpener.default()
 
     def __enter__(self):
         self.open()
