@@ -17,7 +17,7 @@ GCC_FLAGS="-o build/tmp.o -Wall -Werror -ansi -c"
 GPP_FLAGS="-o build/tmp.o -Wall -Werror -c"
 
 # C
-echo -e "=== Generating and compiling C/C++:"
+echo -e "====================== Generating and compiling C/C++: ======================"
 
 rm -rf build
 $PYTHON -m glad --generator=c --spec=egl --out-path=build
@@ -47,7 +47,7 @@ i686-w64-mingw32-g++ -Ibuild/include build/src/glad_wgl.c ${GPP_FLAGS}
 
 
 # C-Debug
-echo -e "=== Generating and compiling C/C++ Debug:"
+echo -e "====================== Generating and compiling C/C++ Debug: ======================"
 
 rm -rf build
 $PYTHON -m glad --generator=c-debug --spec=egl --out-path=build
@@ -77,7 +77,7 @@ i686-w64-mingw32-g++ -Ibuild/include build/src/glad_wgl.c ${GPP_FLAGS}
 
 
 # D
-echo -e "\n=== Generating and compiling D:"
+echo -e "\n====================== Generating and compiling D: ======================"
 
 rm -rf build
 $PYTHON -m glad --generator=d --spec=egl --out-path=build
@@ -100,7 +100,7 @@ dmd -o- build/glad/wgl/*.d -c
 
 
 # Volt TODO
-echo -e "\n=== Generating Volt:"
+echo -e "\n====================== Generating Volt: ======================"
 
 rm -rf build
 $PYTHON -m glad --generator=volt --spec=egl --out-path=build

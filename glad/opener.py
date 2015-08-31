@@ -1,5 +1,6 @@
-import sys
 from contextlib import closing
+import logging
+import sys
 
 if sys.version_info >= (3, 0):
     _is_py3 = True
@@ -8,6 +9,9 @@ else:
     _is_py3 = False
     from urllib2 import build_opener
     from urllib import FancyURLopener
+
+
+logger = logging.getLogger('glad.opener')
 
 
 def build_urllib_opener(user_agent, *args, **kwargs):
@@ -73,6 +77,8 @@ class URLOpener(object):
         Same as urllib2.urlopen or urllib.request.urlopen,
         the only difference is that it links to the internal opener.
         """
+        logger.info('opening: \'%s\'', url)
+
         if data is None:
             return self.opener.open(url)
 
@@ -88,6 +94,7 @@ class URLOpener(object):
         :param data: Valid URL-encoded data.
         :return: Tuple containing path and headers.
         """
+        logger.info('saving: \'%s\' to \'%s\'', url, filename)
 
         if _is_py3:
             return _urlretrieve_with_opener(self.opener, url, filename, data=data)

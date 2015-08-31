@@ -5,10 +5,9 @@ Uses the official Khronos-XML specs to generate a
 GL/GLES/EGL/GLX/WGL Loader made for your needs. Glad currently supports
 the languages C, D and Volt.
 """
-
-from __future__ import print_function
-
 from collections import namedtuple
+import logging
+import sys
 
 from glad.opener import URLOpener
 from glad.spec import SPECS
@@ -16,6 +15,8 @@ import glad.lang
 
 
 Version = namedtuple('Version', ['major', 'minor'])
+
+logger = logging.getLogger('glad')
 
 
 def main():
@@ -27,14 +28,14 @@ def main():
 
     def get_spec(value):
         if value not in SPECS:
-            raise argparse.ArgumentTypeError('Unknown spec')
+            raise argparse.ArgumentTypeError('Unknown specification')
 
         spec_cls = SPECS[value]
 
         if os.path.exists(value + '.xml'):
-            print('Using local spec: {}.xml'.format(value))
+            logger.info('using local specification: \'%s.xml\'', value)
             return spec_cls.from_file(value + '.xml')
-        print('Downloading latest spec from svn...')
+        logger.info('getting \'%s\' specification from SVN', value)
         return spec_cls.from_svn(opener=opener)
 
     def ext_file(value):
@@ -102,8 +103,15 @@ def main():
                         choices=['gl', 'egl', 'glx', 'wgl'],
                         help='Name of the spec')
     parser.add_argument('--no-loader', dest='no_loader', action='store_true')
+    parser.add_argument('--quiet', dest='quiet', action='store_true')
 
     ns = parser.parse_args()
+
+    if not ns.quiet:
+        logging.basicConfig(
+            format='[%(asctime)s][%(levelname)s\t][%(name)-7s\t]: %(message)s',
+            datefmt='%m/%d/%Y %H:%M:%S', level=logging.DEBUG
+        )
 
     spec = get_spec(ns.spec)
     if spec.NAME == 'gl':
@@ -123,10 +131,10 @@ def main():
     loader = loader_cls(api)
     loader.disabled = ns.no_loader
 
-    print('Generating {spec} bindings...'.format(spec=spec.NAME))
+    logger.info('generating \'%s\' bindings', spec.NAME)
     with generator_cls(ns.out, spec, api, loader=loader, opener=opener) as generator:
         generator.generate(ns.extensions)
-
+    logger.info('generating \'%s\' bindings - done', spec.NAME)
 
 if __name__ == '__main__':
     main()
