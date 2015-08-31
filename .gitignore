@@ -10,3 +10,4 @@ main.c
 .idea
 dist/
 *.egg-info
+khrplatform.h

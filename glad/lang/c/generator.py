@@ -4,10 +4,6 @@ import sys
 from glad.lang.common.generator import Generator
 from glad.lang.common.util import makefiledir
 
-if sys.version_info >= (3, 0):
-    from urllib.request import urlretrieve
-else:
-    from urllib import urlretrieve
 
 KHRPLATFORM = 'https://www.khronos.org/registry/egl/api/KHR/khrplatform.h'
 
@@ -24,12 +20,16 @@ class CGenerator(Generator):
         self._f_h = open(make_path(self.path, 'include',
                                    'glad', 'glad{}.h'.format(suffix)), 'w')
 
+        khr_url = KHRPLATFORM
+        if os.path.exists('khrplatform.h'):
+            khr_url = 'file://' + os.path.abspath('khrplatform.h')
+
         khr = os.path.join(self.path, 'include', 'KHR')
         khrplatform = os.path.join(khr, 'khrplatform.h')
         if not os.path.exists(khrplatform):
             if not os.path.exists(khr):
                 os.makedirs(khr)
-            self.opener.urlretrieve(KHRPLATFORM, khrplatform)
+            self.opener.urlretrieve(khr_url, khrplatform)
 
         return self
 

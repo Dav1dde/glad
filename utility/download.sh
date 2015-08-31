@@ -13,3 +13,6 @@ wget -O glx.xml https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/
 
 rm -f wgl.xml
 wget -O wgl.xml https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/wgl.xml
+
+rm -f khrplatform.h
+wget -O khrplatform.h https://www.khronos.org/registry/egl/api/KHR/khrplatform.h
