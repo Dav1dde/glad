@@ -213,12 +213,14 @@ class OpenGLCLoader(BaseLoader):
 
     def write_header(self, fobj):
         fobj.write(_OPENGL_HEADER_START)
+        written = set()
         for api, hname, name in [
             ('gl', 'gl', 'OpenGL'), ('gles1', 'gl', 'OpenGL ES 1'),
             ('gles2', 'gl2', 'OpenGL ES 2'), ('gles2', 'gl3', 'OpenGL ES 3')
         ]:
-            if api in self.apis:
+            if api in self.apis and hname not in written:
                 fobj.write(_OPENGL_HEADER_INCLUDE_ERROR.format(hname, name))
+                written.add(hname)
 
         fobj.write(_OPENGL_HEADER)
         if not self.disabled and 'gl' in self.apis:
