@@ -209,7 +209,7 @@ class Param(object):
     def __init__(self, element, spec):
         self.group = element.get('group')
         self.type = OGLType(element)
-        self.name = element.find('name').text
+        self.name = element.find('name').text.strip('*')
 
     def __str__(self):
         return '{0!r} {1}'.format(self.type, self.name)
