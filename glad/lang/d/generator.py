@@ -71,6 +71,8 @@ version(Windows) {
         alias EGLNativeWindowType = uint;
     }
 }
+alias EGLObjectKHR = void*;
+alias EGLLabelKHR = void*;
 
 extern(System) {
 alias EGLSetBlobFuncANDROID = void function(const(void)*, EGLsizeiANDROID, const(void)*, EGLsizeiANDROID);
@@ -81,6 +83,7 @@ struct EGLClientPixmapHI {
     EGLint iHeight;
     EGLint iStride;
 }
+alias EGLDEBUGPROCKHR = void function(EGLenum error,const char *command,EGLint messageType,EGLLabelKHR threadLabel,EGLLabelKHR objectLabel,const char* message);
 }
 ''')
     gen.write_extern(f)
