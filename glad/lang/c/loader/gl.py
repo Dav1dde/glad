@@ -133,10 +133,10 @@ struct gladGLversionStruct {
     int minor;
 };
 
-extern struct gladGLversionStruct GLVersion;
-
 typedef void* (* GLADloadproc)(const char *name);
-''' + LOAD_OPENGL_GLAPI_H
+''' + LOAD_OPENGL_GLAPI_H + '''
+GLAPI struct gladGLversionStruct GLVersion;
+'''
 
 _OPENGL_HEADER_LOADER = '''
 GLAPI int gladLoadGL(void);
