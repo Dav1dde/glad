@@ -9,6 +9,9 @@ KHRPLATFORM = 'https://www.khronos.org/registry/egl/api/KHR/khrplatform.h'
 
 
 class CGenerator(Generator):
+    NAME = 'c'
+    NAME_LONG = 'C/C++'
+
     def open(self):
         suffix = ''
         if not self.spec.NAME == 'gl':
@@ -36,6 +39,15 @@ class CGenerator(Generator):
     def close(self):
         self._f_c.close()
         self._f_h.close()
+
+    def generate_header(self):
+        self._f_h.write('/*\n')
+        self._f_h.write(self.header)
+        self._f_h.write('*/\n\n')
+
+        self._f_c.write('/*\n')
+        self._f_c.write(self.header)
+        self._f_c.write('*/\n\n')
 
     def generate_loader(self, features, extensions):
         f = self._f_c

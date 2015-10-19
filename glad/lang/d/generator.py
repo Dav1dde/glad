@@ -476,6 +476,9 @@ DTYPES = {
 
 
 class BaseDGenerator(Generator):
+    NAME = 'd'
+    NAME_LONG = 'D'
+
     def open(self):
         self._f_loader = open(self.make_path(self.LOADER), 'w')
         self._f_gl = open(self.make_path(self.PACKAGE), 'w')
@@ -495,6 +498,11 @@ class BaseDGenerator(Generator):
     @property
     def PACKAGE(self):
         return 'all'
+
+    def generate_header(self):
+        self._f_gl.write('/*\n')
+        self._f_gl.write(self.header)
+        self._f_gl.write('*/\n\n')
 
     def generate_loader(self, features, extensions):
         f = self._f_loader

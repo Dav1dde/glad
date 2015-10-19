@@ -8,6 +8,9 @@ if sys.version_info >= (3, 0):
 
 
 class VoltGenerator(DGenerator):
+    NAME = 'volt'
+    NAME_LONG = 'Volt'
+
     MODULE = 'amp'
     LOADER = 'loader'
     ENUMS = 'enums'

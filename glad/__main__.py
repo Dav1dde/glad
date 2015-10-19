@@ -132,8 +132,8 @@ def main():
     loader.disabled = ns.no_loader
 
     logger.info('generating \'%s\' bindings', spec.NAME)
-    with generator_cls(ns.out, spec, api, loader=loader, opener=opener) as generator:
-        generator.generate(ns.extensions)
+    with generator_cls(ns.out, spec, api, ns.extensions, loader=loader, opener=opener) as generator:
+        generator.generate()
     logger.info('generating \'%s\' bindings - done', spec.NAME)
 
 if __name__ == '__main__':

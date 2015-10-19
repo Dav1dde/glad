@@ -49,6 +49,9 @@ void _post_call_callback_default(const char *name, void *funcptr, int len_args, 
 
 
 class CDebugGenerator(CGenerator):
+    NAME = 'c-debug'
+    NAME_LONG = 'C/C++ Debug'
+
     def write_code_head(self, f):
         CGenerator.write_code_head(self, f)
 
