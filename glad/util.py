@@ -19,5 +19,7 @@ def get_glad_version():
         import pkg_resources
     except ImportError:
         return 'Unknown'
-
-    return pkg_resources.get_distribution('glad').version
+    try:
+        return pkg_resources.get_distribution('glad').version
+    except pkg_resources.DistributionNotFound:
+        return 'Unknown'
