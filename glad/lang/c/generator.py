@@ -89,11 +89,12 @@ class CGenerator(Generator):
 
                 written.add(ext.name)
 
-            f.write('static void find_extensions{}(void) {{\n'.format(api.upper()))
+            f.write('static int find_extensions{}(void) {{\n'.format(api.upper()))
             if self.spec.NAME in ('gl', 'glx', 'wgl'):
-                f.write('\tget_exts();\n')
+                f.write('\tif (!get_exts()) return 0;\n')
                 for ext in extensions[api]:
                     f.write('\tGLAD_{0} = has_ext("{0}");\n'.format(ext.name))
+            f.write('\treturn 1;\n')
             f.write('}\n\n')
 
             if api == 'glx':
@@ -133,7 +134,7 @@ class CGenerator(Generator):
 
             for feature in features[api]:
                 f.write('\tload_{}(load);\n'.format(feature.name))
-            f.write('\n\tfind_extensions{}();\n'.format(api.upper()))
+            f.write('\n\tif (!find_extensions{}()) return 0;\n'.format(api.upper()))
             for ext in extensions[api]:
                 if len(list(ext.functions)) == 0:
                     continue

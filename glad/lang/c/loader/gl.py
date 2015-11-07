@@ -31,7 +31,7 @@ static const char *exts = NULL;
 static int num_exts_i = 0;
 static const char **exts_i = NULL;
 
-static void get_exts(void) {
+static int get_exts(void) {
 #ifdef _GLAD_IS_SOME_NEW_VERSION
     if(max_loaded_major < 3) {
 #endif
@@ -46,11 +46,16 @@ static void get_exts(void) {
             exts_i = (const char **)realloc((void *)exts_i, num_exts_i * sizeof *exts_i);
         }
 
+        if (exts_i == NULL) {
+            return 0;
+        }
+
         for(index = 0; index < num_exts_i; index++) {
             exts_i[index] = (const char*)glGetStringi(GL_EXTENSIONS, index);
         }
     }
 #endif
+    return 1;
 }
 
 static int has_ext(const char *ext) {
