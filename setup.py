@@ -1,22 +1,32 @@
 #!/usr/bin/env python
-# -*- coding: utf8 -*-
 
 """
-Uses the official Khronos-XML specs to generate a
-GL/GLES/EGL/GLX/WGL Loader made for your needs. Glad currently supports
-the languages C, D and Volt.
+Glad
+----
 
-Note: this package might be slightly outdated, for always up to date versions
-checkout the GitHub repository: https://github.com/Dav1dde/glad
+Glad uses the official Khronos-XML specs to generate a
+GL/GLES/EGL/GLX/WGL Loader made for your needs.
+
+Checkout the GitHub repository: https://github.com/Dav1dde/glad
 """
 
 from setuptools import setup, find_packages
+import ast
+import re
+
+
+# Thanks flask: https://github.com/mitsuhiko/flask/blob/master/setup.py
+_version_re = re.compile(r'__version__\s+=\s+(.*)')
+
+with open('glad/__init__.py', 'rb') as f:
+    version = str(ast.literal_eval(_version_re.search(
+        f.read().decode('utf-8')).group(1)))
 
 
 if __name__ == '__main__':
     setup(
         name='glad',
-        version='0.1.9a1',
+        version=version,
         description='Multi-Language GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.',
         long_description=__doc__,
         packages=find_packages(),

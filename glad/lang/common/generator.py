@@ -6,7 +6,8 @@ import sys
 
 from glad.lang.common.loader import NullLoader
 from glad.opener import URLOpener
-from glad.util import api_name, get_glad_version
+from glad.util import api_name
+import glad
 
 
 if sys.version_info >= (3, 0):
@@ -131,7 +132,6 @@ class Generator(object):
     @property
     def header(self):
         apis_named = ', '.join(sorted(set(api_name(api) for api in self.api)))
-        version = get_glad_version()
         date = datetime.now().strftime('%c')
         language = self.NAME_LONG
         specification = self.spec.NAME
@@ -145,7 +145,7 @@ class Generator(object):
 
         return self._header_template.format(
             apis_named=apis_named,
-            version=version,
+            version=glad.__version__,
             date=date,
             language=language,
             specification=specification,
