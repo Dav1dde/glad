@@ -1,3 +1,4 @@
+from .version import __version__
 
 _API_NAMES = {
     'egl': 'EGL',
@@ -15,11 +16,5 @@ def api_name(api):
 
 
 def get_glad_version():
-    try:
-        import pkg_resources
-    except ImportError:
-        return 'Unknown'
-    try:
-        return pkg_resources.get_distribution('glad').version
-    except pkg_resources.DistributionNotFound:
-        return 'Unknown'
+    return __version__
+
