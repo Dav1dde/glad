@@ -58,6 +58,13 @@ static int get_exts(void) {
     return 1;
 }
 
+static void free_exts(void) {
+    if (exts_i != NULL) {
+        free(exts_i);
+        exts_i = NULL;
+    }
+}
+
 static int has_ext(const char *ext) {
 #ifdef _GLAD_IS_SOME_NEW_VERSION
     if(max_loaded_major < 3) {

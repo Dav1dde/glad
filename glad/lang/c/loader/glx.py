@@ -65,6 +65,10 @@ static int get_exts(void) {
     return 1;
 }
 
+static void free_exts(void) {
+    return;
+}
+
 static int has_ext(const char *ext) {
     const char *terminator;
     const char *loc;
