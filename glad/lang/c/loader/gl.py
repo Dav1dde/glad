@@ -60,7 +60,7 @@ static int get_exts(void) {
 
 static void free_exts(void) {
     if (exts_i != NULL) {
-        free(exts_i);
+        free((char **)exts_i);
         exts_i = NULL;
     }
 }
