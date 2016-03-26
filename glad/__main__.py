@@ -3,7 +3,7 @@
 """
 Uses the official Khronos-XML specs to generate a
 GL/GLES/EGL/GLX/WGL Loader made for your needs. Glad currently supports
-the languages C, D and Volt.
+the languages C, D, Nim and Volt.
 """
 from collections import namedtuple
 import logging
@@ -92,7 +92,7 @@ def main():
                         help='API type/version pairs, like "gl=3.2,gles=", '
                              'no version means latest')
     parser.add_argument('--generator', dest='generator', default='d',
-                        choices=['c', 'c-debug', 'd', 'volt'], required=True,
+                        choices=['c', 'c-debug', 'd', 'nim', 'volt'], required=True,
                         help='Language to generate the binding for')
     parser.add_argument('--extensions', dest='extensions',
                         default=None, type=ext_file,

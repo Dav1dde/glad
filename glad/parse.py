@@ -250,6 +250,23 @@ class OGLType(object):
         s += '*' * self.is_pointer
         return s
 
+    NIM_POINTER_MAP = {
+      'void': 'pointer',
+      'GLchar': 'cstring',
+      'struct _cl_context': 'ClContext',
+      'struct _cl_event': 'ClEvent'
+    }
+
+    def to_nim(self):
+        if self.is_pointer == 2:
+          s = 'cstringArray' if self.type == 'GLchar' else 'ptr pointer'
+        else:
+          s = self.type
+          if self.is_pointer == 1:
+            default  = 'ptr ' + s
+            s = self.NIM_POINTER_MAP.get(s, default)
+        return s
+
     __str__ = to_d
     __repr__ = __str__
 
