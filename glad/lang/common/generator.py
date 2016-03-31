@@ -53,7 +53,7 @@ class Generator(object):
         self.api = api
         self.extension_names = extension_names
 
-        self.has_loader = loader is None
+        self.has_loader = not loader.disabled
         self.loader = loader
         if self.loader is None:
             self.loader = NullLoader
