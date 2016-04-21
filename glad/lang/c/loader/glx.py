@@ -16,12 +16,15 @@ int gladLoadGLX(Display *dpy, int screen) {
 }
 '''
 
-_GLX_HEADER = '''
+_GLX_HEADER_START = '''
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+'''
+
 #include <glad/glad.h>
 
+_WGL_HEADER_MID = '''
 #ifndef __glad_glxext_h_
 
 #ifdef __glxext_h_
@@ -131,7 +134,12 @@ class GLXCLoader(BaseLoader):
         fobj.write(_GLX_HAS_EXT)
 
     def write_header(self, fobj):
-        fobj.write(_GLX_HEADER)
+        fobj.write(_GLX_HEADER_START)
+        if self.local_files:
+            fobj.write('#include "glad.h"\n')
+        else:
+            fobj.write('#include <glad/glad.h>\n')
+        fobj.write(_WGL_HEADER_MID)
         if not self.disabled:
             fobj.write(_GLX_HEADER_LOADER)
 
