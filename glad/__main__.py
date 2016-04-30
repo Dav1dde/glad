@@ -103,6 +103,17 @@ def main():
                         choices=['gl', 'egl', 'glx', 'wgl'],
                         help='Name of the spec')
     parser.add_argument('--no-loader', dest='no_loader', action='store_true')
+    parser.add_argument('--omit-khrplatform', dest='omit_khrplatform', action='store_true',
+                        help='Omits inclusion of the khrplatform.h '
+                        'file which is often unnecessary. '
+                        'Only has an effect if used together '
+                        'with c generators.')
+    parser.add_argument('--local-files', dest='local_files', action='store_true',
+                        help='Forces every file directly into the output '
+                        'directory. No src or include subdirectories '
+                        'are generated. '
+                        'Only has an effect if used together '
+                        'with c generators.')
     parser.add_argument('--quiet', dest='quiet', action='store_true')
 
     ns = parser.parse_args()
@@ -128,12 +139,21 @@ def main():
     if loader_cls is None:
         return parser.error('API/Spec not yet supported')
 
-    loader = loader_cls(api)
-    loader.disabled = ns.no_loader
+    loader = loader_cls(api, disabled=ns.no_loader, local_files=ns.local_files)
 
     logger.info('generating \'%s\' bindings', spec.NAME)
-    with generator_cls(ns.out, spec, api, ns.extensions, loader=loader, opener=opener) as generator:
+    with generator_cls(
+            ns.out,
+            spec,
+            api,
+            ns.extensions,
+            loader=loader,
+            opener=opener,
+            local_files=ns.local_files,
+            omit_khrplatform=ns.omit_khrplatform
+    ) as generator:
         generator.generate()
+
     logger.info('generating \'%s\' bindings - done', spec.NAME)
 
 if __name__ == '__main__':

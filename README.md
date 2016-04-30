@@ -100,6 +100,12 @@ Possible commandline options:
       --spec {gl,egl,glx,wgl}
                             Name of the spec
       --no-loader
+      --omit-khrplatform    Omits inclusion of the khrplatform.h file which is
+                            often unnecessary. Only has an effect if used
+                            together with c generators.
+      --local-files         Forces every file directly into the output directory.
+                            No src or include subdirectories are generated. Only
+                            has an effect if used together with c generators.
 
 
 To generate a loader for C with two extensions, it could look like this:

@@ -16,7 +16,7 @@ int gladLoadWGL(HDC hdc) {
 }
 '''
 
-_WGL_HEADER = '''
+_WGL_HEADER_START = '''
 #ifndef WINAPI
 # ifndef WIN32_LEAN_AND_MEAN
 #  define WIN32_LEAN_AND_MEAN 1
@@ -24,8 +24,11 @@ _WGL_HEADER = '''
 # include <windows.h>
 #endif
 
+'''
+
 #include <glad/glad.h>
 
+_WGL_HEADER_MID = '''
 #ifndef __glad_wglext_h_
 
 #ifdef __wglext_h_
@@ -126,7 +129,12 @@ class WGLCLoader(BaseLoader):
         fobj.write(_WGL_HAS_EXT)
 
     def write_header(self, fobj):
-        fobj.write(_WGL_HEADER)
+        fobj.write(_WGL_HEADER_START)
+        if self.local_files:
+            fobj.write('#include "glad.h"\n')
+        else:
+            fobj.write('#include <glad/glad.h>\n')
+        fobj.write(_WGL_HEADER_MID)
         if not self.disabled:
             fobj.write(_WGL_HEADER_LOADER)
 

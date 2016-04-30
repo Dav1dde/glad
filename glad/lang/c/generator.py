@@ -17,22 +17,31 @@ class CGenerator(Generator):
         if not self.spec.NAME == 'gl':
             suffix = '_{}'.format(self.spec.NAME)
 
-        self.h_include = '<glad/glad{}.h>'.format(suffix)
-        self._f_c = open(make_path(self.path, 'src',
-                                   'glad{}.c'.format(suffix)), 'w')
-        self._f_h = open(make_path(self.path, 'include',
-                                   'glad', 'glad{}.h'.format(suffix)), 'w')
+        if self.local_files:
+            self.h_include = '"glad{}.h"'.format(suffix)
+            self._f_c = open(make_path(self.path,
+                                        'glad{}.c'.format(suffix)), 'w')
+            self._f_h = open(make_path(self.path, 
+                                        'glad{}.h'.format(suffix)), 'w')
+            khr = self.path
+        else:
+            self.h_include = '<glad/glad{}.h>'.format(suffix)
+            self._f_c = open(make_path(self.path, 'src',
+                                        'glad{}.c'.format(suffix)), 'w')
+            self._f_h = open(make_path(self.path, 'include', 'glad',
+                                        'glad{}.h'.format(suffix)), 'w')
+            khr = os.path.join(self.path, 'include', 'KHR')
 
-        khr_url = KHRPLATFORM
-        if os.path.exists('khrplatform.h'):
-            khr_url = 'file://' + os.path.abspath('khrplatform.h')
+        if not self.omit_khrplatform:
+            khr_url = KHRPLATFORM
+            if os.path.exists('khrplatform.h'):
+                khr_url = 'file://' + os.path.abspath('khrplatform.h')
 
-        khr = os.path.join(self.path, 'include', 'KHR')
-        khrplatform = os.path.join(khr, 'khrplatform.h')
-        if not os.path.exists(khrplatform):
-            if not os.path.exists(khr):
-                os.makedirs(khr)
-            self.opener.urlretrieve(khr_url, khrplatform)
+            khrplatform = os.path.join(khr, 'khrplatform.h')
+            if not os.path.exists(khrplatform):
+                if not os.path.exists(khr):
+                    os.makedirs(khr)
+                self.opener.urlretrieve(khr_url, khrplatform)
 
         return self
 
@@ -153,9 +162,15 @@ class CGenerator(Generator):
         self.write_api_header(f)
 
         for type in types:
+            output_string = (type.raw + '\n').lstrip().replace('        ', ' ')
+            if output_string == '#include <KHR/khrplatform.h>\n':
+                if self.omit_khrplatform:
+                    continue
+                elif self.local_files:
+                    output_string = '#include "khrplatform.h"\n'
             if not self.spec.NAME in ('egl',) and 'khronos' in type.raw:
                 continue
-            f.write((type.raw + '\n').lstrip().replace('        ', ' '))
+            f.write(output_string)
 
     def generate_features(self, features):
         f = self._f_h

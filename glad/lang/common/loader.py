@@ -1,7 +1,8 @@
 class BaseLoader(object):
-    def __init__(self, apis, disabled=False):
+    def __init__(self, apis, disabled=False, local_files=False):
         self.apis = apis
         self.disabled = disabled
+        self.local_files = local_files
 
     def write(self, fobj):
         raise NotImplementedError

@@ -11,7 +11,7 @@ PFNWGLGETPROCADDRESSPROC_PRIVATE gladGetProcAddressPtr;
 
 %(pre)s
 int %(init)s(void) {
-    libGL = LoadLibraryA("opengl32.dll");
+    libGL = LoadLibraryW(L"opengl32.dll");
     if(libGL != NULL) {
         gladGetProcAddressPtr = (PFNWGLGETPROCADDRESSPROC_PRIVATE)GetProcAddress(
                 libGL, "wglGetProcAddress");
