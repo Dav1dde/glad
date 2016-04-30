@@ -26,6 +26,8 @@ HEADER_TEMPLATE = '''
     Extensions:
         {extensions}
     Loader: {loader}
+    Local files: {local_files}
+    Omit khrplatform: {omit_khrplatform}
 
     Commandline:
         {commandline}
@@ -40,7 +42,8 @@ class Generator(object):
     URL = 'http://glad.dav1d.de'
 
     def __init__(self, path, spec, api, extension_names=None, loader=None,
-                 opener=None, header_template=HEADER_TEMPLATE):
+                 opener=None, local_files=False, omit_khrplatform=False,
+                 header_template=HEADER_TEMPLATE):
         self.path = os.path.abspath(path)
 
         self.spec = spec
@@ -62,7 +65,16 @@ class Generator(object):
         if self.opener is None:
             self.opener = URLOpener.default()
 
+        self.local_files = local_files
+        self.omit_khrplatform = omit_khrplatform
+
         self._header_template = header_template
+
+    def open(self):
+        raise NotImplementedError
+
+    def close(self):
+        raise NotImplementedError
 
     def __enter__(self):
         self.open()
@@ -138,7 +150,6 @@ class Generator(object):
         apis = ', '.join('{}={}'.format(api, '.'.join(map(str, version))) for api, version in self.api.items())
         profile = getattr(self.spec, 'profile', '-')
         extensions = ', '.join(self.extension_names)
-        loader = 'Yes' if self.has_loader else 'No'
         online = self.online
         if len(online) > 2000:
             online = 'Too many extensions'
@@ -152,7 +163,9 @@ class Generator(object):
             apis=apis,
             profile=profile,
             extensions=extensions,
-            loader=loader,
+            loader=self.has_loader,
+            local_files=self.local_files,
+            omit_khrplatform=self.omit_khrplatform,
             commandline=self.commandline,
             online=online
         )
@@ -170,9 +183,12 @@ class Generator(object):
         specification = '--spec="{}"'.format(self.spec.NAME)
         loader = '' if self.has_loader else '--no-loader'
         extensions = '--extensions="{}"'.format(','.join(self.extension_names))
+        local_files = '--local-files' if self.local_files else ''
+        omit_khrplatform = '--omit-khrplatform' if self.omit_khrplatform else ''
 
         return ' '.join(filter(None, [
-            profile, api, generator, specification, loader, extensions
+            profile, api, generator, specification,
+            loader, local_files, omit_khrplatform, extensions
         ]))
 
     @property
@@ -193,6 +209,7 @@ class Generator(object):
         data = list(filter(None, data))
         serialized = urlencode(data)
 
+        # TODO: --local-files, --omit-khrplatform
         return '{}/#{}'.format(self.URL, serialized)
 
     def generate_header(self):

@@ -136,19 +136,24 @@ def main():
         ns.generator, spec.NAME.lower()
     )
 
-    generator_cls.local_files = ns.local_files
-    generator_cls.omit_khrplatform = ns.omit_khrplatform
-
     if loader_cls is None:
         return parser.error('API/Spec not yet supported')
 
-    loader = loader_cls(api)
-    loader.disabled = ns.no_loader
-    loader.local_files = ns.local_files
+    loader = loader_cls(api, disabled=ns.no_loader, local_files=ns.local_files)
 
     logger.info('generating \'%s\' bindings', spec.NAME)
-    with generator_cls(ns.out, spec, api, ns.extensions, loader=loader, opener=opener) as generator:
+    with generator_cls(
+            ns.out,
+            spec,
+            api,
+            ns.extensions,
+            loader=loader,
+            opener=opener,
+            local_files=ns.local_files,
+            omit_khrplatform=ns.omit_khrplatform
+    ) as generator:
         generator.generate()
+
     logger.info('generating \'%s\' bindings - done', spec.NAME)
 
 if __name__ == '__main__':
