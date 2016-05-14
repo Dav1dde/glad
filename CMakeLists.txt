@@ -3,7 +3,6 @@ project(GLAD)
 
 set(GLAD_DIR "${PROJECT_SOURCE_DIR}")
 set(GLAD_OUT_DIR "${PROJECT_BINARY_DIR}")
-set(Python_ADDITIONAL_VERSIONS 2)
 find_package(PythonInterp REQUIRED)
 
 # Options
