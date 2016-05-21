@@ -2,7 +2,8 @@ glad
 ====
 
 GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.
-Checkout the [experimental webservice](http://glad.dav1d.de)!
+
+Checkout the [webservice](http://glad.dav1d.de) to generate the files you need!
 
 
 ```c
@@ -65,12 +66,27 @@ Or the C++ example using [GLFW](http://glfw.org):
 
 ## Usage ##
 
-Either install glad via pip (root might be required):
 
-    pip install --upgrade git+https://github.com/dav1dde/glad.git#egg=glad
+**If you don't want to install glad you can use the [webservice](http://glad.dav1d.de)**
+
+
+Otherwise either install glad via pip:
+
+    # Windows
+    pip install glad
+
+    # Linux
+    pip install --user glad
+    # Linux global (root)
+    pip install glad
+
     glad --help
 
-Or launch glad directly
+To install the most recent version from Github:
+
+    pip install --upgrade git+https://github.com/dav1dde/glad.git#egg=glad
+
+Or launch glad directly (after cloning the repository):
 
     python -m glad --help
 
