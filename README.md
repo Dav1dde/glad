@@ -240,6 +240,24 @@ the functions needed to initialize glad and load the OpenGL functions.
 On non-Windows platforms glad requires `libdl`, make sure to link with it (`L-ldl` for dmd)!
 
 
+## FAQ ##
+
+### glad includes windows.h which breaks my code!
+
+Defining `APIENTRY` before including `glad.h` solves this problem:
+
+```c
+#ifdef _WIN32
+    #define APIENTRY __stdcall
+#endif
+
+#include <glad/glad.h>
+```
+
+Relevant issue: [#42](https://github.com/Dav1dde/glad/issues/42)
+
+
+
 ## Contribute ##
 
 Contributing is easy! Found a bug? Message me or make a pull request! Added a new generator backend?

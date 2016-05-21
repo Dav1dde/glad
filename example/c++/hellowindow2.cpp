@@ -1,7 +1,19 @@
 #include <iostream>
 
+
+// We don't want windows.h to be included,
+// GLAD will include windows.h for APIENTRY if it was not previously defined
+#ifdef _WIN32
+    #define APIENTRY __stdcall
+#endif
+
 // GLAD
 #include <glad/glad.h>
+
+// confirm that GLAD didn't include windows.h
+#ifdef _WINDOWS_
+    #error windows.h was included!
+#endif
 
 // GLFW
 #include <GLFW/glfw3.h>
