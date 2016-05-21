@@ -1,8 +1,9 @@
 #include <iostream>
 
 
-// We don't want windows.h to be included,
-// GLAD will include windows.h for APIENTRY if it was not previously defined
+// THIS IS OPTIONAL AND NOT REQUIRED, ONLY USE THIS IF YOU DON'T WANT GLAD TO INCLUDE windows.h
+// GLAD will include windows.h for APIENTRY if it was not previously defined.
+// Make sure you have the correct definition for APIENTRY for platforms which define _WIN32 but don't use __stdcall
 #ifdef _WIN32
     #define APIENTRY __stdcall
 #endif

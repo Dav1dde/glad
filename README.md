@@ -254,6 +254,8 @@ Defining `APIENTRY` before including `glad.h` solves this problem:
 #include <glad/glad.h>
 ```
 
+But make sure you have the correct definition of `APIENTRY` for platforms which define `_WIN32` but don't use `__stdcall`
+
 Relevant issue: [#42](https://github.com/Dav1dde/glad/issues/42)
 
 
