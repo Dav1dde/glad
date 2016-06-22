@@ -22,10 +22,12 @@ bool gladLoadGL() {
 }
 '''
 
-_OPENGL_HAS_EXT = 'global int GL_MAJOR = 0;\nglobal int GL_MINOR = 0;' + \
-    '\n'.join(l for l in _D_OPENGL_HAS_EXT.splitlines() if 'struct' not in l) \
-    .replace('GLVersion.major', 'GL_MAJOR') + \
+_OPENGL_HAS_EXT = (
+    'global int GL_MAJOR = 0;\nglobal int GL_MINOR = 0;' +
+    '\n'.join(l for l in _D_OPENGL_HAS_EXT.replace('@nogc', '').splitlines() if 'struct' not in l)
+        .replace('GLVersion.major', 'GL_MAJOR') +
     '\n\n'
+)
 
 
 class OpenGLVoltLoader(BaseLoader):
