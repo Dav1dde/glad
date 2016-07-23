@@ -41,7 +41,7 @@ def _egl_types(gen, f):
     f.write('''
 // Thanks to @jpf91 (github) for these declarations
 version(Windows) {
-    import std.c.windows.windows;
+    import core.sys.windows.windows;
     alias EGLNativeDisplayType = HDC;
     alias EGLNativePixmapType = HBITMAP;
     alias EGLNativeWindowType = HWND;
