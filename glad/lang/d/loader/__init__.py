@@ -1,7 +1,7 @@
 
 LOAD_OPENGL_DLL = '''
 version(Windows) {
-    private import std.c.windows.windows;
+    private import core.sys.windows.windows;
 } else {
     private import core.sys.posix.dlfcn;
 }
