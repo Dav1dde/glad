@@ -20,7 +20,7 @@ except ImportError:
         return etree.parse(path).getroot()
 
 
-from collections import defaultdict, OrderedDict
+from collections import defaultdict, OrderedDict, namedtuple
 from contextlib import closing
 from itertools import chain
 import re
@@ -28,12 +28,15 @@ import re
 from glad.opener import URLOpener
 
 
+FeatureSet = namedtuple('FeatureSet', ['types', 'enums', 'commands'])
+
 _ARRAY_RE = re.compile(r'\[\d+\]')
 
 
 class Spec(object):
     API = 'https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/'
     NAME = ''
+    PROFILES = ()
 
     def __init__(self, root):
         self.root = root
@@ -81,16 +84,16 @@ class Spec(object):
     @property
     def groups(self):
         if self._groups is None:
-            self._groups = dict([(element.attrib['name'], Group(element))
-                                 for element in self.root.find('groups')])
+            self._groups = dict((element.attrib['name'], Group(element))
+                                for element in self.root.find('groups'))
         return self._groups
 
     @property
     def commands(self):
         if self._commands is None:
-            self._commands = dict([(element.find('proto').find('name').text,
-                                    Command(element, self))
-                                   for element in self.root.find('commands')])
+            self._commands = dict((element.find('proto').find('name').text,
+                                   Command(element, self))
+                                  for element in self.root.find('commands'))
         return self._commands
 
     @property
@@ -125,7 +128,7 @@ class Spec(object):
         self._features = defaultdict(OrderedDict)
         for element in self.root.iter('feature'):
             num = tuple(map(int, element.attrib['number'].split('.')))
-            self._features[element.attrib['api']][num] = Feature(element, self)
+            self._features[element.attrib['api']][num] = Feature(element)
 
         return self._features
 
@@ -137,9 +140,53 @@ class Spec(object):
         self._extensions = defaultdict(dict)
         for element in self.root.find('extensions'):
             for api in element.attrib['supported'].split('|'):
-                self._extensions[api][element.attrib['name']] = Extension(element, self)
+                self._extensions[api][element.attrib['name']] = Extension(element)
 
         return self._extensions
+
+    def select(self, profile, apis, extensions):
+        """
+        Select a specific configuration from the specification.
+
+        :param profile: desired profile
+        :param apis: dictionary of API and version pairs, a None version means latest
+        :param extensions: a list of desired extension names, None means all
+        :return: FeatureSet with the required types, enums, functions
+        """
+        # make sure that there is a profile if one is required/available
+        if profile not in self.PROFILES:
+            raise ValueError('Invalid profile {!r} not in {!r}', profile, self.PROFILES)
+
+        for api, version in list(apis.items()):
+            # None means latest version, update the dictionary with the latest version
+            if version is None:
+                version = list(self.features[api].keys())[-1]
+                apis[api] = version
+
+            # make sure the version is valid
+            if version not in self.features[api]:
+                raise ValueError(
+                    'Unknown version {!r} for specification {!r}'
+                    .format(version, self.NAME)
+                )
+
+        all_extensions = list(chain.from_iterable(self.extensions[api] for api in apis))
+        if extensions is None:
+            # None means all extensions
+            extensions = all_extensions
+        else:
+            # make sure only valid extensions are listed
+            for extension in extensions:
+                if extension not in all_extensions:
+                    raise ValueError(
+                        'Invalid extension {!r} for specification {!r}'.format(
+                            extension, self.NAME
+                        )
+                    )
+
+
+
+        return FeatureSet()
 
 
 class Type(object):
@@ -148,8 +195,10 @@ class Type(object):
         if apientry is not None:
             apientry.text = 'APIENTRY'
         self.raw = ''.join(element.itertext())
+
         self.api = element.get('api')
-        self.name = element.get('name')
+        self.name = element.get('name') or element.find('name').text
+        self.requires = element.get('requires')
 
     @property
     def is_preprocessor(self):
@@ -191,7 +240,10 @@ class Command(object):
         return hash(self.proto.name)
 
     def __str__(self):
-        return '{self.proto.name}'.format(self=self)
+        return '{self.proto.name}({params})'.format(
+            self=self,
+            params=','.join(map(str, self.params))
+        )
 
     __repr__ = __str__
 
@@ -231,6 +283,7 @@ class OGLType(object):
         if 'struct' in text and 'struct' not in self.type:
             self.type = 'struct {}'.format(self.type)
 
+    # TODO move the following logic out of here -> into generators
     def to_d(self):
         if self.is_pointer > 1 and self.is_const:
             s = 'const({}{}*)'.format('u' if self.is_unsigned else '', self.type)
@@ -251,52 +304,47 @@ class OGLType(object):
         return s
 
     NIM_POINTER_MAP = {
-      'void': 'pointer',
-      'GLchar': 'cstring',
-      'struct _cl_context': 'ClContext',
-      'struct _cl_event': 'ClEvent'
+        'void': 'pointer',
+        'GLchar': 'cstring',
+        'struct _cl_context': 'ClContext',
+        'struct _cl_event': 'ClEvent'
     }
 
     def to_nim(self):
         if self.is_pointer == 2:
-          s = 'cstringArray' if self.type == 'GLchar' else 'ptr pointer'
+            s = 'cstringArray' if self.type == 'GLchar' else 'ptr pointer'
         else:
-          s = self.type
-          if self.is_pointer == 1:
-            default  = 'ptr ' + s
-            s = self.NIM_POINTER_MAP.get(s, default)
+            s = self.type
+            if self.is_pointer == 1:
+                default  = 'ptr ' + s
+                s = self.NIM_POINTER_MAP.get(s, default)
         return s
 
     __str__ = to_d
     __repr__ = __str__
 
 
+class Require(object):
+    def __init__(self, element):
+        self.api = element.get('api')
+        self.profile = element.get('api')
+
+        self.requires = [child.get('name') for child in element]
+
+
+class Remove(object):
+    def __init__(self, element):
+        self.api = element.get('api')
+        self.profile = element.get('profile')
+
+        self.removes = [child.get('name') for child in element]
+
+
 class Extension(object):
-    def __init__(self, element, spec):
+    def __init__(self, element):
         self.name = element.attrib['name']
 
-        self.require = []
-        for required in chain.from_iterable(element.findall('require')):
-            if required.tag == 'type':
-                continue
-
-            data = {'enum': spec.enums, 'command': spec.commands}[required.tag]
-            try:
-                self.require.append(data[required.attrib['name']])
-            except KeyError:
-                pass  # TODO
-
-    @property
-    def enums(self):
-        for r in self.require:
-            if isinstance(r, Enum):
-                yield r
-
-    @property
-    def functions(self):
-        for r in self.require:
-            if isinstance(r, Command):
-                yield r
+        self.requires = [Require(require) for require in element.findall('require')]
 
     def __hash__(self):
         return hash(self.name)
@@ -308,38 +356,15 @@ class Extension(object):
 
 
 class Feature(Extension):
-    def __init__(self, element, spec):
-        Extension.__init__(self, element, spec)
-        self.spec = spec
-
-        # not every spec has a ._remove member, but there shouldn't be a remove
-        # tag without that member, if there is, blame me!
-        for removed in chain.from_iterable(element.findall('remove')):
-            if removed.tag == 'type':
-                continue
-
-            data = {'enum': spec.enums, 'command': spec.commands}[removed.tag]
-            try:
-                spec._remove.add(data[removed.attrib['name']])
-            except KeyError:
-                pass  # TODO
+    def __init__(self, element):
+        Extension.__init__(self, element)
 
         self.number = tuple(map(int, element.attrib['number'].split('.')))
         self.api = element.attrib['api']
 
+        self.removes = [Remove(remove) for remove in element.findall('remove')]
+
     def __str__(self):
         return '{self.name}@{self.number!r}'.format(self=self)
-
-    @property
-    def enums(self):
-        for enum in super(Feature, self).enums:
-            if enum not in getattr(self.spec, 'removed', []):
-                yield enum
-
-    @property
-    def functions(self):
-        for func in super(Feature, self).functions:
-            if func not in getattr(self.spec, 'removed', []):
-                yield func
 
     __repr__ = __str__

@@ -3,41 +3,20 @@ from glad.parse import Spec
 
 class EGLSpec(Spec):
     NAME = 'egl'
+    PROFILES = ()
 
 
 class GLSpec(Spec):
     NAME = 'gl'
-
-    def __init__(self, root):
-        Spec.__init__(self, root)
-
-        self._profile = 'compatibility'
-        self._remove = set()
-
-    @property
-    def profile(self):
-        return self._profile
-
-    @profile.setter
-    def profile(self, value):
-        if value not in ('core', 'compatibility'):
-            raise ValueError('profile must either be core or compatibility')
-
-        self._profile = value
-
-    @property
-    def removed(self):
-        if self._profile == 'core':
-            return frozenset(self._remove)
-        return frozenset()
-
+    PROFILES = ('core', 'compatibility')
 
 class GLXSpec(Spec):
     NAME = 'glx'
-
+    PROFILES = ()
 
 class WGLSpec(Spec):
     NAME = 'wgl'
+    PROFILES = ()
 
 
 SPECS = dict()
