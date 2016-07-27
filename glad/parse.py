@@ -1,3 +1,5 @@
+import queue
+
 try:
     from lxml import etree
     from lxml.etree import ETCompatXMLParser as parser
@@ -75,13 +77,6 @@ class Spec(object):
         return self.root.find('comment').text
 
     @property
-    def types(self):
-        if self._types is None:
-            self._types = [Type(element) for element in
-                           self.root.find('types').iter('type')]
-        return self._types
-
-    @property
     def groups(self):
         if self._groups is None:
             self._groups = dict((element.attrib['name'], Group(element))
@@ -89,11 +84,23 @@ class Spec(object):
         return self._groups
 
     @property
+    def types(self):
+        if self._types is None:
+            self._types = defaultdict(list)
+            for element in self.root.find('types').iter('type'):
+                t = Type(element)
+                self._types[t.name].append(t)
+
+        return self._types
+
+    @property
     def commands(self):
         if self._commands is None:
-            self._commands = dict((element.find('proto').find('name').text,
-                                   Command(element, self))
-                                  for element in self.root.find('commands'))
+            self._commands = defaultdict(list)
+            for element in self.root.find('commands'):
+                command = Command(element)
+                self._commands[command.name].append(command)
+
         return self._commands
 
     @property
@@ -101,7 +108,7 @@ class Spec(object):
         if self._enums is not None:
             return self._enums
 
-        self._enums = dict()
+        self._enums = defaultdict(list)
         for element in self.root.iter('enums'):
             namespace = element.attrib['namespace']
             type_ = element.get('type')
@@ -115,8 +122,10 @@ class Spec(object):
                 assert enum.tag == 'enum'
 
                 name = enum.attrib['name']
-                self._enums[name] = Enum(name, enum.attrib['value'], namespace,
-                                         type_, group, vendor, comment)
+                self._enums[name].append(
+                    Enum(name, enum.attrib['value'], enum.get('api'),
+                         namespace, type_, group, vendor, comment)
+                )
 
         return self._enums
 
@@ -144,15 +153,86 @@ class Spec(object):
 
         return self._extensions
 
-    def select(self, profile, apis, extensions):
+    def find(self, require, profile, api, resolve_types=False):
+        """
+        Find all requirements of a require 'instruction'.
+
+        :param require: the require instruction to resolve
+        :param profile: the profile to resolve for
+        :param api: the api to resolve for
+        :param resolve_types: types can require other types,
+        if True these requirements will be yielded as well
+        :return: iterator with all results
+        """
+        if not ((require.profile is None or require.profile == profile) and
+                (require.api is None or require.api == api)):
+            raise StopIteration
+
+        combined = dict()
+        combined.update(self.types)
+        combined.update(self.commands)
+        combined.update(self.enums)
+
+        requirements = list(require.requirements)
+        while requirements:
+            name = requirements.pop(0)
+
+            if name in combined:
+                results = combined[name]
+
+                # Get the best match from a list of results, e.g.:
+                #  <type name="foo" />
+                #  <type name="foo" api="gles" />
+                # So here we would go for the latter definition for the API gles.
+                best_match = None
+                for result in results:
+                    # no match so far and result is a match
+                    if best_match is None and (result.api is None or result.api == api):
+                        best_match = result
+                        continue
+
+                    # we had a previous match, is it better?
+                    # a result is perfect when the APIs are matching
+                    if result.api == api:
+                        best_match = result
+                        # perfect match -> stop
+                        break
+
+                # this should never happen and indicates broken XML!?
+                assert best_match is not None
+
+                # maybe we got more requirements (types can require other types)
+                # TODO maybe generalize this so everything can require more -> recursive?
+                if resolve_types and isinstance(best_match, Type):
+                    # hope for no circular dependencies, I don't wanna mess with that right now ...
+                    # famous last words
+                    if best_match.requires:
+                        requirements.append(best_match.requires)
+
+                yield best_match
+
+    @staticmethod
+    def split_types(iterable, types):
+        result = tuple(list() for _ in types)
+
+        for obj in iterable:
+            for i, type_ in enumerate(types):
+                if isinstance(obj, type_):
+                    result[i].append(obj)
+
+        return result
+
+    def select(self, profile, apis, extension_names):
         """
         Select a specific configuration from the specification.
 
         :param profile: desired profile
         :param apis: dictionary of API and version pairs, a None version means latest
-        :param extensions: a list of desired extension names, None means all
+        :param extension_names: a list of desired extension names, None means all
         :return: FeatureSet with the required types, enums, functions
         """
+        # TODO MAYBE!? only allow one API not multiple at once -> for which API is the selected profile?
+
         # make sure that there is a profile if one is required/available
         if profile not in self.PROFILES:
             raise ValueError('Invalid profile {!r} not in {!r}', profile, self.PROFILES)
@@ -171,12 +251,12 @@ class Spec(object):
                 )
 
         all_extensions = list(chain.from_iterable(self.extensions[api] for api in apis))
-        if extensions is None:
+        if extension_names is None:
             # None means all extensions
-            extensions = all_extensions
+            extension_names = all_extensions
         else:
             # make sure only valid extensions are listed
-            for extension in extensions:
+            for extension in extension_names:
                 if extension not in all_extensions:
                     raise ValueError(
                         'Invalid extension {!r} for specification {!r}'.format(
@@ -184,12 +264,87 @@ class Spec(object):
                         )
                     )
 
+        # OpenGL version 3.3 includes all versions up to 3.3
+        # Collect a list of all required features grouped by API
+        features = defaultdict(list)
+        for api, version in apis.items():
+            features[api].extend(
+                [feature for fversion, feature in self.features[api].items()
+                 if fversion <= version]
+            )
+
+        # Collect a list of extensions grouped by API
+        extensions = defaultdict(list)
+        for api in apis:
+            extensions[api].extend(
+                [self.extensions[api][name] for name in extension_names
+                 if name in self.extensions[api]]
+            )
+
+        # Collect information
+        result = defaultdict(set)
+        for api in apis:
+            # collect all required types, functions (=commands) and enums by API
+            # features are special extensions
+            for extension in chain(features[api], extensions[api]):
+                # add what the extension requires
+                for require in extension.requires:
+                    found = self.find(require, profile, api, resolve_types=True)
+                    result[api] = result[api].union(found)
+
+                # remove what the extension removes
+                for remove in extension.removes:
+                    if ((remove.profile is None or remove.profile == profile) and
+                            (remove.api is None or remove.api == api)):
+                        result[api] = result[api].difference(remove.removes)
+
+            # At this point one could hope that the XML files would be sane, but of course they are not!?
+            # There is a builtin requirement system which is used for functions and enums,
+            # but only partially for types WHY!??!?!?!??!?!
+            # So let's fix this here ....
+            # require all types which are not associated with a profile or with this one specific
+            # and to make it more fun, there are a few types which should only be included through
+            # the requirement system (less includes .. mainly important for khrplatform)
+            # TODO maybe move that somewhere else
+            magic_blacklist = (
+                'stddef', 'khrplatform', 'inttypes'  # gl.xml
+            )
+            require = Require(api, profile, [type_ for type_ in self.types.keys()
+                                             if type_ not in magic_blacklist])
+            # find and add the requirements just defined
+            result[api] = result[api].union(self.find(require, profile, api, resolve_types=True))
+
+            # OH WAIT THERE IS MORE!? E.g. Opengl 1.0 HAS *ZERO* Enums? Why?
+            # I dont know, maybe some lazy ass who didnt want to figure out which enums were introduced
+            # in Opengl 1.1 and just added all of them to 1.1 and none to 1.0
+
+            # TODO ... for now just hope that 1.0 is an exception
+
+        # Split information into types, functions and enums
+        # types, functions, enums = self.split_types(
+        #     chain.from_iterable(result.values()), types=(Type, Command, Enum)
+        # )
+        # print enums
+
+        #return FeatureSet()
 
 
-        return FeatureSet()
+class Group(object):
+    def __init__(self, element):
+        self.name = element.attrib['name']
+        self.enums = [enum.attrib['name'] for enum in element]
 
 
-class Type(object):
+class IdentifiedByName(object):
+    def __hash__(self):
+        return hash(self.name)
+
+    def __eq__(self, other):
+        name = getattr(other, 'name', other)
+        return self.name == name
+
+
+class Type(IdentifiedByName):
     def __init__(self, element):
         apientry = element.find('apientry')
         if apientry is not None:
@@ -204,47 +359,44 @@ class Type(object):
     def is_preprocessor(self):
         return '#' in self.raw
 
-
-class Group(object):
-    def __init__(self, element):
-        self.name = element.attrib['name']
-        self.enums = [enum.attrib['name'] for enum in element]
+    def __str__(self):
+        return self.name
+    __repr__ = __str__
 
 
-class Enum(object):
-    def __init__(self, name, value, namespace, type_=None,
-                 group=None, vendor=None, comment=''):
+class Enum(IdentifiedByName):
+    def __init__(self, name, value, api, namespace,
+                 type_=None, group=None, vendor=None, comment=''):
         self.name = name
         self.value = value
+        self.api = api
         self.namespace = namespace
         self.type = type_
         self.group = group
         self.vendor = vendor
         self.comment = comment
 
-    def __hash__(self):
-        return hash(self.name)
-
     def __str__(self):
         return self.name
-
     __repr__ = __str__
 
 
-class Command(object):
-    def __init__(self, element, spec):
+class Command(IdentifiedByName):
+    def __init__(self, element):
         self.proto = Proto(element.find('proto'))
-        self.params = [Param(ele, spec) for ele in element.iter('param')]
+        self.params = [Param(ele) for ele in element.iter('param')]
 
-    def __hash__(self):
-        return hash(self.proto.name)
+        self.api = element.get('api')
+
+    @property
+    def name(self):
+        return self.proto.name
 
     def __str__(self):
         return '{self.proto.name}({params})'.format(
             self=self,
             params=','.join(map(str, self.params))
         )
-
     __repr__ = __str__
 
 
@@ -258,7 +410,7 @@ class Proto(object):
 
 
 class Param(object):
-    def __init__(self, element, spec):
+    def __init__(self, element):
         self.group = element.get('group')
         self.type = OGLType(element)
         self.name = element.find('name').text.strip('*')
@@ -324,12 +476,18 @@ class OGLType(object):
     __repr__ = __str__
 
 
+# TODO unify API
 class Require(object):
-    def __init__(self, element):
-        self.api = element.get('api')
-        self.profile = element.get('api')
+    def __init__(self, api, profile, requirements):
+        self.api = api
+        self.profile = profile
 
-        self.requires = [child.get('name') for child in element]
+        self.requirements = requirements
+
+    @classmethod
+    def from_element(cls, element):
+        requirements = [child.get('name') for child in element]
+        return cls(element.get('api'), element.get('profile'), requirements)
 
 
 class Remove(object):
@@ -344,7 +502,10 @@ class Extension(object):
     def __init__(self, element):
         self.name = element.attrib['name']
 
-        self.requires = [Require(require) for require in element.findall('require')]
+        self.requires = [Require.from_element(require) for require in element.findall('require')]
+        # so far only features contain remove tags,
+        # so this should be empty for every extension which is not a feature
+        self.removes = [Remove(remove) for remove in element.findall('remove')]
 
     def __hash__(self):
         return hash(self.name)
@@ -361,8 +522,6 @@ class Feature(Extension):
 
         self.number = tuple(map(int, element.attrib['number'].split('.')))
         self.api = element.attrib['api']
-
-        self.removes = [Remove(remove) for remove in element.findall('remove')]
 
     def __str__(self):
         return '{self.name}@{self.number!r}'.format(self=self)
