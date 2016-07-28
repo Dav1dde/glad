@@ -1,10 +1,9 @@
-from itertools import chain
 import os.path
 import sys
+from itertools import chain
 
-from glad.lang.common.generator import Generator
 from glad.lang.common.util import makefiledir
-
+from glad.lang.generator import Generator
 
 if sys.version_info >= (3, 0):
     from io import StringIO

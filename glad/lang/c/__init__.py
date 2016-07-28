@@ -1,28 +1,32 @@
-from glad.lang.c.loader.egl import EGLCLoader
-from glad.lang.c.loader.gl import OpenGLCLoader
-from glad.lang.c.loader.glx import GLXCLoader
-from glad.lang.c.loader.wgl import WGLCLoader
+import itertools
 
-from glad.lang.c.generator import CGenerator
-from glad.lang.c.debug import CDebugGenerator
+from glad.lang.generator import BaseGenerator
 
 
-_specs = {
-    'egl': EGLCLoader,
-    'gl': OpenGLCLoader,
-    'glx': GLXCLoader,
-    'wgl': WGLCLoader
-}
-
-_generators = {
-    'c': CGenerator,
-    'c-debug': CDebugGenerator
-}
+def type_to_c(ogl_type):
+    ut = 'unsigned {}'.format(ogl_type.type) if ogl_type.is_unsigned else ogl_type.type
+    s = '{}const {}'.format('unsigned ' if ogl_type.is_unsigned else '', ogl_type.type) \
+        if ogl_type.is_const else ut
+    s += '*' * ogl_type.is_pointer
+    return s
 
 
-def get_generator(name, spec):
-    gen = _generators.get(name)
-    loader = _specs.get(spec)
+def params_to_c(params):
+    return ', '.join('{} {}'.format(type_to_c(param.type), param.name) for param in params)
 
-    return gen, loader
+
+class CBaseGenerator(BaseGenerator):
+    TEMPLATES = 'glad.lang.c'
+
+    def __init__(self, *args, **kwargs):
+        BaseGenerator.__init__(self, *args, **kwargs)
+
+        self.environment.globals.update(
+            type_to_c=type_to_c,
+            params_to_c=params_to_c,
+            chain=itertools.chain
+        )
+
+    def get_templates(self, feature_set):
+        return [('gl.h', 'include/glad/glad_gl.h')]
 

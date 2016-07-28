@@ -30,7 +30,7 @@ if __name__ == '__main__':
         description='Multi-Language GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.',
         long_description=__doc__,
         packages=find_packages(),
-        install_requires=[],
+        install_requires=['jinja2', ],
         entry_points={
             'console_scripts': [
                 'glad = glad.__main__:main'

@@ -1,4 +1,6 @@
-import queue
+from operator import attrgetter
+
+from glad.util import Version
 
 try:
     from lxml import etree
@@ -30,7 +32,10 @@ import re
 from glad.opener import URLOpener
 
 
-FeatureSet = namedtuple('FeatureSet', ['types', 'enums', 'commands'])
+FeatureSet = namedtuple(
+    'FeatureSet',
+    ['api', 'version', 'profile', 'features', 'extensions', 'types', 'enums', 'commands']
+)
 
 _ARRAY_RE = re.compile(r'\[\d+\]')
 
@@ -136,7 +141,7 @@ class Spec(object):
 
         self._features = defaultdict(OrderedDict)
         for element in self.root.iter('feature'):
-            num = tuple(map(int, element.attrib['number'].split('.')))
+            num = Version(*map(int, element.attrib['number'].split('.')))
             self._features[element.attrib['api']][num] = Feature(element)
 
         return self._features
@@ -222,35 +227,32 @@ class Spec(object):
 
         return result
 
-    def select(self, profile, apis, extension_names):
+    def select(self, api, version, profile, extension_names):
         """
         Select a specific configuration from the specification.
 
+        :param api: API name
+        :param version: API version, None means latest
         :param profile: desired profile
-        :param apis: dictionary of API and version pairs, a None version means latest
         :param extension_names: a list of desired extension names, None means all
-        :return: FeatureSet with the required types, enums, functions
+        :return: FeatureSet with the required types, enums, commands/functions
         """
-        # TODO MAYBE!? only allow one API not multiple at once -> for which API is the selected profile?
-
         # make sure that there is a profile if one is required/available
         if profile not in self.PROFILES:
             raise ValueError('Invalid profile {!r} not in {!r}', profile, self.PROFILES)
 
-        for api, version in list(apis.items()):
-            # None means latest version, update the dictionary with the latest version
-            if version is None:
-                version = list(self.features[api].keys())[-1]
-                apis[api] = version
+        # None means latest version, update the dictionary with the latest version
+        if version is None:
+            version = list(self.features[api].keys())[-1]
 
-            # make sure the version is valid
-            if version not in self.features[api]:
-                raise ValueError(
-                    'Unknown version {!r} for specification {!r}'
-                    .format(version, self.NAME)
-                )
+        # make sure the version is valid
+        if version not in self.features[api]:
+            raise ValueError(
+                'Unknown version {!r} for specification {!r}'
+                .format(version, self.NAME)
+            )
 
-        all_extensions = list(chain.from_iterable(self.extensions[api] for api in apis))
+        all_extensions = list(self.extensions[api].keys())
         if extension_names is None:
             # None means all extensions
             extension_names = all_extensions
@@ -266,67 +268,59 @@ class Spec(object):
 
         # OpenGL version 3.3 includes all versions up to 3.3
         # Collect a list of all required features grouped by API
-        features = defaultdict(list)
-        for api, version in apis.items():
-            features[api].extend(
-                [feature for fversion, feature in self.features[api].items()
-                 if fversion <= version]
-            )
+        features = [feature for fversion, feature in self.features[api].items()
+                    if fversion <= version]
 
         # Collect a list of extensions grouped by API
-        extensions = defaultdict(list)
-        for api in apis:
-            extensions[api].extend(
-                [self.extensions[api][name] for name in extension_names
-                 if name in self.extensions[api]]
-            )
+        extensions = [self.extensions[api][name] for name in extension_names
+                      if name in self.extensions[api]]
 
         # Collect information
-        result = defaultdict(set)
-        for api in apis:
-            # collect all required types, functions (=commands) and enums by API
-            # features are special extensions
-            for extension in chain(features[api], extensions[api]):
-                # add what the extension requires
-                for require in extension.requires:
-                    found = self.find(require, profile, api, resolve_types=True)
-                    result[api] = result[api].union(found)
+        result = set()
+        # collect all required types, functions (=commands) and enums by API
+        # features are special extensions
+        for extension in chain(features, extensions):
+            for require in extension.requires:
+                found = self.find(require, profile, api, resolve_types=True)
+                result = result.union(found)
 
-                # remove what the extension removes
-                for remove in extension.removes:
-                    if ((remove.profile is None or remove.profile == profile) and
-                            (remove.api is None or remove.api == api)):
-                        result[api] = result[api].difference(remove.removes)
+        # remove what the extensions/features want to remove
+        for extension in chain(features, extensions):
+            for remove in extension.removes:
+                if ((remove.profile is None or remove.profile == profile) and
+                        (remove.api is None or remove.api == api)):
+                    result = result.difference(remove.removes)
 
-            # At this point one could hope that the XML files would be sane, but of course they are not!?
-            # There is a builtin requirement system which is used for functions and enums,
-            # but only partially for types WHY!??!?!?!??!?!
-            # So let's fix this here ....
-            # require all types which are not associated with a profile or with this one specific
-            # and to make it more fun, there are a few types which should only be included through
-            # the requirement system (less includes .. mainly important for khrplatform)
-            # TODO maybe move that somewhere else
-            magic_blacklist = (
-                'stddef', 'khrplatform', 'inttypes'  # gl.xml
-            )
-            require = Require(api, profile, [type_ for type_ in self.types.keys()
-                                             if type_ not in magic_blacklist])
-            # find and add the requirements just defined
-            result[api] = result[api].union(self.find(require, profile, api, resolve_types=True))
+        # At this point one could hope that the XML files would be sane, but of course they are not!?
+        # There is a builtin requirement system which is used for functions and enums,
+        # but only partially for types WHY!??!?!?!??!?!
+        # So let's fix this here ....
+        # require all types which are not associated with a profile or with this one specific
+        # and to make it more fun, there are a few types which should only be included through
+        # the requirement system (less includes .. mainly important for khrplatform)
+        # TODO maybe move that somewhere else
+        magic_blacklist = (
+            'stddef', 'khrplatform', 'inttypes'  # gl.xml
+        )
+        require = Require(api, profile, [type_ for type_ in self.types.keys()
+                                         if type_ not in magic_blacklist])
+        # find and add the requirements just defined
+        result = result.union(self.find(require, profile, api, resolve_types=True))
 
-            # OH WAIT THERE IS MORE!? E.g. Opengl 1.0 HAS *ZERO* Enums? Why?
-            # I dont know, maybe some lazy ass who didnt want to figure out which enums were introduced
-            # in Opengl 1.1 and just added all of them to 1.1 and none to 1.0
+        # OH WAIT THERE IS MORE!? E.g. Opengl 1.0 HAS *ZERO* Enums? Why?
+        # I dont know, maybe some lazy ass who didnt want to figure out which enums were introduced
+        # in Opengl 1.1 and just added all of them to 1.1 and none to 1.0
+        # We do nothing here and hope 1.0 will stay an exception ...
 
-            # TODO ... for now just hope that 1.0 is an exception
+        # Split information into types, enums and commands/function
+        types, enums, commands = self.split_types(
+            result, types=(Type, Enum, Command)
+        )
 
-        # Split information into types, functions and enums
-        # types, functions, enums = self.split_types(
-        #     chain.from_iterable(result.values()), types=(Type, Command, Enum)
-        # )
-        # print enums
+        # TODO properly sort types based on requirements
+        types = sorted(types, key=attrgetter('requires'))
 
-        #return FeatureSet()
+        return FeatureSet(api, version, profile, features, extensions, types, enums, commands)
 
 
 class Group(object):
@@ -335,6 +329,8 @@ class Group(object):
         self.enums = [enum.attrib['name'] for enum in element]
 
 
+# required for set operations in select (union/difference)
+# TODO find out if this is problematic
 class IdentifiedByName(object):
     def __hash__(self):
         return hash(self.name)
@@ -434,6 +430,9 @@ class OGLType(object):
 
         if 'struct' in text and 'struct' not in self.type:
             self.type = 'struct {}'.format(self.type)
+
+        ptype = element.find('ptype')
+        self.ptype = ptype.text if ptype else None
 
     # TODO move the following logic out of here -> into generators
     def to_d(self):

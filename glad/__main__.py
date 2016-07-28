@@ -9,12 +9,11 @@ from collections import namedtuple
 import logging
 import sys
 
+from glad.lang.c import CBaseGenerator
 from glad.opener import URLOpener
 from glad.spec import SPECS
 import glad.lang
-
-
-Version = namedtuple('Version', ['major', 'minor'])
+from glad.util import Version
 
 logger = logging.getLogger('glad')
 
@@ -132,14 +131,16 @@ def main():
     if api is None or len(api.keys()) == 0:
         api = {spec.NAME: None}
 
-    generator_cls, loader_cls = glad.lang.get_generator(
-        ns.generator, spec.NAME.lower()
-    )
+    for a, v in api.items():
+        feature_set = spec.select(a, v, ns.profile, ns.extensions)
 
-    if loader_cls is None:
-        return parser.error('API/Spec not yet supported')
+        generator = CBaseGenerator(ns.out, opener=opener)
+        generator.generate(feature_set)
 
-    loader = loader_cls(api, disabled=ns.no_loader, local_files=ns.local_files)
+        # TODO remove
+        break
+
+    return
 
     logger.info('generating \'%s\' bindings', spec.NAME)
     with generator_cls(
