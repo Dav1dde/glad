@@ -65,16 +65,18 @@ typedef void* (* GLADloadproc)(const char *name);
 
 GLAPI struct gladGLversionStruct GLVersion;
 
-GLAPI int gladLoadGLLoader(GLADloadproc);
-{% if has_loader %}
+GLAPI int gladLoad{{ feature_set.api|upper }}Loader(GLADloadproc);
+
+{% if has_loader and feature_set.api == 'gl' %}
 GLAPI int gladLoadGL(void);
 {% endif %}
 
 {# write feature and extension information #}
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
-#ifndef {{ extension.name }}
+{# #ifndef {{ extension.name }} #}
 #define {{ extension.name }}
 GLAPI int GLAD_{{ extension.name }};
+{# #endif #}
 {% endfor %}
 
 {# write types #}

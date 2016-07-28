@@ -1,7 +1,3 @@
-from operator import attrgetter
-
-from glad.util import Version
-
 try:
     from lxml import etree
     from lxml.etree import ETCompatXMLParser as parser
@@ -23,13 +19,13 @@ except ImportError:
     def xml_frompath(path):
         return etree.parse(path).getroot()
 
-
 from collections import defaultdict, OrderedDict, namedtuple
 from contextlib import closing
 from itertools import chain
 import re
 
 from glad.opener import URLOpener
+from glad.util import Version
 
 
 FeatureSet = namedtuple(
@@ -54,6 +50,10 @@ class Spec(object):
         self._commands = None
         self._features = None
         self._extensions = None
+
+    @property
+    def name(self):
+        return self.NAME
 
     @classmethod
     def from_url(cls, url, opener=None):
@@ -91,9 +91,11 @@ class Spec(object):
     @property
     def types(self):
         if self._types is None:
-            self._types = defaultdict(list)
+            self._types = OrderedDict()
             for element in self.root.find('types').iter('type'):
                 t = Type(element)
+                if t.name not in self._types:
+                    self._types[t.name] = list()
                 self._types[t.name].append(t)
 
         return self._types
@@ -158,13 +160,13 @@ class Spec(object):
 
         return self._extensions
 
-    def find(self, require, profile, api, resolve_types=False):
+    def find(self, require, api, profile, resolve_types=False):
         """
         Find all requirements of a require 'instruction'.
 
         :param require: the require instruction to resolve
-        :param profile: the profile to resolve for
         :param api: the api to resolve for
+        :param profile: the profile to resolve for
         :param resolve_types: types can require other types,
         if True these requirements will be yielded as well
         :return: iterator with all results
@@ -239,10 +241,15 @@ class Spec(object):
         """
         # make sure that there is a profile if one is required/available
         if profile not in self.PROFILES:
-            raise ValueError('Invalid profile {!r} not in {!r}', profile, self.PROFILES)
+            raise ValueError('Invalid profile {!r} not in {!r}'.format(profile, self.PROFILES))
+
+        if api not in self.features:
+            raise ValueError('Invalid API {!r}'.format(api))
 
         # None means latest version, update the dictionary with the latest version
         if version is None:
+            print api, self.features, self.features[api]
+
             version = list(self.features[api].keys())[-1]
 
         # make sure the version is valid
@@ -281,7 +288,7 @@ class Spec(object):
         # features are special extensions
         for extension in chain(features, extensions):
             for require in extension.requires:
-                found = self.find(require, profile, api, resolve_types=True)
+                found = self.find(require, api, profile, resolve_types=True)
                 result = result.union(found)
 
         # remove what the extensions/features want to remove
@@ -305,7 +312,7 @@ class Spec(object):
         require = Require(api, profile, [type_ for type_ in self.types.keys()
                                          if type_ not in magic_blacklist])
         # find and add the requirements just defined
-        result = result.union(self.find(require, profile, api, resolve_types=True))
+        result = result.union(self.find(require, api, profile, resolve_types=True))
 
         # OH WAIT THERE IS MORE!? E.g. Opengl 1.0 HAS *ZERO* Enums? Why?
         # I dont know, maybe some lazy ass who didnt want to figure out which enums were introduced
@@ -317,8 +324,9 @@ class Spec(object):
             result, types=(Type, Enum, Command)
         )
 
-        # TODO properly sort types based on requirements
-        types = sorted(types, key=attrgetter('requires'))
+        # We need to sort the types since a few definitions depend on other types
+        all_sorted_types = list(self.types.keys())
+        types = sorted(types, key=all_sorted_types.index)
 
         return FeatureSet(api, version, profile, features, extensions, types, enums, commands)
 
@@ -497,7 +505,7 @@ class Remove(object):
         self.removes = [child.get('name') for child in element]
 
 
-class Extension(object):
+class Extension(IdentifiedByName):
     def __init__(self, element):
         self.name = element.attrib['name']
 
@@ -506,12 +514,31 @@ class Extension(object):
         # so this should be empty for every extension which is not a feature
         self.removes = [Remove(remove) for remove in element.findall('remove')]
 
-    def __hash__(self):
-        return hash(self.name)
+    def get_requirements(self, spec, api, profile):
+        """
+        Find all types, enums and commands/functions which are required
+        for this extension/feature.
+
+        :param spec: the specification
+        :param api: API for this extension
+        :param profile: API profile
+        :return: a 3-tuple of lists ([types], [enums], [commands])
+        """
+        result = set()
+
+        for require in self.requires:
+            found = spec.find(require, api, profile)
+            result = result.union(found)
+
+        for remove in self.removes:
+            if ((remove.profile is None or remove.profile == profile) and
+                    (remove.api is None or remove.api == api)):
+                result = result.difference(remove.removes)
+
+        return spec.split_types(result, (Type, Enum, Command))
 
     def __str__(self):
         return self.name
-
     __repr__ = __str__
 
 
@@ -520,9 +547,9 @@ class Feature(Extension):
         Extension.__init__(self, element)
 
         self.number = tuple(map(int, element.attrib['number'].split('.')))
+        self.version = Version(*self.number)
         self.api = element.attrib['api']
 
     def __str__(self):
         return '{self.name}@{self.number!r}'.format(self=self)
-
     __repr__ = __str__

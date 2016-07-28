@@ -3,6 +3,7 @@ import os.path
 from jinja2 import Environment, ChoiceLoader, PackageLoader
 
 from glad.opener import URLOpener
+from glad.util import makefiledir
 
 
 class BaseGenerator(object):
@@ -27,20 +28,19 @@ class BaseGenerator(object):
             autoescape=False
         )
 
-    def get_templates(self, feature_set):
+    def get_templates(self, spec, feature_set):
         raise NotImplementedError
 
-    def generate(self, feature_set):
-        for template, output_path in self.get_templates(feature_set):
+    def generate(self, spec, feature_set, **options):
+        # TODO maybe proper configuration object for options
+        for template, output_path in self.get_templates(spec, feature_set):
             template = self.environment.get_template(template)
 
             result = template.render(
-                feature_set=feature_set
+                spec=spec, feature_set=feature_set, **options
             )
 
             output_path = os.path.join(self.path, output_path)
-            # TODO makedirs
+            makefiledir(output_path)
             with open(output_path, 'w') as f:
                 f.write(result)
-
-

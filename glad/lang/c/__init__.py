@@ -24,9 +24,19 @@ class CBaseGenerator(BaseGenerator):
         self.environment.globals.update(
             type_to_c=type_to_c,
             params_to_c=params_to_c,
-            chain=itertools.chain
+            chain=itertools.chain,
+            # TODO move options
+            has_loader=True
         )
 
-    def get_templates(self, feature_set):
-        return [('gl.h', 'include/glad/glad_gl.h')]
+    def get_templates(self, spec, feature_set):
+        if feature_set.api == 'gl':
+            return [
+                ('gl.h', 'include/glad/glad.h'),
+                ('gl.c', 'src/glad.c')
+            ]
 
+        return [
+            ('{}.h'.format(spec.name), 'include/glad/glad_{}.h'.format(feature_set.api)),
+            ('{}.c'.format(spec.name), 'src/glad_{}.c'.format(feature_set.api))
+        ]

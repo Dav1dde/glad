@@ -5,14 +5,11 @@ Uses the official Khronos-XML specs to generate a
 GL/GLES/EGL/GLX/WGL Loader made for your needs. Glad currently supports
 the languages C, D, Nim and Volt.
 """
-from collections import namedtuple
 import logging
-import sys
 
 from glad.lang.c import CBaseGenerator
 from glad.opener import URLOpener
 from glad.spec import SPECS
-import glad.lang
 from glad.util import Version
 
 logger = logging.getLogger('glad')
@@ -135,7 +132,7 @@ def main():
         feature_set = spec.select(a, v, ns.profile, ns.extensions)
 
         generator = CBaseGenerator(ns.out, opener=opener)
-        generator.generate(feature_set)
+        generator.generate(spec, feature_set)
 
         # TODO remove
         break
