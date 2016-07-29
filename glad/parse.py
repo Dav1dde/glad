@@ -301,6 +301,14 @@ class Spec(object):
                         )
                     )
 
+        # Remove weird GLX extensions which use undefined types
+        for extension in ['GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer']:
+            try:
+                extension_names.remove(extension)
+            except ValueError:
+                pass
+            # TODO log warning
+
         # OpenGL version 3.3 includes all versions up to 3.3
         # Collect a list of all required features grouped by API
         features = [feature for fversion, feature in self.features[api].items()

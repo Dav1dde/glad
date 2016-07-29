@@ -18,10 +18,7 @@ class BaseGenerator(object):
 
         assert self.TEMPLATES is not None
         self.environment = Environment(
-            loader=ChoiceLoader([
-                # PackageLoader('glad.lang'),
-                PackageLoader(self.TEMPLATES, 'templates')
-            ]),
+            loader=ChoiceLoader(map(PackageLoader, self.TEMPLATES)),
             extensions=['jinja2.ext.do'],
             trim_blocks=True,
             lstrip_blocks=True,

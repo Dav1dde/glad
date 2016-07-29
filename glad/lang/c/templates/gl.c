@@ -25,7 +25,7 @@ static int get_exts(const char **out_exts, int *out_num_exts_i, const char ***ou
 #ifdef _GLAD_IS_SOME_NEW_VERSION
     if(max_loaded_major < 3) {
 #endif
-        if (&glGetString == NULL) {
+        if (glGetString == NULL) {
             return 0;
         }
         *out_exts = (const char *)glGetString(GL_EXTENSIONS);
@@ -34,7 +34,7 @@ static int get_exts(const char **out_exts, int *out_num_exts_i, const char ***ou
         int index;
         int num_exts_i = 0;
         const char **exts_i;
-        if (&glGetStringi == NULL || glGetIntegerv == NULL) {
+        if (glGetStringi == NULL || glGetIntegerv == NULL) {
             return 0;
         }
         glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts_i);
@@ -60,7 +60,7 @@ static void free_exts(const char **exts_i) {
         exts_i = NULL;
     }
 }
-static int has_ext(const char *exts, int num_exts_i, char **exts_i, const char *ext) {
+static int has_ext(const char *exts, int num_exts_i, const char **exts_i, const char *ext) {
 #ifdef _GLAD_IS_SOME_NEW_VERSION
     if(max_loaded_major < 3) {
 #endif
@@ -106,6 +106,7 @@ static int find_extensions{{ feature_set.api|upper }}(void) {
     {% for extension in feature_set.extensions %}
     GLAD_{{ extension.name }} = has_ext(exts, num_exts_i, exts_i, "{{ extension.name }}");
     {% endfor %}
+
     free_exts(exts_i);
     return 1;
 }
@@ -145,9 +146,9 @@ static void find_core{{ feature_set.api|upper }}(void) {
     GLAD_{{ feature.name }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
     {% endfor %}
     if (GLVersion.major > {{ feature_set.version.major }} || (GLVersion.major >= {{ feature_set.version.major }} && GLVersion.minor >= {{ feature_set.version.minor }})) {
-		max_loaded_major = {{ feature_set.version.major }};
-		max_loaded_minor = {{ feature_set.version.minor }};
-	}
+        max_loaded_major = {{ feature_set.version.major }};
+        max_loaded_minor = {{ feature_set.version.minor }};
+    }
 }
 
 int gladLoad{{ feature_set.api|upper }}Loader(GLADloadproc load) {

@@ -1,8 +1,29 @@
 {% extends 'base_template.c' %}
 {% import 'template_utils.h' as template_utils %}
 
+{% set blacklist = feature_set.features[0].get_requirements(spec, feature_set.api, feature_set.profile).commands %}
+
+{% block commands %}
+{% for command in feature_set.commands|reject('existsin', blacklist) %}
+PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
+{% endfor %}
+{% endblock %}
+
+{% block extension_loaders %}
+{% for extension in chain(feature_set.features[1:], feature_set.extensions) %}
+static void load_{{ extension.name }}(GLADloadproc load) {
+    {% set commands = extension.get_requirements(spec, feature_set.api, feature_set.profile).commands %}
+    {% if commands %}
+    if(!GLAD_{{ extension.name }}) return;
+    {% for command in commands %}
+    glad_{{ command.proto.name }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}");
+    {% endfor %}
+    {% endif %}
+}
+{% endfor %}
+{% endblock %}
+
 {% block loader %}
-static HDC hdc = (HDC)INVALID_HANDLE_VALUE;
 static int has_ext(HDC hdc, const char *ext) {
     const char *terminator;
     const char *loc;
@@ -48,7 +69,7 @@ int gladLoad{{ feature_set.api|upper }}Loader(GLADloadproc load, HDC hdc) {
 	wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)load("wglGetExtensionsStringEXT");
 	if(wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return 0;
 
-	{% for feature in feature_set.features %}
+	{% for feature in feature_set.features[1:] %}
 	load_{{ feature.name }}(load);
 	{% endfor %}
 

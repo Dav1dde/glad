@@ -8,9 +8,16 @@
 # endif
 # include <windows.h>
 #endif
+#include <glad/glad.h>
 {% endblock %}
 
 {% block api_definitions %}
 typedef void* (* GLADloadproc)(const char *name);
 GLAPI int gladLoadWGLLoader(GLADloadproc, HDC hdc);
+{% endblock %}
+
+{% block commands %}
+{# these are already defined in windows.h #}
+{% set blacklist = feature_set.features[0].get_requirements(spec, feature_set.api, feature_set.profile).commands %}
+{{ template_utils.write_function_prototypes(feature_set.commands|reject('existsin', blacklist)) }}
 {% endblock %}

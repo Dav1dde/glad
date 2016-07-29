@@ -21,10 +21,13 @@ PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
 {% block extension_loaders %}
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
 static void load_{{ extension.name }}(GLADloadproc load) {
+    {% set commands = extension.get_requirements(spec, feature_set.api, feature_set.profile).commands %}
+    {% if commands %}
     if(!GLAD_{{ extension.name }}) return;
-    {% for command in extension.get_requirements(spec, feature_set.api, feature_set.profile).commands %}
+    {% for command in commands %}
     glad_{{ command.proto.name }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}");
     {% endfor %}
+    {% endif %}
 }
 {% endfor %}
 {% endblock %}

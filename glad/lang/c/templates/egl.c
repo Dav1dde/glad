@@ -2,37 +2,91 @@
 {% import 'template_utils.h' as template_utils %}
 
 {% block loader %}
-static int get_exts(EGLDisplay display) { return 1; /* TODO */}
-static int has_ext(const char *ext) { return 1; /* TODO */}
-static void free_exts(void) {}
+static int get_exts(EGLDisplay display, const char **extensions) {
+    *extensions = eglQueryString(display, EGL_EXTENSIONS);
 
-static int find_extensions{{ feature_set.api|upper }}(/*EGLDisplay display*/) {
-    if (!get_exts(/*display*/)) return 0;
+    return extensions != NULL;
+}
+
+static int has_ext(const char *extensions, const char *name) {
+    const char *loc;
+    const char *terminator;
+    if(extensions == NULL) {
+        return 0;
+    }
+    while(1) {
+        loc = strstr(extensions, extensions);
+        if(loc == NULL) {
+            return 0;
+        }
+        terminator = loc + strlen(extensions);
+        if((loc == extensions || *(loc - 1) == ' ') &&
+            (*terminator == ' ' || *terminator == '\0')) {
+            return 1;
+        }
+        extensions = terminator;
+    }
+}
+
+static int find_extensions{{ feature_set.api|upper }}(EGLDisplay display) {
+    const char *extensions;
+    if (!get_exts(display, &extensions)) return 0;
+
     {% for extension in feature_set.extensions %}
-    GLAD_{{ extension.name }} = has_ext("{{ extension.name }}");
+    GLAD_{{ extension.name }} = has_ext(extensions, "{{ extension.name }}");
     {% endfor %}
-    free_exts();
+
     return 1;
 }
 
-static void find_core{{ feature_set.api|upper }}() {
-    /* TODO */
+static int find_core{{ feature_set.api|upper }}(EGLDisplay *display) {
+    int major, minor;
+    const char *version;
+
+    if (*display == NULL) {
+        *display = EGL_NO_DISPLAY; /* this is usually NULL, better safe than sorry */
+    }
+    if (*display == EGL_NO_DISPLAY) {
+        *display = eglGetCurrentDisplay();
+    }
+    if (*display == EGL_NO_DISPLAY) {
+        *display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    }
+    if (*display == EGL_NO_DISPLAY) {
+        return 0;
+    }
+
+    version = eglQueryString(*display, EGL_VERSION);
+
+#ifdef _MSC_VER
+    sscanf_s(version, "%d.%d", &major, &minor);
+#else
+    sscanf(version, "%d.%d", &major, &minor);
+#endif
+
     {% for feature in feature_set.features %}
-    GLAD_{{ feature.name }} = 1;
+    GLAD_{{ feature.name }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
     {% endfor %}
+
+    return 1;
 }
 
-int gladLoad{{ feature_set.api|upper }}Loader(GLADloadproc load) {
-	find_core{{ feature_set.api|upper }}();
+int gladLoad{{ feature_set.api|upper }}Loader(GLADloadproc load, EGLDisplay *display) {
+    eglGetDisplay = (PFNEGLGETDISPLAYPROC)load("eglGetDisplay");
+    eglGetCurrentDisplay = (PFNEGLGETCURRENTDISPLAYPROC)load("eglGetCurrentDisplay");
+    eglQueryString = (PFNEGLQUERYSTRINGPROC)load("eglQueryString");
+    if (eglGetDisplay == NULL || eglGetCurrentDisplay == NULL || eglQueryString == NULL) return 0;
 
+	if (!find_core{{ feature_set.api|upper }}(display)) return 0;
 	{% for feature in feature_set.features %}
 	load_{{ feature.name }}(load);
 	{% endfor %}
-	if (!find_extensions{{ feature_set.api|upper }}()) return 0;
+
+	if (!find_extensions{{ feature_set.api|upper }}(*display)) return 0;
 	{% for extension in feature_set.extensions %}
 	load_{{ extension.name }}(load);
 	{% endfor %}
 
-	return 1 /* TODO */;
+	return 1;
 }
 {% endblock %}

@@ -21,7 +21,7 @@ def params_to_c(params):
 
 
 class CBaseGenerator(BaseGenerator):
-    TEMPLATES = 'glad.lang.c'
+    TEMPLATES = ['glad.lang.c']
 
     def __init__(self, *args, **kwargs):
         BaseGenerator.__init__(self, *args, **kwargs)

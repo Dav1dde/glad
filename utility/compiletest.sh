@@ -61,6 +61,7 @@ echo -e "====================== Generating and compiling C/C++: ================
 rm -rf build
 ${PYTHON} -m glad --generator=c --spec=egl --out-path=build
 download_if_required build/include/EGL/eglplatform.h "https://www.khronos.org/registry/egl/api/EGL/eglplatform.h"
+download_if_required build/include/KHR/khrplatform.h "https://www.khronos.org/registry/egl/api/KHR/khrplatform.h"
 c_compile -Ibuild/include build/src/glad_egl.c ${GCC_FLAGS}
 cpp_compile -Ibuild/include build/src/glad_egl.c ${GPP_FLAGS}
 
@@ -76,8 +77,9 @@ echorun gcc -Ibuild/include build/src/glad_glx.c ${GCC_FLAGS}
 echorun g++ -Ibuild/include build/src/glad_glx.c ${GPP_FLAGS}
 
 # Example
-echorun gcc example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lglut -ldl
-mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lfreeglut
+# TODO loader
+#echorun gcc example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lglut -ldl
+#mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lfreeglut
 echorun g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw -ldl
 mingwcpp_compile example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw3
 
@@ -94,6 +96,7 @@ echo -e "====================== Generating and compiling C/C++ Debug: ==========
 rm -rf build
 ${PYTHON} -m glad --generator=c-debug --spec=egl --out-path=build
 download_if_required build/include/EGL/eglplatform.h "https://www.khronos.org/registry/egl/api/EGL/eglplatform.h"
+download_if_required build/include/KHR/khrplatform.h "https://www.khronos.org/registry/egl/api/KHR/khrplatform.h"
 c_compile -Ibuild/include build/src/glad_egl.c ${GCC_FLAGS}
 cpp_compile -Ibuild/include build/src/glad_egl.c ${GPP_FLAGS}
 
@@ -109,8 +112,9 @@ echorun gcc -Ibuild/include build/src/glad_glx.c ${GCC_FLAGS}
 echorun g++ -Ibuild/include build/src/glad_glx.c ${GPP_FLAGS}
 
 # Example
-echorun gcc example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lglut -ldl
-mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lfreeglut
+# TODO loader
+# echorun gcc example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lglut -ldl
+# mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lfreeglut
 echorun g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw -ldl
 mingwcpp_compile example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw3
 

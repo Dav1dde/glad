@@ -3,5 +3,5 @@
 
 {% block api_definitions %}
 typedef void* (* GLADloadproc)(const char *name);
-GLAPI int gladLoadEGLLoader(GLADloadproc);
+GLAPI int gladLoad{{ feature_set.api|upper }}Loader(GLADloadproc load, EGLDisplay *display);
 {% endblock %}
