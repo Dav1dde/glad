@@ -28,17 +28,40 @@ from glad.opener import URLOpener
 from glad.util import Version
 
 
-FeatureSet = namedtuple(
+_ARRAY_RE = re.compile(r'\[\d+\]')
+
+_FeatureExtensionCommands = namedtuple('_FeatureExtensionCommands', ['features', 'commands'])
+_TypeEnumCommand = namedtuple('_TypeEnumCommand', ['types', 'enums', 'commands'])
+
+
+class FeatureSet(namedtuple(
     'FeatureSet',
     ['api', 'version', 'profile', 'features', 'extensions', 'types', 'enums', 'commands']
-)
+)):
+    def split_commands(self, spec):
+        """
+        :param spec: specification which the feature set is based on
+        :return: tuple of feature and extension commands
+        """
+        f_commands = set()
+        e_commands = set()
 
-_ARRAY_RE = re.compile(r'\[\d+\]')
+        for feature in self.features:
+            f_commands = f_commands.union(
+                feature.get_requirements(spec, self.api, self.profile).commands
+            )
+
+        for extension in self.extensions:
+            e_commands = e_commands.union(
+                set(extension.get_requirements(spec, self.api, self.profile).commands) - f_commands
+            )
+
+        return _FeatureExtensionCommands(f_commands, e_commands)
 
 
 class Spec(object):
     API = 'https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/'
-    NAME = ''
+    NAME = None
     PROFILES = ()
 
     def __init__(self, root):
@@ -53,7 +76,14 @@ class Spec(object):
 
     @property
     def name(self):
+        if self.NAME is None:
+            raise NotImplementedError
+
         return self.NAME
+
+    @property
+    def profiles(self):
+        return self.PROFILES
 
     @classmethod
     def from_url(cls, url, opener=None):
@@ -240,23 +270,21 @@ class Spec(object):
         :return: FeatureSet with the required types, enums, commands/functions
         """
         # make sure that there is a profile if one is required/available
-        if profile not in self.PROFILES:
-            raise ValueError('Invalid profile {!r} not in {!r}'.format(profile, self.PROFILES))
+        if len(self.profiles) and profile not in self.profiles:
+            raise ValueError('Invalid profile {!r} not in {!r}'.format(profile, self.profiles))
 
         if api not in self.features:
             raise ValueError('Invalid API {!r}'.format(api))
 
         # None means latest version, update the dictionary with the latest version
         if version is None:
-            print api, self.features, self.features[api]
-
             version = list(self.features[api].keys())[-1]
 
         # make sure the version is valid
         if version not in self.features[api]:
             raise ValueError(
                 'Unknown version {!r} for specification {!r}'
-                .format(version, self.NAME)
+                .format(version, self.name)
             )
 
         all_extensions = list(self.extensions[api].keys())
@@ -269,7 +297,7 @@ class Spec(object):
                 if extension not in all_extensions:
                     raise ValueError(
                         'Invalid extension {!r} for specification {!r}'.format(
-                            extension, self.NAME
+                            extension, self.name
                         )
                     )
 
@@ -329,6 +357,22 @@ class Spec(object):
         types = sorted(types, key=all_sorted_types.index)
 
         return FeatureSet(api, version, profile, features, extensions, types, enums, commands)
+
+    def split_commands(self, feature_set):
+        """
+        :param feature_set:
+        :return:
+        """
+        fcommands = set()
+        ecommands = set()
+
+        for feature in feature_set.features:
+            fcommands.union(feature.get_requirements(self, feature_set.api, feature_set.profile))
+
+        for extension in feature_set.extensions:
+            ecommands.union(extension.get_requirements(self, feature_set.api, feature_set.profile) - fcommands)
+
+        return fcommands, ecommands
 
 
 class Group(object):
@@ -535,7 +579,7 @@ class Extension(IdentifiedByName):
                     (remove.api is None or remove.api == api)):
                 result = result.difference(remove.removes)
 
-        return spec.split_types(result, (Type, Enum, Command))
+        return _TypeEnumCommand(*spec.split_types(result, (Type, Enum, Command)))
 
     def __str__(self):
         return self.name

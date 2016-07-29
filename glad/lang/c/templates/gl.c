@@ -1,4 +1,7 @@
-{% import "template_utils.h" as template_utils %}
+{% extends 'base_template.c' %}
+{% import 'template_utils.h' as template_utils %}
+
+{% block includes %}
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,47 +10,36 @@
 {% else %}
 #include <glad/glad_{{ feature_set.api }}.h>
 {% endif %}
+{% endblock %}
 
-{% if has_loader and feature_set.api == 'gl' %}
-{{ template_utils.dll_loader('static', 'get_proc', 'open_gl', 'close_gl') }}
-
-int gladLoadGL(void) {
-    int status = 0;
-    if(open_gl()) {
-        status = gladLoad{{ feature_set.api|upper }}Loader(&get_proc);
-        close_gl();
-    }
-    return status;
-}
-{% endif %}
-
+{% block loader %}
 struct gladGLversionStruct GLVersion;
 #if defined(GL_ES_VERSION_3_0) || defined(GL_VERSION_3_0)
 #define _GLAD_IS_SOME_NEW_VERSION 1
 #endif
 static int max_loaded_major;
 static int max_loaded_minor;
-static const char *exts = NULL;
-static int num_exts_i = 0;
-static const char **exts_i = NULL;
-static int get_exts(void) {
+
+{# god forgive me #}
+static int get_exts(const char **out_exts, int *out_num_exts_i, const char ***out_exts_i) {
 #ifdef _GLAD_IS_SOME_NEW_VERSION
     if(max_loaded_major < 3) {
 #endif
         if (&glGetString == NULL) {
             return 0;
         }
-        exts = (const char *)glGetString(GL_EXTENSIONS);
+        *out_exts = (const char *)glGetString(GL_EXTENSIONS);
 #ifdef _GLAD_IS_SOME_NEW_VERSION
     } else {
+        int index;
+        int num_exts_i = 0;
+        const char **exts_i;
         if (&glGetStringi == NULL || glGetIntegerv == NULL) {
             return 0;
         }
-        int index;
-        num_exts_i = 0;
         glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts_i);
         if (num_exts_i > 0) {
-            exts_i = (const char **)realloc((void *)exts_i, num_exts_i * sizeof *exts_i);
+            exts_i = (const char **)malloc(num_exts_i * sizeof *exts_i);
         }
         if (exts_i == NULL) {
             return 0;
@@ -55,17 +47,20 @@ static int get_exts(void) {
         for(index = 0; index < num_exts_i; index++) {
             exts_i[index] = (const char*)glGetStringi(GL_EXTENSIONS, index);
         }
+
+        *out_num_exts_i = num_exts_i;
+        *out_exts_i = exts_i;
     }
 #endif
     return 1;
 }
-static void free_exts(void) {
+static void free_exts(const char **exts_i) {
     if (exts_i != NULL) {
         free((char **)exts_i);
         exts_i = NULL;
     }
 }
-static int has_ext(const char *ext) {
+static int has_ext(const char *exts, int num_exts_i, char **exts_i, const char *ext) {
 #ifdef _GLAD_IS_SOME_NEW_VERSION
     if(max_loaded_major < 3) {
 #endif
@@ -102,29 +97,16 @@ static int has_ext(const char *ext) {
     return 0;
 }
 
-{% for extension in chain(feature_set.features, feature_set.extensions) %}
-int GLAD_{{ extension.name }};
-{% endfor %}
-
-{% for command in feature_set.commands %}
-PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
-{% endfor %}
-
-{% for extension in chain(feature_set.features, feature_set.extensions) %}
-static void load_{{ extension.name }}(GLADloadproc load) {
-    if(!GLAD_{{ extension.name }}) return;
-    {% for command in extension.get_requirements(spec, feature_set.api, feature_set.profile)[2] %}
-    glad_{{ command.proto.name }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}");
-    {% endfor %}
-}
-{% endfor %}
-
 static int find_extensions{{ feature_set.api|upper }}(void) {
-    if (!get_exts()) return 0;
+    const char *exts = NULL;
+    int num_exts_i = 0;
+    const char **exts_i = NULL;
+    if (!get_exts(&exts, &num_exts_i, &exts_i)) return 0;
+
     {% for extension in feature_set.extensions %}
-    GLAD_{{ extension.name }} = has_ext("{{ extension.name }}");
+    GLAD_{{ extension.name }} = has_ext(exts, num_exts_i, exts_i, "{{ extension.name }}");
     {% endfor %}
-    free_exts();
+    free_exts(exts_i);
     return 1;
 }
 
@@ -178,10 +160,12 @@ int gladLoad{{ feature_set.api|upper }}Loader(GLADloadproc load) {
 	{% for feature in feature_set.features %}
 	load_{{ feature.name }}(load);
 	{% endfor %}
-	if (!find_extensionsGL()) return 0;
+
+	if (!find_extensions{{  feature_set.api|upper }}()) return 0;
 	{% for extension in feature_set.extensions %}
 	load_{{ extension.name }}(load);
 	{% endfor %}
 
 	return GLVersion.major != 0 || GLVersion.minor != 0;
 }
+{% endblock %}

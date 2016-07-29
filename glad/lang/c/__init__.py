@@ -14,6 +14,11 @@ def type_to_c(ogl_type):
 def params_to_c(params):
     return ', '.join('{} {}'.format(type_to_c(param.type), param.name) for param in params)
 
+# RANDOM TODOs:
+# TODO: glad_get_gl_version(), glad_get_egl_version(), glad_get_*_version()
+# TODO: glad_loader.h
+# TODO: get rid of globals in loader
+
 
 class CBaseGenerator(BaseGenerator):
     TEMPLATES = 'glad.lang.c'
@@ -25,8 +30,6 @@ class CBaseGenerator(BaseGenerator):
             type_to_c=type_to_c,
             params_to_c=params_to_c,
             chain=itertools.chain,
-            # TODO move options
-            has_loader=True
         )
 
     def get_templates(self, spec, feature_set):

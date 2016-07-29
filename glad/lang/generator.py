@@ -1,6 +1,6 @@
 import os.path
 
-from jinja2 import Environment, ChoiceLoader, PackageLoader
+from jinja2 import Environment, ChoiceLoader, PackageLoader, TemplateNotFound
 
 from glad.opener import URLOpener
 from glad.util import makefiledir
@@ -28,16 +28,29 @@ class BaseGenerator(object):
             autoescape=False
         )
 
+        self.environment.globals.update(
+            set_=set,
+            zip=zip
+        )
+
+        self.environment.tests.update(
+            existsin=lambda value, other: value in other,
+        )
+
     def get_templates(self, spec, feature_set):
         raise NotImplementedError
 
-    def generate(self, spec, feature_set, **options):
+    def generate(self, spec, feature_set, options=None):
         # TODO maybe proper configuration object for options
         for template, output_path in self.get_templates(spec, feature_set):
-            template = self.environment.get_template(template)
+            try:
+                template = self.environment.get_template(template)
+            except TemplateNotFound:
+                # TODO better error, maybe let get_templates throw
+                raise ValueError('Unsupported specification/configuration')
 
             result = template.render(
-                spec=spec, feature_set=feature_set, **options
+                spec=spec, feature_set=feature_set, options=options or dict()
             )
 
             output_path = os.path.join(self.path, output_path)
