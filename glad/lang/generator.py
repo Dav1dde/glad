@@ -18,7 +18,7 @@ class BaseGenerator(object):
 
         assert self.TEMPLATES is not None
         self.environment = Environment(
-            loader=ChoiceLoader(map(PackageLoader, self.TEMPLATES)),
+            loader=ChoiceLoader(list(map(PackageLoader, self.TEMPLATES))),
             extensions=['jinja2.ext.do'],
             trim_blocks=True,
             lstrip_blocks=True,
@@ -34,20 +34,21 @@ class BaseGenerator(object):
             existsin=lambda value, other: value in other,
         )
 
-    def get_templates(self, spec, feature_set):
+    def get_templates(self, spec, feature_set, options):
         raise NotImplementedError
 
     def generate(self, spec, feature_set, options=None):
         # TODO maybe proper configuration object for options
-        for template, output_path in self.get_templates(spec, feature_set):
-            try:
-                template = self.environment.get_template(template)
-            except TemplateNotFound:
-                # TODO better error, maybe let get_templates throw
-                raise ValueError('Unsupported specification/configuration')
+        options = options or dict()
+        for template, output_path in self.get_templates(spec, feature_set, options):
+            #try:
+            template = self.environment.get_template(template)
+            #except TemplateNotFound:
+            #    # TODO better error, maybe let get_templates throw
+            #    raise ValueError('Unsupported specification/configuration')
 
             result = template.render(
-                spec=spec, feature_set=feature_set, options=options or dict()
+                spec=spec, feature_set=feature_set, options=options
             )
 
             output_path = os.path.join(self.path, output_path)

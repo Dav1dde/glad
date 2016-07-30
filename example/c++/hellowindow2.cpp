@@ -34,6 +34,15 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
 
+
+#ifdef GLAD_DEBUG
+// Define a custom callback for demonstration purposes
+void pre_gl_call(const char *name, void *funcptr, int len_args, ...) {
+    printf("Calling: %s at %p (%d arguments)\n", name, funcptr, len_args);
+}
+#endif
+
+
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
@@ -64,6 +73,14 @@ int main()
         std::cout << "Failed to initialize OpenGL context" << std::endl;
         return -1;
     }
+
+#ifdef GLAD_DEBUG
+    // before every opengl call call pre_gl_call
+    glad_set_gl_pre_callback(pre_gl_call);
+    // don't use the callbacks for glClear and glClearColor
+    glad_debug_glClear = glad_glClear;
+    glad_debug_glClearColor = glad_glClearColor;
+#endif
 
     // Define the viewport dimensions
     glViewport(0, 0, WIDTH, HEIGHT);

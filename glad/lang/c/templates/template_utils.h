@@ -40,11 +40,16 @@ GLAPI int GLAD_{{ extension.name }};
 {% endfor %}
 {% endmacro %}
 
-{% macro write_function_prototypes(commands) %}
+{% macro write_function_prototypes(commands, debug=False) %}
 {% for command in commands %}
 typedef {{ type_to_c(command.proto.ret) }} (APIENTRYP PFN{{ command.proto.name|upper }}PROC)({{ params_to_c(command.params) }});
 GLAPI PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
+{% if debug %}
+GLAPI PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};
+#define {{ command.proto.name }} glad_debug_{{ command.proto.name }}
+{% else %}
 #define {{ command.proto.name }} glad_{{ command.proto.name }}
+{% endif %}
 {% endfor %}
 {% endmacro %}
 

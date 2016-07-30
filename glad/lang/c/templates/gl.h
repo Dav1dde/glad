@@ -16,7 +16,7 @@
 {% endblock %}
 
 
-{% block api_definitions %}
+{% block declarations %}
 struct gladGLversionStruct {
     int major;
     int minor;

@@ -77,16 +77,16 @@ int gladLoad{{ feature_set.api|upper }}Loader(GLADloadproc load, EGLDisplay *dis
     eglQueryString = (PFNEGLQUERYSTRINGPROC)load("eglQueryString");
     if (eglGetDisplay == NULL || eglGetCurrentDisplay == NULL || eglQueryString == NULL) return 0;
 
-	if (!find_core{{ feature_set.api|upper }}(display)) return 0;
-	{% for feature in feature_set.features %}
-	load_{{ feature.name }}(load);
-	{% endfor %}
+    if (!find_core{{ feature_set.api|upper }}(display)) return 0;
+    {% for feature in feature_set.features %}
+    load_{{ feature.name }}(load);
+    {% endfor %}
 
-	if (!find_extensions{{ feature_set.api|upper }}(*display)) return 0;
-	{% for extension in feature_set.extensions %}
-	load_{{ extension.name }}(load);
-	{% endfor %}
+    if (!find_extensions{{ feature_set.api|upper }}(*display)) return 0;
+    {% for extension in feature_set.extensions %}
+    load_{{ extension.name }}(load);
+    {% endfor %}
 
-	return 1;
+    return 1;
 }
 {% endblock %}

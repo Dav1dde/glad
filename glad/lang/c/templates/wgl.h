@@ -11,7 +11,7 @@
 #include <glad/glad.h>
 {% endblock %}
 
-{% block api_definitions %}
+{% block declarations %}
 typedef void* (* GLADloadproc)(const char *name);
 GLAPI int gladLoadWGLLoader(GLADloadproc, HDC hdc);
 {% endblock %}

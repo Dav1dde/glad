@@ -8,7 +8,7 @@
 #include <glad/glad.h>
 {% endblock %}
 
-{% block api_definitions %}
+{% block declarations %}
 typedef void* (* GLADloadproc)(const char *name);
 GLAPI int gladLoad{{ feature_set.api|upper }}Loader(GLADloadproc, Display **dpy, int *screen);
 {% endblock %}

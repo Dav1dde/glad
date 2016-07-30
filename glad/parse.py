@@ -492,7 +492,7 @@ class OGLType(object):
             self.type = 'struct {}'.format(self.type)
 
         ptype = element.find('ptype')
-        self.ptype = ptype.text if ptype else None
+        self.ptype = ptype.text if ptype is not None else None
 
     # TODO move the following logic out of here -> into generators
     def to_d(self):

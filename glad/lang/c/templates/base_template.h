@@ -6,6 +6,10 @@
 {{ template_utils.header_error(feature_set.api, feature_set.api, feature_set.api|upper) }}
 {% endblock %}
 
+{% if options.debug %}
+#define GLAD_DEBUG
+{% endif %}
+
 #if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
@@ -58,11 +62,20 @@ extern "C" {
 {{ template_utils.write_enumerations(feature_set.enums) }}
 {% endblock %}
 {% block commands %}
-{{ template_utils.write_function_prototypes(feature_set.commands) }}
+{{ template_utils.write_function_prototypes(feature_set.commands, debug=options.debug) }}
 {% endblock %}
 
-{% block api_definitions %}
+{% block declarations %}
 {% endblock %}
+
+{% block debug %}
+{% if options.debug %}
+typedef void (* GLADcallback)(const char *name, void *funcptr, int len_args, ...);
+GLAPI void glad_set_{{ feature_set.api }}_pre_callback(GLADcallback cb);
+GLAPI void glad_set_{{ feature_set.api }}_post_callback(GLADcallback cb);
+{% endif %}
+{% endblock %}
+
 
 #ifdef __cplusplus
 }

@@ -12,6 +12,32 @@
 {% endif %}
 {% endblock %}
 
+{% block debug_default_pre %}
+void _pre_call_{{ feature_set.api }}_callback_default(const char *name, void *funcptr, int len_args, ...) {
+    if (funcptr == NULL) {
+        fprintf(stderr, "GLAD: ERROR %s is NULL!\n", name);
+        return;
+    }
+    if (glad_glGetError == NULL) {
+        fprintf(stderr, "GLAD: ERROR glGetError is NULL!\n");
+        return;
+    }
+
+    /* Clear old errors */
+    (void)glad_glGetError();
+}
+{% endblock %}
+{% block debug_default_post %}
+void _post_call_{{ feature_set.api }}_callback_default(const char *name, void *funcptr, int len_args, ...) {
+    GLenum error_code;
+    error_code = glad_glGetError();
+
+    if (error_code != GL_NO_ERROR) {
+        fprintf(stderr, "GLAD: ERROR %d in %s!\n", error_code, name);
+    }
+}
+{% endblock %}
+
 {% block loader %}
 struct gladGLversionStruct GLVersion;
 #if defined(GL_ES_VERSION_3_0) || defined(GL_VERSION_3_0)
@@ -152,21 +178,21 @@ static void find_core{{ feature_set.api|upper }}(void) {
 }
 
 int gladLoad{{ feature_set.api|upper }}Loader(GLADloadproc load) {
-	GLVersion.major = 0; GLVersion.minor = 0;
-	glGetString = (PFNGLGETSTRINGPROC)load("glGetString");
-	if(glGetString == NULL) return 0;
-	if(glGetString(GL_VERSION) == NULL) return 0;
-	find_core{{ feature_set.api|upper }}();
+    GLVersion.major = 0; GLVersion.minor = 0;
+    glGetString = (PFNGLGETSTRINGPROC)load("glGetString");
+    if(glGetString == NULL) return 0;
+    if(glGetString(GL_VERSION) == NULL) return 0;
+    find_core{{ feature_set.api|upper }}();
 
-	{% for feature in feature_set.features %}
-	load_{{ feature.name }}(load);
-	{% endfor %}
+    {% for feature in feature_set.features %}
+    load_{{ feature.name }}(load);
+    {% endfor %}
 
-	if (!find_extensions{{  feature_set.api|upper }}()) return 0;
-	{% for extension in feature_set.extensions %}
-	load_{{ extension.name }}(load);
-	{% endfor %}
+    if (!find_extensions{{  feature_set.api|upper }}()) return 0;
+    {% for extension in feature_set.extensions %}
+    load_{{ extension.name }}(load);
+    {% endfor %}
 
-	return GLVersion.major != 0 || GLVersion.minor != 0;
+    return GLVersion.major != 0 || GLVersion.minor != 0;
 }
 {% endblock %}
