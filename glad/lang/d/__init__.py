@@ -1,25 +1,89 @@
-from glad.lang.d.loader.egl import EGLDLoader
-from glad.lang.d.loader.gl import OpenGLDLoader
-from glad.lang.d.loader.glx import GLXDLoader
-from glad.lang.d.loader.wgl import WGLDLoader
+import itertools
+from collections import namedtuple
 
-from glad.lang.d.generator import DGenerator
+from glad.lang.generator import BaseGenerator
 
 
-_specs = {
-    'egl': EGLDLoader,
-    'gl': OpenGLDLoader,
-    'glx': GLXDLoader,
-    'wgl': WGLDLoader
-}
-
-_generators = {
-    'd': DGenerator,
-}
+DEnum = namedtuple('DEnum', ['type', 'value'])
 
 
-def get_generator(name, spec):
-    gen = _generators.get(name)
-    loader = _specs.get(spec)
+def type_to_d(ogl_type):
+    if ogl_type.is_pointer > 1 and ogl_type.is_const:
+        s = 'const({}{}*)'.format('u' if ogl_type.is_unsigned else '', ogl_type.type)
+        s += '*' * (ogl_type.is_pointer - 1)
+    else:
+        t = '{}{}'.format('u' if ogl_type.is_unsigned else '', ogl_type.type)
+        s = 'const({})'.format(t) if ogl_type.is_const else t
+        s += '*' * ogl_type.is_pointer
+    return s.replace('struct ', '')
 
-    return gen, loader
+
+def params_to_d(params):
+    return ', '.join(type_to_d(param.type) for param in params)
+
+
+def enum_to_d(enum, default_type='uint'):
+    result = _enum_to_d(enum, default_type=default_type)
+
+    if isinstance(result, tuple):
+        return DEnum(*result)
+    return DEnum(result, enum.value)
+
+
+def _enum_to_d(enum, default_type='uint'):
+    if '"' in enum.value:
+        return 'const(char)*'
+
+    if enum.type:
+        return {
+            'u': 'uint',
+            'ull': 'ulong',
+            'bitmask': 'uint'
+        }[enum.type]
+
+    if enum.value.startswith('0x'):
+        if len(enum.value[2:]) > 8:
+            return 'ulong'
+        return 'uint'
+
+    if enum.name in ('GL_TRUE', 'GL_FALSE'):
+        return 'ubyte'
+
+    if enum.value.startswith('-'):
+        return 'int'
+
+    if enum.value.startswith('(('):
+        # '((Type)value)' -> 'Type'
+        type_ = enum.value.split(')')[0][2:]
+        # '((Type)value)' -> cast(Type)value
+        value = 'cast{}'.format(enum.value[1:-1])
+        return type_, value
+
+    return default_type
+
+
+class DGenerator(BaseGenerator):
+    TEMPLATES = ['glad.lang.d']
+
+    def __init__(self, *args, **kwargs):
+        BaseGenerator.__init__(self, *args, **kwargs)
+
+        self.environment.globals.update(
+            type_to_d=type_to_d,
+            params_to_d=params_to_d,
+            enum_to_d=enum_to_d,
+            chain=itertools.chain
+        )
+
+    def get_templates(self, spec, feature_set, options):
+        templates = [
+            'enumerations.d', 'functions.d', 'loader.d', 'types.d'
+        ]
+
+        ret = list()
+        for template in templates:
+            ret.append((
+                template, 'glad/{}/{}'.format(feature_set.api, template)
+            ))
+
+        return ret

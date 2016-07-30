@@ -51,7 +51,7 @@ def get_debug_impl(command):
 # TODO: get rid of globals in loader
 
 
-class CBaseGenerator(BaseGenerator):
+class CGenerator(BaseGenerator):
     TEMPLATES = ['glad.lang.c']
 
     def __init__(self, *args, **kwargs):
@@ -65,8 +65,6 @@ class CBaseGenerator(BaseGenerator):
         )
 
     def get_templates(self, spec, feature_set, options):
-        options['debug'] = True  # TODO move me
-
         if feature_set.api == 'gl':
             return [
                 ('gl.h', 'include/glad/glad.h'),

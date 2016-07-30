@@ -7,7 +7,8 @@ the languages C, D, Nim and Volt.
 """
 import logging
 
-from glad.lang.c import CBaseGenerator
+from glad.lang.c import CGenerator
+from glad.lang.d import DGenerator
 from glad.opener import URLOpener
 from glad.spec import SPECS
 from glad.util import Version
@@ -87,8 +88,8 @@ def main():
     parser.add_argument('--api', dest='api', type=cmdapi,
                         help='API type/version pairs, like "gl=3.2,gles=", '
                              'no version means latest')
-    parser.add_argument('--generator', dest='generator', default='d',
-                        choices=['c', 'c-debug', 'd', 'nim', 'volt'], required=True,
+    parser.add_argument('--generator', dest='generator', default='c',
+                        choices=['c', 'c-debug', 'd', 'volt'], required=True,
                         help='Language to generate the binding for')
     parser.add_argument('--extensions', dest='extensions',
                         default=None, type=ext_file,
@@ -110,6 +111,7 @@ def main():
             datefmt='%m/%d/%Y %H:%M:%S', level=logging.DEBUG
         )
 
+    # TODO find spec based on API and allow to force spec via spec:api=3.0
     spec = get_spec(ns.spec)
     if spec.NAME == 'gl':
         spec.profile = ns.profile
@@ -118,13 +120,25 @@ def main():
     if api is None or len(api.keys()) == 0:
         api = {spec.NAME: None}
 
+    # TODO I don't wanna hardcode that ...
+    generators = {
+        'c': CGenerator,
+        'c-debug': CGenerator,  # TODO c-debug is dead
+        'd': DGenerator
+    }
+
+    # TODO options belong somewhere else
+    options = dict()
+    if ns.generator == 'c-debug':
+        options['debug'] = True
+
     for a, v in api.items():
         feature_set = spec.select(a, v, ns.profile, ns.extensions)
 
-        generator = CBaseGenerator(ns.out, opener=opener)
-        generator.generate(spec, feature_set)
+        generator = generators[ns.generator](ns.out, opener=opener)
+        generator.generate(spec, feature_set, options)
 
-        # TODO remove
+        # TODO remove break, generate multiple APIs at once
         break
 
 

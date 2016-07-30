@@ -1,24 +1,26 @@
-from glad.lang.common.loader import BaseLoader
-from glad.lang.d.loader import LOAD_OPENGL_DLL
+bool gladLoad{{ feature_set.api|upper }}(Loader load) {
+    glGetString = cast(typeof(glGetString))load("glGetString");
+    if(glGetString is null) { return false; }
+    if(glGetString(GL_VERSION) is null) { return false; }
 
+    find_core{{ feature_set.api|upper }}();
+    {% for feature in feature_set.features %}
+    load_{{ feature.name }}(load);
+    {% endfor %}
 
-_OPENGL_LOADER = \
-    LOAD_OPENGL_DLL % {'pre':'private', 'init':'open_gl',
-                       'proc':'get_proc', 'terminate':'close_gl'} + '''
-bool gladLoadGL() {
-    bool status = false;
+    find_extensions{{ feature_set.api|upper }}();
+    {% for extension in feature_set.extensions %}
+    load_{{ extension.name }}(load);
+    {% endfor %}
 
-    if(open_gl()) {
-        status = gladLoadGL(x => get_proc(x));
-        close_gl();
-    }
-
-    return status;
+    return GLVersion.major != 0 || GLVersion.minor != 0;
 }
-'''
 
-_OPENGL_HAS_EXT = '''
 static struct GLVersion { static int major = 0; static int minor = 0; }
+
+
+private {
+
 private extern(C) char* strstr(const(char)*, const(char)*) @nogc;
 private extern(C) int strcmp(const(char)*, const(char)*) @nogc;
 private extern(C) int strncmp(const(char)*, const(char)*, size_t) @nogc;
@@ -41,7 +43,7 @@ private bool has_ext(const(char)* ext) @nogc {
 
             terminator = loc + strlen(ext);
             if((loc is extensions || *(loc - 1) == ' ') &&
-                (*terminator == ' ' || *terminator == '\\0')) {
+                (*terminator == ' ' || *terminator == '\0')) {
                 return true;
             }
             extensions = terminator;
@@ -59,9 +61,9 @@ private bool has_ext(const(char)* ext) @nogc {
 
     return false;
 }
-'''
 
-_FIND_VERSION = '''
+void find_core{{ feature_set.api|upper }}() {
+
     // Thank you @elmindreda
     // https://github.com/elmindreda/greg/blob/master/templates/greg.c.in#L176
     // https://github.com/glfw/glfw/blob/master/src/context.c#L36
@@ -84,35 +86,19 @@ _FIND_VERSION = '''
         }
     }
 
-    int major = glversion[0] - \'0\';
-    int minor = glversion[2] - \'0\';
+    int major = glversion[0] - '0';
+    int minor = glversion[2] - '0';
     GLVersion.major = major; GLVersion.minor = minor;
-'''
+    {% for feature in feature_set.features %}
+    {{ feature.name }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
+    {% endfor %}    return;
+}
 
+void find_extensions{{ feature_set.api|upper }}() {
+    {% for extension in extensions %}
+    {{ extension.name }} = has_ext("{{ extension.name }}");
+    {% endfor %}
+    return;
+}
 
-class OpenGLDLoader(BaseLoader):
-    def write_header_end(self, fobj):
-        pass
-
-    def write_header(self, fobj):
-        pass
-
-    def write(self, fobj):
-        fobj.write('alias Loader = void* delegate(const(char)*);\n')
-        if not self.disabled and 'gl' in self.apis:
-            fobj.write(_OPENGL_LOADER)
-
-    def write_begin_load(self, fobj):
-        fobj.write('\tglGetString = cast(typeof(glGetString))load("glGetString");\n')
-        fobj.write('\tif(glGetString is null) { return false; }\n')
-        fobj.write('\tif(glGetString(GL_VERSION) is null) { return false; }\n\n')
-
-    def write_end_load(self, fobj):
-        fobj.write('\treturn GLVersion.major != 0 || GLVersion.minor != 0;\n')
-
-    def write_find_core(self, fobj):
-        fobj.write(_FIND_VERSION)
-
-    def write_has_ext(self, fobj):
-        fobj.write(_OPENGL_HAS_EXT)
-
+} /* private */
