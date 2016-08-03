@@ -99,9 +99,9 @@ class Generator(object):
                 )
 
         if self.extension_names is None:
-           self. extension_names = list(chain.from_iterable(self.spec.extensions[a]
+           self.extension_names = list(chain.from_iterable(self.spec.extensions[a]
                                                             for a in self.api))
-
+	self.extension_names.sort()
         e = list(chain.from_iterable(self.spec.extensions[a] for a in self.api))
         for ext in self.extension_names:
             if ext not in e:
@@ -149,7 +149,7 @@ class Generator(object):
         specification = self.spec.NAME
         apis = ', '.join('{}={}'.format(api, '.'.join(map(str, version))) for api, version in self.api.items())
         profile = getattr(self.spec, 'profile', '-')
-        extensions = ', '.join(self.extension_names)
+        extensions = '\n        '.join(self.extension_names)
         online = self.online
         if len(online) > 2000:
             online = 'Too many extensions'
@@ -182,7 +182,7 @@ class Generator(object):
         generator = '--generator="{}"'.format(self.NAME)
         specification = '--spec="{}"'.format(self.spec.NAME)
         loader = '' if self.has_loader else '--no-loader'
-        extensions = '--extensions="{}"'.format(','.join(self.extension_names))
+        extensions = '--extensions="\\\n            {}"'.format(',\\\n            '.join(self.extension_names))
         local_files = '--local-files' if self.local_files else ''
         omit_khrplatform = '--omit-khrplatform' if self.omit_khrplatform else ''
 
