@@ -9,6 +9,7 @@ import logging
 
 from glad.lang.c import CGenerator
 from glad.lang.d import DGenerator
+from glad.lang.volt import VoltGenerator
 from glad.opener import URLOpener
 from glad.spec import SPECS
 from glad.util import Version
@@ -124,7 +125,8 @@ def main():
     generators = {
         'c': CGenerator,
         'c-debug': CGenerator,  # TODO c-debug is dead
-        'd': DGenerator
+        'd': DGenerator,
+        'volt': VoltGenerator
     }
 
     # TODO options belong somewhere else

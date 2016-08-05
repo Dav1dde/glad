@@ -35,7 +35,7 @@ def get_debug_impl(command):
 
     ret = ('', '', '')
     # lower because of win API having VOID
-    if not type_to_c(command.proto.ret) == 'void':
+    if not type_to_c(command.proto.ret).lower() == 'void':
         ret = (
             '{} ret;'.format(type_to_c(command.proto.ret)),
             'ret = ',
