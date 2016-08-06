@@ -99,8 +99,11 @@ class Generator(object):
                 )
 
         if self.extension_names is None:
-           self. extension_names = list(chain.from_iterable(self.spec.extensions[a]
-                                                            for a in self.api))
+           self.extension_names = list(chain.from_iterable(self.spec.extensions[a]
+                                                           for a in self.api))
+
+        # sort and eliminate duplicates
+        self.extension_names = list(sorted(set(self.extension_names)))
 
         e = list(chain.from_iterable(self.spec.extensions[a] for a in self.api))
         for ext in self.extension_names:
@@ -149,7 +152,7 @@ class Generator(object):
         specification = self.spec.NAME
         apis = ', '.join('{}={}'.format(api, '.'.join(map(str, version))) for api, version in self.api.items())
         profile = getattr(self.spec, 'profile', '-')
-        extensions = ', '.join(self.extension_names)
+        extensions = ',\n        '.join(self.extension_names)
         online = self.online
         if len(online) > 2000:
             online = 'Too many extensions'
