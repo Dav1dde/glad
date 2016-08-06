@@ -287,8 +287,8 @@ class Spec(object):
                 .format(profile, api, tuple(available_profiles))
             )
 
-        if api not in self.features:
-            raise ValueError('Invalid API {!r}'.format(api))
+        if not self.features.get(api):
+            raise ValueError('Invalid API {!r} for specification {!r}'.format(api, self.name))
 
         # None means latest version, update the dictionary with the latest version
         if version is None:
@@ -297,8 +297,8 @@ class Spec(object):
         # make sure the version is valid
         if version not in self.features[api]:
             raise ValueError(
-                'Unknown version {!r} for specification {!r}'
-                .format(version, self.name)
+                'Unknown version {!r} for API {}/{}'
+                .format(version, api, self.name)
             )
 
         all_extensions = list(self.extensions[api].keys())
