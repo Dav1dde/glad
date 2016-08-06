@@ -3,145 +3,182 @@
 """
 Uses the official Khronos-XML specs to generate a
 GL/GLES/EGL/GLX/WGL Loader made for your needs. Glad currently supports
-the languages C, D, Nim and Volt.
+the languages C, D and Volt.
 """
 import logging
+import os
+import re
+from collections import namedtuple
 
+from glad.config import Config, ConfigOption, one_of
 from glad.lang.c import CGenerator
 from glad.lang.d import DGenerator
 from glad.lang.volt import VoltGenerator
 from glad.opener import URLOpener
-from glad.spec import SPECS
+from glad.spec import SPECIFICATIONS
 from glad.util import Version
+
 
 logger = logging.getLogger('glad')
 
+ApiInformation = namedtuple('ApiInformation', ('specification', 'version', 'profile'))
+
+# TODO discover generators automatically
+GENERATORS = dict(c=CGenerator, d=DGenerator, volt=VoltGenerator)
+
+_API_SPEC_MAPPING = {
+    'gl': 'gl',
+    'gles1': 'gl',
+    'gles2': 'gl',
+    'glsc2': 'gl',
+    'egl': 'egl',
+    'glx': 'glx',
+    'wgl': 'wgl'
+}
+
+def parse_version(value):
+    if value is None:
+        return None
+
+    value = value.strip()
+    if not value:
+        return None
+
+    major, minor = (value + '.0').split('.')[:2]
+    return Version(int(major), int(minor))
+
+
+def parse_extensions(value):
+    if os.path.isfile(value):
+        # it's an extensions file
+        with open(value) as f:
+            value = f.read()
+
+    value = value.replace(',', ' ')
+    return list(filter(None, value.split()))
+
+
+def parse_apis(value, api_spec_mapping=_API_SPEC_MAPPING):
+    result = dict()
+
+    for api in value.split(','):
+        api = api.strip()
+
+        m = re.match(
+            r'^(?P<api>\w+)(:(?P<profile>\w+))?(/(?P<spec>\w+))?=(?P<version>\d+(\.\d+)?)?$',
+            api
+        )
+
+        if m is None:
+            raise ValueError('Invalid API {!r}'.format(api))
+
+        spec = m.group('spec')
+        if spec is None:
+            spec = api_spec_mapping[m.group('api')]
+        version = parse_version(m.group('version'))
+
+        result[m.group('api')] = ApiInformation(spec, version, m.group('profile'))
+
+    return result
+
+
+class GlobalConfig(Config):
+    OUT_PATH = ConfigOption(
+        required=True,
+        description='Output directory for the generated files'
+    )
+    API = ConfigOption(
+        converter=parse_apis,
+        description='Comma separated list of APIs in `name:profile=version` pairs '
+                    'optionally including a specification `name:profile/spec=version`. '
+                    'No version means latest, a profile is only required if the API requires a profile. '
+                    'E.g. `gl:core=3.3,gles1/gl=2,gles2='
+    )
+    EXTENSIONS = ConfigOption(
+        converter=parse_extensions,
+        default=None,
+        description='Path to a file containing a list of extensions or '
+                    'a comma separated list of extensions, if missing '
+                    'all possible extensions are included'
+    )
+    QUIET = ConfigOption(
+        converter=bool,
+        description='Disable logging'
+    )
+
+
+def get_specifications(specification_names, opener):
+    specifications = dict()
+
+    for name in set(specification_names):
+        Specification = SPECIFICATIONS[name]
+        xml_name = name + '.xml'
+
+        if os.path.isfile(xml_name):
+            logger.info('using local specification: %s', xml_name)
+            specification = Specification.from_file(xml_name)
+        else:
+            logger.info('getting %r specification from SVN', name)
+            specification = Specification.from_svn(opener=opener)
+
+        specifications[name] = specification
+
+    return specifications
+
 
 def main():
-    import os.path
-    import argparse
     from argparse import ArgumentParser
-
-    opener = URLOpener()
-
-    def get_spec(value):
-        if value not in SPECS:
-            raise argparse.ArgumentTypeError('Unknown specification')
-
-        spec_cls = SPECS[value]
-
-        if os.path.exists(value + '.xml'):
-            logger.info('using local specification: \'%s.xml\'', value)
-            return spec_cls.from_file(value + '.xml')
-        logger.info('getting \'%s\' specification from SVN', value)
-        return spec_cls.from_svn(opener=opener)
-
-    def ext_file(value):
-        msg = 'Invalid extensions argument'
-        if os.path.exists(value):
-            msg = 'Invalid extensions file'
-            try:
-                with open(value, 'r') as f:
-                    return f.read().split()
-            except IOError:
-                pass
-        else:
-            return [v.strip() for v in value.split(',') if v]
-
-        raise argparse.ArgumentTypeError(msg)
-
-    def version(value):
-        if value is None or len(value.strip()) == 0:
-            return None
-
-        v = value
-        if '.' not in v:
-            v = '{}.0'.format(v)
-
-        try:
-            return Version(*map(int, v.split('.')))
-        except ValueError:
-            pass
-
-        raise argparse.ArgumentTypeError('Invalid version: "{}"'.format(value))
-
-    def cmdapi(value):
-        try:
-            return dict((p[0], version(p[1])) for p in
-                        (list(map(str.strip, e.split('='))) for e in
-                         filter(bool, map(str.strip, value.split(',')))))
-        except IndexError:
-            pass
-
-        raise argparse.ArgumentTypeError(
-            'Invalid api-string: "{}"'.format(value)
-        )
 
     description = __doc__
     parser = ArgumentParser(description=description)
+    subparsers = parser.add_subparsers(
+        dest='subparser_name',
+        description='Generator to use'
+    )
 
-    parser.add_argument('--profile', dest='profile',
-                        choices=['core', 'compatibility'],
-                        default='compatibility',
-                        help='OpenGL profile (defaults to compatibility)')
-    parser.add_argument('--out-path', dest='out', required=True,
-                        help='Output path for loader')
-    parser.add_argument('--api', dest='api', type=cmdapi,
-                        help='API type/version pairs, like "gl=3.2,gles=", '
-                             'no version means latest')
-    parser.add_argument('--generator', dest='generator', default='c',
-                        choices=['c', 'c-debug', 'd', 'volt'], required=True,
-                        help='Language to generate the binding for')
-    parser.add_argument('--extensions', dest='extensions',
-                        default=None, type=ext_file,
-                        help='Path to extensions file or comma separated '
-                             'list of extensions, if missing '
-                             'all extensions are included')
-    parser.add_argument('--spec', dest='spec', default='gl',
-                        choices=['gl', 'egl', 'glx', 'wgl'],
-                        help='Name of the spec')
-    parser.add_argument('--quiet', dest='quiet', action='store_true')
+    global_config = GlobalConfig()
+    global_config.init_parser(parser)
+
+    configs = dict()
+    for lang, Generator in GENERATORS.items():
+        config = Generator.Config()
+        subparser = subparsers.add_parser(lang)
+        config.init_parser(subparser)
+
+        configs[lang] = config
 
     ns = parser.parse_args()
 
-    # gl
+    global_config.update_from_object(ns, convert=False, ignore_additional=True)
+    config = configs[ns.subparser_name]
+    config.update_from_object(ns, convert=False, ignore_additional=True)
 
-    if not ns.quiet:
+    # This should never throw if Config.init_parser is working correctly
+    global_config.validate()
+    config.validate()
+
+    if not global_config['QUIET']:
         logging.basicConfig(
             format='[%(asctime)s][%(levelname)s\t][%(name)-7s\t]: %(message)s',
-            datefmt='%m/%d/%Y %H:%M:%S', level=logging.DEBUG
+            datefmt='%d.%m.%Y %H:%M:%S', level=logging.DEBUG
         )
 
-    # TODO find spec based on API and allow to force spec via spec:api=3.0
-    spec = get_spec(ns.spec)
-    if spec.NAME == 'gl':
-        spec.profile = ns.profile
+    opener = URLOpener()
 
-    api = ns.api
-    if api is None or len(api.keys()) == 0:
-        api = {spec.NAME: None}
+    specifications = get_specifications(
+        [value[0] for value in global_config['API'].values()],
+        opener=opener
+    )
 
-    # TODO I don't wanna hardcode that ...
-    generators = {
-        'c': CGenerator,
-        'c-debug': CGenerator,  # TODO c-debug is dead
-        'd': DGenerator,
-        'volt': VoltGenerator
-    }
+    for api, info in global_config['API'].items():
+        logger.info('generating %s:%s/%s=%s', api, info.profile, info.specification, info.version)
 
-    # TODO options belong somewhere else
-    options = dict()
-    if ns.generator == 'c-debug':
-        options['debug'] = True
+        specification = specifications[info.specification]
 
-    for a, v in api.items():
-        feature_set = spec.select(a, v, ns.profile, ns.extensions)
+        feature_set = specification.select(api, info.version, info.profile, global_config['EXTENSIONS'])
 
-        generator = generators[ns.generator](ns.out, opener=opener)
-        generator.generate(spec, feature_set, options)
-
-        # TODO remove break, generate multiple APIs at once
-        break
+        generator = GENERATORS[ns.subparser_name](global_config['OUT_PATH'], opener=opener)
+        generator.generate(specification, feature_set, config)
 
 
 if __name__ == '__main__':

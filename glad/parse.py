@@ -62,7 +62,6 @@ class FeatureSet(namedtuple(
 class Spec(object):
     API = 'https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/'
     NAME = None
-    PROFILES = ()
 
     def __init__(self, root):
         self.root = root
@@ -80,10 +79,6 @@ class Spec(object):
             raise NotImplementedError
 
         return self.NAME
-
-    @property
-    def profiles(self):
-        return self.PROFILES
 
     @classmethod
     def from_url(cls, url, opener=None):
@@ -190,6 +185,16 @@ class Spec(object):
 
         return self._extensions
 
+    def profiles_for_api(self, api):
+        profiles = set()
+
+        for feature in chain(self.features[api].values(), self.extensions[api].values()):
+            for r in chain(feature.removes, feature.requires):
+                if (r.api is None or r.api == api) and r.profile is not None:
+                    profiles.add(r.profile)
+
+        return profiles
+
     def find(self, require, api, profile, resolve_types=False):
         """
         Find all requirements of a require 'instruction'.
@@ -270,8 +275,17 @@ class Spec(object):
         :return: FeatureSet with the required types, enums, commands/functions
         """
         # make sure that there is a profile if one is required/available
-        if len(self.profiles) and profile not in self.profiles:
-            raise ValueError('Invalid profile {!r} not in {!r}'.format(profile, self.profiles))
+        available_profiles = self.profiles_for_api(api)
+        if available_profiles and profile not in available_profiles:
+            if profile is None:
+                raise ValueError(
+                    'Profile required for {!r}-API, one of {!r}'
+                    .format(api, tuple(available_profiles))
+                )
+            raise ValueError(
+                'Invalid profile {!r} for {!r}-API, expected one of {!r}'
+                .format(profile, api, tuple(available_profiles))
+            )
 
         if api not in self.features:
             raise ValueError('Invalid API {!r}'.format(api))
@@ -292,6 +306,9 @@ class Spec(object):
             # None means all extensions
             extension_names = all_extensions
         else:
+            # ignore extensions of other APIs
+            # TODO figure out if this should be moved to __main__ or if there should be logging
+            extension_names = [en for en in extension_names if en.startswith(api.upper())]
             # make sure only valid extensions are listed
             for extension in extension_names:
                 if extension not in all_extensions:
@@ -493,46 +510,6 @@ class OGLType(object):
 
         ptype = element.find('ptype')
         self.ptype = ptype.text if ptype is not None else None
-
-    # TODO move the following logic out of here -> into generators
-    def to_d(self):
-        if self.is_pointer > 1 and self.is_const:
-            s = 'const({}{}*)'.format('u' if self.is_unsigned else '', self.type)
-            s += '*' * (self.is_pointer - 1)
-        else:
-            t = '{}{}'.format('u' if self.is_unsigned else '', self.type)
-            s = 'const({})'.format(t) if self.is_const else t
-            s += '*' * self.is_pointer
-        return s.replace('struct ', '')
-
-    to_volt = to_d
-
-    def to_c(self):
-        ut = 'unsigned {}'.format(self.type) if self.is_unsigned else self.type
-        s = '{}const {}'.format('unsigned ' if self.is_unsigned else '', self.type) \
-            if self.is_const else ut
-        s += '*' * self.is_pointer
-        return s
-
-    NIM_POINTER_MAP = {
-        'void': 'pointer',
-        'GLchar': 'cstring',
-        'struct _cl_context': 'ClContext',
-        'struct _cl_event': 'ClEvent'
-    }
-
-    def to_nim(self):
-        if self.is_pointer == 2:
-            s = 'cstringArray' if self.type == 'GLchar' else 'ptr pointer'
-        else:
-            s = self.type
-            if self.is_pointer == 1:
-                default  = 'ptr ' + s
-                s = self.NIM_POINTER_MAP.get(s, default)
-        return s
-
-    __str__ = to_d
-    __repr__ = __str__
 
 
 # TODO unify API

@@ -2,12 +2,18 @@ import os.path
 
 from jinja2 import Environment, ChoiceLoader, PackageLoader, TemplateNotFound
 
+from glad.config import Config
 from glad.opener import URLOpener
 from glad.util import makefiledir
 
 
+class NullConfig(Config):
+    pass
+
+
 class BaseGenerator(object):
     TEMPLATES = None
+    Config = NullConfig
 
     def __init__(self, path, opener=None):
         self.path = os.path.abspath(path)
@@ -34,13 +40,11 @@ class BaseGenerator(object):
             existsin=lambda value, other: value in other,
         )
 
-    def get_templates(self, spec, feature_set, options):
+    def get_templates(self, spec, feature_set, config):
         raise NotImplementedError
 
-    def generate(self, spec, feature_set, options=None):
-        # TODO maybe proper configuration object for options
-        options = options or dict()
-        for template, output_path in self.get_templates(spec, feature_set, options):
+    def generate(self, spec, feature_set, config=None):
+        for template, output_path in self.get_templates(spec, feature_set, config):
             #try:
             template = self.environment.get_template(template)
             #except TemplateNotFound:
@@ -48,7 +52,7 @@ class BaseGenerator(object):
             #    raise ValueError('Unsupported specification/configuration')
 
             result = template.render(
-                spec=spec, feature_set=feature_set, options=options
+                spec=spec, feature_set=feature_set, options=config.to_dict(transform=lambda x: x.lower())
             )
 
             output_path = os.path.join(self.path, output_path)

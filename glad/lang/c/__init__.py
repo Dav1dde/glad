@@ -1,6 +1,7 @@
 import itertools
 from collections import namedtuple
 
+from glad.config import Config, ConfigOption
 from glad.lang.generator import BaseGenerator
 
 
@@ -51,8 +52,17 @@ def get_debug_impl(command):
 # TODO: get rid of globals in loader
 
 
+class CConfig(Config):
+    DEBUG = ConfigOption(
+        converter=bool,
+        default=False,
+        description='Enables generation of a debug build'
+    )
+
+
 class CGenerator(BaseGenerator):
     TEMPLATES = ['glad.lang.c']
+    Config = CConfig
 
     def __init__(self, *args, **kwargs):
         BaseGenerator.__init__(self, *args, **kwargs)
