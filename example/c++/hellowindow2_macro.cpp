@@ -1,9 +1,22 @@
 #include <iostream>
 
+
+// THIS IS OPTIONAL AND NOT REQUIRED, ONLY USE THIS IF YOU DON'T WANT GLAD TO INCLUDE windows.h
+// GLAD will include windows.h for APIENTRY if it was not previously defined.
+// Make sure you have the correct definition for APIENTRY for platforms which define _WIN32 but don't use __stdcall
+#ifdef _WIN32
+    #define APIENTRY __stdcall
+#endif
+
 // GLAD
 #include <glad/glad.h>
 
-// GLFW (include after glad)
+// confirm that GLAD didn't include windows.h
+#ifdef _WINDOWS_
+    #error windows.h was included!
+#endif
+
+// GLFW
 #include <GLFW/glfw3.h>
 
 
@@ -20,6 +33,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
+
+
+#ifdef GLAD_OPTION_GL_DEBUG
+// Define a custom callback for demonstration purposes
+void pre_gl_call(const char *name, void *funcptr, int len_args, ...) {
+#ifdef GLAD_OPTION_GL_MX
+    printf("Current GL Context: %p -> ", gladGetGLContext());
+#endif
+    printf("Calling: %s at %p (%d arguments)\n", name, funcptr, len_args);
+}
+#endif
 
 
 // The MAIN function, from here we start the application and run the game loop
@@ -47,16 +71,33 @@ int main()
     // Set the required callback functions
     glfwSetKeyCallback(window, key_callback);
 
-    // Load OpenGL functions, gladLoadGL returns the loaded version (major * 10 + minor), 0 on error.
+#ifdef GLAD_OPTION_GL_MX_GLOBAL
+    GladGLContext context;
+    int version = gladLoadGL(&context, (GLADloadproc) glfwGetProcAddress);
+#else
     int version = gladLoadGL((GLADloadproc) glfwGetProcAddress);
+#endif
+
     if (version == 0)
     {
         std::cout << "Failed to initialize OpenGL context" << std::endl;
         return -1;
     }
 
-    // Successfully loaded OpenGL
     std::cout << "Loaded OpenGL " << version / 10 << "." << version % 10 << std::endl;
+
+#ifdef GLAD_OPTION_GL_DEBUG
+    // before every opengl call call pre_gl_call
+    glad_set_gl_pre_callback(pre_gl_call);
+    // don't use the callbacks for glClear and glClearColor
+  #ifdef GLAD_OPTION_GL_MX_GLOBAL
+    glad_debug_glClear = gladGetGLContext()->Clear;
+    glad_debug_glClearColor = gladGetGLContext()->ClearColor;
+  #else
+    glad_debug_glClear = glad_glClear;
+    glad_debug_glClearColor = glad_glClearColor;
+  #endif
+#endif
 
     // Define the viewport dimensions
     glViewport(0, 0, WIDTH, HEIGHT);
