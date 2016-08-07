@@ -84,7 +84,7 @@ int main()
         return -1;
     }
 
-    std::cout << "Loaded OpenGL " << version % 10 << "." << version / 10 << std::endl;
+    std::cout << "Loaded OpenGL " << version / 10 << "." << version % 10 << std::endl;
 
 #ifdef GLAD_OPTION_GL_DEBUG
     // before every opengl call call pre_gl_call
