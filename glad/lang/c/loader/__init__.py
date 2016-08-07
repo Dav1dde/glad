@@ -1,9 +1,10 @@
 
 LOAD_OPENGL_DLL = '''
-%(pre)s void* %(proc)s(const char *namez);
+%(pre)s GLADvoidfn %(proc)s(const char *namez);
 
 #ifdef _WIN32
 #include <windows.h>
+#include <string.h>
 static HMODULE libGL;
 
 typedef void* (APIENTRYP PFNWGLGETPROCADDRESSPROC_PRIVATE)(const char*);
@@ -29,11 +30,18 @@ void %(terminate)s(void) {
     }
 }
 #else
+#include <string.h>
 #include <dlfcn.h>
 static void* libGL;
 
 #ifndef __APPLE__
-typedef void* (APIENTRYP PFNGLXGETPROCADDRESSPROC_PRIVATE)(const char*);
+/*
+ * The definition of glXGetProcAddressARB is found here:
+ * https://www.opengl.org/registry/ABI/
+ * https://www.opengl.org/registry/specs/ARB/get_proc_address.txt
+ * void (*glXGetProcAddressARB(const GLubyte *procName))();
+ */
+typedef void (*(*PFNGLXGETPROCADDRESSPROC_PRIVATE)(const GLubyte *procName))();
 PFNGLXGETPROCADDRESSPROC_PRIVATE gladGetProcAddressPtr;
 #endif
 
@@ -48,6 +56,7 @@ int %(init)s(void) {
     };
 #else
     static const char *NAMES[] = {"libGL.so.1", "libGL.so"};
+    void *pv = NULL;
 #endif
 
     unsigned int index = 0;
@@ -58,8 +67,8 @@ int %(init)s(void) {
 #ifdef __APPLE__
             return 1;
 #else
-            gladGetProcAddressPtr = (PFNGLXGETPROCADDRESSPROC_PRIVATE)dlsym(libGL,
-                "glXGetProcAddressARB");
+            pv = dlsym(libGL, "glXGetProcAddressARB");
+            memcpy((void *)&gladGetProcAddressPtr, (void *)&pv, sizeof(pv));
             return gladGetProcAddressPtr != NULL;
 #endif
         }
@@ -77,21 +86,32 @@ void %(terminate)s() {
 }
 #endif
 
+/*
+ * TODO: Split function into a windows version and one nix version?
+ *       Would probably make it more readable/maintainable?
+ */
 %(pre)s
-void* %(proc)s(const char *namez) {
-    void* result = NULL;
+GLADvoidfn %(proc)s(const char *namez) {
+    GLADvoidfn result = NULL;
+    void *pv = NULL;
     if(libGL == NULL) return NULL;
 
 #ifndef __APPLE__
     if(gladGetProcAddressPtr != NULL) {
-        result = gladGetProcAddressPtr(namez);
+#ifdef _WIN32
+        pv = gladGetProcAddressPtr(namez);
+        memcpy((void *)&result, (void *)&pv, sizeof(pv));
+#else
+        result = gladGetProcAddressPtr((const GLubyte *)namez);
+#endif
     }
 #endif
     if(result == NULL) {
 #ifdef _WIN32
-        result = (void*)GetProcAddress(libGL, namez);
+        result = (GLADvoidfn)GetProcAddress(libGL, namez);
 #else
-        result = dlsym(libGL, namez);
+        pv = dlsym(libGL, namez);
+        memcpy((void *)&result, (void *)&pv, sizeof(pv));
 #endif
     }
 
