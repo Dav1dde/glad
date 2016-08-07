@@ -9,7 +9,7 @@
 {% macro write_feature_information(extensions, with_runtime=True) %}
 {% for extension in extensions %}
 {# #ifndef {{ extension.name }} #}
-#define {{ extension.name }}
+#define {{ extension.name }} 1
 {% if with_runtime %}
 GLAPI int GLAD_{{ extension.name }};
 {% endif %}
@@ -40,9 +40,14 @@ GLAPI int GLAD_{{ extension.name }};
 {% endfor %}
 {% endmacro %}
 
-{% macro write_function_prototypes(commands, debug=False) %}
+{% macro write_function_typedefs(commands) %}
 {% for command in commands %}
 typedef {{ type_to_c(command.proto.ret) }} (APIENTRYP PFN{{ command.proto.name|upper }}PROC)({{ params_to_c(command.params) }});
+{% endfor %}
+{% endmacro %}
+
+{% macro write_function_declarations(commands, debug=False) %}
+{% for command in commands %}
 GLAPI PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
 {% if debug %}
 GLAPI PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};

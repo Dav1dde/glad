@@ -30,20 +30,10 @@
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void draw(GLFWwindow *window, GladGLContext *context);
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
-
-
-#ifdef GLAD_OPTION_GL_DEBUG
-// Define a custom callback for demonstration purposes
-void pre_gl_call(const char *name, void *funcptr, int len_args, ...) {
-#ifdef GLAD_OPTION_GL_MX
-    printf("Current GL Context: %p -> ", gladGetGLContext());
-#endif
-    printf("Calling: %s at %p (%d arguments)\n", name, funcptr, len_args);
-}
-#endif
 
 
 // The MAIN function, from here we start the application and run the game loop
@@ -71,36 +61,22 @@ int main()
     // Set the required callback functions
     glfwSetKeyCallback(window, key_callback);
 
-#ifdef GLAD_OPTION_GL_MX_GLOBAL
-    GladGLContext context;
+    struct GladGLContext context;
     int version = gladLoadGL(&context, (GLADloadproc) glfwGetProcAddress);
-#else
-    int version = gladLoadGL((GLADloadproc) glfwGetProcAddress);
-#endif
-
     if (version == 0)
     {
         std::cout << "Failed to initialize OpenGL context" << std::endl;
         return -1;
     }
 
-    std::cout << "Loaded OpenGL " << version % 10 << "." << version / 10 << std::endl;
+    draw(window, &context);
 
-#ifdef GLAD_OPTION_GL_DEBUG
-    // before every opengl call call pre_gl_call
-    glad_set_gl_pre_callback(pre_gl_call);
-    // don't use the callbacks for glClear and glClearColor
-  #ifdef GLAD_OPTION_GL_MX_GLOBAL
-    glad_debug_glClear = gladGetGLContext()->Clear;
-    glad_debug_glClearColor = gladGetGLContext()->ClearColor;
-  #else
-    glad_debug_glClear = glad_glClear;
-    glad_debug_glClearColor = glad_glClearColor;
-  #endif
-#endif
+    return 0;
+}
 
+void draw(GLFWwindow *window, struct GladGLContext *gl) {
     // Define the viewport dimensions
-    glViewport(0, 0, WIDTH, HEIGHT);
+    gl->Viewport(0, 0, WIDTH, HEIGHT);
 
     // Game loop
     while (!glfwWindowShouldClose(window))
@@ -110,8 +86,8 @@ int main()
 
         // Render
         // Clear the colorbuffer
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        gl->ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        gl->Clear(GL_COLOR_BUFFER_BIT);
 
         // Swap the screen buffers
         glfwSwapBuffers(window);
@@ -119,7 +95,6 @@ int main()
 
     // Terminates GLFW, clearing any resources allocated by GLFW.
     glfwTerminate();
-    return 0;
 }
 
 // Is called whenever a key is pressed/released via GLFW

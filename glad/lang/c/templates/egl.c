@@ -71,7 +71,7 @@ static int find_core{{ feature_set.api|upper }}(EGLDisplay *display) {
     return 1;
 }
 
-int gladLoad{{ feature_set.api|upper }}Loader(GLADloadproc load, EGLDisplay *display) {
+int gladLoad{{ feature_set.api|upper }}(GLADloadproc load, EGLDisplay *display) {
     eglGetDisplay = (PFNEGLGETDISPLAYPROC)load("eglGetDisplay");
     eglGetCurrentDisplay = (PFNEGLGETCURRENTDISPLAYPROC)load("eglGetCurrentDisplay");
     eglQueryString = (PFNEGLQUERYSTRINGPROC)load("eglQueryString");

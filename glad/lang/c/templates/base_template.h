@@ -6,9 +6,9 @@
 {{ template_utils.header_error(feature_set.api, feature_set.api, feature_set.api|upper) }}
 {% endblock %}
 
-{% if options.debug %}
-#define GLAD_DEBUG
-{% endif %}
+{% for option in options %}
+#define GLAD_OPTION_{{ feature_set.api|upper }}_{{ option|upper }}
+{% endfor %}
 
 #if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
 #ifndef WIN32_LEAN_AND_MEAN
@@ -62,7 +62,8 @@ extern "C" {
 {{ template_utils.write_enumerations(feature_set.enums) }}
 {% endblock %}
 {% block commands %}
-{{ template_utils.write_function_prototypes(feature_set.commands, debug=options.debug) }}
+{{ template_utils.write_function_typedefs(feature_set.commands) }}
+{{ template_utils.write_function_declarations(feature_set.commands, debug=options.debug) }}
 {% endblock %}
 
 {% block declarations %}

@@ -20,7 +20,9 @@ def params_to_c(params):
     return ', '.join('{} {}'.format(type_to_c(param.type), param.name) for param in params)
 
 
-def get_debug_impl(command):
+def get_debug_impl(command, command_code_name=None):
+    command_code_name = command_code_name or command.proto.name
+
     impl = ', '.join(
         '{type} arg{i}'.format(type=type_to_c(param.type), i=i)
         for i, param in enumerate(command.params)
@@ -29,7 +31,7 @@ def get_debug_impl(command):
     func = ', '.join('arg{}'.format(i) for i, _ in enumerate(command.params))
     callback = ', '.join(filter(None, [
         '"{}"'.format(command.proto.name),
-        '(void*){}'.format(command.proto.name),
+        '(void*){}'.format(command_code_name),
         str(len(command.params)),
         func
     ]))
@@ -50,6 +52,8 @@ def get_debug_impl(command):
 # TODO: glad_get_gl_version(), glad_get_egl_version(), glad_get_*_version()
 # TODO: glad_loader.h
 # TODO: get rid of globals in loader
+# TODO: merge option -> https://github.com/Dav1dde/glad/issues/24
+# TODO: mx and debug requires mx_global
 
 
 class CConfig(Config):
@@ -57,6 +61,16 @@ class CConfig(Config):
         converter=bool,
         default=False,
         description='Enables generation of a debug build'
+    )
+    MX = ConfigOption(
+        converter=bool,
+        default=False,
+        description='Enables support for multiple GL contexts'
+    )
+    MX_GLOBAL = ConfigOption(
+        converter=bool,
+        default=False,
+        description='Mimic global GL functions with context switching'
     )
 
 
