@@ -1,23 +1,30 @@
 import itertools
+import re
 from collections import namedtuple
 
 from glad.config import Config, ConfigOption
 from glad.lang.generator import BaseGenerator
 
 
+_ARRAY_RE = re.compile(r'\[\d*\]')
+
 DebugArguments = namedtuple('_DebugParams', ['impl', 'function', 'callback', 'ret'])
 
 
 def type_to_c(ogl_type):
-    ut = 'unsigned {}'.format(ogl_type.type) if ogl_type.is_unsigned else ogl_type.type
-    s = '{}const {}'.format('unsigned ' if ogl_type.is_unsigned else '', ogl_type.type) \
-        if ogl_type.is_const else ut
-    s += '*' * ogl_type.is_pointer
-    return s
+    result = ''
+    for text in ogl_type.element.itertext():
+        if text == ogl_type.name:
+            # yup * is sometimes part of the name
+            result += '*' * text.count('*')
+        else:
+            result += text
+    result = _ARRAY_RE.sub('*', result)
+    return result.strip()
 
 
 def params_to_c(params):
-    return ', '.join('{} {}'.format(type_to_c(param.type), param.name) for param in params)
+    return ', '.join(param.type.raw for param in params)
 
 
 def get_debug_impl(command, command_code_name=None):

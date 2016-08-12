@@ -494,18 +494,22 @@ class Param(object):
 
 class OGLType(object):
     def __init__(self, element):
-        text = ''.join(element.itertext())
-        self.type = (text.replace('const', '').replace('unsigned', '')
+        self.element = element
+        self.raw = ''.join(element.itertext()).strip()
+
+        self.name = element.find('name').text
+
+        self.type = (self.raw.replace('const', '').replace('unsigned', '')
                      .replace('struct', '').strip().split(None, 1)[0]
                      if element.find('ptype') is None else element.find('ptype').text)
         # 0 if no pointer, 1 if *, 2 if **
-        self.is_pointer = 0 if text is None else text.count('*')
+        self.is_pointer = 0 if self.raw is None else self.raw.count('*')
         # it can be a pointer to an array, or just an array
-        self.is_pointer += len(_ARRAY_RE.findall(text))
-        self.is_const = False if text is None else 'const' in text
-        self.is_unsigned = False if text is None else 'unsigned' in text
+        self.is_pointer += len(_ARRAY_RE.findall(self.raw))
+        self.is_const = False if self.raw is None else 'const' in self.raw
+        self.is_unsigned = False if self.raw is None else 'unsigned' in self.raw
 
-        if 'struct' in text and 'struct' not in self.type:
+        if 'struct' in self.raw and 'struct' not in self.type:
             self.type = 'struct {}'.format(self.type)
 
         ptype = element.find('ptype')
