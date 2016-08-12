@@ -2,7 +2,7 @@ import itertools
 import re
 from collections import namedtuple
 
-from glad.config import Config, ConfigOption
+from glad.config import Config, ConfigOption, InvalidConfig, RequirementConstraint
 from glad.lang.generator import BaseGenerator
 
 
@@ -58,9 +58,7 @@ def get_debug_impl(command, command_code_name=None):
 # RANDOM TODOs:
 # TODO: glad_get_gl_version(), glad_get_egl_version(), glad_get_*_version()
 # TODO: glad_loader.h
-# TODO: get rid of globals in loader
 # TODO: merge option -> https://github.com/Dav1dde/glad/issues/24
-# TODO: mx and debug requires mx_global
 
 
 class CConfig(Config):
@@ -79,6 +77,16 @@ class CConfig(Config):
         default=False,
         description='Mimic global GL functions with context switching'
     )
+    HEADER_ONLY = ConfigOption(
+        converter=bool,
+        default=False,
+        description='Generate a header only version of glad'
+    )
+
+    __constraints__ = [
+        RequirementConstraint(['MX_GLOBAL'], 'MX'),
+        RequirementConstraint(['MX', 'DEBUG'], 'MX_GLOBAL')
+    ]
 
 
 class CGenerator(BaseGenerator):
@@ -96,13 +104,19 @@ class CGenerator(BaseGenerator):
         )
 
     def get_templates(self, spec, feature_set, options):
+        header = 'include/glad/glad_{}.h'.format(feature_set.api)
+        source = 'src/glad_{}.c'.format(feature_set.api)
+
         if feature_set.api == 'gl':
+            header = 'include/glad/glad.h'
+            source = 'src/glad.c'
+
+        if options['HEADER_ONLY']:
             return [
-                ('gl.h', 'include/glad/glad.h'),
-                ('gl.c', 'src/glad.c')
+                ('header_only.h', header)
             ]
 
         return [
-            ('{}.h'.format(spec.name), 'include/glad/glad_{}.h'.format(feature_set.api)),
-            ('{}.c'.format(spec.name), 'src/glad_{}.c'.format(feature_set.api))
+            ('{}.h'.format(spec.name), header),
+            ('{}.c'.format(spec.name), source)
         ]

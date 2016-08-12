@@ -3,11 +3,26 @@ class ConfigException(Exception):
 
 
 class InvalidConfig(ConfigException):
+    pass
+
+
+class OptionRequired(InvalidConfig):
     def __init__(self, name, option):
         ConfigException.__init__(self, 'Required option {!r} not set'.format(name))
 
         self.name = name
         self.option = option
+
+
+class ConstraintException(InvalidConfig):
+    def __init__(self, message, constraint):
+        InvalidConfig.__init__(self, message)
+
+        self.constraint = constraint
+
+
+class RequirementNotSatisfied(ConstraintException):
+    pass
 
 
 class InvalidOption(ConfigException):
@@ -71,6 +86,49 @@ class ConfigOption(object):
         return args
 
 
+class Constraint(object):
+    def validate(self, config):
+        pass
+
+
+class RequirementConstraint(object):
+    """
+    Specifies a simple requirement constraint.
+    If a list of options are given (True), the requirement needs to be True as well.
+    This only checks for the variables boolean values.
+    """
+    def __init__(self, options, require, error_formatter=None):
+        self.options = options
+        self.require = require
+
+        if len(self.options) == 0:
+            raise ValueError('At least one option required')
+
+        self._error_formatter = error_formatter
+        if self._error_formatter is None:
+            self._error_formatter = self._format_error
+
+    def validate(self, config):
+        if all(config[option] for option in self.options) and not config[self.require]:
+            raise RequirementNotSatisfied(self._error_formatter(self, config), self)
+
+    @staticmethod
+    def _format_error(constraint, config):
+        plural = len(constraint.options) > 1
+        options = ', '.join(constraint.options[:-1])
+        if options:
+            options = '{} and {}'.format(options, constraint.options[-1])
+        else:
+            options = constraint.options[0]
+
+        return 'option{s} {options} require{not_s} option {require}'.format(
+            options=options,
+            require=constraint.require,
+            s='s' if plural else '',
+            not_s='' if plural else 's'
+        )
+
+
 class Config(object):
     """
     Base for all glad configurations. The class with initiliaze the options
@@ -99,6 +157,15 @@ class Config(object):
 
         if config['DEBUG']:
             print 'debug information'
+
+        Special Constraints can be specified in the __constraints__ variable.
+
+            class MyConstraintConfig(MyAwesomeConfig):
+                __constraints__ = [
+                    RequirementConstraint(['DEBUG'], 'iterations')
+                ]
+
+        The constraints will be checked when calling `.valid` or `.validate()`
     """
 
     def __init__(self):
@@ -152,11 +219,18 @@ class Config(object):
         """
         Checks if every required option has been set.
         Throws InvalidConfig if a required option is missing.
+        This also checks all specified constraints.
+
+        Should be overwritten by subclasses if necessary.
         """
         for name, option in self._options.items():
             if option.required:
                 if not name in self._values:
-                    raise InvalidConfig(name, option)
+                    raise OptionRequired(name, option)
+
+        constraints = getattr(self, '__constraints__', [])
+        for constraint in constraints:
+            constraint.validate(self)
 
     def update_from_object(self, obj, convert=True, ignore_additional=False):
         for name in dir(obj):

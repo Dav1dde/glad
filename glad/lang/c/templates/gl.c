@@ -21,16 +21,15 @@
 {% set global_context = 'glad_' + feature_set.api + '_context' %}
 
 
-{% block includes %}
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+{% block glad_include %}
 {% if feature_set.api == 'gl' %}
 #include <glad/glad.h>
 {% else %}
-#include <glad/glad_{{ feature_set.api }}.h>
+{{ super() }}
 {% endif %}
+{% endblock %}
 
+{% block variables %}
 {% if options.mx_global %}
 struct Glad{{ feature_set.api|upper }}Context *{{ global_context }} = 0;
 {% endif %}

@@ -15,11 +15,11 @@ int {{ extension.name[2:].lstrip('_') }};
 
 {% if options.mx_global %}
 GLAPI struct Glad{{ feature_set.api|upper }}Context *glad_{{ feature_set.api }}_context;
-{% endif %}
 
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
 #define GLAD_{{ extension.name }} (glad_{{ feature_set.api }}_context->{{ extension.name[2:].lstrip('_') }});
 {% endfor %}
+{% endif %}
 
 {% if options.mx_global %}
 {% for command in feature_set.commands %}
