@@ -28,7 +28,7 @@ import re
 from glad.opener import URLOpener
 
 
-_ARRAY_RE = re.compile(r'\[\d+\]')
+_ARRAY_RE = re.compile(r'\[\d*\]')
 
 
 class Spec(object):
@@ -217,19 +217,26 @@ class Param(object):
 
 class OGLType(object):
     def __init__(self, element):
-        text = ''.join(element.itertext())
-        self.type = (text.replace('const', '').replace('unsigned', '')
+        self.element = element
+        self.raw = ''.join(element.itertext()).strip()
+
+        self.name = element.find('name').text
+
+        self.type = (self.raw.replace('const', '').replace('unsigned', '')
                      .replace('struct', '').strip().split(None, 1)[0]
                      if element.find('ptype') is None else element.find('ptype').text)
         # 0 if no pointer, 1 if *, 2 if **
-        self.is_pointer = 0 if text is None else text.count('*')
+        self.is_pointer = 0 if self.raw is None else self.raw.count('*')
         # it can be a pointer to an array, or just an array
-        self.is_pointer += len(_ARRAY_RE.findall(text))
-        self.is_const = False if text is None else 'const' in text
-        self.is_unsigned = False if text is None else 'unsigned' in text
+        self.is_pointer += len(_ARRAY_RE.findall(self.raw))
+        self.is_const = False if self.raw is None else 'const' in self.raw
+        self.is_unsigned = False if self.raw is None else 'unsigned' in self.raw
 
-        if 'struct' in text and 'struct' not in self.type:
+        if 'struct' in self.raw and 'struct' not in self.type:
             self.type = 'struct {}'.format(self.type)
+
+        ptype = element.find('ptype')
+        self.ptype = ptype.text if ptype is not None else None
 
     def to_d(self):
         if self.is_pointer > 1 and self.is_const:
@@ -244,11 +251,15 @@ class OGLType(object):
     to_volt = to_d
 
     def to_c(self):
-        ut = 'unsigned {}'.format(self.type) if self.is_unsigned else self.type
-        s = '{}const {}'.format('unsigned ' if self.is_unsigned else '', self.type) \
-            if self.is_const else ut
-        s += '*' * self.is_pointer
-        return s
+        result = ''
+        for text in self.element.itertext():
+            if text == self.name:
+                # yup * is sometimes part of the name
+                result += '*' * text.count('*')
+            else:
+                result += text
+        result = _ARRAY_RE.sub('*', result)
+        return result.strip()
 
     NIM_POINTER_MAP = {
       'void': 'pointer',
