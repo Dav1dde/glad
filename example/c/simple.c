@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <glad/glad.h>
+#include <glad/glad_loader.h>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -34,22 +35,8 @@ static void reshape(int w, int h)
     glEnable(GL_DEPTH_TEST);
 }
 
-
-#ifdef GLAD_DEBUG
-void pre_gl_call(const char *name, void *funcptr, int len_args, ...) {
-    printf("Calling: %s (%d arguments)\n", name, len_args);
-}
-#endif
-
-
 int main(int argc, char **argv)
 {
-    if(gladLoadGL()) {
-        // you need an OpenGL context before loading glad
-        printf("I did load GL with no context!\n");
-        exit(-1);
-    }
-
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(width, height);
@@ -58,27 +45,21 @@ int main(int argc, char **argv)
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);
 
-    if(!gladLoadGL()) {
+    // initialize glad after creating a context
+    int version = gladLoadGLInternalLoader();
+    if(version == 0) {
         printf("Something went wrong!\n");
         exit(-1);
     }
 
-#ifdef GLAD_DEBUG
-    // before every opengl call call pre_gl_call
-    glad_set_pre_callback(pre_gl_call);
-    // don't use the callback for glClear
-    // (glClear could be replaced with your own function)
-    glad_debug_glClear = glad_glClear;
-#endif
-
-    // gladLoadGLLoader(&glutGetProcAddress);
-    printf("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
-    if (GLVersion.major < 2) {
+    printf("OpenGL %d.%d\n", version / 10, version % 10);
+    if (!GLAD_GL_VERSION_2_0) {
         printf("Your system doesn't support OpenGL >= 2!\n");
         return -1;
     }
 
-    printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION),
+    printf("OpenGL %s, GLSL %s\n",
+           glGetString(GL_VERSION),
            glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     glutMainLoop();

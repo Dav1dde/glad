@@ -10,6 +10,9 @@
 
 // GLAD
 #include <glad/glad.h>
+#ifdef GLAD_OPTION_GL_LOADER
+#include <glad/glad_loader.h>
+#endif
 
 // confirm that GLAD didn't include windows.h
 #ifdef _WINDOWS_
@@ -71,11 +74,19 @@ int main()
     // Set the required callback functions
     glfwSetKeyCallback(window, key_callback);
 
-#ifdef GLAD_OPTION_GL_MX_GLOBAL
+#ifdef GLAD_OPTION_GL_MX
     GladGLContext context;
+  #ifdef GLAD_OPTION_GL_LOADER
+    int version = gladLoadGLInternalLoader(&context);
+  #else
     int version = gladLoadGL(&context, (GLADloadproc) glfwGetProcAddress);
+  #endif
 #else
+  #ifdef GLAD_OPTION_GL_LOADER
+    int version = gladLoadGLInternalLoader();
+  #else
     int version = gladLoadGL((GLADloadproc) glfwGetProcAddress);
+  #endif
 #endif
 
     if (version == 0)

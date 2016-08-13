@@ -82,6 +82,11 @@ class CConfig(Config):
         default=False,
         description='Generate a header only version of glad'
     )
+    LOADER = ConfigOption(
+        converter=bool,
+        default=False,
+        description='Include internal loaders for APIs'
+    )
 
     __constraints__ = [
         RequirementConstraint(['MX_GLOBAL'], 'MX'),
@@ -111,12 +116,25 @@ class CGenerator(BaseGenerator):
             header = 'include/glad/glad.h'
             source = 'src/glad.c'
 
-        if options['HEADER_ONLY']:
-            return [
-                ('header_only.h', header)
-            ]
+        templates = list()
 
-        return [
-            ('{}.h'.format(spec.name), header),
-            ('{}.c'.format(spec.name), source)
-        ]
+        if options['HEADER_ONLY']:
+            templates.extend([
+                ('header_only.h', header)
+            ])
+        else:
+            templates.extend([
+                ('{}.h'.format(spec.name), header),
+                ('{}.c'.format(spec.name), source)
+            ])
+
+        if options['LOADER']:
+            templates.extend([
+                ('loader/loader.h', 'include/glad/glad_loader.h')
+            ])
+            if not options['HEADER_ONLY']:
+                templates.extend([
+                    ('loader/loader.c', 'src/glad_loader.c')
+                ])
+
+        return templates

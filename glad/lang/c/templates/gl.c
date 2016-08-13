@@ -217,7 +217,7 @@ static int find_core{{ feature_set.api|upper }}({{ context_arg() }}) {
 #endif
 
     {% for feature in feature_set.features %}
-    {{ ctx(feature.name) }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
+    {{ ctx('GLAD_' + feature.name) }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
     {% endfor %}
 
     return major * 10 + minor;

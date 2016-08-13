@@ -6,8 +6,11 @@
 {{ template_utils.header_error(feature_set.api, feature_set.api, feature_set.api|upper) }}
 {% endblock %}
 
+#define GLAD_{{ feature_set.api|upper }}
 {% for option in options %}
+{% if options[option] %}
 #define GLAD_OPTION_{{ feature_set.api|upper }}_{{ option|upper }}
+{% endif %}
 {% endfor %}
 
 #if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
