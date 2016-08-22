@@ -172,9 +172,9 @@ class Config(object):
         self._options = dict()
         self._values = dict()
 
-        # initialize options, every uppercase name = option
+        # initialize options, every uppercase name without leading underscore = option
         for name in dir(self):
-            if name.isupper():
+            if name.isupper() and not name.startswith('_'):
                 option = self._options[name] = getattr(self, name)
 
                 if not option.required:
@@ -201,6 +201,9 @@ class Config(object):
 
     def __setitem__(self, key, value):
         self.set(key, value, convert=True)
+
+    def items(self):
+        return list(self._options.items())
 
     @property
     def valid(self):

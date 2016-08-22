@@ -11,6 +11,8 @@ PFN{{ command.proto.name|upper }}PROC {{ command.proto.name[2:] }};
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
 int {{ extension.name[2:].lstrip('_') }};
 {% endfor %}
+
+void* userptr;
 };
 
 {% if options.mx_global %}

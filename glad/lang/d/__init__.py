@@ -1,6 +1,7 @@
 import itertools
 from collections import namedtuple
 
+from glad.config import Config
 from glad.lang.generator import BaseGenerator
 
 
@@ -62,8 +63,13 @@ def _enum_to_d(enum, default_type='uint'):
     return default_type
 
 
+class DConfig(Config):
+    pass
+
+
 class DGenerator(BaseGenerator):
     TEMPLATES = ['glad.lang.d']
+    Config = DConfig
 
     def __init__(self, *args, **kwargs):
         BaseGenerator.__init__(self, *args, **kwargs)

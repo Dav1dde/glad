@@ -1,6 +1,7 @@
 import itertools
 from collections import namedtuple
 
+from glad.config import Config
 from glad.lang.generator import BaseGenerator
 
 
@@ -69,8 +70,13 @@ def _enum_to_volt(enum, default_type='u32'):
     return default_type
 
 
+class VoltConfig(Config):
+    pass
+
+
 class VoltGenerator(BaseGenerator):
     TEMPLATES = ['glad.lang.volt']
+    Config = VoltConfig
 
     def __init__(self, *args, **kwargs):
         BaseGenerator.__init__(self, *args, **kwargs)
