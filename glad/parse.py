@@ -311,7 +311,7 @@ class Spec(object):
         else:
             # ignore extensions of other APIs
             # TODO figure out if this should be moved to __main__ or if there should be logging
-            extension_names = [en for en in extension_names if en.startswith(api.upper())]
+            extension_names = [en for en in extension_names if en.startswith(api.upper() + '_')]
             # make sure only valid extensions are listed
             for extension in extension_names:
                 if extension not in all_extensions:

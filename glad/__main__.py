@@ -7,45 +7,19 @@ the languages C, D and Volt.
 """
 import logging
 import os
-import re
-from collections import namedtuple
 
-from glad.config import Config, ConfigOption, one_of
+from glad.config import Config, ConfigOption
 from glad.lang.c import CGenerator
 from glad.lang.d import DGenerator
 from glad.lang.volt import VoltGenerator
 from glad.opener import URLOpener
 from glad.spec import SPECIFICATIONS
-from glad.util import Version
-
+from glad.util import parse_apis
 
 logger = logging.getLogger('glad')
 
-ApiInformation = namedtuple('ApiInformation', ('specification', 'version', 'profile'))
-
 # TODO discover generators automatically
 GENERATORS = dict(c=CGenerator, d=DGenerator, volt=VoltGenerator)
-
-_API_SPEC_MAPPING = {
-    'gl': 'gl',
-    'gles1': 'gl',
-    'gles2': 'gl',
-    'glsc2': 'gl',
-    'egl': 'egl',
-    'glx': 'glx',
-    'wgl': 'wgl'
-}
-
-def parse_version(value):
-    if value is None:
-        return None
-
-    value = value.strip()
-    if not value:
-        return None
-
-    major, minor = (value + '.0').split('.')[:2]
-    return Version(int(major), int(minor))
 
 
 def parse_extensions(value):
@@ -56,30 +30,6 @@ def parse_extensions(value):
 
     value = value.replace(',', ' ')
     return list(filter(None, value.split()))
-
-
-def parse_apis(value, api_spec_mapping=_API_SPEC_MAPPING):
-    result = dict()
-
-    for api in value.split(','):
-        api = api.strip()
-
-        m = re.match(
-            r'^(?P<api>\w+)(:(?P<profile>\w+))?(/(?P<spec>\w+))?=(?P<version>\d+(\.\d+)?)?$',
-            api
-        )
-
-        if m is None:
-            raise ValueError('Invalid API {!r}'.format(api))
-
-        spec = m.group('spec')
-        if spec is None:
-            spec = api_spec_mapping[m.group('api')]
-        version = parse_version(m.group('version'))
-
-        result[m.group('api')] = ApiInformation(spec, version, m.group('profile'))
-
-    return result
 
 
 class GlobalConfig(Config):
