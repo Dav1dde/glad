@@ -6,13 +6,12 @@ set(GLAD_OUT_DIR "${PROJECT_BINARY_DIR}")
 find_package(PythonInterp REQUIRED)
 
 # Options
-set(GLAD_PROFILE "compatibility" CACHE STRING "OpenGL profile")
-set(GLAD_API "" CACHE STRING "API type/version pairs, like \"gl=3.2,gles=\", no version means latest")
+set(GLAD_API "" CACHE STRING "Comma separated list of APIs in `name:profile=version` pairs optionally including a specification `name:profile/spec=version`. No version means latest, a profile is only required if the API requires a profile. E.g. `gl:core=3.3,gles1/gl=2,gles2=`")
 set(GLAD_GENERATOR "c" CACHE STRING "Language to generate the binding for")
 set(GLAD_EXTENSIONS "" CACHE STRING "Path to extensions file or comma separated list of extensions, if missing all extensions are included")
-set(GLAD_SPEC "gl" CACHE STRING "Name of the spec")
-set(GLAD_NO_LOADER OFF CACHE BOOL "No loader")
+set(GLAD_OPTIONS "" CACHE STRING "Additional options")
 
+# TODO proper sources for glad2
 if(GLAD_GENERATOR STREQUAL "d")
   list(APPEND GLAD_SOURCES
     "${GLAD_OUT_DIR}/glad/gl/all.d"
@@ -43,21 +42,15 @@ else()
 endif()
 message(STATUS "GLAD_SOURCES: ${GLAD_SOURCES}")
 
-if(GLAD_NO_LOADER)
-   set(GLAD_NO_LOADER_ARG "--no-loader")
-endif()
-
 include_directories(${GLAD_INCLUDE_DIRS})
 add_custom_command(
-  OUTPUT ${GLAD_SOURCES} 
+  OUTPUT ${GLAD_SOURCES}
   COMMAND ${PYTHON_EXECUTABLE} -m glad
-    --profile=${GLAD_PROFILE}
     --out-path=${GLAD_OUT_DIR}
     --api=${GLAD_API}
-    --generator=${GLAD_GENERATOR}
     --extensions=${GLAD_EXTENSIONS}
-    --spec=${GLAD_SPEC}
-    ${GLAD_NO_LOADER_ARG}
+    ${GLAD_GENERATOR}
+    ${GLAD_OPTIONS}
   WORKING_DIRECTORY ${GLAD_DIR}
   COMMENT "Generating GLAD"
 )
