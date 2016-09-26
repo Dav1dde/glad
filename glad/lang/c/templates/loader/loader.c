@@ -53,6 +53,8 @@ static void* glad_dlsym_handle(void* handle, const char *name) {
 
 {% include 'loader/gl.c' %}
 
+{% include 'loader/gles.c' %}
+
 {% include 'loader/glx.c' %}
 
 {% include 'loader/wgl.c' %}

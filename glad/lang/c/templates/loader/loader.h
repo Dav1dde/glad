@@ -5,6 +5,8 @@
 
 {% include 'loader/gl.h' %}
 
+{% include 'loader/gles.h' %}
+
 {% include 'loader/glx.h' %}
 
 {% include 'loader/wgl.h' %}

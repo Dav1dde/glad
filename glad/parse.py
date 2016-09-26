@@ -278,7 +278,7 @@ class Spec(object):
         available_profiles = self.profiles_for_api(api)
         if len(available_profiles) == 1 and profile is None:
             # If there is only one profile, use that
-            profile = available_profiles[0]
+            profile = next(iter(available_profiles))
         if available_profiles and profile not in available_profiles:
             if profile is None:
                 raise ValueError(
