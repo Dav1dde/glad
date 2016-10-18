@@ -12,6 +12,8 @@ set(GLAD_GENERATOR "c" CACHE STRING "Language to generate the binding for")
 set(GLAD_EXTENSIONS "" CACHE STRING "Path to extensions file or comma separated list of extensions, if missing all extensions are included")
 set(GLAD_SPEC "gl" CACHE STRING "Name of the spec")
 set(GLAD_NO_LOADER OFF CACHE BOOL "No loader")
+set(GLAD_EXPORT ON CACHE BOOL "Set export variables for external project")
+set(GLAD_INSTALL OFF CACHE BOOL "Generate installation target")
 
 if(GLAD_GENERATOR STREQUAL "d")
   list(APPEND GLAD_SOURCES
@@ -68,5 +70,16 @@ if(GLAD_LINKER_LANGUAGE)
 endif()
 
 # Export
-set(GLAD_LIBRARIES glad PARENT_SCOPE)
-set(GLAD_INCLUDE_DIRS ${GLAD_INCLUDE_DIRS} PARENT_SCOPE)
+if(GLAD_EXPORT)
+  set(GLAD_LIBRARIES glad PARENT_SCOPE)
+  set(GLAD_INCLUDE_DIRS ${GLAD_INCLUDE_DIRS} PARENT_SCOPE)
+endif()
+
+# Install
+if(GLAD_INSTALL)
+  if(GLAD_INCLUDE_DIRS)
+    install(DIRECTORY ${GLAD_INCLUDE_DIRS} DESTINATION ${CMAKE_INSTALL_PREFIX})
+  endif()
+  install(TARGETS glad EXPORT glad-targets
+          ARCHIVE DESTINATION lib)
+endif()
