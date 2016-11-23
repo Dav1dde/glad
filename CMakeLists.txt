@@ -47,7 +47,6 @@ if(GLAD_NO_LOADER)
    set(GLAD_NO_LOADER_ARG "--no-loader")
 endif()
 
-include_directories(${GLAD_INCLUDE_DIRS})
 add_custom_command(
   OUTPUT ${GLAD_SOURCES} 
   COMMAND ${PYTHON_EXECUTABLE} -m glad
@@ -62,6 +61,8 @@ add_custom_command(
   COMMENT "Generating GLAD"
 )
 add_library(glad STATIC ${GLAD_SOURCES})
+
+target_include_directories(glad PUBLIC ${GLAD_INCLUDE_DIRS})
 
 if(GLAD_LINKER_LANGUAGE)
   set_target_properties(glad PROPERTIES LINKER_LANGUAGE ${GLAD_LINKER_LANGUAGE})
