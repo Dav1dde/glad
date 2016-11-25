@@ -6,17 +6,6 @@
 {{ 'struct Glad' + feature_set.api|upper + 'Context *context' + suffix if options.mx }}
 {%- endmacro %}
 
-{% macro ctx(name, context='context') %}
-{% if options.mx %}
-{% if name.startswith('GLAD_') -%}
-{{ context + '->' if options.mx }}{{ name[7:].lstrip('_') }}
-{%- else -%}
-{{ context + '->' if options.mx }}{{ name[2:].lstrip('_') }}
-{%- endif %}
-{% else -%}
-{{ name }}
-{%- endif %}
-{% endmacro %}
 
 {% set global_context = 'glad_' + feature_set.api + '_context' %}
 
@@ -89,7 +78,8 @@ PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }} = glad
 {% if options.mx %}
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
 static void load_{{ extension.name }}(struct Glad{{ feature_set.api|upper }}Context *context, GLADloadproc load) {
-    {% set commands = extension.get_requirements(spec, feature_set.api, feature_set.profile).commands|select('existsin', feature_set.commands) %}
+    {#{% set commands = extension.get_requirements(spec, feature_set.api, feature_set.profile).commands|select('existsin', feature_set.commands) %}#}
+    {% set commands = extension.get_requirements(spec, feature_set.api, feature_set.profile, feature_set.removes).commands %}
     {% if commands %}
     if(!{{ ctx(extension.name) }}) return;
     {% for command in commands %}
@@ -180,7 +170,7 @@ static int find_extensions{{ feature_set.api|upper }}({{ context_arg(',') }} int
     if (!get_exts({{ 'context, ' if options.mx }}version, &exts, &num_exts_i, &exts_i)) return 0;
 
     {% for extension in feature_set.extensions %}
-    {{ context }}GLAD_{{ extension.name }} = has_ext(version, exts, num_exts_i, exts_i, "{{ extension.name }}");
+    {{ ctx('GLAD_' + extension.name) }} = has_ext(version, exts, num_exts_i, exts_i, "{{ extension.name }}");
     {% endfor %}
 
     free_exts(exts_i);

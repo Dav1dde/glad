@@ -36,7 +36,7 @@ _TypeEnumCommand = namedtuple('_TypeEnumCommand', ['types', 'enums', 'commands']
 
 class FeatureSet(namedtuple(
     'FeatureSet',
-    ['api', 'version', 'profile', 'features', 'extensions', 'types', 'enums', 'commands']
+    ['api', 'version', 'profile', 'features', 'extensions', 'types', 'enums', 'commands', 'removes']
 )):
     def split_commands(self, spec):
         """
@@ -348,11 +348,14 @@ class Spec(object):
                 result = result.union(found)
 
         # remove what the extensions/features want to remove
+        removes = set()
         for extension in chain(features, extensions):
             for remove in extension.removes:
                 if ((remove.profile is None or remove.profile == profile) and
                         (remove.api is None or remove.api == api)):
-                    result = result.difference(remove.removes)
+                    #result = result.difference(remove.removes)
+                    removes = removes.union(remove.removes)
+        result = result.difference(removes)
 
         # At this point one could hope that the XML files would be sane, but of course they are not!?
         # There is a builtin requirement system which is used for functions and enums,
@@ -384,7 +387,7 @@ class Spec(object):
         all_sorted_types = list(self.types.keys())
         types = sorted(types, key=all_sorted_types.index)
 
-        return FeatureSet(api, version, profile, features, extensions, types, enums, commands)
+        return FeatureSet(api, version, profile, features, extensions, types, enums, commands, removes)
 
     def split_commands(self, feature_set):
         """
@@ -550,7 +553,7 @@ class Extension(IdentifiedByName):
         # so this should be empty for every extension which is not a feature
         self.removes = [Remove(remove) for remove in element.findall('remove')]
 
-    def get_requirements(self, spec, api, profile):
+    def get_requirements(self, spec, api, profile, removed=None):
         """
         Find all types, enums and commands/functions which are required
         for this extension/feature.
@@ -570,6 +573,9 @@ class Extension(IdentifiedByName):
             if ((remove.profile is None or remove.profile == profile) and
                     (remove.api is None or remove.api == api)):
                 result = result.difference(remove.removes)
+
+        if removed is not None:
+            result = result.difference(set(removed))
 
         return _TypeEnumCommand(*spec.split_types(result, (Type, Enum, Command)))
 

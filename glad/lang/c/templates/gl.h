@@ -5,11 +5,11 @@
 {{ template_utils.write_function_typedefs(feature_set.commands) }}
 struct Glad{{ feature_set.api.upper() }}Context {
 {% for command in feature_set.commands %}
-PFN{{ command.proto.name|upper }}PROC {{ command.proto.name[2:] }};
+PFN{{ command.proto.name|upper }}PROC {{ ctx(command.proto.name, name_only=True) }};
 {% endfor %}
 
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
-int {{ extension.name[2:].lstrip('_') }};
+int {{ ctx(extension.name, name_only=True) }};
 {% endfor %}
 
 void* userptr;

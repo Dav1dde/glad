@@ -55,6 +55,27 @@ def get_debug_impl(command, command_code_name=None):
     return DebugArguments(impl, func, callback, ret)
 
 
+def make_ctx_func(is_mx, api_prefix):
+    def ctx(name, context='context', raw=False, name_only=False):
+        prefix = ''
+        if is_mx:
+            prefix = context + '->'
+            if name.startswith('GLAD_'):
+                name = name[5:]
+            # glFoo -> Foo
+            # GL_ARB_asd -> ARB_asd
+            if not raw and name.lower().startswith(api_prefix):
+                name = name[len(api_prefix):].lstrip('_')
+
+        # 3DFX_tbuffer -> _3DFX_tbuffer
+        if not name[0].isalpha():
+            name = '_' + name
+
+        if name_only:
+            return name
+        return prefix + name
+    return ctx
+
 # RANDOM TODOs:
 # TODO: glad_get_gl_version(), glad_get_egl_version(), glad_get_*_version()
 # TODO: glad_loader.h
@@ -107,6 +128,11 @@ class CGenerator(BaseGenerator):
             get_debug_impl=get_debug_impl,
             chain=itertools.chain,
         )
+
+    def get_additional_template_arguments(self, spec, feature_set, options):
+        return {
+            'ctx': make_ctx_func(options['MX'], feature_set.api.lower())
+        }
 
     def get_templates(self, spec, feature_set, options):
         header = 'include/glad/glad_{}.h'.format(feature_set.api)

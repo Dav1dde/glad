@@ -43,6 +43,9 @@ class BaseGenerator(object):
     def get_templates(self, spec, feature_set, config):
         raise NotImplementedError
 
+    def get_additional_template_arguments(self, spec, feature_set, config):
+        return dict()
+
     def generate(self, spec, feature_set, config=None):
         for template, output_path in self.get_templates(spec, feature_set, config):
             #try:
@@ -52,7 +55,8 @@ class BaseGenerator(object):
             #    raise ValueError('Unsupported specification/configuration')
 
             result = template.render(
-                spec=spec, feature_set=feature_set, options=config.to_dict(transform=lambda x: x.lower())
+                spec=spec, feature_set=feature_set, options=config.to_dict(transform=lambda x: x.lower()),
+                **self.get_additional_template_arguments(spec, feature_set, config)
             )
 
             output_path = os.path.join(self.path, output_path)
