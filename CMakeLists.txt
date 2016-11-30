@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 3.0)
+# Silence warning about if()
+if(NOT CMAKE_VERSION VERSION_LESS 3.1)
+  cmake_policy(SET CMP0054 NEW)
+endif()
+
 project(GLAD)
 
 set(GLAD_DIR "${PROJECT_SOURCE_DIR}")
