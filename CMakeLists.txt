@@ -46,7 +46,6 @@ else()
     "${GLAD_INCLUDE_DIRS}/glad/glad.h"
   )
 endif()
-message(STATUS "GLAD_SOURCES: ${GLAD_SOURCES}")
 
 if(GLAD_NO_LOADER)
    set(GLAD_NO_LOADER_ARG "--no-loader")
