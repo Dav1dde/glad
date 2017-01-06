@@ -149,7 +149,7 @@ class Type(object):
             apientry.text = 'APIENTRY'
         self.raw = ''.join(element.itertext())
         self.api = element.get('api')
-        self.name = element.get('name')
+        self.name = element.get('name') or element.find('name').text
 
     @property
     def is_preprocessor(self):
