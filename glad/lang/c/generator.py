@@ -103,6 +103,8 @@ class CGenerator(Generator):
                 f.write('\tif (!get_exts()) return 0;\n')
                 for ext in extensions[api]:
                     f.write('\tGLAD_{0} = has_ext("{0}");\n'.format(ext.name))
+                if len(extensions[api]) == 0:
+                    f.write('\t(void)&has_ext;\n') # suppress unused has_ext warnings
                 f.write('\tfree_exts();\n')
             f.write('\treturn 1;\n')
             f.write('}\n\n')
