@@ -31,14 +31,30 @@ void glad_set_post_callback(GLADcallback cb) {
 '''
 
 DEFAULT_CALLBACK = '''
-void _pre_call_callback_default(const char *name, void *funcptr, int len_args, ...) {}
-void _post_call_callback_default(const char *name, void *funcptr, int len_args, ...) {}
+void _pre_call_callback_default(const char *name, void *funcptr, int len_args, ...) {
+    (void) name;
+    (void) funcptr;
+    (void) len_args;
+}
+void _post_call_callback_default(const char *name, void *funcptr, int len_args, ...) {
+    (void) name;
+    (void) funcptr;
+    (void) len_args;
+}
 '''
 
 DEFAULT_CALLBACK_GL = '''
-void _pre_call_callback_default(const char *name, void *funcptr, int len_args, ...) {}
+void _pre_call_callback_default(const char *name, void *funcptr, int len_args, ...) {
+    (void) name;
+    (void) funcptr;
+    (void) len_args;
+}
 void _post_call_callback_default(const char *name, void *funcptr, int len_args, ...) {
     GLenum error_code;
+
+    (void) funcptr;
+    (void) len_args;
+
     error_code = glad_glGetError();
 
     if (error_code != GL_NO_ERROR) {
