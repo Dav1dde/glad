@@ -164,3 +164,22 @@ class CGenerator(BaseGenerator):
                 ])
 
         return templates
+
+    def modify_feature_set(self, feature_set):
+        self._fix_issue_70(feature_set)
+        return feature_set
+
+    def _fix_issue_70(self, feature_set):
+        """
+        See issue #70: https://github.com/Dav1dde/glad/issues/70
+        > it seems OSX already includes GLsizeiptr and a few others.
+        > The same problem happens with glad.h as well.
+        > The workaround appears to be to use long instead of ptrdiff_t.
+        """
+        for type_name in  ('GLsizeiptr', 'GLintptr', 'GLsizeiptrARB', 'GLintptrARB'):
+            if type_name in feature_set.types:
+                type_element = feature_set.types[feature_set.types.index(type_name)]
+                type_element.raw = \
+                    '#if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) ' + \
+                    '&& (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ > 1060)\n' + \
+                    type_element.raw.replace('ptrdiff_t', 'long') + '\n#else\n' + type_element.raw + '\n#endif'

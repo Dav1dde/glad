@@ -41,12 +41,34 @@ class BaseGenerator(object):
         )
 
     def get_templates(self, spec, feature_set, config):
+        """
+        Return a list of destination and template tuples for the
+        desired feature set and configuration.
+
+        :param spec: specification
+        :param feature_set: feature set
+        :param config: configuraiton
+        :return: [(destination, name)]
+        """
         raise NotImplementedError
+
+    def modify_feature_set(self, feature_set):
+        """
+        Called before `get_templates` and for every `generate` call.
+        Used to modify the feature set if required (e.g. update type definitions).
+
+        Default implementation does nothing.
+
+        :param feature_set: feature set to modify (the one passed to `get_templates`)
+        :return: modified feature set
+        """
+        return feature_set
 
     def get_additional_template_arguments(self, spec, feature_set, config):
         return dict()
 
     def generate(self, spec, feature_set, config=None):
+        feature_set = self.modify_feature_set(feature_set)
         for template, output_path in self.get_templates(spec, feature_set, config):
             #try:
             template = self.environment.get_template(template)
