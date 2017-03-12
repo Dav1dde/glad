@@ -1,15 +1,18 @@
 #ifdef GLAD_EGL
 
-static void* global_egl_handle;
 typedef __eglMustCastToProperFunctionPointerType (APIENTRYP GLAD_EGL_PFNGETPROCADDRESSPROC_PRIVATE)(const char*);
-GLAD_EGL_PFNGETPROCADDRESSPROC_PRIVATE glad_egl_get_proc_address_ptr;
+struct _glad_egl_userptr {
+    void *handle;
+    GLAD_EGL_PFNGETPROCADDRESSPROC_PRIVATE get_proc_address_ptr;
+};
 
-static void* glad_egl_get_proc(const char* name) {
+static void* glad_egl_get_proc(const char* name, void *vuserptr) {
+    struct _glad_egl_userptr userptr = *(struct _glad_egl_userptr*) vuserptr;
     void* result = NULL;
 
-    result = (void*) glad_dlsym_handle(global_egl_handle, name);
+    result = (void*) glad_dlsym_handle(userptr.handle, name);
     if (result == NULL) {
-        result = (void*) glad_egl_get_proc_address_ptr(name);
+        result = (void*) userptr.getproc_address_ptr(name);
     }
 
     return result;
@@ -26,13 +29,14 @@ int gladLoadEGLInternalLoader() {
 
     int version = 0;
     void *handle;
-    GLADloadproc loader;
+    struct _glad_egl_userptr userptr;
 
     handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
     if (handle) {
-        glad_egl_get_proc_address_ptr = glad_dlsym_handle(handle, "eglGetProcAddress");
-        if (loader != NULL) {
-            version = gladLoadEGL((GLADloadproc) glad_egl_get_proc);
+        userptr.handle = handle;
+        userptr.get_proc_address_ptr = glad_dlsym_handle(handle, "eglGetProcAddress");
+        if (userptr.get_proc_address_ptr != NULL) {
+            version = gladLoadEGL((GLADloadproc) glad_egl_get_proc, &userptr);
         }
 
         glad_close_dlopen_handle(handle);

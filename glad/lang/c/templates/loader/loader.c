@@ -1,6 +1,8 @@
 {% if not options.header_only %}
-#include <glad_loader.h>
+#include <glad/glad_loader.h>
 {% endif %}
+
+#include <stddef.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -47,6 +49,11 @@ static void* glad_dlsym_handle(void* handle, const char *name) {
 #else
     return dlsym(handle, name);
 #endif
+}
+
+
+static void* glad_get_proc_from_userptr(const char* name, void *userptr) {
+    return ((void* (*)(const char *name)userptr)(name);
 }
 
 {% include 'loader/egl.c' %}

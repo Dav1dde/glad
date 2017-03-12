@@ -77,13 +77,13 @@ PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }} = glad
 {% block extension_loaders %}
 {% if options.mx %}
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
-static void load_{{ extension.name }}(struct Glad{{ feature_set.api|upper }}Context *context, GLADloadproc load) {
+static void load_{{ extension.name }}(struct Glad{{ feature_set.api|upper }}Context *context, GLADloadproc load, void* userptr) {
     {#{% set commands = extension.get_requirements(spec, feature_set.api, feature_set.profile).commands|select('existsin', feature_set.commands) %}#}
     {% set commands = extension.get_requirements(spec, feature_set.api, feature_set.profile, feature_set.removes).commands %}
     {% if commands %}
     if(!{{ ctx(extension.name) }}) return;
     {% for command in commands %}
-    {{ ctx(command.proto.name) }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}");
+    {{ ctx(command.proto.name) }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}", userptr);
     {% endfor %}
     {% endif %}
 }
@@ -213,20 +213,20 @@ static int find_core{{ feature_set.api|upper }}({{ context_arg() }}) {
     return major * 10 + minor;
 }
 
-int gladLoad{{ feature_set.api|upper }}({{ context_arg(',') }} GLADloadproc load) {
+int gladLoad{{ feature_set.api|upper }}({{ context_arg(',') }} GLADloadproc load, void* userptr) {
     int version;
-    {{ ctx('glGetString') }} = (PFNGLGETSTRINGPROC)load("glGetString");
+    {{ ctx('glGetString') }} = (PFNGLGETSTRINGPROC)load("glGetString", userptr);
     if({{ ctx('glGetString') }} == NULL) return 0;
     if({{ ctx('glGetString') }}(GL_VERSION) == NULL) return 0;
     version = find_core{{ feature_set.api|upper }}({{ 'context' if options.mx }});
 
     {% for feature in feature_set.features %}
-    load_{{ feature.name }}({{'context, ' if options.mx }}load);
+    load_{{ feature.name }}({{'context, ' if options.mx }}load, userptr);
     {% endfor %}
 
     if (!find_extensions{{  feature_set.api|upper }}({{ 'context, ' if options.mx }}version)) return 0;
     {% for extension in feature_set.extensions %}
-    load_{{ extension.name }}({{'context, ' if options.mx }}load);
+    load_{{ extension.name }}({{'context, ' if options.mx }}load, userptr);
     {% endfor %}
 
     {% if options.mx_global %}

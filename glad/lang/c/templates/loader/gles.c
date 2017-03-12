@@ -1,17 +1,20 @@
 #ifndef GLAD_NO_GLES_LOADER
 
-static void* global_gles_handle;
 typedef void* (APIENTRYP GLAD_GLES_PFNGETPROCADDRESSPROC_PRIVATE)(const char*);
-GLAD_GLES_PFNGETPROCADDRESSPROC_PRIVATE glad_gles_get_proc_address_ptr;
+struct _glad_gles_userptr {
+    void *handle;
+    GLAD_GLES_PFNGETPROCADDRESSPROC_PRIVATE get_proc_address_ptr;
+};
 
 
-static void* glad_gles_get_proc(const char* name) {
+static void* glad_gles_get_proc(const char* name, void *vuserptr) {
+    struct _glad_gles_userptr userptr = *(struct _glad_gles_userptr) vuserptr;
     void* result = NULL;
 
     /* dlsym first, since some implementations don't return function pointers for core functions */
-    result = (void*) glad_dlsym_handle(global_egl_handle, name);
+    result = (void*) glad_dlsym_handle(userptr.handle, name);
     if (result == NULL) {
-        result = (void*) glad_gles_get_proc_address_ptr(name);
+        result = (void*) userptr.get_proc_address_ptr(name);
     }
 
     return result;
@@ -29,14 +32,14 @@ int gladLoadGLES1InternalLoader() {
 
     int version = 0;
     void *handle;
-    GLADloadproc loader;
+    struct _glad_gles_userptr userptr;
 
     handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
     if (handle) {
-        glad_egl_get_proc_address_ptr = eglGetProcAddress;
-        if (loader != NULL) {
-            version = gladLoadEGL((GLADloadproc) glad_gles_get_proc);
-        }
+        userptr.handle = handle;
+        userptr.get_proc_address_ptr = eglGetProcAddress;
+
+        version = gladLoadGLES2((GLADloadproc) glad_gles_get_proc, &userptr);
 
         glad_close_dlopen_handle(handle);
     }
@@ -57,14 +60,14 @@ int gladLoadGLES2InternalLoader() {
 
     int version = 0;
     void *handle;
-    GLADloadproc loader;
+    struct _glad_gles_userptr userptr;
 
     handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
     if (handle) {
-        glad_egl_get_proc_address_ptr = eglGetProcAddress;
-        if (loader != NULL) {
-            version = gladLoadEGL((GLADloadproc) glad_gles_get_proc);
-        }
+        userptr.handle = handle;
+        userptr.get_proc_address_ptr = eglGetProcAddress;
+
+        version = gladLoadGLES2((GLADloadproc) glad_gles_get_proc, &userptr);
 
         glad_close_dlopen_handle(handle);
     }

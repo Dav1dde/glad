@@ -1,5 +1,4 @@
-#ifndef GLAD_NO_GLES_LOADER
-
+#if !defined(GLAD_NO_GLES_LOADER) && (defined(GLAD_GLES1) || defined(GLAD_GLES2))
 #ifndef __egl_h_
 #error "gles loader requires egl.h, include egl.h (<glad/egl.h> before including the loader."
 #endif

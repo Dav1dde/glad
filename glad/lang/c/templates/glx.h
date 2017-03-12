@@ -9,6 +9,6 @@
 {% endblock %}
 
 {% block declarations %}
-typedef void* (* GLADloadproc)(const char *name);
-GLAPI int gladLoad{{ feature_set.api|upper }}Loader(GLADloadproc, Display **dpy, int *screen);
+typedef void* (* GLADloadproc)(const char *name, void *userptr);
+GLAPI int gladLoad{{ feature_set.api|upper }}Loader(Display **dpy, int *screen, GLADloadproc load, void *userptr);
 {% endblock %}

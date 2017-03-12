@@ -51,18 +51,18 @@ static void find_core{{ feature_set.api|upper }}(Display **display, int *screen)
     {% endfor %}
 }
 
-int gladLoad{{ feature_set.api|upper }}(GLADloadproc load, Display **display, int *screen) {
-    glXQueryVersion = (PFNGLXQUERYVERSIONPROC)load("glXQueryVersion");
+int gladLoad{{ feature_set.api|upper }}(Display **display, int *screen, GLADloadproc load, void* userptr) {
+    glXQueryVersion = (PFNGLXQUERYVERSIONPROC)load("glXQueryVersion", userptr);
     if(glXQueryVersion == NULL) return 0;
     find_core{{ feature_set.api|upper }}(display, screen);
 
     {% for feature in feature_set.features %}
-    load_{{ feature.name }}(load);
+    load_{{ feature.name }}(load, userptr);
     {% endfor %}
 
     if (!find_extensions{{ feature_set.api|upper }}(*display, *screen)) return 0;
     {% for extension in feature_set.extensions %}
-    load_{{ extension.name }}(load);
+    load_{{ extension.name }}(load, userptr);
     {% endfor %}
 
     return 1;

@@ -56,12 +56,12 @@ PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }} = glad
 
 {% block extension_loaders %}
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
-static void load_{{ extension.name }}(GLADloadproc load) {
+static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
     {% set commands = extension.get_requirements(spec, feature_set.api, feature_set.profile).commands|select('existsin', feature_set.commands) %}
     {% if commands %}
     if(!GLAD_{{ extension.name }}) return;
     {% for command in commands %}
-    glad_{{ command.proto.name }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}");
+    glad_{{ command.proto.name }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}", userptr);
     {% endfor %}
     {% endif %}
 }

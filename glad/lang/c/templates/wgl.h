@@ -12,8 +12,8 @@
 {% endblock %}
 
 {% block declarations %}
-typedef void* (* GLADloadproc)(const char *name);
-GLAPI int gladLoadWGLLoader(GLADloadproc, HDC hdc);
+typedef void* (* GLADloadproc)(const char *name, void *userptr);
+GLAPI int gladLoadWGLLoader(HDC hdc, GLADloadproc, void *userptr);
 {% endblock %}
 
 {% block commands %}

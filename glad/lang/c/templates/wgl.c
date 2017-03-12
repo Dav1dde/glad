@@ -11,12 +11,12 @@ PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
 
 {% block extension_loaders %}
 {% for extension in chain(feature_set.features[1:], feature_set.extensions) %}
-static void load_{{ extension.name }}(GLADloadproc load) {
+static void load_{{ extension.name }}(GLADloadproc load, void *userptr) {
     {% set commands = extension.get_requirements(spec, feature_set.api, feature_set.profile).commands %}
     {% if commands %}
     if(!GLAD_{{ extension.name }}) return;
     {% for command in commands %}
-    glad_{{ command.proto.name }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}");
+    glad_{{ command.proto.name }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}", userptr);
     {% endfor %}
     {% endif %}
 }
@@ -64,18 +64,18 @@ static int find_extensions{{ feature_set.api|upper }}(HDC hdc) {
     return 1;
 }
 
-int gladLoad{{ feature_set.api|upper }}(GLADloadproc load, HDC hdc) {
-    wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)load("wglGetExtensionsStringARB");
-    wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)load("wglGetExtensionsStringEXT");
+int gladLoad{{ feature_set.api|upper }}(HDC hdc, GLADloadproc load, void *userptr) {
+    wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)load("wglGetExtensionsStringARB", userptr);
+    wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)load("wglGetExtensionsStringEXT", userptr);
     if(wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return 0;
 
     {% for feature in feature_set.features[1:] %}
-    load_{{ feature.name }}(load);
+    load_{{ feature.name }}(load, userptr);
     {% endfor %}
 
     if (!find_extensions{{ feature_set.api|upper }}(hdc)) return 0;
     {% for extension in feature_set.extensions %}
-    load_{{ extension.name }}(load);
+    load_{{ extension.name }}(load, userptr);
     {% endfor %}
 
     return 1;
