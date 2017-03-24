@@ -205,9 +205,28 @@ class CGenerator(BaseGenerator):
 
         return templates
 
-    def modify_feature_set(self, feature_set):
+    def modify_feature_set(self, spec, feature_set, options):
         self._fix_issue_70(feature_set)
+        feature_set = self._add_extensions_for_aliasing(spec, feature_set, options)
         return feature_set
+
+    def _add_extensions_for_aliasing(self, spec, feature_set, options):
+        if not options['ALIAS']:
+            return feature_set
+
+        command_names = [command.proto.name for command in feature_set.commands]
+
+        new_extensions = set(feature_set.extensions)
+        for extension in spec.extensions[feature_set.api].values():
+            if extension in feature_set.extensions:
+                continue
+
+            for command in extension.get_requirements(spec, feature_set.api, feature_set.profile).commands:
+                if command.alias and command.alias in command_names:
+                    new_extensions.add(extension.name)
+                    break
+
+        return spec.select(feature_set.api, feature_set.version, feature_set.profile, new_extensions)
 
     def _fix_issue_70(self, feature_set):
         """

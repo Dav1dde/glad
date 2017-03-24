@@ -52,7 +52,7 @@ class BaseGenerator(object):
         """
         raise NotImplementedError
 
-    def modify_feature_set(self, feature_set):
+    def modify_feature_set(self, spec, feature_set, config):
         """
         Called before `get_templates` and for every `generate` call.
         Used to modify the feature set if required (e.g. update type definitions).
@@ -68,7 +68,7 @@ class BaseGenerator(object):
         return dict()
 
     def generate(self, spec, feature_set, config=None):
-        feature_set = self.modify_feature_set(feature_set)
+        feature_set = self.modify_feature_set(spec, feature_set, config)
         for template, output_path in self.get_templates(spec, feature_set, config):
             #try:
             template = self.environment.get_template(template)
