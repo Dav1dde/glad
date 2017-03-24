@@ -66,12 +66,12 @@ c_compile -Ibuild/include build/src/glad_egl.c ${GCC_FLAGS}
 cpp_compile -Ibuild/include build/src/glad_egl.c ${GPP_FLAGS}
 
 rm -rf build
-${PYTHON} -m glad --api="gl=" --out-path=build c
+${PYTHON} -m glad --api="gl:core=" --out-path=build c
 c_compile -Ibuild/include build/src/glad.c ${GCC_FLAGS}
 cpp_compile -Ibuild/include build/src/glad.c ${GPP_FLAGS}
 
 rm -rf build
-${PYTHON} -m glad --api="gl=" --out-path=build c
+${PYTHON} -m glad --api="gl:core=" --out-path=build c
 ${PYTHON} -m glad --api="glx=" --out-path=build c
 echorun gcc -Ibuild/include build/src/glad_glx.c ${GCC_FLAGS}
 echorun g++ -Ibuild/include build/src/glad_glx.c ${GPP_FLAGS}
@@ -84,7 +84,7 @@ echorun g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include b
 mingwcpp_compile example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw3
 
 rm -rf build
-${PYTHON} -m glad --api="gl=" --out-path=build c
+${PYTHON} -m glad --api="gl:core=" --out-path=build c
 ${PYTHON} -m glad --api="wgl=" --out-path=build c
 mingwc_compile -Ibuild/include build/src/glad_wgl.c ${GCC_FLAGS}
 mingwcpp_compile -Ibuild/include build/src/glad_wgl.c ${GPP_FLAGS}

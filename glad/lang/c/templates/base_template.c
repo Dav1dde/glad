@@ -68,5 +68,19 @@ static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
 {% endfor %}
 {% endblock %}
 
+{% block aliasing %}
+{% if options.alias %}
+static void resolve_aliases({{ context_arg() }}) {
+    {% for command in feature_set.commands %}
+    {% for alias in aliases.get(command.proto.name, []) %}
+    {% if not alias == command.proto.name %}
+    if ({{ ctx(command.proto.name) }} == NULL && {{ ctx(alias) }} != NULL) {{ ctx(command.proto.name) }} = {{ ctx(alias) }};
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+}
+{% endif %}
+{% endblock %}
+
 {% block loader %}
 {% endblock %}

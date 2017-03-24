@@ -12,8 +12,10 @@
 {% endblock %}
 
 {% block declarations %}
-typedef void* (* GLADloadproc)(const char *name, void *userptr);
-GLAPI int gladLoadWGLLoader(HDC hdc, GLADloadproc, void *userptr);
+typedef void* (* GLADloadproc)(const char *name, void* userptr);
+typedef void* (* GLADsimpleloadproc)(const char *name);
+GLAPI int gladLoad{{ feature_set.api|upper }}(HDC hdc, GLADloadproc load, void *userptr);
+GLAPI int gladLoad{{ feature_set.api|upper }}Simple(HDC hdc, GLADsimpleloadproc load);
 {% endblock %}
 
 {% block commands %}

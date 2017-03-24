@@ -233,7 +233,19 @@ int gladLoad{{ feature_set.api|upper }}({{ context_arg(',') }} GLADloadproc load
     gladSet{{ feature_set.api|upper }}Context(context);
     {% endif %}
 
+    {% if options.alias %}
+    resolve_aliases({{ 'context' if options.mx }});
+    {% endif %}
+
     return version;
+}
+
+static void* glad_get_proc_from_userptr(const char* name, void *userptr) {
+    return ((void* (*)(const char *name))userptr)(name);
+}
+
+int gladLoad{{ feature_set.api|upper }}Simple({{ context_arg(',') }} GLADsimpleloadproc load) {
+    return gladLoad{{ feature_set.api|upper }}({{'context,' if options.mx }} glad_get_proc_from_userptr, &load);
 }
 
 {% if options.mx_global %}

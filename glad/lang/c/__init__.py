@@ -1,6 +1,6 @@
 import itertools
 import re
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 
 from glad.config import Config, ConfigOption, InvalidConfig, RequirementConstraint
 from glad.lang.generator import BaseGenerator
@@ -76,6 +76,40 @@ def make_ctx_func(is_mx, api_prefix):
         return prefix + name
     return ctx
 
+
+def collect_alias_information(commands):
+    # Thanks @derhass
+    # https://github.com/derhass/glad/commit/9302dc566c695aebece901809f170297627950c9#diff-25f472d6fbc5268fe9a449252923b693
+
+    # keep a dictionary, store the set of aliases known for each function
+    # initialize it to identity, each function aliases itself
+    alias = dict([command.proto.name, set([command.proto.name])] for command in commands)
+    # now, add all further aliases
+    for command in commands:
+        if command.alias is not None:
+            # aliasses is the set of all aliasses known for this function
+            aliasses = alias[command.proto.name]
+            aliasses.add(command.alias)
+            # unify all alias sets of all aliased functions
+            new_aliasses=set()
+            missing_funcs=set()
+            for aliased_func in aliasses:
+                try:
+                    new_aliasses.update(alias[aliased_func])
+                except KeyError:
+                    missing_funcs.add(aliased_func)
+            # remove all missing functions
+            new_aliasses = new_aliasses - missing_funcs
+            # add the alias set to all aliased functions
+            for command in new_aliasses:
+                alias[command]=new_aliasses
+    # clean up the alias dict: remove entries where the set contains only one element
+    for command in commands:
+        if len(alias[command.proto.name]) < 2:
+            del alias[command.proto.name]
+    return alias
+
+
 # RANDOM TODOs:
 # TODO: glad_get_gl_version(), glad_get_egl_version(), glad_get_*_version()
 # TODO: glad_loader.h
@@ -87,6 +121,11 @@ class CConfig(Config):
         converter=bool,
         default=False,
         description='Enables generation of a debug build'
+    )
+    ALIAS = ConfigOption(
+        converter=bool,
+        default=False,
+        description='Enables function pointer aliasing'
     )
     MX = ConfigOption(
         converter=bool,
@@ -131,7 +170,8 @@ class CGenerator(BaseGenerator):
 
     def get_additional_template_arguments(self, spec, feature_set, options):
         return {
-            'ctx': make_ctx_func(options['MX'], feature_set.api.lower())
+            'ctx': make_ctx_func(options['MX'] and feature_set.api.startswith('gl'), feature_set.api.lower()),
+            'aliases': collect_alias_information(feature_set.commands)
         }
 
     def get_templates(self, spec, feature_set, options):

@@ -70,7 +70,9 @@ GLAPI PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};
 
 {% block declarations %}
 typedef void* (* GLADloadproc)(const char *name, void* userptr);
-GLAPI int gladLoad{{ feature_set.api|upper }}({{ 'Glad' + feature_set.api|upper + 'Context *context, ' if options.mx }}GLADloadproc, void* userptr);
+typedef void* (* GLADsimpleloadproc)(const char *name);
+GLAPI int gladLoad{{ feature_set.api|upper }}({{ 'Glad' + feature_set.api|upper + 'Context *context, ' if options.mx }}GLADloadproc load, void* userptr);
+GLAPI int gladLoad{{ feature_set.api|upper }}Simple({{ 'Glad' + feature_set.api|upper + 'Context *context, ' if options.mx }}GLADsimpleloadproc load);
 
 {% if options.mx_global %}
 Glad{{ feature_set.api|upper }}Context* gladGet{{ feature_set.api|upper }}Context();

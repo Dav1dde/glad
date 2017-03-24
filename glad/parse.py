@@ -464,6 +464,9 @@ class Command(IdentifiedByName):
     def __init__(self, element):
         self.proto = Proto(element.find('proto'))
         self.params = [Param(ele) for ele in element.iter('param')]
+        self.alias = element.find('alias')
+        if self.alias is not None:
+            self.alias = self.alias.get('name')
 
         self.api = element.get('api')
 

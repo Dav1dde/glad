@@ -73,13 +73,13 @@ static int find_core{{ feature_set.api|upper }}(EGLDisplay *display) {
 
 int gladLoad{{ feature_set.api|upper }}(EGLDisplay *display, GLADloadproc load, void* userptr) {
     eglGetDisplay = (PFNEGLGETDISPLAYPROC)load("eglGetDisplay", userptr);
-    eglGetCurrentDisplay = (PFNEGLGETCURRENTDISPLAYPROC)load("eglGetCurrentDisplay");
+    eglGetCurrentDisplay = (PFNEGLGETCURRENTDISPLAYPROC)load("eglGetCurrentDisplay", userptr);
     eglQueryString = (PFNEGLQUERYSTRINGPROC)load("eglQueryString", userptr);
     if (eglGetDisplay == NULL || eglGetCurrentDisplay == NULL || eglQueryString == NULL) return 0;
 
     if (!find_core{{ feature_set.api|upper }}(display)) return 0;
     {% for feature in feature_set.features %}
-    load_{{ feature.name }}(load);
+    load_{{ feature.name }}(load, userptr);
     {% endfor %}
 
     if (!find_extensions{{ feature_set.api|upper }}(*display)) return 0;
@@ -89,4 +89,13 @@ int gladLoad{{ feature_set.api|upper }}(EGLDisplay *display, GLADloadproc load, 
 
     return 1;
 }
+
+static void* glad_get_proc_from_userptr(const char* name, void *userptr) {
+    return ((void* (*)(const char *name))userptr)(name);
+}
+
+int gladLoad{{ feature_set.api|upper }}Simple(EGLDisplay *display, GLADsimpleloadproc load) {
+    return gladLoad{{ feature_set.api|upper }}(display, glad_get_proc_from_userptr, &load);
+}
+
 {% endblock %}
