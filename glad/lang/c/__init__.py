@@ -216,7 +216,7 @@ class CGenerator(BaseGenerator):
 
         command_names = [command.proto.name for command in feature_set.commands]
 
-        new_extensions = set(feature_set.extensions)
+        new_extensions = set(ext.name for ext in feature_set.extensions)
         for extension in spec.extensions[feature_set.api].values():
             if extension in feature_set.extensions:
                 continue
