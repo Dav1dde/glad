@@ -145,7 +145,8 @@ struct gladGLversionStruct {
     int minor;
 };
 
-typedef void* (* GLADloadproc)(const char *name);
+typedef void (*GLADvoidfn)(void);
+typedef GLADvoidfn (*GLADloadproc)(const char *name);
 ''' + LOAD_OPENGL_GLAPI_H + '''
 GLAPI struct gladGLversionStruct GLVersion;
 '''

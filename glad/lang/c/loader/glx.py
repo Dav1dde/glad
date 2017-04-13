@@ -8,7 +8,7 @@ int gladLoadGLX(Display *dpy, int screen) {
     int status = 0;
 
     if(open_gl()) {
-        status = gladLoadGLXLoader((GLADloadproc)get_proc, dpy, screen);
+        status = gladLoadGLXLoader(get_proc, dpy, screen);
         close_gl();
     }
 
@@ -45,7 +45,8 @@ _WGL_HEADER_MID = '''
 extern "C" {
 #endif
 
-typedef void* (* GLADloadproc)(const char *name);
+typedef void (*GLADvoidfn)(void);
+typedef GLADvoidfn (*GLADloadproc)(const char *name);
 ''' + LOAD_OPENGL_GLAPI_H
 
 _GLX_HEADER_LOADER = '''
