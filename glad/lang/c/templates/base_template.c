@@ -74,7 +74,7 @@ static void resolve_aliases({{ context_arg() }}) {
     {% for command in feature_set.commands %}
     {% for alias in aliases.get(command.proto.name, []) %}
     {% if not alias == command.proto.name %}
-    if ({{ ctx(command.proto.name) }} == NULL && {{ ctx(alias) }} != NULL) {{ ctx(command.proto.name) }} = {{ ctx(alias) }};
+    if ({{ ctx(command.proto.name) }} == NULL && {{ ctx(alias) }} != NULL) {{ ctx(command.proto.name) }} = (PFN{{ command.proto.name|upper }}PROC){{ ctx(alias) }};
     {% endif %}
     {% endfor %}
     {% endfor %}
