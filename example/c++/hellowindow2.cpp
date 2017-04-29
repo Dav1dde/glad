@@ -10,6 +10,7 @@
 
 // GLAD
 #include <glad/glad.h>
+#include <glad/glad_glx.h>
 
 // confirm that GLAD didn't include windows.h
 #ifdef _WINDOWS_
