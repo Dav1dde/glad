@@ -241,16 +241,16 @@ Import `glad.gl` for OpenGL functions/extensions, import `glad.loader` to import
 the functions needed to initialize glad and load the OpenGL functions.
 
 ```d
-    enforce(gladLoadGL()); // optionally you can pass a loader to this function
-    writefln("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
+enforce(gladLoadGL()); // optionally you can pass a loader to this function
+writefln("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
     
-    if(GL_EXT_framebuffer_multisample) { 
-        /* GL_EXT_framebuffer_multisample is supported */ 
-    }
+if(GL_EXT_framebuffer_multisample) { 
+    /* GL_EXT_framebuffer_multisample is supported */ 
+}
     
-    if(GL_VERSION_3_0) {
-        /* We support at least OpenGL version 3 */
-    }
+if(GL_VERSION_3_0) {
+    /* We support at least OpenGL version 3 */
+}
 ```
 
 On non-Windows platforms glad requires `libdl`, make sure to link with it (`L-ldl` for dmd)!
