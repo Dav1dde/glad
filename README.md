@@ -165,7 +165,7 @@ void gladLoadGLLoader(GLADloadproc);
 `glad.h` completely replaces any `gl.h` or `gl3.h` only include `glad.h`.
 
 ```c
-    if(!gladLoadGL()) { exit(-1) };
+    if(!gladLoadGL()) { exit(-1); }
     printf("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
     
     if(GLAD_GL_EXT_framebuffer_multisample) {
