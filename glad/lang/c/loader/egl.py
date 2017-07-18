@@ -2,8 +2,8 @@ from glad.lang.common.loader import BaseLoader
 
 
 _EGL_LOADER = '''
-int gladLoadEGL(void) {
-    return gladLoadEGLLoader((GLADloadproc)eglGetProcAddress);
+int gladLoadEGL(EGLDisplay display) {
+    return gladLoadEGLLoader((GLADloadproc)eglGetProcAddress, display);
 }
 '''
 
@@ -39,10 +39,11 @@ extern "C" {
 #endif
 
 typedef void* (* GLADloadproc)(const char *name);
+typedef void* EGLDisplay;
 '''
 
 _EGL_HEADER_LOADER = '''
-GLAPI int gladLoadEGL(void);
+GLAPI int gladLoadEGL(EGLDisplay display);
 '''
 
 _EGL_HEADER_END = '''
@@ -54,6 +55,24 @@ _EGL_HEADER_END = '''
 '''
 
 _EGL_HAS_EXT = '''
+static const char *exts = NULL;
+
+static int get_exts(EGLDisplay display) {
+  exts = eglQueryString(display, EGL_EXTENSIONS);
+  return 1;
+}
+
+static void free_exts(void) {
+  /* NOTE: currently nothing allocated for EGL extensions */
+  exts = NULL;
+}
+
+static int has_ext(const char *ext) {
+  if (exts != NULL && ext != NULL) {
+    return (strstr(exts, ext) != NULL) ? 1 : 0;
+  }
+  return 0;
+}
 '''
 
 
