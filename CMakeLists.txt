@@ -54,7 +54,7 @@ if(GLAD_NO_LOADER)
 endif()
 
 add_custom_command(
-  OUTPUT ${GLAD_SOURCES} 
+  OUTPUT ${GLAD_SOURCES}
   COMMAND ${PYTHON_EXECUTABLE} -m glad
     --profile=${GLAD_PROFILE}
     --out-path=${GLAD_OUT_DIR}
@@ -66,7 +66,7 @@ add_custom_command(
   WORKING_DIRECTORY ${GLAD_DIR}
   COMMENT "Generating GLAD"
 )
-add_library(glad STATIC ${GLAD_SOURCES})
+add_library(glad ${GLAD_SOURCES})
 
 target_include_directories(glad PUBLIC ${GLAD_INCLUDE_DIRS})
 
