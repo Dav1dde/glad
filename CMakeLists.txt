@@ -54,7 +54,7 @@ if(GLAD_NO_LOADER)
 endif()
 
 add_custom_command(
-  OUTPUT ${GLAD_SOURCES} 
+  OUTPUT ${GLAD_SOURCES}
   COMMAND ${PYTHON_EXECUTABLE} -m glad
     --profile=${GLAD_PROFILE}
     --out-path=${GLAD_OUT_DIR}
@@ -66,8 +66,10 @@ add_custom_command(
   WORKING_DIRECTORY ${GLAD_DIR}
   COMMENT "Generating GLAD"
 )
+add_custom_target(glad-generate-files DEPENDS ${GLAD_SOURCES})
+set_source_files_properties(${GLAD_SOURCES} PROPERTIES GENERATED TRUE)
 add_library(glad STATIC ${GLAD_SOURCES})
-
+add_dependencies(glad glad-generate-files)
 target_include_directories(glad PUBLIC ${GLAD_INCLUDE_DIRS})
 
 if(GLAD_LINKER_LANGUAGE)
