@@ -258,7 +258,7 @@ On non-Windows platforms glad requires `libdl`, make sure to link with it (`L-ld
 
 ## FAQ ##
 
-### glad includes windows.h which breaks my code!
+### glad includes windows.h which breaks my code! [#42](https://github.com/Dav1dde/glad/issues/42)
 
 Defining `APIENTRY` before including `glad.h` solves this problem:
 
@@ -272,8 +272,9 @@ Defining `APIENTRY` before including `glad.h` solves this problem:
 
 But make sure you have the correct definition of `APIENTRY` for platforms which define `_WIN32` but don't use `__stdcall`
 
-Relevant issue: [#42](https://github.com/Dav1dde/glad/issues/42)
+### What's the license of glad generated code? [#101](https://github.com/Dav1dde/glad/issues/101)
 
+Any of Public Domain, WTFPL or CC0.
 
 
 ## Contribute ##
