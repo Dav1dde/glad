@@ -69,7 +69,7 @@ class CGenerator(Generator):
             for feature in features[api]:
                 f.write('static void load_{}(GLADloadproc load) {{\n'
                         .format(feature.name))
-                if self.spec.NAME in ('gl', 'glx', 'wgl'):
+                if self.spec.NAME in ('gl', 'glx', 'wgl', 'egl'):
                     f.write('\tif(!GLAD_{}) return;\n'.format(feature.name))
                 for func in feature.functions:
                     f.write('\tglad_{0} = (PFN{1}PROC)load("{0}");\n'
@@ -82,7 +82,7 @@ class CGenerator(Generator):
 
                 f.write('static void load_{}(GLADloadproc load) {{\n'
                         .format(ext.name))
-                if self.spec.NAME in ('gl', 'glx', 'wgl'):
+                if self.spec.NAME in ('gl', 'glx', 'wgl', 'egl'):
                     f.write('\tif(!GLAD_{}) return;\n'.format(ext.name))
                 if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
                 if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
@@ -98,14 +98,23 @@ class CGenerator(Generator):
 
                 written.add(ext.name)
 
-            f.write('static int find_extensions{}(void) {{\n'.format(api.upper()))
-            if self.spec.NAME in ('gl', 'glx', 'wgl'):
-                f.write('\tif (!get_exts()) return 0;\n')
+            if self.spec.NAME == 'egl':
+                f.write('static int find_extensions{}(EGLDisplay display) {{\n'.format(api.upper()))
+            else:
+                f.write('static int find_extensions{}(void) {{\n'.format(api.upper()))
+
+            if self.spec.NAME in ('gl', 'glx', 'wgl', 'egl'):
+                if self.spec.NAME == 'egl':
+                    f.write('\tif (!get_exts(display)) return 0;\n')
+                else:
+                    f.write('\tif (!get_exts()) return 0;\n')
+
                 for ext in extensions[api]:
                     f.write('\tGLAD_{0} = has_ext("{0}");\n'.format(ext.name))
                 if len(extensions[api]) == 0:
                     f.write('\t(void)&has_ext;\n') # suppress unused has_ext warnings
                 f.write('\tfree_exts();\n')
+
             f.write('\treturn 1;\n')
             f.write('}\n\n')
 
@@ -132,6 +141,8 @@ class CGenerator(Generator):
                 f.write('int gladLoad{}Loader(GLADloadproc load, Display *dpy, int screen) {{\n'.format(api.upper()))
             elif api == 'wgl':
                 f.write('int gladLoad{}Loader(GLADloadproc load, HDC hdc) {{\n'.format(api.upper()))
+            elif api == 'egl':
+                f.write('int gladLoad{}Loader(GLADloadproc load, EGLDisplay display) {{\n'.format(api.upper()))
             else:
                 f.write('int gladLoad{}Loader(GLADloadproc load) {{\n'.format(api.upper()))
 
@@ -146,7 +157,12 @@ class CGenerator(Generator):
 
             for feature in features[api]:
                 f.write('\tload_{}(load);\n'.format(feature.name))
-            f.write('\n\tif (!find_extensions{}()) return 0;\n'.format(api.upper()))
+
+            if self.spec.NAME == 'egl':
+                f.write('\n\tif (!find_extensions{}(display)) return 0;\n'.format(api.upper()))
+            else:
+                f.write('\n\tif (!find_extensions{}()) return 0;\n'.format(api.upper()))
+
             for ext in extensions[api]:
                 if len(list(ext.functions)) == 0:
                     continue
@@ -200,7 +216,7 @@ class CGenerator(Generator):
         self.loader.write(f)
         self.loader.write_has_ext(f)
 
-        if self.spec.NAME in ('gl', 'glx', 'wgl'):
+        if self.spec.NAME in ('gl', 'glx', 'wgl', 'egl'):
             for feature in features:
                 f.write('int GLAD_{};\n'.format(feature.name))
 
@@ -216,7 +232,7 @@ class CGenerator(Generator):
         self.write_functions(f, write, written, extensions)
 
         f = self._f_c
-        if self.spec.NAME in ('gl', 'glx', 'wgl'):
+        if self.spec.NAME in ('gl', 'glx', 'wgl', 'egl'):
             for ext in set(ext.name for ext in extensions):
                 f.write('int GLAD_{};\n'.format(ext))
 
@@ -235,7 +251,7 @@ class CGenerator(Generator):
 
         for ext in extensions:
             f.write('#ifndef {0}\n#define {0} 1\n'.format(ext.name))
-            if self.spec.NAME in ('gl', 'glx', 'wgl'):
+            if self.spec.NAME in ('gl', 'glx', 'wgl', 'egl'):
                 f.write('GLAPI int GLAD_{};\n'.format(ext.name))
             if ext.name == 'GLX_SGIX_video_source': f.write('#ifdef _VL_H_\n')
             if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
@@ -260,6 +276,8 @@ class CGenerator(Generator):
                 f.write('GLAPI int gladLoad{}Loader(GLADloadproc, Display *dpy, int screen);\n\n'.format(api.upper()))
             elif api == 'wgl':
                 f.write('GLAPI int gladLoad{}Loader(GLADloadproc, HDC hdc);\n\n'.format(api.upper()))
+            elif api == 'egl':
+                f.write('GLAPI int gladLoad{}Loader(GLADloadproc, EGLDisplay display);\n\n'.format(api.upper()))
             else:
                 f.write('GLAPI int gladLoad{}Loader(GLADloadproc);\n\n'.format(api.upper()))
 
