@@ -1,15 +1,13 @@
 cmake_minimum_required(VERSION 2.8)
 
-if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.0)
-
-  # Silence warning about PROJECT_VERSION
+# Don't warn about old usage of project()
+if (POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
+endif()
 
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.1)
-    # Silence warning about if()
-    cmake_policy(SET CMP0054 NEW)
-  endif()
-
+# Don't warn about if()
+if (POLICY CMP0054)
+  cmake_policy(SET CMP0054 NEW)
 endif()
 
 project(GLAD)
