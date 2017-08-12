@@ -83,6 +83,17 @@ add_library(glad ${GLAD_SOURCES})
 add_dependencies(glad glad-generate-files)
 target_include_directories(glad PUBLIC ${GLAD_INCLUDE_DIRS})
 
+# Are we building a shared library?
+get_target_property(library_type glad TYPE)
+if (library_type STREQUAL SHARED_LIBRARY)
+  # If so, define the macro GLAD_API_EXPORT on the command line.
+  target_compile_definitions(glad PRIVATE GLAD_GLAPI_EXPORT)
+endif()
+
+if(GLAD_LINKER_LANGUAGE)
+  set_target_properties(glad PROPERTIES LINKER_LANGUAGE ${GLAD_LINKER_LANGUAGE})
+endif()
+
 # Export
 if(GLAD_EXPORT)
   set(GLAD_LIBRARIES glad PARENT_SCOPE)
