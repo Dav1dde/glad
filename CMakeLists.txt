@@ -5,6 +5,9 @@ if(NOT CMAKE_VERSION VERSION_LESS 3.1)
 endif()
 cmake_policy(SET CMP0048 NEW)
 
+# Enable MACOSX_RPATH by default
+cmake_policy(SET CMP0042 NEW)
+
 project(GLAD VERSION 0.1.14)
 
 set(GLAD_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
