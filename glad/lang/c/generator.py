@@ -103,6 +103,8 @@ class CGenerator(Generator):
                 f.write('\tif (!get_exts()) return 0;\n')
                 for ext in extensions[api]:
                     f.write('\tGLAD_{0} = has_ext("{0}");\n'.format(ext.name))
+                if len(extensions[api]) == 0:
+                    f.write('\t(void)&has_ext;\n') # suppress unused has_ext warnings
                 f.write('\tfree_exts();\n')
             f.write('\treturn 1;\n')
             f.write('}\n\n')
@@ -170,6 +172,12 @@ class CGenerator(Generator):
                     output_string = '#include "khrplatform.h"\n'
             if not self.spec.NAME in ('egl',) and 'khronos' in type.raw:
                 continue
+            if type.name in ('GLsizeiptr', 'GLintptr', 'GLsizeiptrARB', 'GLintptrARB'):
+                # 10.6 is the last version supporting more than 64 bit (>1060)
+                output_string = \
+                    '#if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) ' +\
+                    '&& (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ > 1060)\n' +\
+                    output_string.replace('ptrdiff_t', 'long') + '#else\n' + output_string + '#endif\n'
             f.write(output_string)
 
     def generate_features(self, features):

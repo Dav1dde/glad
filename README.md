@@ -165,7 +165,7 @@ void gladLoadGLLoader(GLADloadproc);
 `glad.h` completely replaces any `gl.h` or `gl3.h` only include `glad.h`.
 
 ```c
-    if(!gladLoadGL()) { exit(-1) };
+    if(!gladLoadGL()) { exit(-1); }
     printf("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
     
     if(GLAD_GL_EXT_framebuffer_multisample) {
@@ -258,7 +258,7 @@ On non-Windows platforms glad requires `libdl`, make sure to link with it (`L-ld
 
 ## FAQ ##
 
-### glad includes windows.h which breaks my code!
+### glad includes windows.h which breaks my code! [#42](https://github.com/Dav1dde/glad/issues/42)
 
 Defining `APIENTRY` before including `glad.h` solves this problem:
 
@@ -272,8 +272,9 @@ Defining `APIENTRY` before including `glad.h` solves this problem:
 
 But make sure you have the correct definition of `APIENTRY` for platforms which define `_WIN32` but don't use `__stdcall`
 
-Relevant issue: [#42](https://github.com/Dav1dde/glad/issues/42)
+### What's the license of glad generated code? [#101](https://github.com/Dav1dde/glad/issues/101)
 
+Any of Public Domain, WTFPL or CC0.
 
 
 ## Contribute ##

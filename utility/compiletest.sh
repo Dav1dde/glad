@@ -1,6 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash -xe
 
-set -e
 
 if [ -z ${PYTHON+x} ]; then
     PYTHON="/usr/bin/env python"
@@ -13,32 +12,27 @@ if [ "$1" != "no-download" ]; then
 fi
 
 
-GCC_FLAGS="-o build/tmp.o -Wall -Werror -ansi -c"
-GPP_FLAGS="-o build/tmp.o -Wall -Werror -c"
+GCC_FLAGS="-o build/tmp.o -Wall -Wextra -Wsign-conversion -Wcast-qual -Werror -ansi -c"
+GPP_FLAGS="-o build/tmp.o -Wall -Wextra -Wsign-conversion -Wcast-qual -Werror -c"
 
-
-function echorun {
-    echo $@
-    $@
-}
 
 function mingwc_compile {
-    echorun i686-w64-mingw32-gcc $@
-    echorun x86_64-w64-mingw32-gcc $@
+    i686-w64-mingw32-gcc $@
+    x86_64-w64-mingw32-gcc $@
 }
 
 function c_compile {
-    echorun gcc $@ -ldl
+    gcc $@ -ldl
     mingwc_compile $@
 }
 
 function mingwcpp_compile {
-    echorun i686-w64-mingw32-g++ $@
-    echorun x86_64-w64-mingw32-g++ $@
+    i686-w64-mingw32-g++ $@
+    x86_64-w64-mingw32-g++ $@
 }
 
 function cpp_compile {
-    echorun g++ $@ -ldl
+    g++ $@ -ldl
     mingwcpp_compile $@
 }
 
@@ -58,67 +52,73 @@ function download_if_required {
 # C
 echo -e "====================== Generating and compiling C/C++: ======================"
 
-rm -rf build
-${PYTHON} -m glad --generator=c --spec=egl --out-path=build
-download_if_required build/include/EGL/eglplatform.h "https://www.khronos.org/registry/egl/api/EGL/eglplatform.h"
-c_compile -Ibuild/include build/src/glad_egl.c ${GCC_FLAGS}
-cpp_compile -Ibuild/include build/src/glad_egl.c ${GPP_FLAGS}
+function c_egl {
+    rm -rf build
+    ${PYTHON} -m glad --spec=egl --out-path=build $@
+    download_if_required build/include/EGL/eglplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/EGL/eglplatform.h"
+    download_if_required build/include/KHR/khrplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h"
+    c_compile -Ibuild/include build/src/glad_egl.c ${GCC_FLAGS}
+    cpp_compile -Ibuild/include build/src/glad_egl.c ${GPP_FLAGS}
+}
 
-rm -rf build
-${PYTHON} -m glad --generator=c --spec=gl --out-path=build
-c_compile -Ibuild/include build/src/glad.c ${GCC_FLAGS}
-cpp_compile -Ibuild/include build/src/glad.c ${GPP_FLAGS}
+function c_gl {
+    rm -rf build
+    ${PYTHON} -m glad --spec=gl --out-path=build $@
+    c_compile -Ibuild/include build/src/glad.c ${GCC_FLAGS}
+    cpp_compile -Ibuild/include build/src/glad.c ${GPP_FLAGS}
+}
 
-rm -rf build
-${PYTHON} -m glad --generator=c --spec=gl --out-path=build
-${PYTHON} -m glad --generator=c --spec=glx --out-path=build
-echorun gcc -Ibuild/include build/src/glad_glx.c ${GCC_FLAGS}
-echorun g++ -Ibuild/include build/src/glad_glx.c ${GPP_FLAGS}
+function c_glx {
+    rm -rf build
+    ${PYTHON} -m glad --spec=gl --out-path=build $@
+    ${PYTHON} -m glad --spec=glx --out-path=build $@
+    gcc -Ibuild/include build/src/glad_glx.c ${GCC_FLAGS}
+    g++ -Ibuild/include build/src/glad_glx.c ${GPP_FLAGS}
+}
 
-# Example
-echorun gcc example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lglut -ldl
-mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lfreeglut
-echorun g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw -ldl
-mingwcpp_compile example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw3
+function c_wgl {
+    rm -rf build
+    ${PYTHON} -m glad --spec=gl --out-path=build $1
+    ${PYTHON} -m glad --spec=wgl --out-path=build $@
+    mingwc_compile -Ibuild/include build/src/glad_wgl.c ${GCC_FLAGS}
+    mingwcpp_compile -Ibuild/include build/src/glad_wgl.c ${GPP_FLAGS}
+}
 
-rm -rf build
-${PYTHON} -m glad --generator=c --spec=gl --out-path=build
-${PYTHON} -m glad --generator=c --spec=wgl --out-path=build
-mingwc_compile -Ibuild/include build/src/glad_wgl.c ${GCC_FLAGS}
-mingwcpp_compile -Ibuild/include build/src/glad_wgl.c ${GPP_FLAGS}
+function c_example {
+    ${PYTHON} -m glad --spec=gl --out-path=build $@
+    gcc example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lglut -ldl
+    mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lfreeglut
+    g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw -ldl
+    mingwcpp_compile example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw3 -luser32 -lgdi32
+}
+
+c_egl --generator=c
+c_egl --generator=c --extensions=
+
+c_glx --generator=c
+c_glx --generator=c --extensions=
+
+c_wgl --generator=c
+c_wgl --generator=c --extensions=WGL_ARB_extensions_string,WGL_EXT_extensions_string
+
+c_example --generator=c
+c_example --generator=c --extensions=
 
 
 # C-Debug
 echo -e "====================== Generating and compiling C/C++ Debug: ======================"
 
-rm -rf build
-${PYTHON} -m glad --generator=c-debug --spec=egl --out-path=build
-download_if_required build/include/EGL/eglplatform.h "https://www.khronos.org/registry/egl/api/EGL/eglplatform.h"
-c_compile -Ibuild/include build/src/glad_egl.c ${GCC_FLAGS}
-cpp_compile -Ibuild/include build/src/glad_egl.c ${GPP_FLAGS}
+c_egl --generator=c-debug
+c_egl --generator=c-debug --extensions=
 
-rm -rf build
-${PYTHON} -m glad --generator=c-debug --spec=gl --out-path=build
-c_compile -Ibuild/include build/src/glad.c ${GCC_FLAGS}
-cpp_compile -Ibuild/include build/src/glad.c ${GPP_FLAGS}
+c_glx --generator=c-debug
+c_glx --generator=c-debug --extensions=
 
-rm -rf build
-${PYTHON} -m glad --generator=c-debug --spec=gl --out-path=build
-${PYTHON} -m glad --generator=c-debug --spec=glx --out-path=build
-echorun gcc -Ibuild/include build/src/glad_glx.c ${GCC_FLAGS}
-echorun g++ -Ibuild/include build/src/glad_glx.c ${GPP_FLAGS}
+c_wgl --generator=c-debug
+c_wgl --generator=c-debug --extensions=WGL_ARB_extensions_string,WGL_EXT_extensions_string
 
-# Example
-echorun gcc example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lglut -ldl
-mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lfreeglut
-echorun g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw -ldl
-mingwcpp_compile example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw3
-
-rm -rf build
-${PYTHON} -m glad --generator=c-debug --spec=gl --out-path=build
-${PYTHON} -m glad --generator=c-debug --spec=wgl --out-path=build
-mingwc_compile -Ibuild/include build/src/glad_wgl.c ${GCC_FLAGS}
-mingwcpp_compile -Ibuild/include build/src/glad_wgl.c ${GPP_FLAGS}
+c_example --generator=c-debug
+c_example --generator=c-debug --extensions=
 
 
 # D
@@ -126,21 +126,21 @@ echo -e "\n====================== Generating and compiling D: ==================
 
 rm -rf build
 ${PYTHON} -m glad --generator=d --spec=egl --out-path=build
-echorun dmd -o- build/glad/egl/*.d -c
+dmd -o- build/glad/egl/*.d -c
 
 rm -rf build
 ${PYTHON} -m glad --generator=d --spec=gl --api="gl=,gles1=,gles2=" --out-path=build
-echorun dmd -o- build/glad/gl/*.d -c
+dmd -o- build/glad/gl/*.d -c
 
 rm -rf build
 ${PYTHON} -m glad --generator=d --spec=gl --out-path=build
 ${PYTHON} -m glad --generator=d --spec=glx --out-path=build
-echorun dmd -o- build/glad/glx/*.d -c
+dmd -o- build/glad/glx/*.d -c
 
 rm -rf build
 ${PYTHON} -m glad --generator=d --spec=gl --out-path=build
 ${PYTHON} -m glad --generator=d --spec=wgl --out-path=build
-echorun dmd -o- build/glad/wgl/*.d -c
+dmd -o- build/glad/wgl/*.d -c
 
 
 # Volt TODO
