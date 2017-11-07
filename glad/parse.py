@@ -1,3 +1,5 @@
+import copy
+
 try:
     from lxml import etree
     from lxml.etree import ETCompatXMLParser as parser
@@ -20,12 +22,16 @@ except ImportError:
         return etree.parse(path).getroot()
 
 import re
+import logging
 from collections import defaultdict, OrderedDict, namedtuple
 from contextlib import closing
 from itertools import chain
 
 from glad.opener import URLOpener
-from glad.util import Version
+from glad.util import Version, topological_sort
+
+logger = logging.getLogger(__name__)
+
 
 _ARRAY_RE = re.compile(r'\[\d+\]')
 
@@ -37,25 +43,7 @@ class FeatureSet(namedtuple(
     'FeatureSet',
     ['api', 'version', 'profile', 'features', 'extensions', 'types', 'enums', 'commands']
 )):
-    def split_commands(self, spec):
-        """
-        :param spec: specification which the feature set is based on
-        :return: tuple of feature and extension commands
-        """
-        f_commands = set()
-        e_commands = set()
-
-        for feature in self.features:
-            f_commands = f_commands.union(
-                feature.get_requirements(spec, self.api, self.profile).commands
-            )
-
-        for extension in self.extensions:
-            e_commands = e_commands.union(
-                set(extension.get_requirements(spec, self.api, self.profile).commands) - f_commands
-            )
-
-        return _FeatureExtensionCommands(f_commands, e_commands)
+    pass
 
 
 class Specification(object):
@@ -73,6 +61,41 @@ class Specification(object):
         self._extensions = None
 
         self._combined = None
+
+    def _magic_require(self, api, profile):
+        """
+        The specifications use a requirement system for most symbols,
+        unfortunately this is only partially used for types.
+
+        This method exists to fix the requirement system and
+        require the symbols which are not explicitly required
+        but yet are needed.
+
+        By default requires all types which are not associated with a
+        profile or are associated with the requested profile.
+
+        The problem is some types should *only* be included through
+        the requirement system (like khrplatform). If this is the case
+        this method should be overwritten.
+
+        :param api: requested api
+        :param profile: requested profile
+        :return: a requirement or None
+        """
+        requirements = [name for name, types in self.types.items()
+                        if any(t.api in (None, api) for t in types)]
+
+        return Require(api, profile, requirements)
+
+    def _magic_are_enums_blacklisted(self, enums_element):
+        """
+        Some specifications (Vulkan) have types referring to enums,
+        usually by type. To not include these enum types as enum
+        (they are already a type), this blacklist exists.
+
+        :return: boolean if enums element is blacklisted
+        """
+        return False
 
     @property
     def name(self):
@@ -118,11 +141,40 @@ class Specification(object):
     def types(self):
         if self._types is None:
             self._types = OrderedDict()
-            for element in self.root.find('types').iter('type'):
+            for element in filter(lambda e: e.tag == 'type', iter(self.root.find('types'))):
                 t = Type.from_element(element)
+
+                if t.category == 'enum':
+                    enums = self.root.xpath('//enums[@type][@name="{}"]'.format(t.name))
+                    if len(enums) == 0:
+                        # yep the type exists but there is actually no enum for it...
+                        logger.debug('type {} with category enum but without enums'.format(t.name))
+                        continue
+                    if not len(enums) == 1:
+                        # this should never happen, if it does ... well shit
+                        raise ValueError('multiple enums with type attribute and name {}'.format(t.name))
+                    enums = enums[0]
+
+                    namespace = enums.get('namespace')
+                    group = enums.get('group')
+                    vendor = enums.get('vendor')
+                    comment = enums.get('comment', '')
+
+                    t.enums = [Enum.from_element(e, namespace=namespace, group=group, vendor=vendor, comment=comment)
+                               for e in enums.findall('enum')]
+                elif t.category in ('struct', 'union'):
+                    t.members = [Member.from_element(e) for e in element.findall('member')]
+
                 if t.name not in self._types:
                     self._types[t.name] = list()
                 self._types[t.name].append(t)
+
+            def _type_dependencies(item):
+                # all requirements of all types (types can exist more than once, e.g. specialized for an API)
+                # but only requirements that are types as well
+                return set(r for r in chain.from_iterable(t.requires for t in item[1]) if r in self._types)
+
+            self._types = OrderedDict(topological_sort(self._types.items(), lambda x: x[0], _type_dependencies))
 
         return self._types
 
@@ -143,21 +195,23 @@ class Specification(object):
 
         self._enums = defaultdict(list)
         for element in self.root.iter('enums'):
-            namespace = element.attrib['namespace']
-            type_ = element.get('type')
+            # check if the enum is actually a type
+            if self._magic_are_enums_blacklisted(element):
+                continue
+
+            namespace = element.get('namespace')
             group = element.get('group')
             vendor = element.get('vendor')
             comment = element.get('comment', '')
 
             for enum in element:
-                if enum.tag == 'unused':
+                if enum.tag in ('unused', 'comment'):
                     continue
                 assert enum.tag == 'enum'
 
                 name = enum.attrib['name']
                 self._enums[name].append(
-                    Enum(name, enum.attrib['value'], enum.get('api'),
-                         namespace, type_, group, vendor, comment)
+                    Enum.from_element(enum, namespace=namespace, group=group, vendor=vendor, comment=comment)
                 )
 
         return self._enums
@@ -205,15 +259,14 @@ class Specification(object):
 
         return profiles
 
-    def find(self, require, api, profile, resolve_types=False):
+    def find(self, require, api, profile, recursive=False):
         """
         Find all requirements of a require 'instruction'.
 
         :param require: the require instruction to resolve
         :param api: the api to resolve for
         :param profile: the profile to resolve for
-        :param resolve_types: types can require other types,
-        if True these requirements will be yielded as well
+        :param recursive: recursively resolve requirements
         :return: iterator with all results
         """
         if not ((require.profile is None or require.profile == profile) and
@@ -226,9 +279,10 @@ class Specification(object):
             self._combined.update(self.commands)
             self._combined.update(self.enums)
 
-        requirements = list(require.requirements)
-        while requirements:
-            name = requirements.pop(0)
+        requirements = set(require.requirements)
+        open_requirements = list(requirements)
+        while open_requirements:
+            name = open_requirements.pop(0)
 
             if name in self._combined:
                 results = self._combined[name]
@@ -256,11 +310,14 @@ class Specification(object):
 
                 # maybe we got more requirements (types can require other types)
                 # TODO maybe generalize this so everything can require more -> recursive?
-                if resolve_types and isinstance(best_match, Type):
-                    # hope for no circular dependencies, I don't wanna mess with that right now ...
-                    # famous last words
-                    if best_match.requires:
-                        requirements.append(best_match.requires)
+                # TODO check if _magic_require is still necessary with recursive
+                # TODO auto-require types from commands etc.
+                if recursive and hasattr(best_match, 'requires'):
+                    # just add new requirements
+                    new_requirements = set(best_match.requires).difference(requirements)
+                    if new_requirements:
+                        requirements.update(new_requirements)
+                        open_requirements.extend(new_requirements)
 
                 yield best_match
 
@@ -355,7 +412,7 @@ class Specification(object):
         # features are special extensions
         for extension in chain(features, extensions):
             for require in extension.requires:
-                found = self.find(require, api, profile, resolve_types=True)
+                found = self.find(require, api, profile, recursive=True)
                 result = result.union(found)
 
             for remove in extension.removes:
@@ -370,14 +427,10 @@ class Specification(object):
         # require all types which are not associated with a profile or with this one specific
         # and to make it more fun, there are a few types which should only be included through
         # the requirement system (less includes .. mainly important for khrplatform)
-        # TODO maybe move that somewhere else
-        magic_blacklist = (
-            'stddef', 'khrplatform', 'inttypes'  # gl.xml
-        )
-        require = Require(api, profile, [type_ for type_ in self.types.keys()
-                                         if type_ not in magic_blacklist])
-        # find and add the requirements just defined
-        result = result.union(self.find(require, api, profile, resolve_types=True))
+        require = self._magic_require(api, profile)
+        if require is not None:
+            # find and add the requirements just defined
+            result = result.union(self.find(require, api, profile, recursive=True))
 
         # OH WAIT THERE IS MORE!? E.g. Opengl 1.0 HAS *ZERO* Enums? Why?
         # I dont know, maybe some lazy ass who didnt want to figure out which enums were introduced
@@ -394,22 +447,6 @@ class Specification(object):
         types = sorted(types, key=all_sorted_types.index)
 
         return FeatureSet(api, version, profile, features, extensions, types, enums, commands)
-
-    def split_commands(self, feature_set):
-        """
-        :param feature_set:
-        :return:
-        """
-        fcommands = set()
-        ecommands = set()
-
-        for feature in feature_set.features:
-            fcommands.union(feature.get_requirements(self, feature_set.api, feature_set.profile))
-
-        for extension in feature_set.extensions:
-            ecommands.union(extension.get_requirements(self, feature_set.api, feature_set.profile) - fcommands)
-
-        return fcommands, ecommands
 
 
 class Group(object):
@@ -430,24 +467,34 @@ class IdentifiedByName(object):
 
 
 class Type(IdentifiedByName):
-    def __init__(self, raw, api, name, requires):
+    def __init__(self, raw, api, category, name, requires=None, enums=None, members=None):
         self.raw = raw
         self.api = api
+        self.category = category
         self.name = name
-        self.requires = requires
 
-    @staticmethod
-    def from_element(element):
+        self.requires = requires or []
+
+        self.enums = enums
+        self.members = members
+
+    @classmethod
+    def from_element(cls, element):
         apientry = element.find('apientry')
         if apientry is not None:
             apientry.text = 'APIENTRY'
 
         raw = ''.join(element.itertext())
         api = element.get('api')
+        category = element.get('category')
         name = element.get('name') or element.find('name').text
-        requires = element.get('requires')
+        # a type referenced by a struct/funcptr is required by this type
+        requires = set(t.text for t in element.iter('type') if not t is element)
+        requires.update(e.text for e in element.iter('enum'))
+        if element.get('requires'):
+            requires.add(element.get('requires'))
 
-        return Type(raw, api, name, requires)
+        return cls(raw, api, category, name, requires)
 
     @property
     def is_preprocessor(self):
@@ -458,14 +505,29 @@ class Type(IdentifiedByName):
     __repr__ = __str__
 
 
+class Member(IdentifiedByName):
+    def __init__(self, name, type):
+        self.name = name
+        self.type = type
+
+    @classmethod
+    def from_element(cls, element):
+        name = element.find('name').text
+        type = OGLType(element)
+
+        return Member(name, type)
+
+
 class Enum(IdentifiedByName):
-    def __init__(self, name, value, api, namespace,
-                 type_=None, group=None, vendor=None, comment=''):
+    def __init__(self, name, value, bitpos, api,
+                 namespace=None, group=None, vendor=None, comment=''):
         self.name = name
         self.value = value
+        if value is None and bitpos is not None:
+            self.value = 1 << int(bitpos)
+        self.bitpos = bitpos
         self.api = api
         self.namespace = namespace
-        self.type = type_
         self.group = group
         self.vendor = vendor
         self.comment = comment
@@ -474,16 +536,33 @@ class Enum(IdentifiedByName):
         return self.name
     __repr__ = __str__
 
+    @classmethod
+    def from_element(cls, element, namespace=None, group=None, vendor=None, comment=''):
+        name = element.attrib['name']
+        value = element.get('value')
+        bitpos = element.get('bitpos')
+        api = element.get('api')
+
+        return cls(name, value, bitpos, api,
+                   namespace=namespace, group=group, vendor=vendor, comment=comment)
+
 
 class Command(IdentifiedByName):
     def __init__(self, element):
         self.proto = Proto(element.find('proto'))
-        self.params = [Param(ele) for ele in element.iter('param')]
+        self.params = [Param(ele) for ele in filter(lambda e: e.tag == 'param', iter(element))]
         self.alias = element.find('alias')
         if self.alias is not None:
             self.alias = self.alias.get('name')
 
         self.api = element.get('api')
+
+    @property
+    def requires(self):
+        requires = [param.type.orig_type for param in self.params if param.type.orig_type]
+        if self.proto.ret.orig_type:
+            requires.append(self.proto.ret.orig_type)
+        return requires
 
     @property
     def name(self):
@@ -519,10 +598,20 @@ class Param(object):
 class OGLType(object):
     def __init__(self, element):
         self.element = element
-        self.raw = ''.join(element.itertext()).strip()
+
+        # assume just one comment element
+        self.comment = ' '.join(c.text for c in element.iter('comment'))
+
+        # working copy to remove elements
+        element = copy.deepcopy(element)
+        for comment in element.iter('comment'):
+            comment.getparent().remove(comment)
+
+        self.raw = ' '.join(t.strip() for t in element.itertext())
 
         self.name = element.find('name').text
 
+        self.orig_type = None if element.find('type') is None else element.find('type').text
         self.type = (self.raw.replace('const', '').replace('unsigned', '')
                      .replace('struct', '').strip().split(None, 1)[0]
                      if element.find('ptype') is None else element.find('ptype').text)
@@ -571,6 +660,9 @@ class Extension(IdentifiedByName):
         # so this should be empty for every extension which is not a feature
         self.removes = [Remove(remove) for remove in element.findall('remove')]
 
+        self.type = element.get('type')
+        self.protect = element.get('protect')
+
     def get_requirements(self, spec, feature_set):
         """
         Find all types, enums and commands/functions which are required
@@ -584,7 +676,7 @@ class Extension(IdentifiedByName):
         result = set()
 
         for require in self.requires:
-            found = spec.find(require, feature_set.api, feature_set.profile)
+            found = spec.find(require, feature_set.api, feature_set.profile, recursive=True)
             result = result.union(found)
 
         types, enums, commands = spec.split_types(result, (Type, Enum, Command))

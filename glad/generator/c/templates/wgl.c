@@ -54,7 +54,7 @@ static int has_ext(HDC hdc, const char *ext) {
     return 0;
 }
 
-static int find_extensions{{ feature_set.api|upper }}(HDC hdc) {
+static int find_extensions{{ feature_set.api|api }}(HDC hdc) {
     {% for extension in feature_set.extensions %}
     GLAD_{{ extension.name }} = has_ext(hdc, "{{ extension.name }}");
     {% else %}
@@ -63,7 +63,7 @@ static int find_extensions{{ feature_set.api|upper }}(HDC hdc) {
     return 1;
 }
 
-static int find_core{{ feature_set.api|upper }}(void) {
+static int find_core{{ feature_set.api|api }}(void) {
     int major = {{ feature_set.version.major }}, minor = {{ feature_set.version.minor }};
     {% for feature in feature_set.features %}
     GLAD_{{ feature.name }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
@@ -71,18 +71,18 @@ static int find_core{{ feature_set.api|upper }}(void) {
     return major * 1000 + minor;
 }
 
-int gladLoad{{ feature_set.api|upper }}(HDC hdc, GLADloadproc load, void *userptr) {
+int gladLoad{{ feature_set.api|api }}(HDC hdc, GLADloadproc load, void *userptr) {
     int version;
     wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)load("wglGetExtensionsStringARB", userptr);
     wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)load("wglGetExtensionsStringEXT", userptr);
     if(wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return 0;
-    version = find_core{{ feature_set.api|upper }}();
+    version = find_core{{ feature_set.api|api }}();
 
     {% for feature, _ in loadable(feature_set.features[1:]) %}
     load_{{ feature.name }}(load, userptr);
     {% endfor %}
 
-    if (!find_extensions{{ feature_set.api|upper }}(hdc)) return 0;
+    if (!find_extensions{{ feature_set.api|api }}(hdc)) return 0;
     {% for extension, _ in loadable(feature_set.extensions) %}
     load_{{ extension.name }}(load, userptr);
     {% endfor %}
@@ -94,7 +94,7 @@ static void* glad_wgl_get_proc_from_userptr(const char* name, void *userptr) {
     return ((void* (*)(const char *name))userptr)(name);
 }
 
-int gladLoad{{ feature_set.api|upper }}Simple(HDC hdc, GLADsimpleloadproc load) {
-    return gladLoad{{ feature_set.api|upper }}(hdc, glad_wgl_get_proc_from_userptr, (void*) load);
+int gladLoad{{ feature_set.api|api }}Simple(HDC hdc, GLADsimpleloadproc load) {
+    return gladLoad{{ feature_set.api|api }}(hdc, glad_wgl_get_proc_from_userptr, (void*) load);
 }
 {% endblock %}

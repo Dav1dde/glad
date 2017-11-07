@@ -28,7 +28,7 @@ static int has_ext(const char *extensions, const char *ext) {
     }
 }
 
-static int find_extensions{{ feature_set.api|upper }}(EGLDisplay display) {
+static int find_extensions{{ feature_set.api|api }}(EGLDisplay display) {
     const char *extensions;
     if (!get_exts(display, &extensions)) return 0;
 
@@ -41,7 +41,7 @@ static int find_extensions{{ feature_set.api|upper }}(EGLDisplay display) {
     return 1;
 }
 
-static int find_core{{ feature_set.api|upper }}(EGLDisplay display) {
+static int find_core{{ feature_set.api|api }}(EGLDisplay display) {
     int major, minor;
     const char *version;
 
@@ -79,7 +79,7 @@ static int find_core{{ feature_set.api|upper }}(EGLDisplay display) {
     return major * 1000 + minor;
 }
 
-int gladLoad{{ feature_set.api|upper }}(EGLDisplay display, GLADloadproc load, void* userptr) {
+int gladLoad{{ feature_set.api|api }}(EGLDisplay display, GLADloadproc load, void* userptr) {
     int version;
     eglGetDisplay = (PFNEGLGETDISPLAYPROC)load("eglGetDisplay", userptr);
     eglGetCurrentDisplay = (PFNEGLGETCURRENTDISPLAYPROC)load("eglGetCurrentDisplay", userptr);
@@ -87,13 +87,13 @@ int gladLoad{{ feature_set.api|upper }}(EGLDisplay display, GLADloadproc load, v
     eglGetError = (PFNEGLGETERRORPROC)load("eglGetError", userptr);
     if (eglGetDisplay == NULL || eglGetCurrentDisplay == NULL || eglQueryString == NULL || eglGetError == NULL) return 0;
 
-    version = find_core{{ feature_set.api|upper }}(display);
+    version = find_core{{ feature_set.api|api }}(display);
     if (!version) return 0;
     {% for feature, _ in loadable(feature_set.features) %}
     load_{{ feature.name }}(load, userptr);
     {% endfor %}
 
-    if (!find_extensions{{ feature_set.api|upper }}(display)) return 0;
+    if (!find_extensions{{ feature_set.api|api }}(display)) return 0;
     {% for extension, _ in loadable(feature_set.extensions) %}
     load_{{ extension.name }}(load, userptr);
     {% endfor %}
@@ -105,8 +105,8 @@ static void* glad_egl_get_proc_from_userptr(const char* name, void *userptr) {
     return ((void* (*)(const char *name))userptr)(name);
 }
 
-int gladLoad{{ feature_set.api|upper }}Simple(EGLDisplay display, GLADsimpleloadproc load) {
-    return gladLoad{{ feature_set.api|upper }}(display, glad_egl_get_proc_from_userptr, (void*) load);
+int gladLoad{{ feature_set.api|api }}Simple(EGLDisplay display, GLADsimpleloadproc load) {
+    return gladLoad{{ feature_set.api|api }}(display, glad_egl_get_proc_from_userptr, (void*) load);
 }
 
 {% endblock %}

@@ -36,7 +36,8 @@ _API_SPEC_MAPPING = {
     'glsc2': 'gl',
     'egl': 'egl',
     'glx': 'glx',
-    'wgl': 'wgl'
+    'wgl': 'wgl',
+    'vulkan': 'vk'
 }
 
 
@@ -78,3 +79,26 @@ def parse_apis(value, api_spec_mapping=_API_SPEC_MAPPING):
         result[m.group('api')] = ApiInformation(spec, version, m.group('profile'))
 
     return result
+
+
+# based on https://stackoverflow.com/a/11564323/969534
+def topological_sort(items, key, dependencies):
+    pending = [(item, set(dependencies(item))) for item in items]
+    emitted = []
+    while pending:
+        next_pending = []
+        next_emitted = []
+        for entry in pending:
+            item, deps = entry
+            deps.difference_update(emitted)
+            if deps:
+                next_pending.append(entry)
+            else:
+                yield item
+                key_item = key(item)
+                emitted.append(key_item)
+                next_emitted.append(key_item)
+        if not next_emitted:
+            raise ValueError("cyclic or missing dependancy detected: %r" % (next_pending,))
+        pending = next_pending
+        emitted = next_emitted

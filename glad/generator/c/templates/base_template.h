@@ -3,7 +3,7 @@
 #define __glad_{{ feature_set.api }}_h_
 
 {% block header %}
-{{ template_utils.header_error(feature_set.api, feature_set.api, feature_set.api|upper) }}
+{{ template_utils.header_error(feature_set.api, feature_set.api, feature_set.api|api) }}
 {% endblock %}
 
 #define GLAD_{{ feature_set.api|upper }}
@@ -63,11 +63,11 @@ extern "C" {
 {% block feature_information %}
 {{ template_utils.write_feature_information(chain(feature_set.features, feature_set.extensions), with_runtime=True) }}
 {% endblock %}
-{% block types %}
-{{ template_utils.write_types(feature_set.types) }}
-{% endblock %}
 {% block enums %}
 {{ template_utils.write_enumerations(feature_set.enums) }}
+{% endblock %}
+{% block types %}
+{{ template_utils.write_types(feature_set.types) }}
 {% endblock %}
 {% block commands %}
 {{ template_utils.write_function_typedefs(feature_set.commands) }}

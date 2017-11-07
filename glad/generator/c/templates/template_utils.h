@@ -21,10 +21,26 @@ GLAPI int GLAD_{{ extension.name }};
 {% macro write_types(types) %}
 {# we assume the types are sorted correctly #}
 {% for type in types %}
-{% if type.raw.strip() %}
+{{ write_type(type) }}
+{% endfor %}
+{% endmacro %}
+
+{% macro write_type(type) %}
+{% if type.category == 'enum' %}
+typedef enum {{ type.name }} {
+{% for member in type.enums %}
+    {{ member.name }} = {{ member.value }},
+{% endfor %}
+} {{ type.name }};
+{% elif type.category in ('struct', 'union') %}
+typedef {{ type.category }} {{ type.name }} {
+{% for member in type.members %}
+    {{ member.type.raw }};
+{% endfor %}
+} {{ type.name }};
+{% elif type.raw.strip() %}
 {{ type.raw }}
 {% endif %}
-{% endfor %}
 {% endmacro %}
 
 {% macro write_enumerations(enumerations) %}

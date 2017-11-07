@@ -1,3 +1,4 @@
+import copy
 import functools
 import itertools
 import os.path
@@ -9,7 +10,7 @@ from glad.config import Config, ConfigOption, RequirementConstraint, Unsupported
 from glad.generator import BaseGenerator
 from glad.parse import Type
 
-_ARRAY_RE = re.compile(r'\[\d*\]')
+_ARRAY_RE = re.compile(r'\[[\d\w]*\]')
 
 DebugArguments = namedtuple('_DebugParams', ['impl', 'function', 'pre_callback', 'post_callback', 'ret'])
 
@@ -18,7 +19,12 @@ Header = namedtuple('_Header', ['name', 'include', 'url'])
 
 def type_to_c(ogl_type):
     result = ''
-    for text in ogl_type.element.itertext():
+
+    element = copy.deepcopy(ogl_type.element)
+    for comment in element.findall('comment'):
+        comment.getparent().remove(comment)
+
+    for text in element.itertext():
         if text == ogl_type.name:
             # yup * is sometimes part of the name
             result += '*' * text.count('*')
@@ -193,7 +199,12 @@ class CGenerator(BaseGenerator):
             'eglplatform',
             'EGL/eglplatform.h',
             'https://cgit.freedesktop.org/mesa/mesa/plain/include/EGL/eglplatform.h'
-        )
+        ),
+        Header(
+            'vk_platform',
+            'vk_platform.h',
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/master/include/vulkan/vk_platform.h'
+        ),
     ]
 
     def __init__(self, *args, **kwargs):
@@ -331,6 +342,10 @@ class CGenerator(BaseGenerator):
                 continue
 
             path = os.path.join(self.path, 'include/{}'.format(header.include))
+
+            directory_path = os.path.split(path)[0]
+            if not os.path.exists(directory_path):
+                os.makedirs(directory_path)
+
             if not os.path.exists(path):
-                os.makedirs(os.path.split(path)[0])
                 self.opener.urlretrieve(header.url, path)

@@ -7,6 +7,12 @@ from glad.opener import URLOpener
 from glad.util import makefiledir
 
 
+def _api_filter(api):
+    if len(api) > 4:
+        return api.capitalize()
+    return api.upper()
+
+
 class NullConfig(Config):
     pass
 
@@ -38,7 +44,11 @@ class BaseGenerator(object):
         )
 
         self.environment.tests.update(
-            existsin=lambda value, other: value in other,
+            existsin=lambda value, other: value in other
+        )
+
+        self.environment.filters.update(
+            api=_api_filter
         )
 
     def get_templates(self, spec, feature_set, config):

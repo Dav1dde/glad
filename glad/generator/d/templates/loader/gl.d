@@ -1,14 +1,14 @@
-bool gladLoad{{ feature_set.api|upper }}(Loader load) {
+bool gladLoad{{ feature_set.api|api }}(Loader load) {
     glGetString = cast(typeof(glGetString))load("glGetString");
     if(glGetString is null) { return false; }
     if(glGetString(GL_VERSION) is null) { return false; }
 
-    find_core{{ feature_set.api|upper }}();
+    find_core{{ feature_set.api|api }}();
     {% for feature in feature_set.features %}
     load_{{ feature.name }}(load);
     {% endfor %}
 
-    find_extensions{{ feature_set.api|upper }}();
+    find_extensions{{ feature_set.api|api }}();
     {% for extension in feature_set.extensions %}
     load_{{ extension.name }}(load);
     {% endfor %}
@@ -62,7 +62,7 @@ private bool has_ext(const(char)* ext) @nogc {
     return false;
 }
 
-void find_core{{ feature_set.api|upper }}() {
+void find_core{{ feature_set.api|api }}() {
 
     // Thank you @elmindreda
     // https://github.com/elmindreda/greg/blob/master/templates/greg.c.in#L176
@@ -94,7 +94,7 @@ void find_core{{ feature_set.api|upper }}() {
     {% endfor %}    return;
 }
 
-void find_extensions{{ feature_set.api|upper }}() {
+void find_extensions{{ feature_set.api|api }}() {
     {% for extension in extensions %}
     {{ extension.name }} = has_ext("{{ extension.name }}");
     {% endfor %}
