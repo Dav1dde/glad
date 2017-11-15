@@ -69,7 +69,7 @@ int %(init)s(void) {
 }
 
 %(pre)s
-void %(terminate)s() {
+void %(terminate)s(void) {
     if(libGL != NULL) {
         dlclose(libGL);
         libGL = NULL;

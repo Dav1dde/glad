@@ -85,7 +85,7 @@ class CDebugGenerator(CGenerator):
     def write_function_prototype(self, fobj, func):
         fobj.write('typedef {} (APIENTRYP PFN{}PROC)({});\n'.format(
             func.proto.ret.to_c(), func.proto.name.upper(),
-            ', '.join(param.type.raw for param in func.params)
+            ', '.join(param.type.raw for param in func.params) or 'void'
         ))
         fobj.write('GLAPI PFN{}PROC glad_{};\n'.format(
             func.proto.name.upper(), func.proto.name
@@ -104,7 +104,7 @@ class CDebugGenerator(CGenerator):
         args_def = ', '.join(
             '{type} arg{i}'.format(type=param.type.to_c(), i=i)
             for i, param in enumerate(func.params)
-        )
+        ) or 'void'
         fobj.write('{} APIENTRY glad_debug_impl_{}({}) {{'.format(
             func.proto.ret.to_c(), func.proto.name, args_def
         ))
