@@ -90,12 +90,12 @@ int gladLoad{{ feature_set.api|upper }}(EGLDisplay *display, GLADloadproc load, 
     return 1;
 }
 
-static void* glad_get_proc_from_userptr(const char* name, void *userptr) {
+static void* glad_egl_get_proc_from_userptr(const char* name, void *userptr) {
     return ((void* (*)(const char *name))userptr)(name);
 }
 
 int gladLoad{{ feature_set.api|upper }}Simple(EGLDisplay *display, GLADsimpleloadproc load) {
-    return gladLoad{{ feature_set.api|upper }}(display, glad_get_proc_from_userptr, (void*) load);
+    return gladLoad{{ feature_set.api|upper }}(display, glad_egl_get_proc_from_userptr, (void*) load);
 }
 
 {% endblock %}

@@ -14,6 +14,9 @@
 #endif
 
 {% if options.header_only %}
+#ifdef GLAD_LOADER_IMPLEMENTATION
 {% include 'loader/loader.c' %}
+
+#endif
 {% endif %}
 

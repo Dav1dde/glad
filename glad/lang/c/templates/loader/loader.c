@@ -51,11 +51,6 @@ static void* glad_dlsym_handle(void* handle, const char *name) {
 #endif
 }
 
-
-static void* glad_get_proc_from_userptr(const char* name, void *userptr) {
-    return ((void* (*)(const char *name)userptr)(name);
-}
-
 {% include 'loader/egl.c' %}
 
 {% include 'loader/gl.c' %}

@@ -1,10 +1,10 @@
-import itertools
 import re
-from collections import namedtuple, defaultdict
+from collections import namedtuple
 
-from glad.config import Config, ConfigOption, InvalidConfig, RequirementConstraint
+import itertools
+
+from glad.config import Config, ConfigOption, RequirementConstraint
 from glad.lang.generator import BaseGenerator
-
 
 _ARRAY_RE = re.compile(r'\[\d*\]')
 
@@ -194,14 +194,12 @@ class CGenerator(BaseGenerator):
                 ('{}.c'.format(spec.name), source)
             ])
 
-        if options['LOADER']:
+        # if header only, the loader is conditionally included by header_only.h
+        if options['LOADER'] and not options['HEADER_ONLY']:
             templates.extend([
-                ('loader/loader.h', 'include/glad/glad_loader.h')
+                ('loader/loader.h', 'include/glad/glad_loader.h'),
+                ('loader/loader.c', 'src/glad_loader.c')
             ])
-            if not options['HEADER_ONLY']:
-                templates.extend([
-                    ('loader/loader.c', 'src/glad_loader.c')
-                ])
 
         return templates
 

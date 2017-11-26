@@ -68,12 +68,12 @@ int gladLoad{{ feature_set.api|upper }}(Display **display, int *screen, GLADload
     return 1;
 }
 
-static void* glad_get_proc_from_userptr(const char* name, void *userptr) {
+static void* glad_glx_get_proc_from_userptr(const char* name, void *userptr) {
     return ((void* (*)(const char *name))userptr)(name);
 }
 
 int gladLoad{{ feature_set.api|upper }}Simple(Display **display, int *screen, GLADsimpleloadproc load) {
-    return gladLoad{{ feature_set.api|upper }}(display, screen, glad_get_proc_from_userptr, (void*) load);
+    return gladLoad{{ feature_set.api|upper }}(display, screen, glad_glx_get_proc_from_userptr, (void*) load);
 }
 
 {% endblock %}

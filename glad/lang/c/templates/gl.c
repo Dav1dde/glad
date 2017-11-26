@@ -240,12 +240,12 @@ int gladLoad{{ feature_set.api|upper }}({{ context_arg(',') }} GLADloadproc load
     return version;
 }
 
-static void* glad_get_proc_from_userptr(const char* name, void *userptr) {
+static void* glad_gl_get_proc_from_userptr(const char* name, void *userptr) {
     return ((void* (*)(const char *name))userptr)(name);
 }
 
 int gladLoad{{ feature_set.api|upper }}Simple({{ context_arg(',') }} GLADsimpleloadproc load) {
-    return gladLoad{{ feature_set.api|upper }}({{'context,' if options.mx }} glad_get_proc_from_userptr, (void*) load);
+    return gladLoad{{ feature_set.api|upper }}({{'context,' if options.mx }} glad_gl_get_proc_from_userptr, (void*) load);
 }
 
 {% if options.mx_global %}

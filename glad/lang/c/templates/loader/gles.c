@@ -1,4 +1,4 @@
-#ifndef GLAD_NO_GLES_LOADER
+#if !defined(GLAD_NO_GLES_LOADER) && (defined(GLAD_GLES1) || defined(GLAD_GLES2))
 
 typedef void* (APIENTRYP GLAD_GLES_PFNGETPROCADDRESSPROC_PRIVATE)(const char*);
 struct _glad_gles_userptr {
