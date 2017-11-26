@@ -46,7 +46,7 @@ def one_of(choices):
 
 
 class ConfigOption(object):
-    def __init__(self, description, converter=None, default=None, required=False):
+    def __init__(self, description, converter=None, default=None, required=False, help=None):
         self.converter = converter
         if self.converter is None:
             self.converter = identity
@@ -54,6 +54,7 @@ class ConfigOption(object):
         self.description = description
         self.default = default
         self.required = required
+        self.help = help
 
         try:
             self.description = '{}. {}'.format(
