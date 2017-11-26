@@ -85,7 +85,7 @@ static void* glad_get_proc_from_userptr(const char* name, void *userptr) {
     return ((void* (*)(const char *name))userptr)(name);
 }
 
-int gladLoad{{ feature_set.api|upper }}Simple(HDC hdc, void* (*)(const char *name, void* userptr) load) {
-    return gladLoad{{ feature_set.api|upper }}(hdc, screen, glad_get_proc_from_userptr, &load);
+int gladLoad{{ feature_set.api|upper }}Simple(HDC hdc, GLADsimpleloadproc load) {
+    return gladLoad{{ feature_set.api|upper }}(hdc, glad_get_proc_from_userptr, (void*) load);
 }
 {% endblock %}

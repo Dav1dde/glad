@@ -245,7 +245,7 @@ static void* glad_get_proc_from_userptr(const char* name, void *userptr) {
 }
 
 int gladLoad{{ feature_set.api|upper }}Simple({{ context_arg(',') }} GLADsimpleloadproc load) {
-    return gladLoad{{ feature_set.api|upper }}({{'context,' if options.mx }} glad_get_proc_from_userptr, &load);
+    return gladLoad{{ feature_set.api|upper }}({{'context,' if options.mx }} glad_get_proc_from_userptr, (void*) load);
 }
 
 {% if options.mx_global %}

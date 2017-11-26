@@ -73,7 +73,7 @@ static void* glad_get_proc_from_userptr(const char* name, void *userptr) {
 }
 
 int gladLoad{{ feature_set.api|upper }}Simple(Display **display, int *screen, GLADsimpleloadproc load) {
-    return gladLoad{{ feature_set.api|upper }}(display, screen, glad_get_proc_from_userptr, &load);
+    return gladLoad{{ feature_set.api|upper }}(display, screen, glad_get_proc_from_userptr, (void*) load);
 }
 
 {% endblock %}
