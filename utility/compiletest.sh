@@ -81,7 +81,7 @@ echorun g++ -Ibuild/include build/src/glad_glx.c ${GPP_FLAGS}
 #echorun gcc example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lglut -ldl
 #mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lfreeglut
 echorun g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw -ldl
-mingwcpp_compile example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw3
+mingwcpp_compile example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw3 -lgdi32
 
 rm -rf build
 ${PYTHON} -m glad --api="gl:core=" --out-path=build c

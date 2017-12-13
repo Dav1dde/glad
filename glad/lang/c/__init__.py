@@ -1,10 +1,9 @@
+import itertools
 import re
 import textwrap
 from collections import namedtuple
 
-import itertools
-
-from glad.config import Config, ConfigOption, RequirementConstraint
+from glad.config import Config, ConfigOption, RequirementConstraint, UnsupportedConstraint
 from glad.lang.generator import BaseGenerator
 
 _ARRAY_RE = re.compile(r'\[\d*\]')
@@ -113,7 +112,6 @@ def collect_alias_information(commands):
 
 # RANDOM TODOs:
 # TODO: glad_get_gl_version(), glad_get_egl_version(), glad_get_*_version()
-# TODO: glad_loader.h
 # TODO: merge option -> https://github.com/Dav1dde/glad/issues/24
 
 
@@ -122,7 +120,6 @@ class CConfig(Config):
         converter=bool,
         default=False,
         description='Enables generation of a debug build',
-        # TODO fix endless recursion in glad pre and post call
         help=textwrap.dedent('''
         Adds an additional layer of indirection allowing you to easily 
         intercept, manipulate and log function calls.
@@ -228,7 +225,8 @@ class CConfig(Config):
 
     __constraints__ = [
         RequirementConstraint(['MX_GLOBAL'], 'MX'),
-        RequirementConstraint(['MX', 'DEBUG'], 'MX_GLOBAL')
+        UnsupportedConstraint(['MX'], 'DEBUG')
+        #RequirementConstraint(['MX', 'DEBUG'], 'MX_GLOBAL')
     ]
 
 

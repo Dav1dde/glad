@@ -68,8 +68,8 @@ def get_specifications(specification_names, opener):
             logger.info('using local specification: %s', xml_name)
             specification = Specification.from_file(xml_name)
         else:
-            logger.info('getting %r specification from SVN', name)
-            specification = Specification.from_svn(opener=opener)
+            logger.info('getting %r specification from remote location', name)
+            specification = Specification.from_remote(opener=opener)
 
         specifications[name] = specification
 

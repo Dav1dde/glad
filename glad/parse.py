@@ -19,14 +19,13 @@ except ImportError:
     def xml_frompath(path):
         return etree.parse(path).getroot()
 
+import re
 from collections import defaultdict, OrderedDict, namedtuple
 from contextlib import closing
 from itertools import chain
-import re
 
 from glad.opener import URLOpener
 from glad.util import Version
-
 
 _ARRAY_RE = re.compile(r'\[\d+\]')
 
@@ -91,7 +90,7 @@ class Spec(object):
         return cls(xml_fromstring(raw))
 
     @classmethod
-    def from_svn(cls, opener=None):
+    def from_remote(cls, opener=None):
         return cls.from_url(cls.API + cls.NAME + '.xml', opener=opener)
 
     @classmethod

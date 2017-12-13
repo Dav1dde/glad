@@ -25,6 +25,10 @@ class RequirementNotSatisfied(ConstraintException):
     pass
 
 
+class UnsupportedConfiguration(ConstraintException):
+    pass
+
+
 class InvalidOption(ConfigException):
     def __init__(self, name):
         ConfigException.__init__(self, 'Invalid option {!r}'.format(name))
@@ -92,7 +96,7 @@ class Constraint(object):
         pass
 
 
-class RequirementConstraint(object):
+class RequirementConstraint(Constraint):
     """
     Specifies a simple requirement constraint.
     If a list of options are given (True), the requirement needs to be True as well.
@@ -105,13 +109,13 @@ class RequirementConstraint(object):
         if len(self.options) == 0:
             raise ValueError('At least one option required')
 
-        self._error_formatter = error_formatter
-        if self._error_formatter is None:
-            self._error_formatter = self._format_error
+        self.error_formatter = error_formatter
+        if self.error_formatter is None:
+            self.error_formatter = self._format_error
 
     def validate(self, config):
         if all(config[option] for option in self.options) and not config[self.require]:
-            raise RequirementNotSatisfied(self._error_formatter(self, config), self)
+            raise RequirementNotSatisfied(self.error_formatter(self, config), self)
 
     @staticmethod
     def _format_error(constraint, config):
@@ -127,6 +131,42 @@ class RequirementConstraint(object):
             require=constraint.require,
             s='s' if plural else '',
             not_s='' if plural else 's'
+        )
+
+
+class UnsupportedConstraint(Constraint):
+    """
+    Specifies a unsupported constraint, that can either be a single option
+    or a combination of options. Checks only for the boolean value of the options.
+    """
+    def __init__(self, given, not_allowed, error_formatter=None):
+        self.given = given
+        self.not_allowed = not_allowed
+
+        if len(self.given) == 0:
+            raise ValueError('At least one \'given\' option required')
+
+        self.error_formatter = error_formatter
+        if self.error_formatter is None:
+            self.error_formatter = self._format_error
+
+    def validate(self, config):
+        if all(config[option] for option in self.given) and config[self.not_allowed]:
+            raise UnsupportedConfiguration(self.error_formatter(self, config), self)
+
+    @staticmethod
+    def _format_error(constraint, config):
+        plural = len(constraint.given) > 1
+        given = ', '.join(constraint.given[:-1])
+        if given:
+            given = '{} and {}'.format(given, constraint.given[-1])
+        else:
+            given = constraint.given[-1]
+
+        return 'option{s} {given} can not be used together with {not_allowed}'.format(
+            given=given,
+            not_allowed=constraint.not_allowed,
+            s='s' if plural else ''
         )
 
 

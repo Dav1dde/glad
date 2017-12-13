@@ -36,19 +36,19 @@ void _pre_call_{{ feature_set.api }}_callback_default(const char *name, void *fu
         fprintf(stderr, "GLAD: ERROR %s is NULL!\n", name);
         return;
     }
-    if ({{ ctx('glGetError', context=global_context) }} == NULL) {
+    if (glad_glGetError == NULL) {
         fprintf(stderr, "GLAD: ERROR glGetError is NULL!\n");
         return;
     }
 
     /* Clear old errors */
-    (void){{ ctx('glGetError', context=global_context) }}();
+    (void)glad_glGetError();
 }
 {% endblock %}
 {% block debug_default_post %}
 void _post_call_{{ feature_set.api }}_callback_default(const char *name, void *funcptr, int len_args, ...) {
     GLenum error_code;
-    error_code = {{ ctx('glGetError', context=global_context) }}();
+    error_code = glad_glGetError();
 
     if (error_code != GL_NO_ERROR) {
         fprintf(stderr, "GLAD: ERROR %d in %s!\n", error_code, name);
