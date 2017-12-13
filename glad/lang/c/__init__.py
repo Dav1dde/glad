@@ -280,8 +280,9 @@ class CGenerator(BaseGenerator):
         return templates
 
     def modify_feature_set(self, spec, feature_set, options):
-        self._fix_issue_70(feature_set)
+        feature_set = self._fix_issue_40(spec, feature_set)
         feature_set = self._add_extensions_for_aliasing(spec, feature_set, options)
+        self._fix_issue_70(feature_set)
         return feature_set
 
     def _add_extensions_for_aliasing(self, spec, feature_set, options):
@@ -307,6 +308,25 @@ class CGenerator(BaseGenerator):
                     break
 
         return spec.select(feature_set.api, feature_set.version, feature_set.profile, new_extensions)
+
+    def _fix_issue_40(self, spec, feature_set):
+        """
+        See issue #40: https://github.com/Dav1dde/glad/issues/40
+        > Currently if you generate a loader without these extensions
+        > (WGL_ARB_extensions_string and WGL_EXT_extensions_string) it won't compile.
+        Adds these 2 extensions if they are missing.
+        """
+        if not feature_set.api == 'wgl':
+            return feature_set
+
+        recreate = False
+        extensions = set(ext.name for ext in feature_set.extensions)
+        for required_extension in ('WGL_ARB_extensions_string', 'WGL_EXT_extensions_string'):
+            if required_extension not in extensions:
+                extensions.add(required_extension)
+                recreate = True
+
+        return spec.select(feature_set.api, feature_set.version, feature_set.profile, extensions)
 
     def _fix_issue_70(self, feature_set):
         """
