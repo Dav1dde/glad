@@ -192,8 +192,7 @@ class CConfig(Config):
         including the loader if enabled.
         
         The implementation will be guarded by a `GLAD_{API}_IMPLEMENTATION` 
-        macro. E.g. for OpenGL this is `GLAD_GL_IMPLEMENTATION`. The
-        loader implementation is guarded by `GLAD_LOADER_IMPLEMENTATION`.
+        macro. E.g. for OpenGL this is `GLAD_GL_IMPLEMENTATION`. 
         In order to not end up with missing symbols you need to define
         these macros in *ONE* *SOURCE* file before including glad,
         this makes the glad implementation part of this particular source file. 
@@ -201,7 +200,6 @@ class CConfig(Config):
         Example:
         
             #define GLAD_GL_IMPLEMENTATION
-            #define GLAD_LOADER_IMPLEMENTATION
             #include <glad/glad.h>
 
         ''')
@@ -268,13 +266,6 @@ class CGenerator(BaseGenerator):
             templates.extend([
                 ('{}.h'.format(spec.name), header),
                 ('{}.c'.format(spec.name), source)
-            ])
-
-        # if header only, the loader is conditionally included by header_only.h
-        if options['LOADER'] and not options['HEADER_ONLY']:
-            templates.extend([
-                ('loader/loader.h', 'include/glad/glad_loader.h'),
-                ('loader/loader.c', 'src/glad_loader.c')
             ])
 
         return templates

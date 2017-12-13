@@ -1,6 +1,5 @@
-{% if not options.header_only %}
-#include <glad/glad_loader.h>
-{% endif %}
+#ifndef __glad_loader_library_c_
+#define __glad_loader_library_c_
 
 #include <stddef.h>
 
@@ -51,12 +50,4 @@ static void* glad_dlsym_handle(void* handle, const char *name) {
 #endif
 }
 
-{% include 'loader/egl.c' %}
-
-{% include 'loader/gl.c' %}
-
-{% include 'loader/gles.c' %}
-
-{% include 'loader/glx.c' %}
-
-{% include 'loader/wgl.c' %}
+#endif /* __glad_loader_library_c_ */

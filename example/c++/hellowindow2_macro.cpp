@@ -9,10 +9,8 @@
 #endif
 
 // GLAD
+#define GLAD_GL_IMPLEMENTATION
 #include <glad/glad.h>
-#ifdef GLAD_OPTION_GL_LOADER
-#include <glad/glad_loader.h>
-#endif
 
 // confirm that GLAD didn't include windows.h
 #ifdef _WINDOWS_
@@ -73,6 +71,10 @@ int main()
 
     // Set the required callback functions
     glfwSetKeyCallback(window, key_callback);
+
+#ifdef GLAD_OPTION_GL_LOADER
+    printf("Using internal loader.\n");
+#endif
 
 #ifdef GLAD_OPTION_GL_MX
     GladGLContext context;

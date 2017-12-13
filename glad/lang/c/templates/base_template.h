@@ -80,6 +80,9 @@ GLAPI void glad_set_{{ feature_set.api }}_post_callback(GLADcallback cb);
 {% endif %}
 {% endblock %}
 
+{% block loader_impl %}
+{% include 'loader/' + spec.name + '.h' %}
+{% endblock %}
 
 #ifdef __cplusplus
 }

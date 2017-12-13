@@ -4,8 +4,5 @@
 #ifdef GLAD_{{ spec.name | upper }}_IMPLEMENTATION
 {% include spec.name + '.c' %}
 
-#endif
+#endif /* GLAD_{{ spec.name | upper }}_IMPLEMENTATION */
 
-{% if options.loader %}
-{% include 'loader/loader.h' %}
-{% endif %}
