@@ -29,11 +29,11 @@ void _post_call_{{ feature_set.api }}_callback_default(const char *name, void *f
 {% endblock %}
 
 static GLADcallback _pre_call_{{ feature_set.api }}_callback = _pre_call_{{ feature_set.api }}_callback_default;
-void glad_set_{{ feature_set.api }}_pre_callback(GLADcallback cb) {
+void gladSet{{ feature_set.api }}PreCallback(GLADcallback cb) {
     _pre_call_{{ feature_set.api }}_callback = cb;
 }
 static GLADcallback _post_call_{{ feature_set.api }}_callback = _post_call_{{ feature_set.api }}_callback_default;
-void glad_set_{{ feature_set.api }}_post_callback(GLADcallback cb) {
+void gladSet{{ feature_set.api }}PostCallback(GLADcallback cb) {
     _post_call_{{ feature_set.api }}_callback = cb;
 }
 {% endif %}
