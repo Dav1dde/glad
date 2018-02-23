@@ -24,8 +24,8 @@ int %(init)s(void) {
 %(pre)s
 void %(terminate)s(void) {
     if(libGL != NULL) {
-        FreeLibrary(libGL);
-        libGL = NULL;
+        FreeLibrary((HMODULE) libGL);
+    libGL = NULL;
     }
 }
 #else
@@ -89,7 +89,7 @@ void* %(proc)s(const char *namez) {
 #endif
     if(result == NULL) {
 #ifdef _WIN32
-        result = (void*)GetProcAddress(libGL, namez);
+        result = (void*)GetProcAddress((HMODULE) libGL, namez);
 #else
         result = dlsym(libGL, namez);
 #endif
