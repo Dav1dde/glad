@@ -44,7 +44,7 @@ static void* glad_dlsym_handle(void* handle, const char *name) {
     }
 
 #ifdef _WIN32
-    return GetProcAddress((HMODULE) handle, name);
+    return (void*) GetProcAddress((HMODULE) handle, name);
 #else
     return dlsym(handle, name);
 #endif

@@ -86,7 +86,5 @@ static void resolve_aliases({{ context_arg() }}) {
 {% endblock %}
 
 {% block loader_impl %}
-{% include 'loader/library.c' %}
-
 {% include 'loader/' + spec.name + '.c' %}
 {% endblock %}

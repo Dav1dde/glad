@@ -94,13 +94,19 @@ static void load_{{ extension.name }}(struct Glad{{ feature_set.api|upper }}Cont
 {% endblock %}
 
 {% block loader %}
-{# god forgive me #}
+#if defined(GL_ES_VERSION_3_0) || defined(GL_VERSION_3_0)
+#define _GLAD_GL_IS_SOME_NEW_VERSION 1
+#endif
+
 static int get_exts({{ context_arg(',') }} int version, const char **out_exts, int *out_num_exts_i, const char ***out_exts_i) {
+#ifdef _GLAD_GL_IS_SOME_NEW_VERSION
     if(version < 30) {
+#endif
         if ({{ ctx('glGetString') }} == NULL) {
             return 0;
         }
         *out_exts = (const char *){{ ctx('glGetString') }}(GL_EXTENSIONS);
+#ifdef _GLAD_GL_IS_SOME_NEW_VERSION
     } else {
         int index;
         int num_exts_i = 0;
@@ -116,12 +122,26 @@ static int get_exts({{ context_arg(',') }} int version, const char **out_exts, i
             return 0;
         }
         for(index = 0; index < num_exts_i; index++) {
-            exts_i[index] = (const char*){{ ctx('glGetStringi') }}(GL_EXTENSIONS, index);
+            const char *gl_str_tmp = (const char*)glGetStringi(GL_EXTENSIONS, index);
+            size_t len = strlen(gl_str_tmp);
+
+            char *local_str = (char*)malloc((len+1) * sizeof(char));
+
+            if(local_str != NULL) {
+#if _MSC_VER >= 1400
+                strncpy_s(local_str, len+1, gl_str_tmp, len);
+#else
+                strncpy(local_str, gl_str_tmp, len+1);
+#endif
+            }
+
+            exts_i[index] = local_str;
         }
 
         *out_num_exts_i = num_exts_i;
         *out_exts_i = exts_i;
     }
+#endif
     return 1;
 }
 static void free_exts(const char **exts_i) {

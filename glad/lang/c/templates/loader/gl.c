@@ -1,5 +1,7 @@
 #ifdef GLAD_GL
 
+{% include 'loader/library.c' %}
+
 typedef void* (APIENTRYP GLAD_PFNGETPROCADDRESSPROC_PRIVATE)(const char*);
 struct _glad_gl_userptr {
     void *gl_handle;
@@ -44,7 +46,7 @@ int gladLoadGLInternalLoader({{ 'struct GladGLContext *context' if options.mx }}
 
     int version = 0;
     void *handle;
-    _glad_gl_userptr userptr;
+    struct _glad_gl_userptr userptr;
 
     handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
     if (handle) {
