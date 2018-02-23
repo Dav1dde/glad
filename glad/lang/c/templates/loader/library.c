@@ -31,7 +31,7 @@ static void* glad_get_dlopen_handle(const char *lib_names[], int length) {
 static void glad_close_dlopen_handle(void* handle) {
     if (handle != NULL) {
 #ifdef _WIN32
-        FreeLibrary(handle);
+        FreeLibrary((HMODULE) handle);
 #else
         dlclose(handle);
 #endif
@@ -44,7 +44,7 @@ static void* glad_dlsym_handle(void* handle, const char *name) {
     }
 
 #ifdef _WIN32
-    return GetProcAddress(handle, name);
+    return GetProcAddress((HMODULE) handle, name);
 #else
     return dlsym(handle, name);
 #endif
