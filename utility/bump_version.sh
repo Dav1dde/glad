@@ -27,8 +27,8 @@ echo -e "\n$VERSION_PYTHON\n" > glad/__init__.py
 git commit -am "setup: Bumped version: $VERSION."
 git tag "v$VERSION"
 
-rm -r build/
-rm -r dist/
+rm -rf build/
+rm -rf dist/
 
 python2 setup.py sdist bdist_wheel
 twine upload dist/*
