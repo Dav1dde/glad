@@ -88,5 +88,6 @@ if(GLAD_INSTALL)
     install(DIRECTORY ${GLAD_INCLUDE_DIRS} DESTINATION ${CMAKE_INSTALL_PREFIX})
   endif()
   install(TARGETS glad EXPORT glad-targets
-          ARCHIVE DESTINATION lib)
+          ARCHIVE DESTINATION lib
+          LIBRARY DESTINATION lib)
 endif()
