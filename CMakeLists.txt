@@ -4,7 +4,7 @@ if(NOT CMAKE_VERSION VERSION_LESS 3.1)
   cmake_policy(SET CMP0054 NEW)
 endif()
 
-project(GLAD)
+project(GLAD VERSION 0.1.14 LANGUAGES C)
 
 set(GLAD_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 set(GLAD_OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}")
@@ -16,9 +16,13 @@ set(GLAD_API "" CACHE STRING "API type/version pairs, like \"gl=3.2,gles=\", no 
 set(GLAD_GENERATOR "c" CACHE STRING "Language to generate the binding for")
 set(GLAD_EXTENSIONS "" CACHE STRING "Path to extensions file or comma separated list of extensions, if missing all extensions are included")
 set(GLAD_SPEC "gl" CACHE STRING "Name of the spec")
-set(GLAD_NO_LOADER OFF CACHE BOOL "No loader")
-set(GLAD_EXPORT ON CACHE BOOL "Set export variables for external project")
-set(GLAD_INSTALL OFF CACHE BOOL "Generate installation target")
+option(GLAD_NO_LOADER "No loader" OFF)
+if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  option(GLAD_EXPORT "Set export variables for external project" OFF)
+else()
+  option(GLAD_EXPORT "Set export variables for external project" ON)
+endif()
+option(GLAD_INSTALL "Generate installation target" OFF)
 
 if(GLAD_GENERATOR STREQUAL "d")
   list(APPEND GLAD_SOURCES
@@ -42,7 +46,6 @@ elseif(GLAD_GENERATOR STREQUAL "volt")
   )
 else()
   set(GLAD_INCLUDE_DIRS "${GLAD_OUT_DIR}/include")
-  set(GLAD_LINKER_LANGUAGE CXX)
   list(APPEND GLAD_SOURCES
     "${GLAD_OUT_DIR}/src/glad.c"
     "${GLAD_INCLUDE_DIRS}/glad/glad.h"
@@ -71,10 +74,6 @@ set_source_files_properties(${GLAD_SOURCES} PROPERTIES GENERATED TRUE)
 add_library(glad ${GLAD_SOURCES})
 add_dependencies(glad glad-generate-files)
 target_include_directories(glad PUBLIC ${GLAD_INCLUDE_DIRS})
-
-if(GLAD_LINKER_LANGUAGE)
-  set_target_properties(glad PROPERTIES LINKER_LANGUAGE ${GLAD_LINKER_LANGUAGE})
-endif()
 
 # Export
 if(GLAD_EXPORT)
