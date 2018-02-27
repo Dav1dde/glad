@@ -1,18 +1,16 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
-if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.0)
+# Silence warning about PROJECT_VERSION
+cmake_policy(SET CMP0048 NEW)
 
-  # Silence warning about PROJECT_VERSION
-  cmake_policy(SET CMP0048 NEW)
-
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.1)
-    # Silence warning about if()
-    cmake_policy(SET CMP0054 NEW)
-  endif()
-
+if(NOT CMAKE_VERSION VERSION_LESS 3.1)
+  # Silence warning about if()
+  cmake_policy(SET CMP0054 NEW)
 endif()
 
+
 project(GLAD VERSION 0.1.18 LANGUAGES C)
+
 
 set(GLAD_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 set(GLAD_OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}")
