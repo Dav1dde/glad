@@ -85,7 +85,7 @@ target_include_directories(glad PUBLIC ${GLAD_INCLUDE_DIRS})
 get_target_property(library_type glad TYPE)
 if (library_type STREQUAL SHARED_LIBRARY)
   # If so, define the macro GLAD_API_EXPORT on the command line.
-  target_compile_definitions(glad PRIVATE GLAD_GLAPI_EXPORT)
+  target_compile_definitions(glad PUBLIC GLAD_GLAPI_EXPORT PRIVATE GLAD_GLAPI_EXPORT_BUILD)
 endif()
 
 if(GLAD_LINKER_LANGUAGE)
