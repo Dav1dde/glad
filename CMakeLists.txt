@@ -3,11 +3,13 @@ cmake_minimum_required(VERSION 3.0)
 # Silence warning about PROJECT_VERSION
 cmake_policy(SET CMP0048 NEW)
 
+# Enable MACOSX_RPATH by default
+cmake_policy(SET CMP0042 NEW)
+
 if(NOT CMAKE_VERSION VERSION_LESS 3.1)
   # Silence warning about if()
   cmake_policy(SET CMP0054 NEW)
 endif()
-
 
 project(GLAD VERSION 0.1.18 LANGUAGES C)
 
@@ -79,7 +81,11 @@ add_custom_target(glad-generate-files DEPENDS ${GLAD_SOURCES})
 set_source_files_properties(${GLAD_SOURCES} PROPERTIES GENERATED TRUE)
 add_library(glad ${GLAD_SOURCES})
 add_dependencies(glad glad-generate-files)
-target_include_directories(glad PUBLIC ${GLAD_INCLUDE_DIRS})
+target_include_directories(glad 
+    PRIVATE
+        $<BUILD_INTERFACE:${GLAD_INCLUDE_DIRS}>
+    INTERFACE
+        $<INSTALL_INTERFACE:include/glad>)
 
 # Are we building a shared library?
 get_target_property(library_type glad TYPE)
@@ -100,10 +106,51 @@ endif()
 
 # Install
 if(GLAD_INSTALL)
+
+  set(config_install_dir "lib/cmake/glad")
+  set(version_config "${CMAKE_CURRENT_BINARY_DIR}/gladConfigVersion.cmake")
+  set(project_config "${CMAKE_CURRENT_BINARY_DIR}/gladConfig.cmake")
+  set(targets_export_name "gladTargets")
+  set(namespace "glad::")
+
+  # Include module with fuction 'write_basic_package_version_file'
+  include(CMakePackageConfigHelpers)
+
+  # Configure 'gladConfigVersion.cmake'
+  # PROJECT_VERSION is used as a VERSION
+  write_basic_package_version_file("${version_config}" COMPATIBILITY SameMajorVersion)
+
+  # Configure 'gladConfig.cmake'
+  # Uses targets_export_name variable.
+  configure_package_config_file(
+    "Config.cmake.in"
+    "${project_config}"
+    INSTALL_DESTINATION "${config_install_dir}")
+
+  # Targets:
+  install(
+    TARGETS glad
+    EXPORT "${targets_export_name}"
+    LIBRARY DESTINATION "lib"
+    ARCHIVE DESTINATION "lib"
+    RUNTIME DESTINATION "bin"
+    INCLUDES DESTINATION "include")
+
   if(GLAD_INCLUDE_DIRS)
-    install(DIRECTORY ${GLAD_INCLUDE_DIRS} DESTINATION ${CMAKE_INSTALL_PREFIX})
+    install(
+      DIRECTORY ${GLAD_INCLUDE_DIRS}
+      DESTINATION ${CMAKE_INSTALL_PREFIX})
   endif()
-  install(TARGETS glad EXPORT glad-targets
-          ARCHIVE DESTINATION lib
-          LIBRARY DESTINATION lib)
+
+  # Install gladConfig.cmake, gladConfigVersion.cmake 
+  install(
+    FILES "${project_config}" "${version_config}"
+    DESTINATION "${config_install_dir}")
+
+  # Create and install gladTargets.cmake
+  install(
+    EXPORT "${targets_export_name}"
+    NAMESPACE "${namespace}"
+    DESTINATION "${config_install_dir}")
+
 endif()
