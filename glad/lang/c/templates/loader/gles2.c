@@ -1,5 +1,9 @@
 #ifdef GLAD_GLES2
 
+{% include 'loader/library.c' %}
+
+#include <glad/glad_egl.h>
+
 typedef void* (APIENTRYP GLAD_GLES2_PFNGETPROCADDRESSPROC_PRIVATE)(const char*);
 struct _glad_gles2_userptr {
     void *handle;
@@ -8,7 +12,7 @@ struct _glad_gles2_userptr {
 
 
 static void* glad_gles2_get_proc(const char* name, void *vuserptr) {
-    struct _glad_gles2_userptr userptr = *(struct _glad_gles2_userptr) vuserptr;
+    struct _glad_gles2_userptr userptr = *(struct _glad_gles2_userptr*) vuserptr;
     void* result = NULL;
 
     /* dlsym first, since some implementations don't return function pointers for core functions */
@@ -32,12 +36,12 @@ int gladLoadGLES2InternalLoader() {
 
     int version = 0;
     void *handle;
-    struct _glad_gles_userptr userptr;
+    struct _glad_gles2_userptr userptr;
 
     handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
-    if (handle) {
+    if (handle && eglGetProcAddress != NULL) {
         userptr.handle = handle;
-        userptr.get_proc_address_ptr = eglGetProcAddress;
+        userptr.get_proc_address_ptr = (GLAD_GLES2_PFNGETPROCADDRESSPROC_PRIVATE) eglGetProcAddress;
 
         version = gladLoadGLES2((GLADloadproc) glad_gles2_get_proc, &userptr);
 

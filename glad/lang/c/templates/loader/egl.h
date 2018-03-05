@@ -1,5 +1,5 @@
 #ifdef GLAD_EGL
 
-GLAPI int gladLoadEGLInternalLoader();
+GLAPI int gladLoadEGLInternalLoader(EGLDisplay display);
 
 #endif

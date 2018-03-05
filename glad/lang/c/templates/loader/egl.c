@@ -20,7 +20,7 @@ static void* glad_egl_get_proc(const char* name, void *vuserptr) {
     return result;
 }
 
-int gladLoadEGLInternalLoader(EGLDisplay *display) {
+int gladLoadEGLInternalLoader(EGLDisplay display) {
 #ifdef __APPLE__
     static const char *NAMES[] = {"libEGL.dylib"};
 #elif defined _WIN32
