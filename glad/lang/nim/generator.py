@@ -265,7 +265,7 @@ class NimGenerator(Generator):
             features = {'egl': [], 'wgl': []}
 
         self.loader.write(f)
-        self.loader.write_has_ext(f, self.get_version())
+        self.loader.write_has_ext(f)
 
         written = set()
         for api, version in self.api.items():
@@ -304,6 +304,8 @@ class NimGenerator(Generator):
                 for ext in extensions[api]:
                     f.write('  {0}{1} = hasExt("{1}")\n'.format(self.EXT_PREFIX,
                                                                 ext.name))
+                else:
+                    f.write('    discard\n')
             f.write('\n\n')
 
             # findCore proc
@@ -416,7 +418,10 @@ class NimGenerator(Generator):
         written = set(enum.name for enum in enums) | \
                   set(function.proto.name for function in functions)
 
-        f.write('# Extensions\nvar\n')
+        f.write('# Extensions\n')
+        if extensions:
+            f.write('var\n')
+
         for ext in extensions:
             if self.spec.NAME == 'gl' and not ext.name in written:
                 self.write_boolean(f, ext.name)
@@ -525,6 +530,3 @@ class NimGenerator(Generator):
     def map_enum_name(self, name):
         m = self.TYPE_DICT['SpecialEnumNames'][self.spec.NAME]
         return m[name] if name in m else name
-
-    def get_version(self):
-        return self.api[self.spec.NAME]

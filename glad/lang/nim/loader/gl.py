@@ -136,10 +136,12 @@ class OpenGLNimLoader(BaseLoader):
     def write_find_core(self, fobj):
         fobj.write(_FIND_VERSION)
 
-    def write_has_ext(self, fobj, apiversion):
-        if apiversion.major == 1 and apiversion.minor == 0:
+    def write_has_ext(self, fobj):
+        gl = self.apis.get('gl')
+        if not gl or (gl.major == 1 and gl.minor == 0):
             return
-        if apiversion.major < 3:
+
+        if gl.major < 3:
             fobj.write(_OPENGL_HAS_EXT_LT3)
         else:
             fobj.write(_OPENGL_HAS_EXT_GTE3)
