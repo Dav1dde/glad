@@ -305,7 +305,7 @@ class NimGenerator(Generator):
                     f.write('  {0}{1} = hasExt("{1}")\n'.format(self.EXT_PREFIX,
                                                                 ext.name))
                 else:
-                    f.write('    discard\n')
+                    f.write('  discard\n')
             f.write('\n\n')
 
             # findCore proc
