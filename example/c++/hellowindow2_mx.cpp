@@ -9,7 +9,7 @@
 #endif
 
 // GLAD
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 // confirm that GLAD didn't include windows.h
 #ifdef _WINDOWS_

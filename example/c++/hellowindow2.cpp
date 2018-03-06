@@ -1,7 +1,7 @@
 #include <iostream>
 
 // GLAD
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 // GLFW (include after glad)
 #include <GLFW/glfw3.h>
@@ -12,7 +12,7 @@
 // The code originally used GLEW, I replaced it with Glad
 
 // Compile:
-// g++ example/c++/hellowindow2.cpp -Ibuild/include build/src/glad.c -lglfw -ldl
+// g++ example/c++/hellowindow2.cpp -Ibuild/include build/src/gl.c -lglfw -ldl
 
 
 // Function prototypes

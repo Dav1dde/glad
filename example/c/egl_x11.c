@@ -1,3 +1,6 @@
+// Compile:
+// gcc example/c/egl_x11.c -Ibuild/include build/src/*.c -ldl -lX11
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,8 +11,8 @@
 #include  <X11/Xatom.h>
 #include  <X11/Xutil.h>
 
-#include  <glad/glad_egl.h>
-#include  <glad/glad_gles2.h>
+#include  <glad/egl.h>
+#include  <glad/gles2.h>
 
 const int window_width = 800, window_height = 480;
 

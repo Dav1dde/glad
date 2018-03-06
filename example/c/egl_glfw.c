@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <glad/glad_egl.h>
-#include <glad/glad_gles1.h>
+#include <glad/egl.h>
+#include <glad/gles1.h>
 
 #define GLFW_INCLUDE_NONE 1
 #include <GLFW/glfw3.h>

@@ -10,14 +10,6 @@
 {% set global_context = 'glad_' + feature_set.api + '_context' %}
 
 
-{% block glad_include %}
-{% if feature_set.api == 'gl' %}
-#include <glad/glad.h>
-{% else %}
-{{ super() }}
-{% endif %}
-{% endblock %}
-
 {% block variables %}
 {% if options.mx_global %}
 struct Glad{{ feature_set.api|upper }}Context *{{ global_context }} = 0;

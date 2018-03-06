@@ -9,7 +9,7 @@ Check out the [webservice](http://glad.dav1d.de) to generate the files you need!
 ## Examples
 
 ```c
-#include <glad/glad.h>
+#include <glad/gl.h>
 // GLFW (include after glad)
 #include <GLFW/glfw3.h>
 

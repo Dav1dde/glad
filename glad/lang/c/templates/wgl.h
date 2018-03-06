@@ -8,7 +8,7 @@
 # endif
 # include <windows.h>
 #endif
-#include <glad/glad.h>
+#include <glad/gl.h>
 {% endblock %}
 
 {% block declarations %}

@@ -200,7 +200,7 @@ class CConfig(Config):
         Example:
         
             #define GLAD_GL_IMPLEMENTATION
-            #include <glad/glad.h>
+            #include <glad/gl.h>
 
         ''')
     )
@@ -249,12 +249,8 @@ class CGenerator(BaseGenerator):
         }
 
     def get_templates(self, spec, feature_set, options):
-        header = 'include/glad/glad_{}.h'.format(feature_set.api)
-        source = 'src/glad_{}.c'.format(feature_set.api)
-
-        if feature_set.api == 'gl':
-            header = 'include/glad/glad.h'
-            source = 'src/glad.c'
+        header = 'include/glad/{}.h'.format(feature_set.api)
+        source = 'src/{}.c'.format(feature_set.api)
 
         templates = list()
 

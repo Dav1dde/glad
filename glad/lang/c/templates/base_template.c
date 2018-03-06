@@ -5,7 +5,7 @@
 #include <string.h>
 {% if not options.header_only %}
 {% block glad_include %}
-#include <glad/glad_{{ feature_set.api }}.h>
+#include <glad/{{ feature_set.api }}.h>
 {% endblock %}
 {% endif %}
 {% endblock %}

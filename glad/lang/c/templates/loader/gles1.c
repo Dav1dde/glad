@@ -2,7 +2,7 @@
 
 {% include 'loader/library.c' %}
 
-#include <glad/glad_egl.h>
+#include <glad/egl.h>
 
 typedef void* (APIENTRYP GLAD_GLES1_PFNGETPROCADDRESSPROC_PRIVATE)(const char*);
 struct _glad_gles1_userptr {
