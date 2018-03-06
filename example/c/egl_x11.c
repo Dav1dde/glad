@@ -16,165 +16,164 @@
 
 const int window_width = 800, window_height = 480;
 
-int main()
-{
-	EGLDisplay egl_display;
-	EGLContext egl_context;
-	EGLSurface egl_surface;
+int main() {
+    EGLDisplay egl_display;
+    EGLContext egl_context;
+    EGLSurface egl_surface;
 
-	Display *display = XOpenDisplay(NULL);
-	if (display == NULL) {
-		printf("cannot connect to X server\n");
-		return 1;
-	}
+    Display *display = XOpenDisplay(NULL);
+    if (display == NULL) {
+        printf("cannot connect to X server\n");
+        return 1;
+    }
 
-	int screen = DefaultScreen(display);
-	Window root = RootWindow(display, screen);
-	Visual *visual = DefaultVisual(display, screen);
+    int screen = DefaultScreen(display);
+    Window root = RootWindow(display, screen);
+    Visual *visual = DefaultVisual(display, screen);
 
+    Colormap colormap = XCreateColormap(display, root, visual, AllocNone);
 
-	Colormap colormap = XCreateColormap(display, root, visual, AllocNone);
+    XSetWindowAttributes attributes;
+    unsigned long attributeMask = CWBorderPixel | CWColormap | CWEventMask;
 
-	XSetWindowAttributes attributes;
-	unsigned long attributeMask = CWBorderPixel | CWColormap | CWEventMask;
+    attributes.event_mask =
+        StructureNotifyMask | PointerMotionMask | ButtonPressMask |
+        ButtonReleaseMask | FocusChangeMask | EnterWindowMask |
+        LeaveWindowMask | KeyPressMask | KeyReleaseMask;
+    attributes.border_pixel = 0;
+    attributes.colormap = colormap;
 
-	attributes.event_mask =
-		StructureNotifyMask | PointerMotionMask | ButtonPressMask |
-		ButtonReleaseMask | FocusChangeMask | EnterWindowMask |
-		LeaveWindowMask | KeyPressMask | KeyReleaseMask;
-	attributes.border_pixel = 0;
-	attributes.colormap = colormap;
+    int depth = DefaultDepth(display, screen);
 
-	int depth = DefaultDepth(display, screen);
+    Window window =
+        XCreateWindow(display, root, 0, 0, window_width, window_height, 0,
+                      depth, InputOutput, visual, attributeMask,
+                      &attributes);
 
-	Window window =
-		XCreateWindow(display, root, 0, 0, window_width, window_height,
-					  0, depth,
-					  InputOutput, visual, attributeMask, &attributes);
+    XFreeColormap(display, colormap);
 
-	XFreeColormap(display, colormap);
+    Atom WM_DELETE_WINDOW =
+        XInternAtom(display, "WM_DELETE_WINDOW", False);
+    Atom WM_PROTOCOLS = XInternAtom(display, "WM_PROTOCOLS", False);
+    XSetWMProtocols(display, window, &WM_DELETE_WINDOW, 1);
 
-	Atom WM_DELETE_WINDOW =
-		XInternAtom(display, "WM_DELETE_WINDOW", False);
-	Atom WM_PROTOCOLS = XInternAtom(display, "WM_PROTOCOLS", False);
-	XSetWMProtocols(display, window, &WM_DELETE_WINDOW, 1);
+    XMapWindow(display, window);
 
-	XMapWindow(display, window);
+    XFlush(display);
 
-	XFlush(display);
+    if (!window) {
+        printf("Unable to create window.\n");
+        return 1;
+    }
 
-	if (!window) {
-		printf("Unable to create window.\n");
-		return 1;
-	}
+    int egl_version = gladLoadEGLInternalLoader(NULL);
+    if (!egl_version) {
+        printf("Unable to load EGL.\n");
+        return 1;
+    }
+    printf("Loaded EGL %d.%d on first load.\n",
+           egl_version / 10, egl_version % 10);
 
-	int egl_version = gladLoadEGLInternalLoader(NULL);
-	if (!egl_version) {
-		printf("Unable to load EGL.\n");
-		return 1;
-	}
-	printf("Loaded EGL %d.%d on first load.\n",
-		   egl_version / 10, egl_version % 10);
+    egl_display = eglGetDisplay((EGLNativeDisplayType) display);
+    if (egl_display == EGL_NO_DISPLAY) {
+        printf("Got no EGL display.\n");
+        return 1;
+    }
 
-	egl_display = eglGetDisplay((EGLNativeDisplayType) display);
-	if (egl_display == EGL_NO_DISPLAY) {
-		printf("Got no EGL display.\n");
-		return 1;
-	}
+    if (!eglInitialize(egl_display, NULL, NULL)) {
+        printf("Unable to initialize EGL\n");
+        return 1;
+    }
 
-	if (!eglInitialize(egl_display, NULL, NULL)) {
-		printf("Unable to initialize EGL\n");
-		return 1;
-	}
+    egl_version = gladLoadEGLInternalLoader(egl_display);
+    if (!egl_version) {
+        printf("Unable to reload EGL.\n");
+        return 1;
+    }
+    printf("Loaded EGL %d.%d after reload.\n", egl_version / 10,
+           egl_version % 10);
 
-	egl_version = gladLoadEGLInternalLoader(egl_display);
-	if (!egl_version) {
-		printf("Unable to reload EGL.\n");
-		return 1;
-	}
-	printf("Loaded EGL %d.%d after reload.\n", egl_version / 10,
-		   egl_version % 10);
+    EGLint attr[] = {
+        EGL_BUFFER_SIZE, 16,
+        EGL_RENDERABLE_TYPE,
+        EGL_OPENGL_ES2_BIT,
+        EGL_NONE
+    };
 
-	EGLint attr[] = {
-		EGL_BUFFER_SIZE, 16,
-		EGL_RENDERABLE_TYPE,
-		EGL_OPENGL_ES2_BIT,
-		EGL_NONE
-	};
+    EGLConfig egl_config;
+    EGLint num_config;
+    if (!eglChooseConfig(egl_display, attr, &egl_config, 1, &num_config)) {
+        printf("Failed to choose config (eglError: %d)\n", eglGetError());
+        return 1;
+    }
 
-	EGLConfig egl_config;
-	EGLint num_config;
-	if (!eglChooseConfig(egl_display, attr, &egl_config, 1, &num_config)) {
-		printf("Failed to choose config (eglError: %d)\n", eglGetError());
-		return 1;
-	}
+    if (num_config != 1) {
+        printf("Didn't get exactly one config, but %d\n", num_config);
+        return 1;
+    }
 
-	if (num_config != 1) {
-		printf("Didn't get exactly one config, but %d\n", num_config);
-		return 1;
-	}
+    egl_surface =
+        eglCreateWindowSurface(egl_display, egl_config, window, NULL);
+    if (egl_surface == EGL_NO_SURFACE) {
+        printf("Unable to create EGL surface (eglError: %d)\n",
+               eglGetError());
+        return 1;
+    }
 
-	egl_surface = eglCreateWindowSurface(egl_display, egl_config, window, NULL);
-	if (egl_surface == EGL_NO_SURFACE) {
-		printf("Unable to create EGL surface (eglError: %d)\n",
-			   eglGetError());
-		return 1;
-	}
+    EGLint ctxattr[] = {
+        EGL_CONTEXT_CLIENT_VERSION, 2,
+        EGL_NONE
+    };
+    egl_context =
+        eglCreateContext(egl_display, egl_config, EGL_NO_CONTEXT, ctxattr);
+    if (egl_context == EGL_NO_CONTEXT) {
+        printf("Unable to create EGL context (eglError: %d)\n",
+               eglGetError());
+        return 1;
+    }
+    // // associate the egl-context with the egl-surface
+    eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
 
-	EGLint ctxattr[] = {
-		EGL_CONTEXT_CLIENT_VERSION, 2,
-		EGL_NONE
-	};
-	egl_context =
-		eglCreateContext(egl_display, egl_config, EGL_NO_CONTEXT, ctxattr);
-	if (egl_context == EGL_NO_CONTEXT) {
-		printf("Unable to create EGL context (eglError: %d)\n",
-			   eglGetError());
-		return 1;
-	}
-	// // associate the egl-context with the egl-surface
-	eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
+    int gles_version = gladLoadGLES2InternalLoader();
+    if (!gles_version) {
+        printf("Unable to load GLES.\n");
+        return 1;
+    }
+    printf("Loaded GLES %d.%d.\n", gles_version / 10, gles_version % 10);
 
-	int gles_version = gladLoadGLES2InternalLoader();
-	if (!gles_version) {
-		printf("Unable to load GLES.\n");
-		return 1;
-	}
-	printf("Loaded GLES %d.%d.\n", gles_version / 10, gles_version % 10);
+    XWindowAttributes gwa;
+    XGetWindowAttributes(display, window, &gwa);
+    glViewport(0, 0, gwa.width, gwa.height);
 
-	XWindowAttributes gwa;
-	XGetWindowAttributes(display, window, &gwa);
-	glViewport(0, 0, gwa.width, gwa.height);
+    bool quit = false;
+    while (!quit) {
+        while (XPending(display)) {
+            XEvent xev;
+            XNextEvent(display, &xev);
 
-	bool quit = false;
-	while (!quit) {
-		while (XPending(display)) {
-			XEvent xev;
-			XNextEvent(display, &xev);
+            if (xev.type == KeyPress) {
+                quit = true;
+            }
+        }
 
-			if (xev.type == KeyPress) {
-				quit = true;
-			}
-		}
+        glClearColor(0.8, 0.6, 0.7, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-		glClearColor(0.8, 0.6, 0.7, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT);
+        eglSwapBuffers(egl_display, egl_surface);
 
-		eglSwapBuffers(egl_display, egl_surface);
+        usleep(1000 * 10);
+    }
 
-		usleep(1000 * 10);
-	}
+    gladUnloadGLES2InternalLoader();
 
-	gladUnloadGLES2InternalLoader();
+    eglDestroyContext(egl_display, egl_context);
+    eglDestroySurface(egl_display, egl_surface);
+    eglTerminate(egl_display);
 
-	eglDestroyContext(egl_display, egl_context);
-	eglDestroySurface(egl_display, egl_surface);
-	eglTerminate(egl_display);
+    gladUnloadEGLInternalLoader();
 
-	gladUnloadEGLInternalLoader();
+    XDestroyWindow(display, window);
+    XCloseDisplay(display);
 
-	XDestroyWindow(display, window);
-	XCloseDisplay(display);
-
-	return 0;
+    return 0;
 }
