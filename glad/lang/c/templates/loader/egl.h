@@ -2,4 +2,6 @@
 
 GLAPI int gladLoadEGLInternalLoader(EGLDisplay display);
 
+GLAPI void gladUnloadEGLInternalLoader();
+
 #endif

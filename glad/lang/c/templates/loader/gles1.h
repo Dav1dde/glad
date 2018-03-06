@@ -7,4 +7,6 @@
 
 GLAPI int gladLoadGLES1InternalLoader();
 
+GLAPI void gladUnloadGLES1InternalLoader();
+
 #endif /* GLAD_GLES1 */

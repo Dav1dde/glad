@@ -58,7 +58,7 @@ def parse_apis(value, api_spec_mapping=_API_SPEC_MAPPING):
         api = api.strip()
 
         m = re.match(
-            r'^(?P<api>\w+)(:(?P<profile>\w+))?(/(?P<spec>\w+))?=(?P<version>\d+(\.\d+)?)?$',
+            r'^(?P<api>\w+)(:(?P<profile>\w+))?(/(?P<spec>\w+))?(=(?P<version>\d+(\.\d+)?)?)?$',
             api
         )
 

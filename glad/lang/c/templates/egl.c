@@ -57,6 +57,7 @@ static int find_core{{ feature_set.api|upper }}(EGLDisplay display) {
     }
 
     version = eglQueryString(display, EGL_VERSION);
+    (void) eglGetError();
 
     if (version == NULL) {
         major = 1;
@@ -81,7 +82,8 @@ int gladLoad{{ feature_set.api|upper }}(EGLDisplay display, GLADloadproc load, v
     eglGetDisplay = (PFNEGLGETDISPLAYPROC)load("eglGetDisplay", userptr);
     eglGetCurrentDisplay = (PFNEGLGETCURRENTDISPLAYPROC)load("eglGetCurrentDisplay", userptr);
     eglQueryString = (PFNEGLQUERYSTRINGPROC)load("eglQueryString", userptr);
-    if (eglGetDisplay == NULL || eglGetCurrentDisplay == NULL || eglQueryString == NULL) return 0;
+    eglGetError = (PFNEGLGETERRORPROC)load("eglGetError", userptr);
+    if (eglGetDisplay == NULL || eglGetCurrentDisplay == NULL || eglQueryString == NULL || eglGetError == NULL) return 0;
 
     version = find_core{{ feature_set.api|upper }}(display);
     if (!version) return 0;

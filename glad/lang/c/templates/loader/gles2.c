@@ -24,6 +24,7 @@ static void* glad_gles2_get_proc(const char* name, void *vuserptr) {
     return result;
 }
 
+static void* _gles2_handle = NULL;
 
 int gladLoadGLES2InternalLoader() {
 #ifdef __APPLE__
@@ -35,19 +36,38 @@ int gladLoadGLES2InternalLoader() {
 #endif
 
     int version = 0;
-    void *handle;
+    int did_load = 0;
     struct _glad_gles2_userptr userptr;
 
-    handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
-    if (handle && eglGetProcAddress != NULL) {
-        userptr.handle = handle;
+    if (eglGetProcAddress == NULL) {
+        return 0;
+    }
+
+    if (_gles2_handle == NULL) {
+        _gles2_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
+        did_load = _gles2_handle != NULL;
+    }
+
+    if (_gles2_handle != NULL) {
+        userptr.handle = _gles2_handle;
         userptr.get_proc_address_ptr = (GLAD_GLES2_PFNGETPROCADDRESSPROC_PRIVATE) eglGetProcAddress;
 
         version = gladLoadGLES2((GLADloadproc) glad_gles2_get_proc, &userptr);
 
-        glad_close_dlopen_handle(handle);
+        if (!version && did_load) {
+            glad_close_dlopen_handle(_gles2_handle);
+            _gles2_handle = NULL;
+        }
     }
 
     return version;
 }
+
+void gladUnloadGLES2InternalLoader() {
+    if (_gles2_handle != NULL) {
+        glad_close_dlopen_handle(_gles2_handle);
+        _gles2_handle = NULL;
+    }
+}
+
 #endif /* GLAD_GLES2 */

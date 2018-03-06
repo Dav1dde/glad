@@ -24,6 +24,8 @@ static void* glad_gles1_get_proc(const char* name, void *vuserptr) {
     return result;
 }
 
+static void* _gles1_handle = NULL;
+
 int gladLoadGLES1InternalLoader() {
 #ifdef __APPLE__
     static const char *NAMES[] = {"libGLESv1_CM.dylib"};
@@ -34,19 +36,38 @@ int gladLoadGLES1InternalLoader() {
 #endif
 
     int version = 0;
-    void *handle;
+    int did_load = 0;
     struct _glad_gles1_userptr userptr;
 
-    handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
-    if (handle && eglGetProcAddress != NULL) {
-        userptr.handle = handle;
+    if (eglGetProcAddress == NULL) {
+        return 0;
+    }
+
+    if (_gles1_handle == NULL) {
+        _gles1_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
+        did_load = _gles1_handle != NULL;
+    }
+
+    if (_gles1_handle != NULL) {
+        userptr.handle = _gles1_handle;
         userptr.get_proc_address_ptr = (GLAD_GLES1_PFNGETPROCADDRESSPROC_PRIVATE) eglGetProcAddress;
 
         version = gladLoadGLES1((GLADloadproc) glad_gles1_get_proc, &userptr);
 
-        glad_close_dlopen_handle(handle);
+        if (!version && did_load) {
+            glad_close_dlopen_handle(_gles1_handle);
+            _gles1_handle = NULL;
+        }
     }
 
     return version;
 }
+
+void gladUnloadGLES1InternalLoader() {
+    if (_gles1_handle != NULL) {
+        glad_close_dlopen_handle(_gles1_handle);
+        _gles1_handle = NULL;
+    }
+}
+
 #endif /* GLAD_GLES1 */

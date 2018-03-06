@@ -18,7 +18,7 @@ static void* glad_get_dlopen_handle(const char *lib_names[], int length) {
 #ifdef _WIN32
         handle = LoadLibraryA(lib_names[i]);
 #else
-        handle = dlopen(lib_names[i], RTLD_LAZY | RTLD_GLOBAL);
+        handle = dlopen(lib_names[i], RTLD_LAZY | RTLD_LOCAL);
 #endif
         if (handle != NULL) {
             return handle;
