@@ -19,8 +19,6 @@ function run_test {
     local compile=$(extract "COMPILE" "$test")
     local run=$(extract "RUN" "$test")
 
-    local did_fail=0
-
     execute $GLAD $glad && \
         execute $compile && \
         execute $run
@@ -33,7 +31,7 @@ function extract {
     local test="$2"
 
     local variable=$(grep -oP "(?<=$variable: ).*" "$test")
-    assert_success $? "Unable to extract variable '$variable'"
+    log_failure $? "Unable to extract variable '$variable'"
 
     echo "$variable"
 }
@@ -43,42 +41,32 @@ function execute {
     _output=$(eval $@ 2>&1)
     local status=$?
 
-    assert_success $status "Command '$*' failed with status code $?" "$_output"
+    log_failure $status "Command '$*' failed with status code $?" "$_output"
 
     return $status
 }
 
-function assert_success {
+function log_failure {
     local status="$1"
     local message="$2"
     local additional="$3"
 
     if [ $status -ne 0 ]; then
-        die "$message" "$additional"
-    fi
-}
-
-function die {
-    local message="$1"
-    local additional="$2"
-
-    if [ $PRINT_MESSAGE -ne 0 ]; then
-        echo "$message" >&2
-        if [ $PRINT_ADDITIONAL -ne 0 ] && [ -n "$additional" ]; then
-            echo "$additional" >&2
+        if [ $PRINT_MESSAGE -ne 0 ]; then
+            echo "$message" >&2
+            if [ $PRINT_ADDITIONAL -ne 0 ] && [ -n "$additional" ]; then
+                echo "$additional" >&2
+            fi
         fi
     fi
-
-    if [ $EXIT_ON_FAILURE -eq 1 ]; then
-        exit 1
-    fi
 }
 
-_tests_total=0
+_tests_total=${#TESTS[@]}
+_tests_ran=0
 _tests_failed=0
 
 for test in $TESTS; do
-    _tests_total=$((_tests_total+1))
+    _tests_ran=$((_tests_ran+1))
 
     echo -n "  -> $test "
     run_test $test
@@ -86,11 +74,15 @@ for test in $TESTS; do
     if [ $? -ne 0 ]; then
         echo "| ✕"
         _tests_failed=$((_tests_failed+1))
+
+        if [ $EXIT_ON_FAILURE -eq 1 ]; then
+            exit 1
+        fi
     else
         echo "| ✓"
     fi
 done
 
 echo
-echo "Total tests $_tests_total, Tests failed $_tests_failed"
+echo "Total tests: $_tests_total, Tests ran: $_tests_ran, Tests failed: $_tests_failed"
 
