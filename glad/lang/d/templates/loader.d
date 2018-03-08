@@ -15,7 +15,7 @@ alias Loader = void* delegate(const(char)*);
 private {
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
 void load_{{ extension.name }}(Loader load) {
-    {% set commands = extension.get_requirements(spec, feature_set.api, feature_set.profile).commands %}
+    {% set commands = extension.get_requirements(spec, feature_set).commands %}
     {% if commands %}
     if (!{{ extension.name }}) return;
     {% for command in commands %}

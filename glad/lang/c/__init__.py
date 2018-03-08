@@ -283,7 +283,7 @@ class CGenerator(BaseGenerator):
             if extension in feature_set.extensions:
                 continue
 
-            for command in extension.get_requirements(spec, feature_set.api, feature_set.profile).commands:
+            for command in extension.get_requirements(spec, feature_set).commands:
                 # find all extensions which have an alias to a selected function
                 if command.alias and command.alias in command_names:
                     new_extensions.add(extension.name)

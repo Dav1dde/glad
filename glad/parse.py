@@ -35,7 +35,7 @@ _TypeEnumCommand = namedtuple('_TypeEnumCommand', ['types', 'enums', 'commands']
 
 class FeatureSet(namedtuple(
     'FeatureSet',
-    ['api', 'version', 'profile', 'features', 'extensions', 'types', 'enums', 'commands', 'removes']
+    ['api', 'version', 'profile', 'features', 'extensions', 'types', 'enums', 'commands']
 )):
     def split_commands(self, spec):
         """
@@ -71,6 +71,8 @@ class Spec(object):
         self._commands = None
         self._features = None
         self._extensions = None
+
+        self._combined = None
 
     @property
     def name(self):
@@ -209,17 +211,18 @@ class Spec(object):
                 (require.api is None or require.api == api)):
             raise StopIteration
 
-        combined = dict()
-        combined.update(self.types)
-        combined.update(self.commands)
-        combined.update(self.enums)
+        if self._combined is None:
+            self._combined = dict()
+            self._combined.update(self.types)
+            self._combined.update(self.commands)
+            self._combined.update(self.enums)
 
         requirements = list(require.requirements)
         while requirements:
             name = requirements.pop(0)
 
-            if name in combined:
-                results = combined[name]
+            if name in self._combined:
+                results = self._combined[name]
 
                 # Get the best match from a list of results, e.g.:
                 #  <type name="foo" />
@@ -254,12 +257,12 @@ class Spec(object):
 
     @staticmethod
     def split_types(iterable, types):
-        result = tuple(list() for _ in types)
+        result = tuple(set() for _ in types)
 
         for obj in iterable:
             for i, type_ in enumerate(types):
                 if isinstance(obj, type_):
-                    result[i].append(obj)
+                    result[i].add(obj)
 
         return result
 
@@ -386,7 +389,7 @@ class Spec(object):
         all_sorted_types = list(self.types.keys())
         types = sorted(types, key=all_sorted_types.index)
 
-        return FeatureSet(api, version, profile, features, extensions, types, enums, commands, removes)
+        return FeatureSet(api, version, profile, features, extensions, types, enums, commands)
 
     def split_commands(self, feature_set):
         """
@@ -555,7 +558,7 @@ class Extension(IdentifiedByName):
         # so this should be empty for every extension which is not a feature
         self.removes = [Remove(remove) for remove in element.findall('remove')]
 
-    def get_requirements(self, spec, api, profile, removed=None):
+    def get_requirements(self, spec, feature_set):
         """
         Find all types, enums and commands/functions which are required
         for this extension/feature.
@@ -568,18 +571,16 @@ class Extension(IdentifiedByName):
         result = set()
 
         for require in self.requires:
-            found = spec.find(require, api, profile)
+            found = spec.find(require, feature_set.api, feature_set.profile)
             result = result.union(found)
 
-        for remove in self.removes:
-            if ((remove.profile is None or remove.profile == profile) and
-                    (remove.api is None or remove.api == api)):
-                result = result.difference(remove.removes)
+        types, enums, commands = spec.split_types(result, (Type, Enum, Command))
 
-        if removed is not None:
-            result = result.difference(set(removed))
-
-        return _TypeEnumCommand(*spec.split_types(result, (Type, Enum, Command)))
+        return _TypeEnumCommand(
+            types.intersection(feature_set.types),
+            enums.intersection(feature_set.enums),
+            commands.intersection(feature_set.commands)
+        )
 
     def __str__(self):
         return self.name

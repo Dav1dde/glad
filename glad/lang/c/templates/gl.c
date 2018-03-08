@@ -70,8 +70,7 @@ PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }} = glad
 {% if options.mx %}
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
 static void load_{{ extension.name }}(struct Glad{{ feature_set.api|upper }}Context *context, GLADloadproc load, void* userptr) {
-    {#{% set commands = extension.get_requirements(spec, feature_set.api, feature_set.profile).commands|select('existsin', feature_set.commands) %}#}
-    {% set commands = extension.get_requirements(spec, feature_set.api, feature_set.profile, feature_set.removes).commands %}
+    {% set commands = extension.get_requirements(spec, feature_set).commands %}
     {% if commands %}
     if(!{{ ctx(extension.name) }}) return;
     {% for command in commands %}

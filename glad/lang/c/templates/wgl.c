@@ -1,7 +1,7 @@
 {% extends 'base_template.c' %}
 {% import 'template_utils.h' as template_utils %}
 
-{% set blacklist = feature_set.features[0].get_requirements(spec, feature_set.api, feature_set.profile).commands %}
+{% set blacklist = feature_set.features[0].get_requirements(spec, feature_set).commands %}
 
 {% block commands %}
 {% for command in feature_set.commands|reject('existsin', blacklist) %}
@@ -12,7 +12,7 @@ PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
 {% block extension_loaders %}
 {% for extension in chain(feature_set.features[1:], feature_set.extensions) %}
 static void load_{{ extension.name }}(GLADloadproc load, void *userptr) {
-    {% set commands = extension.get_requirements(spec, feature_set.api, feature_set.profile).commands %}
+    {% set commands = extension.get_requirements(spec, feature_set).commands %}
     {% if commands %}
     if(!GLAD_{{ extension.name }}) return;
     {% for command in commands %}
