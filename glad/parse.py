@@ -349,15 +349,10 @@ class Spec(object):
                 found = self.find(require, api, profile, resolve_types=True)
                 result = result.union(found)
 
-        # remove what the extensions/features want to remove
-        removes = set()
-        for extension in chain(features, extensions):
             for remove in extension.removes:
                 if ((remove.profile is None or remove.profile == profile) and
                         (remove.api is None or remove.api == api)):
-                    #result = result.difference(remove.removes)
-                    removes = removes.union(remove.removes)
-        result = result.difference(removes)
+                    result = result.difference(remove.removes)
 
         # At this point one could hope that the XML files would be sane, but of course they are not!?
         # There is a builtin requirement system which is used for functions and enums,
