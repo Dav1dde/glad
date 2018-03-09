@@ -35,6 +35,8 @@ static int has_ext(Display *display, int screen, const char *ext) {
 static int find_extensions{{ feature_set.api|upper }}(Display *display, int screen) {
     {% for extension in feature_set.extensions %}
     GLAD_{{ extension.name }} = has_ext(display, screen, "{{ extension.name }}");
+    {% else %}
+    (void)has_ext;
     {% endfor %}
     return 1;
 }

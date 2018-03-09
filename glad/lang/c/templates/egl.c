@@ -34,6 +34,8 @@ static int find_extensions{{ feature_set.api|upper }}(EGLDisplay display) {
 
     {% for extension in feature_set.extensions %}
     GLAD_{{ extension.name }} = has_ext(extensions, "{{ extension.name }}");
+    {% else %}
+    (void)has_ext;
     {% endfor %}
 
     return 1;

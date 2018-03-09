@@ -4,24 +4,31 @@ EXIT_ON_FAILURE=${EXIT_ON_FAILRE:=0}
 PRINT_MESSAGE=${PRINT_MESSAGE:=0}
 PRINT_ADDITIONAL=${PRINT_ADDITIONAL:=0}
 
-GLAD=${GLAD:="python -m glad"}
+PYTHON=${PYTHON:="python"}
+GLAD=${GLAD:="$PYTHON -m glad"}
+
+GCC=${GCC:="gcc -Wall -Werror -ansi"}
+
+TEST_TMP=${TEST_TMP:="build"}
 
 TEST_DIRECTORY=${TEST_DIRECTORY:="test"}
 TEST_PATTERN=${TEST_PATTERN:="test.*"}
 
-TESTS=${TESTS:=$(find $TEST_DIRECTORY -iname $TEST_PATTERN)}
+TESTS=(${TESTS:=$(find $TEST_DIRECTORY -iname ${TEST_PATTERN} | sort)})
 
 
 function run_test {
     local test="$1"
 
-    local glad=$(extract "GLAD" "$test")
-    local compile=$(extract "COMPILE" "$test")
-    local run=$(extract "RUN" "$test")
+    local _glad=$(extract "GLAD" "$test")
+    local _compile=$(extract "COMPILE" "$test")
+    local _run=$(extract "RUN" "$test")
 
-    execute $GLAD $glad && \
-        execute $compile && \
-        execute $run
+    rm -rf $TEST_TMP
+
+    execute $_glad && \
+        execute $_compile && \
+        execute $_run
 
     return $?
 }
@@ -30,20 +37,26 @@ function extract {
     local variable="$1"
     local test="$2"
 
-    local variable=$(grep -oP "(?<=$variable: ).*" "$test")
+    local content;
+    content=$(grep -oP "(?<=$variable: ).*" "$test")
+
     log_failure $? "Unable to extract variable '$variable'"
 
-    echo "$variable"
+    echo "$content"
 }
 
 function execute {
+    # define variables for use in test
+    local tmp="$TEST_TMP"
+
     local _output;
     _output=$(eval $@ 2>&1)
+
     local status=$?
 
-    log_failure $status "Command '$*' failed with status code $?" "$_output"
+    log_failure ${status} "Command '$*' failed with status code $?" "$_output"
 
-    return $status
+    return ${status}
 }
 
 function log_failure {
@@ -61,11 +74,12 @@ function log_failure {
     fi
 }
 
+
 _tests_total=${#TESTS[@]}
 _tests_ran=0
 _tests_failed=0
 
-for test in $TESTS; do
+for test in "${TESTS[@]}"; do
     _tests_ran=$((_tests_ran+1))
 
     echo -n "  -> $test "

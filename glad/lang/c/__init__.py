@@ -1,14 +1,19 @@
 import itertools
+import os.path
 import re
 import textwrap
 from collections import namedtuple
+from contextlib import closing
 
 from glad.config import Config, ConfigOption, RequirementConstraint, UnsupportedConstraint
 from glad.lang.generator import BaseGenerator
+from glad.parse import Type
 
 _ARRAY_RE = re.compile(r'\[\d*\]')
 
 DebugArguments = namedtuple('_DebugParams', ['impl', 'function', 'callback', 'ret'])
+
+Header = namedtuple('_Header', ['name', 'include', 'url'])
 
 
 def type_to_c(ogl_type):
@@ -108,6 +113,10 @@ def collect_alias_information(commands):
         if len(alias[command.proto.name]) < 2:
             del alias[command.proto.name]
     return alias
+
+
+def _comment_out(matchobj):
+    return '/* {} */'.format(matchobj.group(0))
 
 
 # RANDOM TODOs:
@@ -232,6 +241,19 @@ class CGenerator(BaseGenerator):
     TEMPLATES = ['glad.lang.c']
     Config = CConfig
 
+    ADDITIONAL_HEADERS = [
+        Header(
+            'khrplatform',
+            'KHR/khrplatform.h',
+            'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h'
+        ),
+        Header(
+            'eglplatform',
+            'EGL/eglplatform.h',
+            'https://cgit.freedesktop.org/mesa/mesa/plain/include/EGL/eglplatform.h'
+        )
+    ]
+
     def __init__(self, *args, **kwargs):
         BaseGenerator.__init__(self, *args, **kwargs)
 
@@ -242,19 +264,19 @@ class CGenerator(BaseGenerator):
             chain=itertools.chain,
         )
 
-    def get_additional_template_arguments(self, spec, feature_set, options):
+    def get_additional_template_arguments(self, spec, feature_set, config):
         return {
-            'ctx': make_ctx_func(options['MX'] and feature_set.api.startswith('gl'), feature_set.api.lower()),
+            'ctx': make_ctx_func(config['MX'] and feature_set.api.startswith('gl'), feature_set.api.lower()),
             'aliases': collect_alias_information(feature_set.commands)
         }
 
-    def get_templates(self, spec, feature_set, options):
+    def get_templates(self, spec, feature_set, config):
         header = 'include/glad/{}.h'.format(feature_set.api)
         source = 'src/{}.c'.format(feature_set.api)
 
         templates = list()
 
-        if options['HEADER_ONLY']:
+        if config['HEADER_ONLY']:
             templates.extend([
                 ('header_only.h', header)
             ])
@@ -266,14 +288,18 @@ class CGenerator(BaseGenerator):
 
         return templates
 
-    def modify_feature_set(self, spec, feature_set, options):
+    def post_generate(self, spec, feature_set, config):
+        self._add_additional_headers(feature_set, config)
+
+    def modify_feature_set(self, spec, feature_set, config):
         feature_set = self._fix_issue_40(spec, feature_set)
-        feature_set = self._add_extensions_for_aliasing(spec, feature_set, options)
-        self._fix_issue_70(feature_set)
+        feature_set = self._add_extensions_for_aliasing(spec, feature_set, config)
+        feature_set = self._fix_issue_70(feature_set)
+        feature_set = self._replace_included_headers(feature_set, config)
         return feature_set
 
-    def _add_extensions_for_aliasing(self, spec, feature_set, options):
-        if not options['ALIAS']:
+    def _add_extensions_for_aliasing(self, spec, feature_set, config):
+        if not config['ALIAS']:
             return feature_set
 
         command_names = [command.proto.name for command in feature_set.commands]
@@ -329,3 +355,39 @@ class CGenerator(BaseGenerator):
                     '#if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) ' + \
                     '&& (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ > 1060)\n' + \
                     type_element.raw.replace('ptrdiff_t', 'long') + '\n#else\n' + type_element.raw + '\n#endif'
+
+        return feature_set
+
+    def _replace_included_headers(self, feature_set, config):
+        if not config['HEADER_ONLY']:
+            return feature_set
+
+        types = feature_set.types
+        for header in self.ADDITIONAL_HEADERS:
+            try:
+                type_index = types.index(header.name)
+            except ValueError:
+                continue
+
+            with closing(self.opener.urlopen(header.url)) as src:
+                raw = src.read().decode('utf-8')
+
+            for pheader in self.ADDITIONAL_HEADERS:
+                raw = re.sub('^#include\\s*<' + pheader.include + '>', _comment_out, raw, flags=re.MULTILINE)
+
+            types[type_index] = Type(raw, None, header.name, None)
+
+        return feature_set
+
+    def _add_additional_headers(self, feature_set, config):
+        if config['HEADER_ONLY']:
+            return
+
+        for header in self.ADDITIONAL_HEADERS:
+            if header.name not in feature_set.types:
+                continue
+
+            path = os.path.join(self.path, 'include/{}'.format(header.include))
+            if not os.path.exists(path):
+                os.makedirs(os.path.split(path)[0])
+                self.opener.urlretrieve(header.url, path)

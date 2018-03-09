@@ -119,7 +119,7 @@ class Spec(object):
         if self._types is None:
             self._types = OrderedDict()
             for element in self.root.find('types').iter('type'):
-                t = Type(element)
+                t = Type.from_element(element)
                 if t.name not in self._types:
                     self._types[t.name] = list()
                 self._types[t.name].append(t)
@@ -421,15 +421,24 @@ class IdentifiedByName(object):
 
 
 class Type(IdentifiedByName):
-    def __init__(self, element):
+    def __init__(self, raw, api, name, requires):
+        self.raw = raw
+        self.api = api
+        self.name = name
+        self.requires = requires
+
+    @staticmethod
+    def from_element(element):
         apientry = element.find('apientry')
         if apientry is not None:
             apientry.text = 'APIENTRY'
-        self.raw = ''.join(element.itertext())
 
-        self.api = element.get('api')
-        self.name = element.get('name') or element.find('name').text
-        self.requires = element.get('requires')
+        raw = ''.join(element.itertext())
+        api = element.get('api')
+        name = element.get('name') or element.find('name').text
+        requires = element.get('requires')
+
+        return Type(raw, api, name, requires)
 
     @property
     def is_preprocessor(self):

@@ -182,6 +182,8 @@ static int find_extensions{{ feature_set.api|upper }}({{ context_arg(',') }} int
 
     {% for extension in feature_set.extensions %}
     {{ ctx('GLAD_' + extension.name) }} = has_ext(version, exts, num_exts_i, exts_i, "{{ extension.name }}");
+    {% else %}
+    (void)has_ext;
     {% endfor %}
 
     free_exts(exts_i);

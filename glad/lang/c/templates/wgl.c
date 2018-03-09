@@ -60,6 +60,8 @@ static int has_ext(HDC hdc, const char *ext) {
 static int find_extensions{{ feature_set.api|upper }}(HDC hdc) {
     {% for extension in feature_set.extensions %}
     GLAD_{{ extension.name }} = has_ext(hdc, "{{ extension.name }}");
+    {% else %}
+    (void)has_ext;
     {% endfor %}
     return 1;
 }

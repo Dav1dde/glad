@@ -16,3 +16,6 @@ wget -O wgl.xml https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/m
 
 rm -f khrplatform.h
 wget -O khrplatform.h https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h
+
+rm -f eglplatform.h
+wget -O eglplatform.h https://cgit.freedesktop.org/mesa/mesa/plain/include/EGL/eglplatform.h

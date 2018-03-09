@@ -85,3 +85,8 @@ class BaseGenerator(object):
             makefiledir(output_path)
             with open(output_path, 'w') as f:
                 f.write(result)
+
+        self.post_generate(spec, feature_set, config)
+
+    def post_generate(self, spec, feature_set, config):
+        pass
