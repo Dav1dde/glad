@@ -45,6 +45,9 @@ static int find_core{{ feature_set.api|upper }}(Display **display, int *screen) 
     int major = 0, minor = 0;
     if(*display == NULL) {
         *display = XOpenDisplay(0);
+        if (*display == NULL) {
+            return 0;
+        }
         *screen = XScreenNumberOfScreen(XDefaultScreenOfDisplay(*display));
     }
     glXQueryVersion(*display, &major, &minor);
