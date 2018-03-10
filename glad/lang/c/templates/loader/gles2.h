@@ -5,9 +5,9 @@
 #endif
 #}
 
-GLAPI int gladLoadGLES2InternalLoader();
+GLAPI int gladLoadGLES2InternalLoader(void);
 
-GLAPI void gladUnloadGLES2InternalLoader();
+GLAPI void gladUnloadGLES2InternalLoader(void);
 
 #endif /* GLAD_GLES2 */
 

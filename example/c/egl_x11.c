@@ -1,4 +1,3 @@
-// Compile:
 // gcc example/c/egl_x11.c -Ibuild/include build/src/*.c -ldl -lX11
 
 #include <stdio.h>
@@ -7,20 +6,17 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#include  <X11/Xlib.h>
-#include  <X11/Xatom.h>
-#include  <X11/Xutil.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
 
-#include  <glad/egl.h>
-#include  <glad/gles2.h>
+#include <glad/egl.h>
+#include <glad/gles2.h>
+
 
 const int window_width = 800, window_height = 480;
 
-int main() {
-    EGLDisplay egl_display;
-    EGLContext egl_context;
-    EGLSurface egl_surface;
 
+int main(void) {
     Display *display = XOpenDisplay(NULL);
     if (display == NULL) {
         printf("cannot connect to X server\n");
@@ -34,32 +30,20 @@ int main() {
     Colormap colormap = XCreateColormap(display, root, visual, AllocNone);
 
     XSetWindowAttributes attributes;
-    unsigned long attributeMask = CWBorderPixel | CWColormap | CWEventMask;
-
-    attributes.event_mask =
-        StructureNotifyMask | PointerMotionMask | ButtonPressMask |
-        ButtonReleaseMask | FocusChangeMask | EnterWindowMask |
-        LeaveWindowMask | KeyPressMask | KeyReleaseMask;
-    attributes.border_pixel = 0;
     attributes.colormap = colormap;
+    attributes.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask;
 
     int depth = DefaultDepth(display, screen);
 
     Window window =
         XCreateWindow(display, root, 0, 0, window_width, window_height, 0,
-                      depth, InputOutput, visual, attributeMask,
-                      &attributes);
+                      DefaultDepth(display, screen), InputOutput, visual,
+                      CWColormap | CWEventMask, &attributes);
 
     XFreeColormap(display, colormap);
 
-    Atom WM_DELETE_WINDOW =
-        XInternAtom(display, "WM_DELETE_WINDOW", False);
-    Atom WM_PROTOCOLS = XInternAtom(display, "WM_PROTOCOLS", False);
-    XSetWMProtocols(display, window, &WM_DELETE_WINDOW, 1);
-
     XMapWindow(display, window);
-
-    XFlush(display);
+    XStoreName(display, window, "[glad] EGL with X11");
 
     if (!window) {
         printf("Unable to create window.\n");
@@ -74,7 +58,7 @@ int main() {
     printf("Loaded EGL %d.%d on first load.\n",
            egl_version / 10, egl_version % 10);
 
-    egl_display = eglGetDisplay((EGLNativeDisplayType) display);
+    EGLDisplay egl_display = eglGetDisplay((EGLNativeDisplayType) display);
     if (egl_display == EGL_NO_DISPLAY) {
         printf("Got no EGL display.\n");
         return 1;
@@ -112,7 +96,7 @@ int main() {
         return 1;
     }
 
-    egl_surface =
+    EGLSurface egl_surface =
         eglCreateWindowSurface(egl_display, egl_config, window, NULL);
     if (egl_surface == EGL_NO_SURFACE) {
         printf("Unable to create EGL surface (eglError: %d)\n",
@@ -124,14 +108,15 @@ int main() {
         EGL_CONTEXT_CLIENT_VERSION, 2,
         EGL_NONE
     };
-    egl_context =
+    EGLContext egl_context =
         eglCreateContext(egl_display, egl_config, EGL_NO_CONTEXT, ctxattr);
     if (egl_context == EGL_NO_CONTEXT) {
         printf("Unable to create EGL context (eglError: %d)\n",
                eglGetError());
         return 1;
     }
-    // // associate the egl-context with the egl-surface
+
+    // activate context before loading GL functions using glad
     eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
 
     int gles_version = gladLoadGLES2InternalLoader();

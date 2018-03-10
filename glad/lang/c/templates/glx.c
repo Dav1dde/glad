@@ -41,7 +41,7 @@ static int find_extensions{{ feature_set.api|upper }}(Display *display, int scre
     return 1;
 }
 
-static void find_core{{ feature_set.api|upper }}(Display **display, int *screen) {
+static int find_core{{ feature_set.api|upper }}(Display **display, int *screen) {
     int major = 0, minor = 0;
     if(*display == NULL) {
         *display = XOpenDisplay(0);
@@ -51,30 +51,32 @@ static void find_core{{ feature_set.api|upper }}(Display **display, int *screen)
     {% for feature in feature_set.features %}
     GLAD_{{ feature.name }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
     {% endfor %}
+    return major * 10 + minor;
 }
 
-int gladLoad{{ feature_set.api|upper }}(Display **display, int *screen, GLADloadproc load, void* userptr) {
+int gladLoad{{ feature_set.api|upper }}(Display *display, int screen, GLADloadproc load, void* userptr) {
+    int version;
     glXQueryVersion = (PFNGLXQUERYVERSIONPROC)load("glXQueryVersion", userptr);
     if(glXQueryVersion == NULL) return 0;
-    find_core{{ feature_set.api|upper }}(display, screen);
+    version = find_core{{ feature_set.api|upper }}(&display, &screen);
 
     {% for feature in feature_set.features %}
     load_{{ feature.name }}(load, userptr);
     {% endfor %}
 
-    if (!find_extensions{{ feature_set.api|upper }}(*display, *screen)) return 0;
+    if (!find_extensions{{ feature_set.api|upper }}(display, screen)) return 0;
     {% for extension in feature_set.extensions %}
     load_{{ extension.name }}(load, userptr);
     {% endfor %}
 
-    return 1;
+    return version;
 }
 
 static void* glad_glx_get_proc_from_userptr(const char* name, void *userptr) {
     return ((void* (*)(const char *name))userptr)(name);
 }
 
-int gladLoad{{ feature_set.api|upper }}Simple(Display **display, int *screen, GLADsimpleloadproc load) {
+int gladLoad{{ feature_set.api|upper }}Simple(Display *display, int screen, GLADsimpleloadproc load) {
     return gladLoad{{ feature_set.api|upper }}(display, screen, glad_glx_get_proc_from_userptr, (void*) load);
 }
 

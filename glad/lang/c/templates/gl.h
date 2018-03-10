@@ -75,7 +75,7 @@ GLAPI int gladLoad{{ feature_set.api|upper }}({{ 'Glad' + feature_set.api|upper 
 GLAPI int gladLoad{{ feature_set.api|upper }}Simple({{ 'Glad' + feature_set.api|upper + 'Context *context, ' if options.mx }}GLADsimpleloadproc load);
 
 {% if options.mx_global %}
-Glad{{ feature_set.api|upper }}Context* gladGet{{ feature_set.api|upper }}Context();
+Glad{{ feature_set.api|upper }}Context* gladGet{{ feature_set.api|upper }}Context(void);
 void gladSet{{ feature_set.api|upper }}Context(Glad{{ feature_set.api|upper }}Context *context);
 {% endif %}
 {% endblock %}

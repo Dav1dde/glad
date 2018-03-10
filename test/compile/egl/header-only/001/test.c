@@ -10,5 +10,8 @@
 #include <glad/egl.h>
 
 int main(void) {
+    EGLDisplay display = NULL;
+    (void) gladLoadEGLInternalLoader(display);
+    (void) gladUnloadEGLInternalLoader();
     return 0;
 }

@@ -8,7 +8,7 @@ static void* glad_glx_get_proc(const char *name, void *userptr) {
 
 static void* _glx_handle;
 
-int gladLoadGLXInternalLoader(Display **display, int *screen) {
+int gladLoadGLXInternalLoader(Display *display, int screen) {
     static const char *NAMES[] = {
 #if defined __CYGWIN__
         "libGL-1.so",
