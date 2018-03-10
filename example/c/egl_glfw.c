@@ -36,7 +36,7 @@ int main(int argc, char ** argv) {
     printf("EGL %d.%d\n", eglVersion / 10, eglVersion % 10);
 
     /* Load GLES */
-    int glesVersion = gladLoadGLES1InternalLoader();
+    int glesVersion = gladLoadGLES1Simple((GLADsimpleloadproc) glfwGetProcAddress);
     printf("GLES %d.%d\n", glesVersion / 10, glesVersion % 10);
 
     /* Main Loop */
