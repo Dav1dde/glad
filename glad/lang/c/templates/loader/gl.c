@@ -24,7 +24,7 @@ static void* glad_gl_get_proc(const char *name, void *vuserptr) {
     return result;
 }
 
-int gladLoadGLInternalLoader({{ 'struct GladGLContext *context' if options.mx }}) {
+int gladLoadGLInternalLoader({{ 'struct GladGLContext *context' if options.mx else 'void' }}) {
 #ifdef __APPLE__
     static const char *NAMES[] = {
         "../Frameworks/OpenGL.framework/OpenGL",

@@ -2,8 +2,8 @@
 {% import 'template_utils.h' as template_utils %}
 
 
-{% macro context_arg(suffix='') -%}
-{{ 'struct Glad' + feature_set.api|upper + 'Context *context' + suffix if options.mx }}
+{% macro context_arg(suffix='', def='') -%}
+{{ 'struct Glad' + feature_set.api|upper + 'Context *context' + suffix if options.mx else def }}
 {%- endmacro %}
 
 
@@ -24,6 +24,8 @@ struct Glad{{ feature_set.api|upper }}Context *{{ global_context }} = 0;
 
 {% block debug_default_pre %}
 void _pre_call_{{ feature_set.api }}_callback_default(const char *name, void *funcptr, int len_args, ...) {
+    (void) len_args;
+
     if (funcptr == NULL) {
         fprintf(stderr, "GLAD: ERROR %s is NULL!\n", name);
         return;
@@ -39,6 +41,9 @@ void _pre_call_{{ feature_set.api }}_callback_default(const char *name, void *fu
 {% endblock %}
 {% block debug_default_post %}
 void _post_call_{{ feature_set.api }}_callback_default(const char *name, void *funcptr, int len_args, ...) {
+    (void) funcptr;
+    (void) len_args;
+
     GLenum error_code;
     error_code = glad_glGetError();
 
@@ -68,15 +73,12 @@ PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }} = glad
 
 {% block extension_loaders %}
 {% if options.mx %}
-{% for extension in chain(feature_set.features, feature_set.extensions) %}
+{% for extension, commands in loadable() %}
 static void load_{{ extension.name }}(struct Glad{{ feature_set.api|upper }}Context *context, GLADloadproc load, void* userptr) {
-    {% set commands = extension.get_requirements(spec, feature_set).commands %}
-    {% if commands %}
     if(!{{ ctx(extension.name) }}) return;
     {% for command in commands %}
     {{ ctx(command.proto.name) }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}", userptr);
     {% endfor %}
-    {% endif %}
 }
 {% endfor %}
 {% else %}
@@ -89,9 +91,13 @@ static void load_{{ extension.name }}(struct Glad{{ feature_set.api|upper }}Cont
 #define _GLAD_GL_IS_SOME_NEW_VERSION 1
 #endif
 
-static int get_exts({{ context_arg(',') }} int version, const char **out_exts, int *out_num_exts_i, const char ***out_exts_i) {
+static int get_exts({{ context_arg(',') }} int version, const char **out_exts, unsigned int *out_num_exts_i, char ***out_exts_i) {
 #ifdef _GLAD_GL_IS_SOME_NEW_VERSION
     if(version < 30) {
+#else
+    (void) version;
+    (void) out_num_exts_i;
+    (void) out_exts_i;
 #endif
         if ({{ ctx('glGetString') }} == NULL) {
             return 0;
@@ -99,24 +105,24 @@ static int get_exts({{ context_arg(',') }} int version, const char **out_exts, i
         *out_exts = (const char *){{ ctx('glGetString') }}(GL_EXTENSIONS);
 #ifdef _GLAD_GL_IS_SOME_NEW_VERSION
     } else {
-        int index;
-        int num_exts_i = 0;
-        const char **exts_i;
+        unsigned int index;
+        unsigned int num_exts_i = 0;
+        char **exts_i;
         if ({{ ctx('glGetStringi') }} == NULL || {{ ctx('glGetIntegerv') }} == NULL) {
             return 0;
         }
-        {{ ctx('glGetIntegerv') }}(GL_NUM_EXTENSIONS, &num_exts_i);
+        {{ ctx('glGetIntegerv') }}(GL_NUM_EXTENSIONS, (int*) &num_exts_i);
         if (num_exts_i > 0) {
-            exts_i = (const char **)malloc(num_exts_i * sizeof *exts_i);
+            exts_i = (char **) malloc(num_exts_i * (sizeof *exts_i));
         }
         if (exts_i == NULL) {
             return 0;
         }
         for(index = 0; index < num_exts_i; index++) {
-            const char *gl_str_tmp = (const char*)glGetStringi(GL_EXTENSIONS, index);
+            const char *gl_str_tmp = (const char*) glGetStringi(GL_EXTENSIONS, index);
             size_t len = strlen(gl_str_tmp);
 
-            char *local_str = (char*)malloc((len+1) * sizeof(char));
+            char *local_str = (char*) malloc((len+1) * sizeof(char));
 
             if(local_str != NULL) {
 #if _MSC_VER >= 1400
@@ -135,13 +141,17 @@ static int get_exts({{ context_arg(',') }} int version, const char **out_exts, i
 #endif
     return 1;
 }
-static void free_exts(const char **exts_i) {
+static void free_exts(char **exts_i, unsigned int num_exts_i) {
     if (exts_i != NULL) {
-        free((char **)exts_i);
+        unsigned int index;
+        for(index = 0; index < num_exts_i; index++) {
+            free((void *) (exts_i[index]));
+        }
+        free((void *)exts_i);
         exts_i = NULL;
     }
 }
-static int has_ext(int version, const char *exts, int num_exts_i, const char **exts_i, const char *ext) {
+static int has_ext(int version, const char *exts, unsigned int num_exts_i, char **exts_i, const char *ext) {
     if(version < 30) {
         const char *extensions;
         const char *loc;
@@ -163,7 +173,7 @@ static int has_ext(int version, const char *exts, int num_exts_i, const char **e
             extensions = terminator;
         }
     } else {
-        int index;
+        unsigned int index;
         for(index = 0; index < num_exts_i; index++) {
             const char *e = exts_i[index];
             if(strcmp(e, ext) == 0) {
@@ -176,8 +186,8 @@ static int has_ext(int version, const char *exts, int num_exts_i, const char **e
 
 static int find_extensions{{ feature_set.api|upper }}({{ context_arg(',') }} int version) {
     const char *exts = NULL;
-    int num_exts_i = 0;
-    const char **exts_i = NULL;
+    unsigned int num_exts_i = 0;
+    char **exts_i = NULL;
     if (!get_exts({{ 'context, ' if options.mx }}version, &exts, &num_exts_i, &exts_i)) return 0;
 
     {% for extension in feature_set.extensions %}
@@ -186,11 +196,11 @@ static int find_extensions{{ feature_set.api|upper }}({{ context_arg(',') }} int
     (void)has_ext;
     {% endfor %}
 
-    free_exts(exts_i);
+    free_exts(exts_i, num_exts_i);
     return 1;
 }
 
-static int find_core{{ feature_set.api|upper }}({{ context_arg() }}) {
+static int find_core{{ feature_set.api|upper }}({{ context_arg(def='void') }}) {
     /* Thank you @elmindreda
      * https://github.com/elmindreda/greg/blob/master/templates/greg.c.in#L176
      * https://github.com/glfw/glfw/blob/master/src/context.c#L36
@@ -233,12 +243,12 @@ int gladLoad{{ feature_set.api|upper }}({{ context_arg(',') }} GLADloadproc load
     if({{ ctx('glGetString') }}(GL_VERSION) == NULL) return 0;
     version = find_core{{ feature_set.api|upper }}({{ 'context' if options.mx }});
 
-    {% for feature in feature_set.features %}
+    {% for feature, _ in loadable(feature_set.features) %}
     load_{{ feature.name }}({{'context, ' if options.mx }}load, userptr);
     {% endfor %}
 
     if (!find_extensions{{  feature_set.api|upper }}({{ 'context, ' if options.mx }}version)) return 0;
-    {% for extension in feature_set.extensions %}
+    {% for extension, _ in loadable(feature_set.extensions) %}
     load_{{ extension.name }}({{'context, ' if options.mx }}load, userptr);
     {% endfor %}
 

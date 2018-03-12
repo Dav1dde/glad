@@ -12,12 +12,9 @@ if [ "$1" != "no-download" ]; then
     ./utility/download.sh
 fi
 
+GCC_FLAGS="-o build/tmp.o -Wall -Wextra -Wsign-conversion -Wcast-qual -Wstrict-prototypes -Werror -ansi -c"
+GPP_FLAGS="-o build/tmp.o -Wall -Wextra -Wsign-conversion -Wcast-qual -Werror -c"
 
-GCC_FLAGS="-o build/tmp.o -Wall -Werror -ansi -c"
-GPP_FLAGS="-o build/tmp.o -Wall -Werror -c"
-# TODO
-#GCC_FLAGS="-o build/tmp.o -Wall -Wextra -Wsign-conversion -Wcast-qual -Wstrict-prototypes -Werror -ansi -c"
-#GPP_FLAGS="-o build/tmp.o -Wall -Wextra -Wsign-conversion -Wcast-qual -Werror -c"
 
 function echorun {
     echo $@

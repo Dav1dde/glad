@@ -7,7 +7,7 @@ PRINT_ADDITIONAL=${PRINT_ADDITIONAL:=0}
 PYTHON=${PYTHON:="python"}
 GLAD=${GLAD:="$PYTHON -m glad"}
 
-GCC=${GCC:="gcc -Wall -Werror -ansi"}
+GCC=${GCC:="gcc -Wall -Wextra -Wsign-conversion -Wcast-qual -Wstrict-prototypes -Werror -ansi"}
 
 TEST_TMP=${TEST_TMP:="build"}
 

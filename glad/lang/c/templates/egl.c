@@ -8,18 +8,18 @@ static int get_exts(EGLDisplay display, const char **extensions) {
     return extensions != NULL;
 }
 
-static int has_ext(const char *extensions, const char *name) {
+static int has_ext(const char *extensions, const char *ext) {
     const char *loc;
     const char *terminator;
     if(extensions == NULL) {
         return 0;
     }
     while(1) {
-        loc = strstr(extensions, extensions);
+        loc = strstr(extensions, ext);
         if(loc == NULL) {
             return 0;
         }
-        terminator = loc + strlen(extensions);
+        terminator = loc + strlen(ext);
         if((loc == extensions || *(loc - 1) == ' ') &&
             (*terminator == ' ' || *terminator == '\0')) {
             return 1;
@@ -89,12 +89,12 @@ int gladLoad{{ feature_set.api|upper }}(EGLDisplay display, GLADloadproc load, v
 
     version = find_core{{ feature_set.api|upper }}(display);
     if (!version) return 0;
-    {% for feature in feature_set.features %}
+    {% for feature, _ in loadable(feature_set.features) %}
     load_{{ feature.name }}(load, userptr);
     {% endfor %}
 
     if (!find_extensions{{ feature_set.api|upper }}(display)) return 0;
-    {% for extension in feature_set.extensions %}
+    {% for extension, _ in loadable(feature_set.extensions) %}
     load_{{ extension.name }}(load, userptr);
     {% endfor %}
 

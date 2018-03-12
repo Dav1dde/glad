@@ -22,10 +22,18 @@ int GLAD_{{ extension.name }};
 {% block debug %}
 {% if options.debug %}
 {% block debug_default_pre %}
-void _pre_call_{{ feature_set.api }}_callback_default(const char *name, void *funcptr, int len_args, ...) {}
+void _pre_call_{{ feature_set.api }}_callback_default(const char *name, void *funcptr, int len_args, ...) {
+    (void) name;
+    (void) funcptr;
+    (void) len_args;
+}
 {% endblock %}
 {% block debug_default_post %}
-void _post_call_{{ feature_set.api }}_callback_default(const char *name, void *funcptr, int len_args, ...) {}
+void _post_call_{{ feature_set.api }}_callback_default(const char *name, void *funcptr, int len_args, ...) {
+    (void) name;
+    (void) funcptr;
+    (void) len_args;
+}
 {% endblock %}
 
 static GLADcallback _pre_call_{{ feature_set.api }}_callback = _pre_call_{{ feature_set.api }}_callback_default;
@@ -55,15 +63,12 @@ PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }} = glad
 {% endblock %}
 
 {% block extension_loaders %}
-{% for extension in chain(feature_set.features, feature_set.extensions) %}
+{% for extension, commands in loadable() %}
 static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
-    {% set commands = extension.get_requirements(spec, feature_set).commands %}
-    {% if commands %}
     if(!GLAD_{{ extension.name }}) return;
     {% for command in commands %}
     glad_{{ command.proto.name }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}", userptr);
     {% endfor %}
-    {% endif %}
 }
 {% endfor %}
 {% endblock %}

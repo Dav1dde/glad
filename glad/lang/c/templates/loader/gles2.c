@@ -26,7 +26,7 @@ static void* glad_gles2_get_proc(const char* name, void *vuserptr) {
 
 static void* _gles2_handle = NULL;
 
-int gladLoadGLES2InternalLoader() {
+int gladLoadGLES2InternalLoader(void) {
 #ifdef __APPLE__
     static const char *NAMES[] = {"libGLESv2.dylib"};
 #elif defined _WIN32

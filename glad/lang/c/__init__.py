@@ -1,3 +1,4 @@
+import functools
 import itertools
 import os.path
 import re
@@ -29,7 +30,17 @@ def type_to_c(ogl_type):
 
 
 def params_to_c(params):
-    return ', '.join(param.type.raw for param in params)
+    return ', '.join(param.type.raw for param in params) if params else 'void'
+
+
+def loadable(spec, feature_set, *args):
+    if len(args) == 0:
+        args = (feature_set.features, feature_set.extensions)
+
+    for extension in itertools.chain(*args):
+        commands = extension.get_requirements(spec, feature_set).commands
+        if commands:
+            yield extension, commands
 
 
 def get_debug_impl(command, command_code_name=None):
@@ -38,7 +49,7 @@ def get_debug_impl(command, command_code_name=None):
     impl = ', '.join(
         '{type} arg{i}'.format(type=type_to_c(param.type), i=i)
         for i, param in enumerate(command.params)
-    )
+    ) or 'void'
 
     func = ', '.join('arg{}'.format(i) for i, _ in enumerate(command.params))
     callback = ', '.join(filter(None, [
@@ -267,6 +278,7 @@ class CGenerator(BaseGenerator):
     def get_additional_template_arguments(self, spec, feature_set, config):
         return {
             'ctx': make_ctx_func(config['MX'] and feature_set.api.startswith('gl'), feature_set.api.lower()),
+            'loadable': functools.partial(loadable, spec, feature_set),
             'aliases': collect_alias_information(feature_set.commands)
         }
 

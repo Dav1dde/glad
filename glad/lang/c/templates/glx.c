@@ -63,12 +63,12 @@ int gladLoad{{ feature_set.api|upper }}(Display *display, int screen, GLADloadpr
     if(glXQueryVersion == NULL) return 0;
     version = find_core{{ feature_set.api|upper }}(&display, &screen);
 
-    {% for feature in feature_set.features %}
+    {% for feature, _ in loadable(feature_set.features) %}
     load_{{ feature.name }}(load, userptr);
     {% endfor %}
 
     if (!find_extensions{{ feature_set.api|upper }}(display, screen)) return 0;
-    {% for extension in feature_set.extensions %}
+    {% for extension, _ in loadable(feature_set.extensions) %}
     load_{{ extension.name }}(load, userptr);
     {% endfor %}
 
