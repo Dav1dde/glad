@@ -41,6 +41,7 @@ function run_test {
 
     time=$(($(date +%s) - ${time}))
 
+    log_failure "${status}" "${output}"
     report_test "${test}" "${status}" "${time}" "${output}"
 
     return ${status}
