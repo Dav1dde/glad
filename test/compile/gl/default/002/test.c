@@ -8,6 +8,10 @@
 
 #include <glad/gl.h>
 
+#ifndef GL_KHR_debug
+#error
+#endif
+
 int main(void) {
     return 0;
 }
