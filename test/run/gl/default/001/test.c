@@ -1,16 +1,17 @@
 /*
  * Core 3.3 profile using glfw to load
  *
- * GLAD: $GLAD --out-path=$tmp --api="gl:compatibility" c
+ * GLAD: $GLAD --out-path=$tmp --api="gl:core" c
  * COMPILE: $GCC $test -o $tmp/test -I$tmp/include $tmp/src/gl.c -ldl -lglfw
  * RUN: $tmp/test
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
-#define ASSERT(expression, message, args...) if(!(expression)) { fprintf(stderr, "%s(%d): " message "\n", __FILE__, __LINE__, ##args); return 1; }
+#define ASSERT(expression, message, args...) if(!(expression)) { fprintf(stderr, "%s(%d): " message "\n", __FILE__, __LINE__, ##args); exit(1); }
 #define WIDTH 50
 #define HEIGHT 50
 
