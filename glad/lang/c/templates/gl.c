@@ -272,11 +272,11 @@ int gladLoad{{ feature_set.api|upper }}Simple({{ context_arg(',') }} GLADsimplel
 }
 
 {% if options.mx_global %}
-Glad{{ feature_set.api|upper }}Context* gladGet{{ feature_set.api|upper }}Context() {
+struct Glad{{ feature_set.api|upper }}Context* gladGet{{ feature_set.api|upper }}Context() {
     return glad_{{ feature_set.api }}_context;
 }
 
-void gladSet{{ feature_set.api|upper }}Context(Glad{{ feature_set.api|upper }}Context *context) {
+void gladSet{{ feature_set.api|upper }}Context(struct Glad{{ feature_set.api|upper }}Context *context) {
     glad_{{ feature_set.api }}_context = context;
 }
 {% endif %}
