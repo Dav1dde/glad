@@ -7,7 +7,11 @@ PRINT_ADDITIONAL=${PRINT_ADDITIONAL:=0}
 PYTHON=${PYTHON:="python"}
 GLAD=${GLAD:="$PYTHON -m glad"}
 
-GCC=${GCC:="gcc -Wall -Wextra -Wsign-conversion -Wcast-qual -Wstrict-prototypes -Werror -ansi"}
+_GCC_FLAGS="-Wall -Wextra -Wsign-conversion -Wcast-qual -Wstrict-prototypes -Werror -ansi"
+GCC=${GCC:="gcc $_GCC_FLAGS"}
+MINGW_GCC=${WIN_GCC:="x86_64-w64-mingw32-gcc $_GCC_FLAGS"}
+
+WINE=${WINE:="wine"}
 
 TEST_TMP=${TEST_TMP:="build"}
 
