@@ -1,6 +1,7 @@
 import glad.lang.c
 import glad.lang.d
 import glad.lang.nim
+import glad.lang.pascal
 import glad.lang.volt
 
 
@@ -9,6 +10,7 @@ def get_generator(name, spec):
         glad.lang.c,
         glad.lang.d,
         glad.lang.nim,
+        glad.lang.pascal,
         glad.lang.volt
     ]
 
