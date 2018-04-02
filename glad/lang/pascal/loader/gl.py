@@ -1,10 +1,38 @@
 from glad.lang.common.loader import BaseLoader
 
-# todo needs 2 variants, old < 3.0 and new
-_OPENGL_HAS_EXT = '''function hasExt(const extension: String): Boolean;
+_OPENGL_HAS_EXT = '''function hasExt(const extname: string): Boolean;
+var
+  extensions: PChar;
+  loc, terminator: Pchar;
+{$IFDEF HAS_GL_NUM_EXTENSIONS}
+  num_extensions, i: integer;
+  ext: pchar;
+{$ENDIF}
 begin
   result := false;
-end;
+{$IFDEF HAS_GL_NUM_EXTENSIONS}
+  if glVersionMajor >= 3 then begin
+      glGetIntegerv(GL_NUM_EXTENSIONS, @num_extensions);
+      for i := 0 to num_extensions - 1 do begin
+          ext := PChar( glGetStringi(GL_EXTENSIONS, i) );
+          if strcomp(ext, PChar(extname)) = 0 then
+              exit(true);
+      end;
+      exit;
+  end;
+{$ENDIF}
+  extensions := PChar( glGetString(GL_EXTENSIONS) );
+  while true do begin
+      loc := strpos(extensions, PChar(extname));
+      if loc = nil then
+          exit;
+      terminator := loc + length(extname);
+      if (loc = extensions) or (loc[-1] = ' ') then
+          if (terminator[0] = ' ') or (terminator[0] = #0) then
+              exit(true);
+      extensions := terminator;
+  end;
+end;  
 
 '''
 
@@ -66,5 +94,6 @@ class OpenGLPascalLoader(BaseLoader):
         gl = self.apis.get('gl')
         if not gl or (gl.major == 1 and gl.minor == 0):
             return
-
+        if gl.major >= 3:
+            fobj.write('{$DEFINE HAS_GL_NUM_EXTENSIONS}')
         fobj.write(_OPENGL_HAS_EXT)

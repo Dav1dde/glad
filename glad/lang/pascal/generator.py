@@ -82,8 +82,10 @@ PASCALTYPES = {
         'GLvdpauSurfaceNV': 'int32',
         'GLvoid': 'pointer',
         'GLsync': 'pointer',
-        'ClContext': 'pointer',
-        'ClEvent': 'pointer'
+        'GLeglClientBufferEXT': 'pointer',  # GL_EXT_external_buffer
+        'GLVULKANPROCNV': 'pointer',  # GL_NV_draw_vulkan_image
+        '_cl_context': 'pointer',  # GL_ARB_cl_event
+        '_cl_event': 'pointer'
     },
     'egl': {
         'EGLAttrib': 'int32',
@@ -188,7 +190,8 @@ class PascalGenerator(Generator):
         f.write('{\n')
         f.write(self.header)
         f.write('}\n')
-        f.write('''{$MACRO ON}
+        f.write('''{$MODE objfpc}{$H+}
+{$MACRO ON}
 {$IFDEF Windows}
   {$DEFINE extdecl := stdcall}
 {$ELSE}
@@ -233,7 +236,7 @@ class PascalGenerator(Generator):
 
                 f.write('procedure load_{}(load: TLoadProc);\nbegin\n'.format(ext.name))
                 if self.spec.NAME == 'gl':
-                    f.write('  if not {}{} then exit;\n\n'.format(self.EXT_PREFIX, ext.name))
+                    f.write('  if not {}{} then exit;\n'.format(self.EXT_PREFIX, ext.name))
                 for func in ext.functions:
                     # even if they were in written we need to load it
                     self.write_func_definition(f, func)
@@ -243,11 +246,9 @@ class PascalGenerator(Generator):
 
             # findExtensions proc
             f.write('procedure findExtensions{}();\nbegin\n'.format(api.upper()))
-            # TODO implement hasExt
-            #            if self.spec.NAME == 'gl':
-            #                for ext in extensions[api]:
-            #                    f.write('  {0}{1} = hasExt("{1}")\n'.format(self.EXT_PREFIX,
-            #                                                                ext.name))
+            if self.spec.NAME == 'gl':
+                for ext in extensions[api]:
+                    f.write('  {0}{1} := hasExt(\'{1}\');\n'.format(self.EXT_PREFIX, ext.name))
             f.write('end;\n\n')
 
             # findCore proc
@@ -298,6 +299,8 @@ class PascalGenerator(Generator):
         for ogl, pascal in sorted(self.TYPE_DICT[self.spec.NAME].items()):
             f.write('  P{} = ^{};\n'.format(ogl, pascal))
         f.write('  PPGLchar = ^PGLchar;\n')
+        f.write('  PPGLcharARB = ^PGLcharARB;\n')  # for GL_ARB_shader_objects
+        f.write('  PPGLboolean = ^PGLboolean;\n')  # for GL_IBM_vertex_array_lists
         self.TYPE_DICT['__other'][self.spec.NAME](self, f)
         f.write('\n')
 
@@ -337,36 +340,45 @@ class PascalGenerator(Generator):
         f.write('\n\n')
 
     def generate_extensions(self, extensions, enums, functions):
-        f = self._f_gl
+        if not extensions:
+            return
 
         write = set()
         written = set(enum.name for enum in enums) | \
                   set(function.proto.name for function in functions)
 
+        f = self._f_gl
         f.write('(* Extensions *)\n')
-        if extensions:
-            f.write('var\n')
 
         for ext in extensions:
-            if self.spec.NAME == 'gl' and not ext.name in written:
+            if self.spec.NAME == 'gl' and ext.name not in written:
+                f.write('var\n')
                 self.write_boolean(f, ext.name)
 
+            first = True
             for enum in ext.enums:
-                if not enum.name in written and not enum.group == 'SpecialNumbers':
+                if enum.name not in written and not enum.group == 'SpecialNumbers':
                     # for NV_transform_feedback - these enums are negative, but GLenum is unsigned
                     type = None if enum.group == 'TransformFeedbackTokenNV' else 'GLenum'
+                    if first:
+                        first = False
+                        f.write('const\n')
                     self.write_enum(f, enum.name, enum.value, type)
                 written.add(enum.name)
             written.add(ext.name)
-            f.write('\n')
 
+        f.write('\n')
         self.write_functions(f, write, written, extensions)
-        f.write('\n\n')
+        f.write('\n')
 
     def write_functions(self, f, write, written, extensions):
+        first = True
         for ext in extensions:
             for func in ext.functions:
-                if not func.proto.name in written:
+                if func.proto.name not in written:
+                    if first:
+                        first = False
+                        f.write('var\n')
                     self.write_function_var(f, func)
                     write.add(func)
                 written.add(func.proto.name)
@@ -392,7 +404,7 @@ class PascalGenerator(Generator):
         fobj.write('; extdecl;')
 
     PASCAL_KEYWORDS = [  # conflicting keywords only
-        'array', 'end', 'label', 'program', 'string', 'type', 'unit'
+        'array', 'end', 'in', 'label', 'object', 'out', 'packed', 'program', 'string', 'type', 'unit'
     ]
 
     def to_pascal_param_name(self, name):
