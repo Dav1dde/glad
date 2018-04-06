@@ -180,7 +180,7 @@ class PascalGenerator(Generator):
     EXT_PREFIX = 'GLAD_'
 
     def open(self):
-        self._f_gl = open(self.make_path(self.spec.NAME), 'w')
+        self._f_gl = open(self.make_path('glad_' + self.spec.NAME), 'w')
 
     def close(self):
         self._f_gl.close()
