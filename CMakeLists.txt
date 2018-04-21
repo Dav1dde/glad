@@ -82,7 +82,7 @@ set_source_files_properties(${GLAD_SOURCES} PROPERTIES GENERATED TRUE)
 add_library(glad ${GLAD_SOURCES})
 add_dependencies(glad glad-generate-files)
 target_include_directories(glad 
-    PRIVATE
+    PUBLIC
         $<BUILD_INTERFACE:${GLAD_INCLUDE_DIRS}>
     INTERFACE
         $<INSTALL_INTERFACE:include/glad>)
