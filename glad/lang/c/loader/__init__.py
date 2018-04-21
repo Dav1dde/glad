@@ -15,7 +15,7 @@ static PFNWGLGETPROCADDRESSPROC_PRIVATE gladGetProcAddressPtr;
     #define HAVE_WINAPIFAMILY 1
   #endif
 #elif _MSC_VER >= 1700 && !_USING_V110_SDK71_
-  #define HAVE_WINAPIFAMILY
+  #define HAVE_WINAPIFAMILY 1
 #endif
 #endif
 
