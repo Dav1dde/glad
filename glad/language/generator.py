@@ -12,6 +12,7 @@ class NullConfig(Config):
 
 
 class BaseGenerator(object):
+    DISPLAY_NAME = None
     TEMPLATES = None
     Config = NullConfig
 

@@ -7,7 +7,7 @@ from collections import namedtuple
 from contextlib import closing
 
 from glad.config import Config, ConfigOption, RequirementConstraint, UnsupportedConstraint
-from glad.lang.generator import BaseGenerator
+from glad.language.generator import BaseGenerator
 from glad.parse import Type
 
 _ARRAY_RE = re.compile(r'\[\d*\]')
@@ -249,7 +249,9 @@ class CConfig(Config):
 
 
 class CGenerator(BaseGenerator):
-    TEMPLATES = ['glad.lang.c']
+    DISPLAY_NAME = 'C/C++'
+
+    TEMPLATES = ['glad.language.c']
     Config = CConfig
 
     ADDITIONAL_HEADERS = [

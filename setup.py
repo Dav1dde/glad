@@ -27,7 +27,7 @@ if __name__ == '__main__':
     setup(
         name='glad',
         version=version,
-        description='Multi-Language GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.',
+        description='Multi-Language GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specifications.',
         long_description=__doc__,
         packages=find_packages(),
         include_package_data=True,
@@ -35,6 +35,16 @@ if __name__ == '__main__':
         entry_points={
             'console_scripts': [
                 'glad = glad.__main__:main'
+            ],
+            'glad.language': [
+                'c = glad.language.c.__init__:CGenerator'
+                # TODO re-enable other languages
+            ],
+            'glad.specification': [
+                'egl = glad.specification:EGL',
+                'gl = glad.specification:GL',
+                'glx = glad.specification:GLX',
+                'wgl = glad.specification:WGL'
             ]
         },
         classifiers=[

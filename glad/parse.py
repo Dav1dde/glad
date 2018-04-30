@@ -58,7 +58,7 @@ class FeatureSet(namedtuple(
         return _FeatureExtensionCommands(f_commands, e_commands)
 
 
-class Spec(object):
+class Specification(object):
     API = 'https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/'
     NAME = None
 

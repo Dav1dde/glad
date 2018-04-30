@@ -1,31 +1,31 @@
-from glad.parse import Spec
+from glad.parse import Specification
 
 
-class EGLSpec(Spec):
+class EGL(Specification):
+    DISPLAY_NAME = 'EGL'
+
     API = 'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/'
     NAME = 'egl'
 
 
-class GLSpec(Spec):
+class GL(Specification):
+    DISPLAY_NAME = 'OpenGL'
+
     API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/master/xml/'
     NAME = 'gl'
 
 
-class GLXSpec(Spec):
+class GLX(Specification):
+    DISPLAY_NAME = 'GLX'
+
     API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/master/xml/'
     NAME = 'glx'
 
 
-class WGLSpec(Spec):
+class WGL(Specification):
+    DISPLAY_NAME = 'WGL'
+
     API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/master/xml/'
     NAME = 'wgl'
 
 
-SPECIFICATIONS = dict()
-
-# reflection to fill SPECIFICATIONS
-import sys
-import inspect
-for name, cls in inspect.getmembers(sys.modules[__name__], inspect.isclass):
-    if issubclass(cls, Spec):
-        SPECIFICATIONS[cls.NAME] = cls

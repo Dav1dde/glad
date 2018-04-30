@@ -86,6 +86,20 @@ static void load_{{ extension.name }}(struct Glad{{ feature_set.api|upper }}Cont
 {% endif %}
 {% endblock %}
 
+{% block aliasing %}
+{% if options.alias %}
+static void resolve_aliases({{ context_arg() }}) {
+    {% for command in feature_set.commands %}
+    {% for alias in aliases.get(command.proto.name, []) %}
+    {% if not alias == command.proto.name %}
+    if ({{ ctx(command.proto.name) }} == NULL && {{ ctx(alias) }} != NULL) {{ ctx(command.proto.name) }} = (PFN{{ command.proto.name|upper }}PROC){{ ctx(alias) }};
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+}
+{% endif %}
+{% endblock %}
+
 {% block loader %}
 #if defined(GL_ES_VERSION_3_0) || defined(GL_VERSION_3_0)
 #define _GLAD_GL_IS_SOME_NEW_VERSION 1

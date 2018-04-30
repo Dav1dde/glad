@@ -2,13 +2,13 @@ import itertools
 from collections import namedtuple
 
 from glad.config import Config
-from glad.lang.generator import BaseGenerator
+from glad.language.generator import BaseGenerator
 
 
-VoltEnum = namedtuple('VoltEnum', ['type', 'value'])
+DEnum = namedtuple('DEnum', ['type', 'value'])
 
 
-def type_to_volt(ogl_type):
+def type_to_d(ogl_type):
     if ogl_type.is_pointer > 1 and ogl_type.is_const:
         s = 'const({}{}*)'.format('u' if ogl_type.is_unsigned else '', ogl_type.type)
         s += '*' * (ogl_type.is_pointer - 1)
@@ -19,46 +19,39 @@ def type_to_volt(ogl_type):
     return s.replace('struct ', '')
 
 
-def params_to_volt(params):
-    return ', '.join(type_to_volt(param.type) for param in params)
+def params_to_d(params):
+    return ', '.join(type_to_d(param.type) for param in params)
 
 
-def enum_to_volt(enum, default_type='uint'):
-    result = _enum_to_volt(enum, default_type=default_type)
+def enum_to_d(enum, default_type='uint'):
+    result = _enum_to_d(enum, default_type=default_type)
 
     if isinstance(result, tuple):
-        return VoltEnum(*result)
-    else:
-        value = enum.value
-        if enum.value.startswith('0x'):
-            value += 'U'
-        if len(enum.value.lstrip('0x')) > 8:
-            value += 'L'
-
-    return VoltEnum(result, value)
+        return DEnum(*result)
+    return DEnum(result, enum.value)
 
 
-def _enum_to_volt(enum, default_type='u32'):
+def _enum_to_d(enum, default_type='uint'):
     if '"' in enum.value:
         return 'const(char)*'
 
     if enum.type:
         return {
-            'u': 'u32',
-            'ull': 'u64',
-            'bitmask': 'u32'
+            'u': 'uint',
+            'ull': 'ulong',
+            'bitmask': 'uint'
         }[enum.type]
 
     if enum.value.startswith('0x'):
         if len(enum.value[2:]) > 8:
-            return 'u64'
-        return 'u32'
+            return 'ulong'
+        return 'uint'
 
     if enum.name in ('GL_TRUE', 'GL_FALSE'):
-        return 'u8'
+        return 'ubyte'
 
     if enum.value.startswith('-'):
-        return 'u32'
+        return 'int'
 
     if enum.value.startswith('(('):
         # '((Type)value)' -> 'Type'
@@ -70,37 +63,33 @@ def _enum_to_volt(enum, default_type='u32'):
     return default_type
 
 
-class VoltConfig(Config):
+class DConfig(Config):
     pass
 
 
-class VoltGenerator(BaseGenerator):
-    TEMPLATES = ['glad.lang.volt']
-    Config = VoltConfig
+class DGenerator(BaseGenerator):
+    TEMPLATES = ['glad.language.d']
+    Config = DConfig
 
     def __init__(self, *args, **kwargs):
         BaseGenerator.__init__(self, *args, **kwargs)
 
         self.environment.globals.update(
-            type_to_volt=type_to_volt,
-            params_to_volt=params_to_volt,
-            enum_to_volt=enum_to_volt,
+            type_to_d=type_to_d,
+            params_to_d=params_to_d,
+            enum_to_d=enum_to_d,
             chain=itertools.chain
         )
 
     def get_templates(self, spec, feature_set, options):
         templates = [
-            'package.volt',
-            'enumerations.volt',
-            'functions.volt',
-            'loader.volt',
-            'types.volt'
+            'enumerations.d', 'functions.d', 'loader.d', 'types.d'
         ]
 
         ret = list()
         for template in templates:
             ret.append((
-                template, 'amp/{}/{}'.format(feature_set.api, template)
+                template, 'glad/{}/{}'.format(feature_set.api, template)
             ))
 
         return ret

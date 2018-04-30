@@ -9,17 +9,12 @@ import logging
 import os
 
 from glad.config import Config, ConfigOption
-from glad.lang.c import CGenerator
-from glad.lang.d import DGenerator
-from glad.lang.volt import VoltGenerator
 from glad.opener import URLOpener
-from glad.spec import SPECIFICATIONS
+from glad.plugin import find_specifications, find_generators
 from glad.util import parse_apis
 
-logger = logging.getLogger('glad')
 
-# TODO discover generators automatically
-GENERATORS = dict(c=CGenerator, d=DGenerator, volt=VoltGenerator)
+logger = logging.getLogger('glad')
 
 
 def parse_extensions(value):
@@ -57,11 +52,14 @@ class GlobalConfig(Config):
     )
 
 
-def get_specifications(specification_names, opener):
+def load_specifications(specification_names, opener, specification_classes=None):
     specifications = dict()
 
+    if specification_classes is None:
+        specification_classes = find_specifications()
+
     for name in set(specification_names):
-        Specification = SPECIFICATIONS[name]
+        Specification = specification_classes[name]
         xml_name = name + '.xml'
 
         if os.path.isfile(xml_name):
@@ -81,16 +79,30 @@ def main():
 
     description = __doc__
     parser = ArgumentParser(description=description)
+
+    global_config = GlobalConfig()
+    global_config.init_parser(parser)
+
+    # Initialize logging as early as possible
+    temp_ns, _ = parser.parse_known_args()
+    global_config.update_from_object(temp_ns, convert=False, ignore_additional=True)
+    global_config.validate()
+
+    if not global_config['QUIET']:
+        logging.basicConfig(
+            format='[%(asctime)s][%(levelname)s\t][%(name)-7s\t]: %(message)s',
+            datefmt='%d.%m.%Y %H:%M:%S', level=logging.DEBUG
+        )
+    # Do the rest of the setup after logging initialization
+
     subparsers = parser.add_subparsers(
         dest='subparser_name',
         description='Generator to use'
     )
 
-    global_config = GlobalConfig()
-    global_config.init_parser(parser)
-
     configs = dict()
-    for lang, Generator in GENERATORS.items():
+    generators = find_generators()
+    for lang, Generator in generators.items():
         config = Generator.Config()
         subparser = subparsers.add_parser(lang)
         config.init_parser(subparser)
@@ -104,18 +116,12 @@ def main():
     config.update_from_object(ns, convert=False, ignore_additional=True)
 
     # This should never throw if Config.init_parser is working correctly
-    global_config.validate()
+    global_config.validate() # Done before, but doesn't hurt
     config.validate()
-
-    if not global_config['QUIET']:
-        logging.basicConfig(
-            format='[%(asctime)s][%(levelname)s\t][%(name)-7s\t]: %(message)s',
-            datefmt='%d.%m.%Y %H:%M:%S', level=logging.DEBUG
-        )
 
     opener = URLOpener()
 
-    specifications = get_specifications(
+    specifications = load_specifications(
         [value[0] for value in global_config['API'].values()],
         opener=opener
     )
@@ -127,7 +133,7 @@ def main():
 
         feature_set = specification.select(api, info.version, info.profile, global_config['EXTENSIONS'])
 
-        generator = GENERATORS[ns.subparser_name](global_config['OUT_PATH'], opener=opener)
+        generator = generators[ns.subparser_name](global_config['OUT_PATH'], opener=opener)
         generator.generate(specification, feature_set, config)
 
 
