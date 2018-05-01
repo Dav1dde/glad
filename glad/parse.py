@@ -186,6 +186,9 @@ class Specification(object):
 
         return self._extensions
 
+    def is_extension(self, api, extension_name):
+        return extension_name in self.extensions[api]
+
     def profiles_for_api(self, api):
         profiles = set()
 
