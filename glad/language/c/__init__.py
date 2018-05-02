@@ -11,7 +11,7 @@ from glad.parse import Type
 
 _ARRAY_RE = re.compile(r'\[\d*\]')
 
-DebugArguments = namedtuple('_DebugParams', ['impl', 'function', 'callback', 'ret'])
+DebugArguments = namedtuple('_DebugParams', ['impl', 'function', 'pre_callback', 'post_callback', 'ret'])
 
 Header = namedtuple('_Header', ['name', 'include', 'url'])
 
@@ -51,23 +51,27 @@ def get_debug_impl(command, command_code_name=None):
     ) or 'void'
 
     func = ', '.join('arg{}'.format(i) for i, _ in enumerate(command.params))
-    callback = ', '.join(filter(None, [
+    pre_callback = ', '.join(filter(None, [
         '"{}"'.format(command.proto.name),
         '(void*){}'.format(command_code_name),
         str(len(command.params)),
         func
     ]))
 
-    ret = ('', '', '')
     # lower because of win API having VOID
-    if not type_to_c(command.proto.ret).lower() == 'void':
+    is_void_ret = type_to_c(command.proto.ret).lower() == 'void'
+
+    post_callback = ('NULL, ' if is_void_ret else '(void*) &ret, ') + pre_callback
+
+    ret = ('', '', '')
+    if not is_void_ret:
         ret = (
             '{} ret;'.format(type_to_c(command.proto.ret)),
             'ret = ',
             'return ret;'
         )
 
-    return DebugArguments(impl, func, callback, ret)
+    return DebugArguments(impl, func, pre_callback, post_callback, ret)
 
 
 def make_ctx_func(is_mx, api_prefix):

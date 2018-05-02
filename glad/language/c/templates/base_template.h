@@ -74,9 +74,10 @@ extern "C" {
 
 {% block debug %}
 {% if options.debug %}
-typedef void (* GLADcallback)(const char *name, void *funcptr, int len_args, ...);
-GLAPI void glad_set_{{ feature_set.api }}_pre_callback(GLADcallback cb);
-GLAPI void glad_set_{{ feature_set.api }}_post_callback(GLADcallback cb);
+typedef void (* GLADprecallback)(const char *name, void *funcptr, int len_args, ...);
+typedef void (* GLADpostcallback)(void* ret, const char *name, void *funcptr, int len_args, ...);
+GLAPI void glad_set_{{ feature_set.api }}_pre_callback(GLADprecallback cb);
+GLAPI void glad_set_{{ feature_set.api }}_post_callback(GLADpostcallback cb);
 {% endif %}
 {% endblock %}
 
