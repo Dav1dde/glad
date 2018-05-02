@@ -1,13 +1,15 @@
 /*
- * MX Core 3.3 profile using internal loader
+ * MX Core 3.3 profile using internal loader.
+ * Using MX Global for GL calls.
  *
- * GLAD: $GLAD --out-path=$tmp --api="gl:core" c --mx --loader
+ * GLAD: $GLAD --out-path=$tmp --api="gl:core" c --mx --mx-global --loader
  * COMPILE: $GCC $test -o $tmp/test -I$tmp/include $tmp/src/gl.c -ldl -lglfw
  * RUN: $tmp/test
  */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
@@ -26,17 +28,19 @@ GLFWwindow* create_window(void) {
 }
 
 void run(GLFWwindow *window) {
-    struct GladGLContext context;
+    struct GladGLContext context = { 0 };
+    context.userptr = (void*) &context;
 
     glfwMakeContextCurrent(window);
 
     int version = gladLoadGLInternalLoader(&context);
+    ASSERT(memcmp(&context, gladGetGLContext(), sizeof(struct GladGLContext)) == 0, "invalid global context");
     ASSERT(version >= 33, "glad version %d < 33", version);
-    ASSERT(context.VERSION_3_3, "GL_VERSION_33 not set");
+    ASSERT(GLAD_GL_VERSION_3_3, "GL_VERSION_33 not set");
 
-    context.Viewport(0, 0, WIDTH, HEIGHT);
-    context.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    context.Clear(GL_COLOR_BUFFER_BIT);
+    glViewport(0, 0, WIDTH, HEIGHT);
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     glfwSwapBuffers(window);
 }

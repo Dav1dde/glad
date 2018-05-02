@@ -136,7 +136,7 @@ report_start
 for test in "${TESTS[@]}"; do
     _tests_ran=$((_tests_ran+1))
 
-    echo -n "  -> $test "
+    echo -n "  🡒 $test "
     run_test $test
 
     if [ $? -ne 0 ]; then

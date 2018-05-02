@@ -12,7 +12,7 @@
 
 {% block variables %}
 {% if options.mx_global %}
-struct Glad{{ feature_set.api|upper }}Context *{{ global_context }} = 0;
+struct Glad{{ feature_set.api|upper }}Context {{ global_context }} = { 0 };
 {% endif %}
 {% endblock %}
 
@@ -287,11 +287,11 @@ int gladLoad{{ feature_set.api|upper }}Simple({{ context_arg(',') }} GLADsimplel
 
 {% if options.mx_global %}
 struct Glad{{ feature_set.api|upper }}Context* gladGet{{ feature_set.api|upper }}Context() {
-    return glad_{{ feature_set.api }}_context;
+    return &glad_{{ feature_set.api }}_context;
 }
 
 void gladSet{{ feature_set.api|upper }}Context(struct Glad{{ feature_set.api|upper }}Context *context) {
-    glad_{{ feature_set.api }}_context = context;
+    glad_{{ feature_set.api }}_context = *context;
 }
 {% endif %}
 
