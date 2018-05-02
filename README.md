@@ -159,7 +159,7 @@ int gladLoadGL(void);
  * Substitute GL with the API you generated
  *
  */
-void gladLoadGLLoader(GLADloadproc);
+int gladLoadGLLoader(GLADloadproc);
 ```
 
 `glad.h` completely replaces any `gl.h` or `gl3.h` only include `glad.h`.
@@ -257,6 +257,18 @@ On non-Windows platforms glad requires `libdl`, make sure to link with it (`L-ld
 
 
 ## FAQ ##
+
+### How do I build glad or how do I integrate glad?
+
+Easiest way of using glad is through the [webservice](http://glad.dav1d.de).
+
+Alternatively glad integrates with:
+
+* `CMake` 
+* [Conan](https://bintray.com/bincrafters/public-conan/glad%3Abincrafters)   
+[![Download](https://api.bintray.com/packages/bincrafters/public-conan/glad%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/glad%3Abincrafters/_latestVersion)
+
+Thanks for all the help and support maintaining those!
 
 ### glad includes windows.h which breaks my code! [#42](https://github.com/Dav1dde/glad/issues/42)
 
