@@ -28,7 +28,7 @@ class GLSpec(Spec):
 
     def get_removes(self, api, number):
         if self._profile == 'core':
-            return GLSpec.get_removes(self, api, number)
+            return Spec.get_removes(self, api, number)
 
         return set()
 
