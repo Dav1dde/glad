@@ -14,7 +14,6 @@ class GLSpec(Spec):
         Spec.__init__(self, root)
 
         self._profile = 'compatibility'
-        self._remove = set()
 
     @property
     def profile(self):
@@ -27,11 +26,11 @@ class GLSpec(Spec):
 
         self._profile = value
 
-    @property
-    def removed(self):
+    def get_removes(self, api, number):
         if self._profile == 'core':
-            return frozenset(self._remove)
-        return frozenset()
+            return GLSpec.get_removes(self, api, number)
+
+        return set()
 
 
 class GLXSpec(Spec):
