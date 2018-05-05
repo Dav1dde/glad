@@ -31,13 +31,13 @@ if __name__ == '__main__':
         long_description=__doc__,
         packages=find_packages(),
         include_package_data=True,
-        install_requires=['jinja2', ],
+        install_requires=['jinja2'],
         entry_points={
             'console_scripts': [
                 'glad = glad.__main__:main'
             ],
-            'glad.language': [
-                'c = glad.language.c.__init__:CGenerator'
+            'glad.generator': [
+                'c = glad.generator.c.__init__:CGenerator'
                 # TODO re-enable other languages
             ],
             'glad.specification': [
