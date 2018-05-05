@@ -1,7 +1,7 @@
 /*
- * Core 3.3 profile using glfw to load
+ * 2.1 using internal loader to load
  *
- * GLAD: $GLAD --out-path=$tmp --api="gl:core" c
+ * GLAD: $GLAD --out-path=$tmp --api="gl:core=2.1" c --loader
  * COMPILE: $GCC $test -o $tmp/test -I$tmp/include $tmp/src/gl.c -ldl -lglfw
  * RUN: $tmp/test
  */
@@ -18,19 +18,18 @@
 int main(void) {
     ASSERT(glfwInit(), "glfw init failed");
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "<test>", NULL, NULL);
     ASSERT(window != NULL, "glfw window creation failed");
     glfwMakeContextCurrent(window);
 
-    int version = gladLoadGLSimple((GLADsimpleloadproc) glfwGetProcAddress);
-    ASSERT(version >= 3003, "glad version %d < 3003", version);
-    ASSERT(GLAD_VERSION_MAJOR(version) >= 3, "glad major version %d < 3", GLAD_VERSION_MAJOR(version));
-    ASSERT(GLAD_VERSION_MAJOR(version) > 3 || GLAD_VERSION_MINOR(version) >= 3, "glad minor version %d < 3", GLAD_VERSION_MINOR(version));
-    ASSERT(GLAD_GL_VERSION_3_3, "GL_VERSION_3_3 not set");
+    int version = gladLoadGLInternalLoader();
+    ASSERT(version >= 2001, "glad version %d < 2001", version);
+    ASSERT(GLAD_VERSION_MAJOR(version) >= 2, "glad major version %d < 2", GLAD_VERSION_MAJOR(version));
+    ASSERT(GLAD_VERSION_MAJOR(version) > 2 || GLAD_VERSION_MINOR(version) >= 1, "glad minor version %d < 1", GLAD_VERSION_MINOR(version));
+    ASSERT(GLAD_GL_VERSION_2_1, "GL_VERSION_2_1 not set");
     ASSERT(GLAD_GL_EXT_texture_filter_anisotropic == 1, "EXT_texture_filter_anisotropic not available");
 
     glViewport(0, 0, WIDTH, HEIGHT);

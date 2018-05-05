@@ -105,11 +105,13 @@ static void resolve_aliases({{ context_arg() }}) {
 {% block loader %}
 #if defined(GL_ES_VERSION_3_0) || defined(GL_VERSION_3_0)
 #define _GLAD_GL_IS_SOME_NEW_VERSION 1
+#else
+#define _GLAD_GL_IS_SOME_NEW_VERSION 0
 #endif
 
 static int get_exts({{ context_arg(',') }} int version, const char **out_exts, unsigned int *out_num_exts_i, char ***out_exts_i) {
-#ifdef _GLAD_GL_IS_SOME_NEW_VERSION
-    if(version < 30) {
+#if _GLAD_GL_IS_SOME_NEW_VERSION
+    if(GLAD_VERSION_MAJOR(version) < 3) {
 #else
     (void) version;
     (void) out_num_exts_i;
@@ -119,7 +121,7 @@ static int get_exts({{ context_arg(',') }} int version, const char **out_exts, u
             return 0;
         }
         *out_exts = (const char *){{ ctx('glGetString') }}(GL_EXTENSIONS);
-#ifdef _GLAD_GL_IS_SOME_NEW_VERSION
+#if _GLAD_GL_IS_SOME_NEW_VERSION
     } else {
         unsigned int index;
         unsigned int num_exts_i = 0;
@@ -168,7 +170,7 @@ static void free_exts(char **exts_i, unsigned int num_exts_i) {
     }
 }
 static int has_ext(int version, const char *exts, unsigned int num_exts_i, char **exts_i, const char *ext) {
-    if(version < 30) {
+    if(GLAD_VERSION_MAJOR(version) < 3 || !_GLAD_GL_IS_SOME_NEW_VERSION) {
         const char *extensions;
         const char *loc;
         const char *terminator;
