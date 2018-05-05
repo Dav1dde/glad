@@ -249,7 +249,7 @@ static int find_core{{ feature_set.api|upper }}({{ context_arg(def='void') }}) {
     {{ ctx('GLAD_' + feature.name) }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
     {% endfor %}
 
-    return major * 10 + minor;
+    return major * 1000 + minor;
 }
 
 int gladLoad{{ feature_set.api|upper }}({{ context_arg(',') }} GLADloadproc load, void* userptr) {

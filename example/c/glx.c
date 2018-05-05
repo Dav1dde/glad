@@ -28,7 +28,7 @@ int main(void) {
         printf("Unable to load GLX.\n");
         return 1;
     }
-    printf("Loaded GLX %d.%d\n", glx_version / 10, glx_version % 10);
+    printf("Loaded GLX %d.%d\n", GLAD_VERSION_MAJOR(glx_version), GLAD_VERSION_MINOR(glx_version));
 
     Window root = RootWindow(display, screen);
 
@@ -62,7 +62,7 @@ int main(void) {
         printf("Unable to load GL.\n");
         return 1;
     }
-    printf("Loaded GL %d.%d\n", gl_version / 10, gl_version % 10);
+    printf("Loaded GL %d.%d\n", GLAD_VERSION_MAJOR(gl_version), GLAD_VERSION_MINOR(gl_version));
 
     XWindowAttributes gwa;
     XGetWindowAttributes(display, window, &gwa);

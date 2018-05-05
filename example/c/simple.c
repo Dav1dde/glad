@@ -51,7 +51,7 @@ int main(int argc, char **argv)
         exit(-1);
     }
 
-    printf("OpenGL %d.%d\n", version / 10, version % 10);
+    printf("OpenGL %d.%d\n", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
     if (!GLAD_GL_VERSION_2_0) {
         printf("Your system doesn't support OpenGL >= 2!\n");
         return -1;

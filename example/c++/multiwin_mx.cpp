@@ -82,7 +82,7 @@ struct GladGLContext* create_context(GLFWwindow *window) {
     if (!context) return NULL;
 
     int version = gladLoadGL(context, (GLADloadproc)glfwGetProcAddress);
-    std::cout << "Loaded OpenGL " << version / 10 << "." << version % 10 << std::endl;
+    std::cout << "Loaded OpenGL " << GLAD_VERSION_MAJOR(version) << "." << GLAD_VERSION_MINOR(version) << std::endl;
 
     return context;
 }

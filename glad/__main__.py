@@ -127,8 +127,7 @@ def main():
     )
 
     for api, info in global_config['API'].items():
-        logger.info('generating %s:%s/%s=%s.%s',
-                    api, info.profile, info.specification, info.version.major, info.version.minor)
+        logger.info('generating %s:%s/%s=%s', api, info.profile, info.specification, info.version)
 
         specification = specifications[info.specification]
 

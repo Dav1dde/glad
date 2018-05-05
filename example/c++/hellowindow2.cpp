@@ -47,7 +47,7 @@ int main()
     // Set the required callback functions
     glfwSetKeyCallback(window, key_callback);
 
-    // Load OpenGL functions, gladLoadGL returns the loaded version (major * 10 + minor), 0 on error.
+    // Load OpenGL functions, gladLoadGL returns the loaded version, 0 on error.
     int version = gladLoadGLSimple((GLADsimpleloadproc) glfwGetProcAddress);
     if (version == 0)
     {
@@ -56,7 +56,7 @@ int main()
     }
 
     // Successfully loaded OpenGL
-    std::cout << "Loaded OpenGL " << version / 10 << "." << version % 10 << std::endl;
+    std::cout << "Loaded OpenGL " << GLAD_VERSION_MAJOR(version) << "." << GLAD_VERSION_MINOR(version) << std::endl;
 
     // Define the viewport dimensions
     glViewport(0, 0, WIDTH, HEIGHT);

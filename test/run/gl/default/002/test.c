@@ -27,7 +27,9 @@ int main(void) {
     glfwMakeContextCurrent(window);
 
     int version = gladLoadGLInternalLoader();
-    ASSERT(version >= 33, "glad version %d < 33", version);
+    ASSERT(version >= 3003, "glad version %d < 3003", version);
+    ASSERT(GLAD_VERSION_MAJOR(version) >= 3, "glad major version %d < 3", GLAD_VERSION_MAJOR(version));
+    ASSERT(GLAD_VERSION_MAJOR(version) > 3 || GLAD_VERSION_MINOR(version) >= 3, "glad minor version %d < 3", GLAD_VERSION_MINOR(version));
 
     glViewport(0, 0, WIDTH, HEIGHT);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);

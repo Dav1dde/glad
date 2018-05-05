@@ -32,12 +32,12 @@ int main(int argc, char ** argv) {
 
     /* Load EGL */
     EGLDisplay display = glfwGetEGLDisplay();
-    int eglVersion = gladLoadEGLInternalLoader(display);
-    printf("EGL %d.%d\n", eglVersion / 10, eglVersion % 10);
+    int egl_version = gladLoadEGLInternalLoader(display);
+    printf("EGL %d.%d\n", GLAD_VERSION_MAJOR(egl_version) GLAD_VERSION_MINOR(egl_version));
 
     /* Load GLES */
-    int glesVersion = gladLoadGLES1Simple((GLADsimpleloadproc) glfwGetProcAddress);
-    printf("GLES %d.%d\n", glesVersion / 10, glesVersion % 10);
+    int gles_version = gladLoadGLES1Simple((GLADsimpleloadproc) glfwGetProcAddress);
+    printf("GLES %d.%d\n", GLAD_VERSION_MAJOR(gles_version), GLAD_VERSION_MINOR(gles_version));
 
     /* Main Loop */
     while (!glfwWindowShouldClose(window)) {

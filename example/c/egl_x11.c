@@ -56,7 +56,7 @@ int main(void) {
         return 1;
     }
     printf("Loaded EGL %d.%d on first load.\n",
-           egl_version / 10, egl_version % 10);
+           GLAD_VERSION_MAJOR(egl_version), GLAD_VERSION_MINOR(egl_version));
 
     EGLDisplay egl_display = eglGetDisplay((EGLNativeDisplayType) display);
     if (egl_display == EGL_NO_DISPLAY) {
@@ -74,8 +74,8 @@ int main(void) {
         printf("Unable to reload EGL.\n");
         return 1;
     }
-    printf("Loaded EGL %d.%d after reload.\n", egl_version / 10,
-           egl_version % 10);
+    printf("Loaded EGL %d.%d after reload.\n",
+           GLAD_VERSION_MAJOR(egl_version), GLAD_VERSION_MINOR(egl_version));
 
     EGLint attr[] = {
         EGL_BUFFER_SIZE, 16,
@@ -124,7 +124,8 @@ int main(void) {
         printf("Unable to load GLES.\n");
         return 1;
     }
-    printf("Loaded GLES %d.%d.\n", gles_version / 10, gles_version % 10);
+    printf("Loaded GLES %d.%d.\n",
+           GLAD_VERSION_MAJOR(gles_version), GLAD_VERSION_MINOR(gles_version));
 
     XWindowAttributes gwa;
     XGetWindowAttributes(display, window, &gwa);

@@ -13,6 +13,11 @@
 {% endif %}
 {% endfor %}
 
+#ifndef GLAD_VERSION_MAJOR
+#define GLAD_VERSION_MAJOR(version) (version / 1000)
+#define GLAD_VERSION_MINOR(version) (version % 1000)
+#endif
+
 #if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1

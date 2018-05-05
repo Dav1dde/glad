@@ -35,8 +35,10 @@ void run(GLFWwindow *window) {
 
     int version = gladLoadGLInternalLoader(&context);
     ASSERT(memcmp(&context, gladGetGLContext(), sizeof(struct GladGLContext)) == 0, "invalid global context");
-    ASSERT(version >= 33, "glad version %d < 33", version);
-    ASSERT(GLAD_GL_VERSION_3_3, "GL_VERSION_33 not set");
+    ASSERT(version >= 3003, "glad version %d < 3003", version);
+    ASSERT(GLAD_VERSION_MAJOR(version) >= 3, "glad major version %d < 3", GLAD_VERSION_MAJOR(version));
+    ASSERT(GLAD_VERSION_MAJOR(version) > 3 || GLAD_VERSION_MINOR(version) >= 3, "glad minor version %d < 3", GLAD_VERSION_MINOR(version));
+    ASSERT(context.VERSION_3_3, "GL_VERSION_3_3 not set");
 
     glViewport(0, 0, WIDTH, HEIGHT);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);

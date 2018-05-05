@@ -172,7 +172,13 @@ class Specification(object):
             num = Version(*map(int, element.attrib['number'].split('.')))
             self._features[element.attrib['api']][num] = Feature(element)
 
+        for api, features in self._features.items():
+            self._features[api] = OrderedDict(sorted(features.items(), key=lambda x: x[0]))
+
         return self._features
+
+    def highest_version(self, api):
+        return sorted(self.features[api].keys(), reverse=True)[0]
 
     @property
     def extensions(self):
@@ -300,7 +306,7 @@ class Specification(object):
 
         # None means latest version, update the dictionary with the latest version
         if version is None:
-            version = list(self.features[api].keys())[-1]
+            version = self.highest_version(api)
 
         # make sure the version is valid
         if version not in self.features[api]:

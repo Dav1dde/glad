@@ -68,7 +68,7 @@ function report_test {
     local test=${1#*/}
     local status="$2"
     local time="$3"
-    local output="$4"
+    local output=$(echo "$4" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g')
 
     local class_name=${test%%/*}
     local test_name_with_suffix=${test#*/}
