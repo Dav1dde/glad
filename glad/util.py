@@ -11,6 +11,7 @@ _API_NAMES = {
     'gl': 'OpenGL',
     'gles1': 'OpenGL ES',
     'gles2': 'OpenGL ES',
+    'glsc2': 'OpenGL SC',
     'glx': 'GLX',
     'wgl': 'WGL',
 }
@@ -18,7 +19,7 @@ _API_NAMES = {
 
 def api_name(api):
     api = api.lower()
-    return _API_NAMES[api]
+    return _API_NAMES.get(api, api.upper())
 
 
 def makefiledir(path):
@@ -63,11 +64,15 @@ def parse_apis(value, api_spec_mapping=_API_SPEC_MAPPING):
         )
 
         if m is None:
-            raise ValueError('Invalid API {!r}'.format(api))
+            raise ValueError('Invalid API {}'.format(api))
 
         spec = m.group('spec')
         if spec is None:
-            spec = api_spec_mapping[m.group('api')]
+            try:
+                spec = api_spec_mapping[m.group('api')]
+            except KeyError:
+                raise ValueError('Can not resolve specification for API {}'.format(m.group('api')))
+
         version = parse_version(m.group('version'))
 
         result[m.group('api')] = ApiInformation(spec, version, m.group('profile'))

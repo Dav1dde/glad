@@ -37,7 +37,7 @@ class GlobalConfig(Config):
         description='Comma separated list of APIs in `name:profile=version` pairs '
                     'optionally including a specification `name:profile/spec=version`. '
                     'No version means latest, a profile is only required if the API requires a profile. '
-                    'E.g. `gl:core=3.3,gles1/gl=2,gles2='
+                    'E.g. `gl:core=3.3,gles1/gl=2,gles2'
     )
     EXTENSIONS = ConfigOption(
         converter=parse_extensions,
@@ -127,11 +127,16 @@ def main():
     )
 
     for api, info in global_config['API'].items():
-        logger.info('generating %s:%s/%s=%s', api, info.profile, info.specification, info.version)
+        logger.info('generating %s:%s/%s=%s.%s',
+                    api, info.profile, info.specification, info.version.major, info.version.minor)
 
         specification = specifications[info.specification]
 
-        feature_set = specification.select(api, info.version, info.profile, global_config['EXTENSIONS'])
+        extensions = global_config['EXTENSIONS']
+        if extensions:
+            extensions = [ext for ext in extensions if specification.is_extension(api, ext)]
+
+        feature_set = specification.select(api, info.version, info.profile, extensions)
 
         generator = generators[ns.subparser_name](global_config['OUT_PATH'], opener=opener)
         generator.generate(specification, feature_set, config)
