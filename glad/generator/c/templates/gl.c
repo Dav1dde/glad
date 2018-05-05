@@ -123,9 +123,9 @@ static int get_exts({{ context_arg(',') }} int version, const char **out_exts, u
         *out_exts = (const char *){{ ctx('glGetString') }}(GL_EXTENSIONS);
 #if _GLAD_GL_IS_SOME_NEW_VERSION
     } else {
-        unsigned int index;
+        unsigned int index = 0;
         unsigned int num_exts_i = 0;
-        char **exts_i;
+        char **exts_i = NULL;
         if ({{ ctx('glGetStringi') }} == NULL || {{ ctx('glGetIntegerv') }} == NULL) {
             return 0;
         }
