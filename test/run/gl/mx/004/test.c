@@ -39,7 +39,7 @@ void run(GLFWwindow *window) {
     ASSERT(GLAD_VERSION_MAJOR(version) >= 3, "glad major version %d < 3", GLAD_VERSION_MAJOR(version));
     ASSERT(GLAD_VERSION_MAJOR(version) > 3 || GLAD_VERSION_MINOR(version) >= 3, "glad minor version %d < 3", GLAD_VERSION_MINOR(version));
     ASSERT(context.VERSION_3_3, "GL_VERSION_3_3 not set");
-    ASSERT(context.EXT_texture_filter_anisotropic, "EXT_texture_filter_anisotropic not available");
+    ASSERT(context.KHR_debug, "KHR_debug not available");
 
     glViewport(0, 0, WIDTH, HEIGHT);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);

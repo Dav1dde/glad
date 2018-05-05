@@ -30,7 +30,7 @@ int main(void) {
     ASSERT(GLAD_VERSION_MAJOR(version) >= 2, "glad major version %d < 2", GLAD_VERSION_MAJOR(version));
     ASSERT(GLAD_VERSION_MAJOR(version) > 2 || GLAD_VERSION_MINOR(version) >= 1, "glad minor version %d < 1", GLAD_VERSION_MINOR(version));
     ASSERT(GLAD_GL_VERSION_2_1, "GL_VERSION_2_1 not set");
-    ASSERT(GLAD_GL_EXT_texture_filter_anisotropic == 1, "EXT_texture_filter_anisotropic not available");
+    ASSERT(GLAD_GL_KHR_debug == 1, "KHR_debug not available");
 
     glViewport(0, 0, WIDTH, HEIGHT);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
