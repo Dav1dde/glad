@@ -1,9 +1,9 @@
 {% import "template_utils.h" as template_utils with context %}
-#ifndef __glad_{{ feature_set.api }}_h_
-#define __glad_{{ feature_set.api }}_h_
+#ifndef GLAD_{{ feature_set.api|upper }}_H_
+#define GLAD_{{ feature_set.api|upper }}_H_
 
 {% block header %}
-{{ template_utils.header_error(feature_set.api, feature_set.api, feature_set.api|api) }}
+{{ template_utils.header_error(feature_set.api, '__' + feature_set.api + '_h_', feature_set.api|api) }}
 {% endblock %}
 
 #define GLAD_{{ feature_set.api|upper }}

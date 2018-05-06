@@ -1,8 +1,8 @@
 {% macro header_error(api, header_name, name) %}
-#ifdef __{{ header_name }}_h_
+#ifdef {{ header_name }}
     #error {{ name }} header already included (API: {{ api }}), remove previous include!
 #endif
-#define __{{ header_name }}_h_
+#define {{ header_name }} 1
 {% endmacro %}
 
 
@@ -32,11 +32,13 @@
 
 {% macro write_type(type) %}
 {% if type.category == 'enum' -%}
+{%- if type.enums_for(feature_set) -%}
 typedef enum {{ type.name }} {
-{% for member in type.enums %}
+{% for member in type.enums_for(feature_set) %}
     {{ member.name }} = {{ member.value }},
 {% endfor %}
 } {{ type.name }};
+{%- endif -%}
 {%- elif type.category in ('struct', 'union') -%}
 typedef {{ type.category }} {{ type.name }} {
 {% for member in type.members %}

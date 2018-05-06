@@ -145,23 +145,43 @@ class Specification(object):
                 t = Type.from_element(element)
 
                 if t.category == 'enum':
-                    enums = self.root.xpath('//enums[@type][@name="{}"]'.format(t.name))
-                    if len(enums) == 0:
+                    enums_element = self.root.xpath('//enums[@type][@name="{}"]'.format(t.name))
+                    if len(enums_element) == 0:
                         # yep the type exists but there is actually no enum for it...
                         logger.debug('type {} with category enum but without <enums>'.format(t.name))
                         continue
-                    if not len(enums) == 1:
+                    if not len(enums_element) == 1:
                         # this should never happen, if it does ... well shit
                         raise ValueError('multiple enums with type attribute and name {}'.format(t.name))
-                    enums = enums[0]
+                    enums_element = enums_element[0]
 
-                    namespace = enums.get('namespace')
-                    group = enums.get('group')
-                    vendor = enums.get('vendor')
-                    comment = enums.get('comment', '')
+                    kwargs = dict(namespace=enums_element.get('namespace'),
+                                  group=enums_element.get('group'),
+                                  vendor=enums_element.get('vendor'),
+                                  comment=enums_element.get('comment', ''))
 
-                    t.enums = [Enum.from_element(e, namespace=namespace, group=group, vendor=vendor, comment=comment)
-                               for e in enums.findall('enum')]
+                    enums = OrderedDict()
+                    for e in (Enum.from_element(e, **kwargs) for e in enums_element.findall('enum')):
+                        enums[e.name] = e
+
+                    for extending_enum in self.root.xpath('//require/enum[@extends="{}"]'.format(t.name)):
+                        extension = extending_enum.getparent().getparent()
+
+                        extnumber = int(extension.attrib['number'])
+                        enum = Enum.from_element(extending_enum, extnumber=extnumber)
+
+                        if enum.name not in enums:
+                            enums[enum.name] = enum
+                        else:
+                            # technically not required, but better throw more
+                            # than generate broken code because of a broken specification
+                            if not enum.value == enums[enum.name].value:
+                                raise ValueError('extension enum {} required multiple times '
+                                                 'with different values'.format(e.name))
+
+                        enums[enum.name].also_extended_by(extension.attrib['name'])
+
+                    t.enums = list(enums.values())
                 elif t.category in ('struct', 'union'):
                     t.members = [Member.from_element(e) for e in element.findall('member')]
 
@@ -190,6 +210,7 @@ class Specification(object):
 
     @property
     def enums(self):
+        # TODO new enums added with a <require> by an extension
         if self._enums is not None:
             return self._enums
 
@@ -236,6 +257,8 @@ class Specification(object):
 
     @property
     def extensions(self):
+        # TODO protect=...
+
         if self._extensions is not None:
             return self._extensions
 
@@ -377,9 +400,6 @@ class Specification(object):
             # None means all extensions
             extension_names = all_extensions
         else:
-            # ignore extensions of other APIs
-            # TODO figure out if this should be moved to __main__ or if there should be logging
-            extension_names = [en for en in extension_names if en.startswith(api.upper() + '_')]
             # make sure only valid extensions are listed
             for extension in extension_names:
                 if extension not in all_extensions:
@@ -389,11 +409,14 @@ class Specification(object):
                         )
                     )
 
+        # remove duplicates
+        extension_names = set(extension_names)
+
         # Remove weird GLX extensions which use undefined types
         for extension in ['GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer']:
             try:
                 extension_names.remove(extension)
-            except ValueError:
+            except KeyError:
                 pass
             # TODO log warning
 
@@ -478,6 +501,10 @@ class Type(IdentifiedByName):
         self.enums = enums
         self.members = members
 
+    def enums_for(self, feature_set):
+        relevant = set(feature_set.features) | set(feature_set.extensions)
+        return [e for e in self.enums if len(e.extended_by) == 0 or e.extended_by & relevant]
+
     @classmethod
     def from_element(cls, element):
         apientry = element.find('apientry')
@@ -519,32 +546,52 @@ class Member(IdentifiedByName):
 
 
 class Enum(IdentifiedByName):
+    BASE_EXTENSION_OFFSET = 1000000000
+    EXTENSION_NUMBER_MULTIPLIER = 1000
+    EXTENSION_NUMBER_OFFSET = -1
+
     def __init__(self, name, value, bitpos, api,
-                 namespace=None, group=None, vendor=None, comment=''):
+                 namespace=None, group=None, vendor=None, comment='',
+                 extended_by=None):
         self.name = name
         self.value = value
-        if value is None and bitpos is not None:
+        if self.value is None and bitpos is not None:
             self.value = 1 << int(bitpos)
         self.bitpos = bitpos
         self.api = api
+
         self.namespace = namespace
         self.group = group
         self.vendor = vendor
         self.comment = comment
+
+        self.extended_by = set([extended_by]) if extended_by else set()
+
+    def also_extended_by(self, name):
+        self.extended_by.add(name)
 
     def __str__(self):
         return self.name
     __repr__ = __str__
 
     @classmethod
-    def from_element(cls, element, namespace=None, group=None, vendor=None, comment=''):
+    def from_element(cls, element, extnumber=None, **kwargs):
         name = element.attrib['name']
         value = element.get('value')
         bitpos = element.get('bitpos')
         api = element.get('api')
 
-        return cls(name, value, bitpos, api,
-                   namespace=namespace, group=group, vendor=vendor, comment=comment)
+        if element.get('extnumber'):
+            extnumber = int(element.get('extnumber'))
+
+        if element.get('offset') is not None:
+            if extnumber is None:
+                raise ValueError('enum has offset, extnumber is required')
+
+            extbase = (cls.EXTENSION_NUMBER_MULTIPLIER * (extnumber + cls.EXTENSION_NUMBER_OFFSET))
+            value = cls.BASE_EXTENSION_OFFSET + extbase + int(element.get('offset'))
+
+        return cls(name, value, bitpos, api, **kwargs)
 
 
 class Command(IdentifiedByName):
@@ -631,16 +678,21 @@ class OGLType(object):
 
 # TODO unify API
 class Require(object):
-    def __init__(self, api, profile, requirements):
+    def __init__(self, api, profile, requirements, extension=None, feature=None, comment=''):
         self.api = api
         self.profile = profile
-
         self.requirements = requirements
+
+        self.extension = extension
+        self.feature = feature
+
+        self.comment = comment
 
     @classmethod
     def from_element(cls, element):
-        requirements = [child.get('name') for child in element]
-        return cls(element.get('api'), element.get('profile'), requirements)
+        requirements = [child.get('name') for child in element if not child.get('extends')]
+        return cls(element.get('api'), element.get('profile'), requirements,
+                   element.get('extension'), element.get('feature'), element.get('comment'))
 
 
 class Remove(object):

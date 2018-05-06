@@ -37,8 +37,8 @@ GLAPI PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};
 
 {% block header %}
 {% set header_data = [
-    ('gl', 'gl', 'OpenGL'), ('gles1', 'gl', 'OpenGL ES 1'),
-    ('gles2', 'gl2', 'OpenGL ES 2'), ('gles2', 'gl3', 'OpenGL ES 3')
+    ('gl', '__gl_h_', 'OpenGL'), ('gles1', '__gl_h_', 'OpenGL ES 1'),
+    ('gles2', '__gl2_h_', 'OpenGL ES 2'), ('gles2', '__gl3_h_', 'OpenGL ES 3')
 ] %}
 {% set written = [] %}
 {% for api, header_name, name in header_data %}

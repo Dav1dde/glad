@@ -1,10 +1,16 @@
 {% extends 'base_template.h' %}
 
+{%
+    // TODO get rid of PFN_ mess, through context function?
+    // TODO de-duplicate a lot of stuff with gl.c/h
+    // TODO clean-up copy and paste stuff in here
+ %}
+
 {% macro mx_commands(feature_set, options) %}
 {{ template_utils.write_function_typedefs(feature_set.commands) }}
 struct Glad{{ feature_set.api.upper() }}Context {
 {% for command in feature_set.commands %}
-PFN{{ command.proto.name|upper }}PROC {{ ctx(command.proto.name, name_only=True) }};
+PFN_{{ command.proto.name }} {{ ctx(command.proto.name, name_only=True) }};
 {% endfor %}
 
 {% block platform %}
@@ -18,7 +24,7 @@ void* userptr;
 };
 
 {% if options.mx_global %}
-GLAPI struct Glad{{ feature_set.api|api }}Context glad_{{ feature_set.api }}_context;
+VKAPI_CALL struct Glad{{ feature_set.api|api }}Context glad_{{ feature_set.api }}_context;
 
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
 #define GLAD_{{ extension.name }} (glad_{{ feature_set.api }}_context.{{ extension.name[2:].lstrip('_') }})
@@ -39,17 +45,7 @@ GLAPI PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};
 
 
 {% block header %}
-{% set header_data = [
-    ('gl', 'gl', 'OpenGL'), ('gles1', 'gl', 'OpenGL ES 1'),
-    ('gles2', 'gl2', 'OpenGL ES 2'), ('gles2', 'gl3', 'OpenGL ES 3')
-] %}
-{% set written = [] %}
-{% for api, header_name, name in header_data %}
-    {% if api == feature_set.api and header_name not in written -%}
-        {{ template_utils.header_error(api, header_name, name) }}
-        {% do written.append(header_name) %}
-    {%- endif %}
-{% endfor %}
+{{ template_utils.header_error(api, feature_set.api.upper() + '_H_', name) }}
 {% endblock %}
 
 
@@ -62,10 +58,25 @@ GLAPI PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};
 {% endblock %}
 
 {% block commands %}
+
+
+{% for command in feature_set.commands %}
+typedef {{ type_to_c(command.proto.ret) }} ({{ apiptrp }} PFN_{{ command.proto.name }})({{ params_to_c(command.params) }});
+{% endfor %}
+
+
 {% if options.mx %}
 {{ mx_commands(feature_set, options) }}
 {% else %}
-{{ super() }}
+{% for command in feature_set.commands %}
+{{ apicall }} PFN_{{ command.proto.name }} glad_{{ command.proto.name }};
+{% if debug %}
+{{ apicall }} PFN{{ command.proto.name }} glad_debug_{{ command.proto.name }};
+#define {{ command.proto.name }} glad_debug_{{ command.proto.name }}
+{% else %}
+#define {{ command.proto.name }} glad_{{ command.proto.name }}
+{% endif %}
+{% endfor %}
 {% endif %}
 {% endblock %}
 
