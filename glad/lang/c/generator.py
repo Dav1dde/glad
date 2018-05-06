@@ -72,7 +72,7 @@ class CGenerator(Generator):
                 if self.spec.NAME in ('gl', 'glx', 'wgl'):
                     f.write('\tif(!GLAD_{}) return;\n'.format(feature.name))
                 for func in feature.functions:
-                    f.write('\tglad_{0} = (PFN{1}PROC)load("{0}");\n'
+                    f.write('\t*(void**) (&glad_{0}) = load("{0}");\n'
                             .format(func.proto.name, func.proto.name.upper()))
                 f.write('}\n')
 
@@ -88,7 +88,7 @@ class CGenerator(Generator):
                 if ext.name == 'GLX_SGIX_dmbuffer': f.write('#ifdef _DM_BUFFER_H_\n')
                 for func in ext.functions:
                     # even if they were in written we need to load it
-                    f.write('\tglad_{0} = (PFN{1}PROC)load("{0}");\n'
+                    f.write('\t*(void**)glad_{0} = load("{0}");\n'
                             .format(func.proto.name, func.proto.name.upper()))
                 if ext.name in ('GLX_SGIX_video_source', 'GLX_SGIX_dmbuffer'):
                     f.write('#else\n')
