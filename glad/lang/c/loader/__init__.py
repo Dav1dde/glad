@@ -77,7 +77,7 @@ int %(init)s(void) {
 #ifdef __APPLE__
             return 1;
 #else
-            gladGetProcAddressPtr = (PFNGLXGETPROCADDRESSPROC_PRIVATE)dlsym(libGL,
+            *(void**) (&gladGetProcAddressPtr) = dlsym(libGL,
                 "glXGetProcAddressARB");
             return gladGetProcAddressPtr != NULL;
 #endif
