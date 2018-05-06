@@ -1,5 +1,4 @@
 {% extends 'base_template.h' %}
-{% import "template_utils.h" as template_utils %}
 
 {% macro mx_commands(feature_set, options) %}
 {{ template_utils.write_function_typedefs(feature_set.commands) }}
@@ -69,8 +68,6 @@ GLAPI PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};
 
 
 {% block declarations %}
-typedef void* (* GLADloadproc)(const char *name, void* userptr);
-typedef void* (* GLADsimpleloadproc)(const char *name);
 GLAPI int gladLoad{{ feature_set.api|api }}({{ 'struct Glad' + feature_set.api|api + 'Context *context, ' if options.mx }}GLADloadproc load, void* userptr);
 GLAPI int gladLoad{{ feature_set.api|api }}Simple({{ 'struct Glad' + feature_set.api|api + 'Context *context, ' if options.mx }}GLADsimpleloadproc load);
 

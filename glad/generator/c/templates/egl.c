@@ -1,5 +1,4 @@
 {% extends 'base_template.c' %}
-{% import 'template_utils.h' as template_utils %}
 
 {% block loader %}
 static int get_exts(EGLDisplay display, const char **extensions) {

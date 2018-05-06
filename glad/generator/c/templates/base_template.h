@@ -1,4 +1,4 @@
-{% import "template_utils.h" as template_utils %}
+{% import "template_utils.h" as template_utils with context %}
 #ifndef __glad_{{ feature_set.api }}_h_
 #define __glad_{{ feature_set.api }}_h_
 
@@ -18,6 +18,17 @@
 #define GLAD_VERSION_MINOR(version) (version % 1000)
 #endif
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef void* (* GLADloadproc)(const char *name, void* userptr);
+typedef void* (* GLADsimpleloadproc)(const char *name);
+typedef void (* GLADprecallback)(const char *name, void *funcptr, int len_args, ...);
+typedef void (* GLADpostcallback)(void* ret, const char *name, void *funcptr, int len_args, ...);
+
+{% block platform %}
 #if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
@@ -29,9 +40,6 @@
 #endif
 #ifndef APIENTRYP
 #define APIENTRYP APIENTRY *
-#endif
-#ifdef __cplusplus
-extern "C" {
 #endif
 
 #ifndef GLAPI
@@ -59,15 +67,16 @@ extern "C" {
 #  define GLAPI extern
 # endif
 #endif
-
-{% block feature_information %}
-{{ template_utils.write_feature_information(chain(feature_set.features, feature_set.extensions), with_runtime=True) }}
 {% endblock %}
+
 {% block enums %}
 {{ template_utils.write_enumerations(feature_set.enums) }}
 {% endblock %}
 {% block types %}
 {{ template_utils.write_types(feature_set.types) }}
+{% endblock %}
+{% block feature_information %}
+{{ template_utils.write_feature_information(chain(feature_set.features, feature_set.extensions), with_runtime=True) }}
 {% endblock %}
 {% block commands %}
 {{ template_utils.write_function_typedefs(feature_set.commands) }}
@@ -79,8 +88,6 @@ extern "C" {
 
 {% block debug %}
 {% if options.debug %}
-typedef void (* GLADprecallback)(const char *name, void *funcptr, int len_args, ...);
-typedef void (* GLADpostcallback)(void* ret, const char *name, void *funcptr, int len_args, ...);
 GLAPI void glad_set_{{ feature_set.api }}_pre_callback(GLADprecallback cb);
 GLAPI void glad_set_{{ feature_set.api }}_post_callback(GLADpostcallback cb);
 {% endif %}

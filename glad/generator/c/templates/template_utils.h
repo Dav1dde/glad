@@ -6,12 +6,17 @@
 {% endmacro %}
 
 
+{% macro context_arg(suffix='', def='') -%}
+{{ 'struct Glad' + feature_set.api|api + 'Context *context' + suffix if options.mx else def }}
+{%- endmacro %}
+
+
 {% macro write_feature_information(extensions, with_runtime=True) %}
 {% for extension in extensions %}
 {# #ifndef {{ extension.name }} #}
 #define {{ extension.name }} 1
 {% if with_runtime %}
-GLAPI int GLAD_{{ extension.name }};
+{{ apicall }} int GLAD_{{ extension.name }};
 {% endif %}
 {# #endif #}
 {% endfor %}
@@ -26,21 +31,21 @@ GLAPI int GLAD_{{ extension.name }};
 {% endmacro %}
 
 {% macro write_type(type) %}
-{% if type.category == 'enum' %}
+{% if type.category == 'enum' -%}
 typedef enum {{ type.name }} {
 {% for member in type.enums %}
     {{ member.name }} = {{ member.value }},
 {% endfor %}
 } {{ type.name }};
-{% elif type.category in ('struct', 'union') %}
+{%- elif type.category in ('struct', 'union') -%}
 typedef {{ type.category }} {{ type.name }} {
 {% for member in type.members %}
     {{ member.type.raw }};
 {% endfor %}
 } {{ type.name }};
-{% elif type.raw.strip() %}
-{{ type.raw }}
-{% endif %}
+{%- elif type.raw.strip() -%}
+{{ type.raw.strip() }}
+{%- endif %}
 {% endmacro %}
 
 {% macro write_enumerations(enumerations) %}
@@ -58,15 +63,15 @@ typedef {{ type.category }} {{ type.name }} {
 
 {% macro write_function_typedefs(commands) %}
 {% for command in commands %}
-typedef {{ type_to_c(command.proto.ret) }} (APIENTRYP PFN{{ command.proto.name|upper }}PROC)({{ params_to_c(command.params) }});
+typedef {{ type_to_c(command.proto.ret) }} ({{ apiptrp }} PFN{{ command.proto.name|upper }}PROC)({{ params_to_c(command.params) }});
 {% endfor %}
 {% endmacro %}
 
 {% macro write_function_declarations(commands, debug=False) %}
 {% for command in commands %}
-GLAPI PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
+{{ apicall }} PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
 {% if debug %}
-GLAPI PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};
+{{ apicall }} PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};
 #define {{ command.proto.name }} glad_debug_{{ command.proto.name }}
 {% else %}
 #define {{ command.proto.name }} glad_{{ command.proto.name }}

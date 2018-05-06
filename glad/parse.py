@@ -148,7 +148,7 @@ class Specification(object):
                     enums = self.root.xpath('//enums[@type][@name="{}"]'.format(t.name))
                     if len(enums) == 0:
                         # yep the type exists but there is actually no enum for it...
-                        logger.debug('type {} with category enum but without enums'.format(t.name))
+                        logger.debug('type {} with category enum but without <enums>'.format(t.name))
                         continue
                     if not len(enums) == 1:
                         # this should never happen, if it does ... well shit

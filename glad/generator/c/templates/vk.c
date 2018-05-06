@@ -1,10 +1,5 @@
 {% extends 'base_template.c' %}
-{% import 'template_utils.h' as template_utils %}
 
-
-{% macro context_arg(suffix='', def='') -%}
-{{ 'struct Glad' + feature_set.api|api + 'Context *context' + suffix if options.mx else def }}
-{%- endmacro %}
 
 
 {% set global_context = 'glad_' + feature_set.api + '_context' %}
@@ -72,19 +67,6 @@ static void load_{{ extension.name }}(struct Glad{{ feature_set.api|api }}Contex
 {% endif %}
 {% endblock %}
 
-{% block aliasing %}
-{% if options.alias %}
-static void resolve_aliases({{ context_arg() }}) {
-    {% for command in feature_set.commands %}
-    {% for alias in aliases.get(command.proto.name, []) %}
-    {% if not alias == command.proto.name %}
-    if ({{ ctx(command.proto.name) }} == NULL && {{ ctx(alias) }} != NULL) {{ ctx(command.proto.name) }} = (PFN{{ command.proto.name|upper }}PROC){{ ctx(alias) }};
-    {% endif %}
-    {% endfor %}
-    {% endfor %}
-}
-{% endif %}
-{% endblock %}
 
 {% block loader %}
 {% endblock %}

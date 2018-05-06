@@ -1,4 +1,4 @@
-{% import 'template_utils.h' as template_utils %}
+{% import 'template_utils.h' as template_utils with context %}
 {% block includes %}
 #include <stdio.h>
 #include <stdlib.h>
@@ -77,11 +77,11 @@ static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
 
 {% block aliasing %}
 {% if options.alias %}
-static void resolve_aliases() }}) {
+static void resolve_aliases({{ template_utils.context_arg() }}) {
     {% for command in feature_set.commands %}
     {% for alias in aliases.get(command.proto.name, []) %}
     {% if not alias == command.proto.name %}
-    if ({{ command.proto.name }} == NULL && {{ alias }} != NULL) {{ command.proto.name }} = (PFN{{ command.proto.name|upper }}PROC){{ alias }};
+    if ({{ ctx(command.proto.name) }} == NULL && {{ ctx(alias) }} != NULL) {{ ctx(command.proto.name) }} = (PFN{{ command.proto.name|upper }}PROC){{ ctx(alias) }};
     {% endif %}
     {% endfor %}
     {% endfor %}

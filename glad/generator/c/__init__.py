@@ -218,10 +218,15 @@ class CGenerator(BaseGenerator):
         )
 
     def get_additional_template_arguments(self, spec, feature_set, config):
+        if spec.name == 'vk':
+            pass
+
         return {
             'ctx': make_ctx_func(config['MX'] and feature_set.api.startswith('gl'), feature_set.api.lower()),
             'loadable': functools.partial(loadable, spec, feature_set),
-            'aliases': collect_alias_information(feature_set.commands)
+            'aliases': collect_alias_information(feature_set.commands),
+            'apiptrp': 'VKAPI_PTR*' if spec.name == 'vk' else 'APIENTRYP',
+            'apicall': 'VKAPI_CALL' if spec.name == 'vk' else 'GLAPI'
         }
 
     def get_templates(self, spec, feature_set, config):

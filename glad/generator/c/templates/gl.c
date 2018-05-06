@@ -1,10 +1,4 @@
 {% extends 'base_template.c' %}
-{% import 'template_utils.h' as template_utils %}
-
-
-{% macro context_arg(suffix='', def='') -%}
-{{ 'struct Glad' + feature_set.api|api + 'Context *context' + suffix if options.mx else def }}
-{%- endmacro %}
 
 
 {% set global_context = 'glad_' + feature_set.api + '_context' %}
@@ -88,19 +82,6 @@ static void load_{{ extension.name }}(struct Glad{{ feature_set.api|api }}Contex
 {% endif %}
 {% endblock %}
 
-{% block aliasing %}
-{% if options.alias %}
-static void resolve_aliases({{ context_arg() }}) {
-    {% for command in feature_set.commands %}
-    {% for alias in aliases.get(command.proto.name, []) %}
-    {% if not alias == command.proto.name %}
-    if ({{ ctx(command.proto.name) }} == NULL && {{ ctx(alias) }} != NULL) {{ ctx(command.proto.name) }} = (PFN{{ command.proto.name|upper }}PROC){{ ctx(alias) }};
-    {% endif %}
-    {% endfor %}
-    {% endfor %}
-}
-{% endif %}
-{% endblock %}
 
 {% block loader %}
 #if defined(GL_ES_VERSION_3_0) || defined(GL_VERSION_3_0)
@@ -109,7 +90,7 @@ static void resolve_aliases({{ context_arg() }}) {
 #define _GLAD_GL_IS_SOME_NEW_VERSION 0
 #endif
 
-static int get_exts({{ context_arg(',') }} int version, const char **out_exts, unsigned int *out_num_exts_i, char ***out_exts_i) {
+static int get_exts({{ template_utils.context_arg(',') }} int version, const char **out_exts, unsigned int *out_num_exts_i, char ***out_exts_i) {
 #if _GLAD_GL_IS_SOME_NEW_VERSION
     if(GLAD_VERSION_MAJOR(version) < 3) {
 #else
@@ -202,7 +183,7 @@ static int has_ext(int version, const char *exts, unsigned int num_exts_i, char 
     return 0;
 }
 
-static int find_extensions{{ feature_set.api|api }}({{ context_arg(',') }} int version) {
+static int find_extensions{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} int version) {
     const char *exts = NULL;
     unsigned int num_exts_i = 0;
     char **exts_i = NULL;
@@ -218,7 +199,7 @@ static int find_extensions{{ feature_set.api|api }}({{ context_arg(',') }} int v
     return 1;
 }
 
-static int find_core{{ feature_set.api|api }}({{ context_arg(def='void') }}) {
+static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(def='void') }}) {
     /* Thank you @elmindreda
      * https://github.com/elmindreda/greg/blob/master/templates/greg.c.in#L176
      * https://github.com/glfw/glfw/blob/master/src/context.c#L36
@@ -254,7 +235,7 @@ static int find_core{{ feature_set.api|api }}({{ context_arg(def='void') }}) {
     return major * 1000 + minor;
 }
 
-int gladLoad{{ feature_set.api|api }}({{ context_arg(',') }} GLADloadproc load, void* userptr) {
+int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} GLADloadproc load, void* userptr) {
     int version;
     {{ ctx('glGetString') }} = (PFNGLGETSTRINGPROC)load("glGetString", userptr);
     if({{ ctx('glGetString') }} == NULL) return 0;
@@ -285,7 +266,7 @@ static void* glad_gl_get_proc_from_userptr(const char* name, void *userptr) {
     return ((void* (*)(const char *name))userptr)(name);
 }
 
-int gladLoad{{ feature_set.api|api }}Simple({{ context_arg(',') }} GLADsimpleloadproc load) {
+int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }} GLADsimpleloadproc load) {
     return gladLoad{{ feature_set.api|api }}({{'context,' if options.mx }} glad_gl_get_proc_from_userptr, (void*) load);
 }
 

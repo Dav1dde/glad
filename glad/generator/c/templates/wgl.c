@@ -1,5 +1,4 @@
 {% extends 'base_template.c' %}
-{% import 'template_utils.h' as template_utils %}
 
 {% set blacklist = feature_set.features[0].get_requirements(spec, feature_set).commands %}
 

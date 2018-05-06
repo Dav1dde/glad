@@ -1,5 +1,4 @@
 {% extends 'base_template.h' %}
-{% import "template_utils.h" as template_utils %}
 
 {% macro mx_commands(feature_set, options) %}
 {{ template_utils.write_function_typedefs(feature_set.commands) }}
@@ -7,6 +6,9 @@ struct Glad{{ feature_set.api.upper() }}Context {
 {% for command in feature_set.commands %}
 PFN{{ command.proto.name|upper }}PROC {{ ctx(command.proto.name, name_only=True) }};
 {% endfor %}
+
+{% block platform %}
+{% endblock %}
 
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
 int {{ ctx(extension.name, name_only=True) }};
@@ -69,13 +71,4 @@ GLAPI PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};
 
 
 {% block declarations %}
-typedef void* (* GLADloadproc)(const char *name, void* userptr);
-typedef void* (* GLADsimpleloadproc)(const char *name);
-GLAPI int gladLoad{{ feature_set.api|api }}({{ 'struct Glad' + feature_set.api|api + 'Context *context, ' if options.mx }}GLADloadproc load, void* userptr);
-GLAPI int gladLoad{{ feature_set.api|api }}Simple({{ 'struct Glad' + feature_set.api|api + 'Context *context, ' if options.mx }}GLADsimpleloadproc load);
-
-{% if options.mx_global %}
-struct Glad{{ feature_set.api|api }}Context* gladGet{{ feature_set.api|api }}Context(void);
-void gladSet{{ feature_set.api|api }}Context(struct Glad{{ feature_set.api|api }}Context *context);
-{% endif %}
 {% endblock %}
