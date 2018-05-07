@@ -88,4 +88,82 @@ static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
 
 
 {% block loader %}
+{# /* TODO fill in extension checks */ #}
+static int get_exts({{ template_utils.context_arg(',') }}) {
+    return 1;
+}
+
+static void free_exts() {
+}
+
+static int has_ext(const char *name) {
+    (void) name;
+    return 1;
+}
+
+static int find_extensions{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} int version) {
+    if (!get_exts()) return 0;
+
+    {% for extension in feature_set.extensions %}
+    {{ ctx('GLAD_' + extension.name) }} = has_ext("{{ extension.name }}");
+    {% else %}
+    (void)has_ext;
+    {% endfor %}
+
+    free_exts();
+    return 1;
+}
+
+static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(def='void') }}) {
+    int major = 1;
+    int minor = 1;
+    {% for feature in feature_set.features %}
+    {{ ctx('GLAD_' + feature.name) }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
+    {% endfor %}
+
+    return major * 1000 + minor;
+}
+
+int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} GLADloadproc load, void* userptr) {
+    int version;
+    version = find_core{{ feature_set.api|api }}({{ 'context' if options.mx }});
+
+    {% for feature, _ in loadable(feature_set.features) %}
+    load_{{ feature.name }}({{'context, ' if options.mx }}load, userptr);
+    {% endfor %}
+
+    if (!find_extensions{{  feature_set.api|api }}({{ 'context, ' if options.mx }}version)) return 0;
+    {% for extension, _ in loadable(feature_set.extensions) %}
+    load_{{ extension.name }}({{'context, ' if options.mx }}load, userptr);
+    {% endfor %}
+
+    {% if options.mx_global %}
+    gladSet{{ feature_set.api|api }}Context(context);
+    {% endif %}
+
+    {% if options.alias %}
+    resolve_aliases({{ 'context' if options.mx }});
+    {% endif %}
+
+    return version;
+}
+
+static void* glad_gl_get_proc_from_userptr(const char* name, void *userptr) {
+    return ((void* (*)(const char *name))userptr)(name);
+}
+
+int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }} GLADsimpleloadproc load) {
+    return gladLoad{{ feature_set.api|api }}({{'context,' if options.mx }} glad_gl_get_proc_from_userptr, (void*) load);
+}
+
+{% if options.mx_global %}
+struct Glad{{ feature_set.api|api }}Context* gladGet{{ feature_set.api|api }}Context() {
+    return &glad_{{ feature_set.api }}_context;
+}
+
+void gladSet{{ feature_set.api|api }}Context(struct Glad{{ feature_set.api|api }}Context *context) {
+    glad_{{ feature_set.api }}_context = *context;
+}
+{% endif %}
+
 {% endblock %}

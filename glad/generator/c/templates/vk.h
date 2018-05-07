@@ -82,4 +82,13 @@ typedef {{ type_to_c(command.proto.ret) }} ({{ apiptrp }} PFN_{{ command.proto.n
 
 
 {% block declarations %}
+
+VKAPI_CALL int gladLoad{{ feature_set.api|api }}({{ 'struct Glad' + feature_set.api|api + 'Context *context, ' if options.mx }}GLADloadproc load, void* userptr);
+VKAPI_CALL int gladLoad{{ feature_set.api|api }}Simple({{ 'struct Glad' + feature_set.api|api + 'Context *context, ' if options.mx }}GLADsimpleloadproc load);
+
+{% if options.mx_global %}
+struct Glad{{ feature_set.api|api }}Context* gladGet{{ feature_set.api|api }}Context(void);
+void gladSet{{ feature_set.api|api }}Context(struct Glad{{ feature_set.api|api }}Context *context);
+{% endif %}
+
 {% endblock %}

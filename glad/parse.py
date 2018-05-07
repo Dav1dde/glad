@@ -598,6 +598,9 @@ class Enum(IdentifiedByName):
             extbase = (cls.EXTENSION_NUMBER_MULTIPLIER * (extnumber + cls.EXTENSION_NUMBER_OFFSET))
             value = cls.BASE_EXTENSION_OFFSET + extbase + int(element.get('offset'))
 
+            if element.get('dir') == '-':
+                value = -value
+
         return cls(name, value, bitpos, api, **kwargs)
 
 
