@@ -145,7 +145,7 @@ class Specification(object):
                 t = Type.from_element(element)
 
                 if t.category == 'enum':
-                    enums_element = self.root.xpath('//enums[@type][@name="{}"]'.format(t.name))
+                    enums_element = self.root.findall('.//enums[@type][@name="{}"]'.format(t.name))
                     if len(enums_element) == 0:
                         # yep the type exists but there is actually no enum for it...
                         logger.debug('type {} with category enum but without <enums>'.format(t.name))
@@ -164,22 +164,22 @@ class Specification(object):
                     for e in (Enum.from_element(e, **kwargs) for e in enums_element.findall('enum')):
                         enums[e.name] = e
 
-                    for extending_enum in self.root.xpath('//require/enum[@extends="{}"]'.format(t.name)):
-                        extension = extending_enum.getparent().getparent()
-
+                    for extension in self.root.findall('.//require/enum[@extends="{}"]/../..'.format(t.name)):
                         extnumber = int(extension.attrib['number'])
-                        enum = Enum.from_element(extending_enum, extnumber=extnumber)
 
-                        if enum.name not in enums:
-                            enums[enum.name] = enum
-                        else:
-                            # technically not required, but better throw more
-                            # than generate broken code because of a broken specification
-                            if not enum.value == enums[enum.name].value:
-                                raise ValueError('extension enum {} required multiple times '
-                                                 'with different values'.format(e.name))
+                        for extending_enum in extension.findall('.//require/enum[@extends="{}"]'.format(t.name)):
+                            enum = Enum.from_element(extending_enum, extnumber=extnumber)
 
-                        enums[enum.name].also_extended_by(extension.attrib['name'])
+                            if enum.name not in enums:
+                                enums[enum.name] = enum
+                            else:
+                                # technically not required, but better throw more
+                                # than generate broken code because of a broken specification
+                                if not enum.value == enums[enum.name].value:
+                                    raise ValueError('extension enum {} required multiple times '
+                                                     'with different values'.format(e.name))
+
+                            enums[enum.name].also_extended_by(extension.attrib['name'])
 
                     t.enums = list(enums.values())
                 elif t.category in ('struct', 'union'):
@@ -210,7 +210,6 @@ class Specification(object):
 
     @property
     def enums(self):
-        # TODO new enums added with a <require> by an extension
         if self._enums is not None:
             return self._enums
 
@@ -234,6 +233,14 @@ class Specification(object):
                 self._enums[name].append(
                     Enum.from_element(enum, namespace=namespace, group=group, vendor=vendor, comment=comment)
                 )
+
+        # add enums added through a <require>
+        for element in self.root.findall('.//require/enum'):
+            if element.get('extends'):
+                continue
+
+            enum = Enum.from_element(element)
+            self._enums[enum.name].append(enum)
 
         return self._enums
 
@@ -651,8 +658,8 @@ class OGLType(object):
 
         # working copy to remove elements
         element = copy.deepcopy(element)
-        for comment in element.iter('comment'):
-            comment.getparent().remove(comment)
+        for comment in element.findall('comment'): # hope that they are not nested
+            element.remove(comment)
 
         self.raw = ' '.join(t.strip() for t in element.itertext())
 

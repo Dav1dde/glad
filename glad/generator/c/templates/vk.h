@@ -1,10 +1,10 @@
 {% extends 'base_template.h' %}
 
-{%
+{#
     // TODO get rid of PFN_ mess, through context function?
     // TODO de-duplicate a lot of stuff with gl.c/h
     // TODO clean-up copy and paste stuff in here
- %}
+ #}
 
 {% macro mx_commands(feature_set, options) %}
 {{ template_utils.write_function_typedefs(feature_set.commands) }}
