@@ -77,4 +77,12 @@ int gladLoadVulkanInternalLoader({{ template_utils.context_arg(',') }} VkInstanc
     return version;
 }
 
+
+void gladUnloadVulkanInternalLoader() {
+    if (_vulkan_handle != NULL) {
+        glad_close_dlopen_handle(_vulkan_handle);
+        _vulkan_handle = NULL;
+    }
+}
+
 #endif /* GLAD_VULKAN */

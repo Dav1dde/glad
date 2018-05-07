@@ -2213,6 +2213,8 @@ static void demo_cleanup(struct demo *demo) {
 
     free(demo->queue_props);
 
+    gladUnloadVulkanInternalLoader();
+
     glfwDestroyWindow(demo->window);
     glfwTerminate();
 }
