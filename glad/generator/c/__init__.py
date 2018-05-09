@@ -43,7 +43,7 @@ def loadable(spec, feature_set, *args):
         args = (feature_set.features, feature_set.extensions)
 
     for extension in itertools.chain(*args):
-        commands = extension.get_requirements(spec, feature_set).commands
+        commands = extension.get_requirements(spec, feature_set=feature_set).commands
         if commands:
             yield extension, commands
 
@@ -217,6 +217,10 @@ class CGenerator(BaseGenerator):
             chain=itertools.chain,
         )
 
+        self.environment.filters.update(
+            defined='defined({})'.format
+        )
+
     def get_additional_template_arguments(self, spec, feature_set, config):
         if spec.name == 'vk':
             pass
@@ -268,7 +272,7 @@ class CGenerator(BaseGenerator):
             if extension in feature_set.extensions:
                 continue
 
-            for command in extension.get_requirements(spec, feature_set).commands:
+            for command in extension.get_requirements(spec, feature_set=feature_set).commands:
                 # find all extensions which have an alias to a selected function
                 if command.alias and command.alias in command_names:
                     new_extensions.add(extension.name)

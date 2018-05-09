@@ -49,6 +49,7 @@ PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }} = glad
 {% endif %}
 {% else %}
 {% for command in feature_set.commands %}
+{% call template_utils.protect(command) %}
 PFN_{{ command.proto.name }} glad_{{ command.proto.name }};
 {% if options.debug %}
 {% set impl = get_debug_impl(command) %}
@@ -60,6 +61,7 @@ PFN_{{ command.proto.name }} glad_{{ command.proto.name }};
 }
 PFN_{{ command.proto.name }} glad_debug_{{ command.proto.name }} = glad_debug_impl_{{ command.proto.name }};
 {% endif %}
+{% endcall %}
 {% endfor %}
 {% endif %}
 {% endblock %}
@@ -77,10 +79,12 @@ static void load_{{ extension.name }}(struct Glad{{ feature_set.api|api }}Contex
 {% else %}
 {% for extension, commands in loadable() %}
 static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
+{% call template_utils.protect(extension) %}
     if(!GLAD_{{ extension.name }}) return;
     {% for command in commands %}
     glad_{{ command.proto.name }} = (PFN_{{ command.proto.name }})load("{{ command.proto.name }}", userptr);
     {% endfor %}
+{% endcall %}
 }
 {% endfor %}
 {% endif %}
@@ -105,7 +109,9 @@ static int find_extensions{{ feature_set.api|api }}({{ template_utils.context_ar
     if (!get_exts()) return 0;
 
     {% for extension in feature_set.extensions %}
+{% call template_utils.protect(extension) %}
     {{ ctx('GLAD_' + extension.name) }} = has_ext("{{ extension.name }}");
+{% endcall %}
     {% else %}
     (void)has_ext;
     {% endfor %}

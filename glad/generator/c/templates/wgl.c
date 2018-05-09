@@ -1,6 +1,6 @@
 {% extends 'base_template.c' %}
 
-{% set blacklist = feature_set.features[0].get_requirements(spec, feature_set).commands %}
+{% set blacklist = feature_set.features[0].get_requirements(spec, feature_set=feature_set).commands %}
 
 {% block commands %}
 {% for command in feature_set.commands|reject('existsin', blacklist) %}

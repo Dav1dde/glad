@@ -2,7 +2,6 @@
 
 EXIT_ON_FAILURE=${EXIT_ON_FAILRE:=0}
 PRINT_MESSAGE=${PRINT_MESSAGE:=0}
-PRINT_ADDITIONAL=${PRINT_ADDITIONAL:=0}
 
 PYTHON=${PYTHON:="python"}
 GLAD=${GLAD:="$PYTHON -m glad"}
@@ -114,14 +113,10 @@ function execute {
 function log_failure {
     local status="$1"
     local message="$2"
-    local additional="$3"
 
     if [ $status -ne 0 ]; then
         if [ $PRINT_MESSAGE -ne 0 ]; then
             echo "$message" >&2
-            if [ $PRINT_ADDITIONAL -ne 0 ] && [ -n "$additional" ]; then
-                echo "$additional" >&2
-            fi
         fi
     fi
 }

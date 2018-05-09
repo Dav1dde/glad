@@ -15,7 +15,9 @@
 
 {% block extensions %}
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
+{% call template_utils.protect(extension) %}
 int GLAD_{{ extension.name }};
+{% endcall %}
 {% endfor %}
 {% endblock %}
 
@@ -50,6 +52,7 @@ void gladSet{{ feature_set.api }}PostCallback(GLADpostcallback cb) {
 
 {% block commands %}
 {% for command in feature_set.commands %}
+{% call template_utils.protect(command) %}
 PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
 {% if options.debug %}
 {% set impl = get_debug_impl(command) %}
@@ -61,6 +64,7 @@ PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
 }
 PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }} = glad_debug_impl_{{ command.proto.name }};
 {% endif %}
+{% endcall %}
 {% endfor %}
 {% endblock %}
 
@@ -69,7 +73,9 @@ PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }} = glad
 static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
     if(!GLAD_{{ extension.name }}) return;
     {% for command in commands %}
+{% call template_utils.protect(command) %}
     glad_{{ command.proto.name }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}", userptr);
+{% endcall %}
     {% endfor %}
 }
 {% endfor %}

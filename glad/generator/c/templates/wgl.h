@@ -18,6 +18,6 @@ GLAPI int gladLoad{{ feature_set.api|api }}Simple(HDC hdc, GLADsimpleloadproc lo
 {% block commands %}
 {{ template_utils.write_function_typedefs(feature_set.commands) }}
 {# these are already defined in windows.h #}
-{% set blacklist = feature_set.features[0].get_requirements(spec, feature_set).commands %}
+{% set blacklist = feature_set.features[0].get_requirements(spec, feature_set=feature_set).commands %}
 {{ template_utils.write_function_declarations(feature_set.commands|reject('existsin', blacklist)) }}
 {% endblock %}

@@ -1,3 +1,4 @@
+import functools
 import os
 import re
 from collections import namedtuple
@@ -102,3 +103,25 @@ def topological_sort(items, key, dependencies):
             raise ValueError("cyclic or missing dependancy detected: %r" % (next_pending,))
         pending = next_pending
         emitted = next_emitted
+
+
+def memoize(key=None):
+    def _default_key_func(*args, **kwargs):
+        return tuple(args), tuple(kwargs.items())
+
+    key_func = _default_key_func if key is None else key
+
+    def memoize_decorator(func):
+        cache = dict()
+
+        @functools.wraps(func)
+        def wrapped(*args, **kwargs):
+            key = key_func(*args, **kwargs)
+            if key not in cache:
+                cache[key] = func(*args, **kwargs)
+            return cache[key]
+
+        return wrapped
+
+    return memoize_decorator
+

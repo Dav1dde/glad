@@ -28,7 +28,7 @@ from contextlib import closing
 from itertools import chain
 
 from glad.opener import URLOpener
-from glad.util import Version, topological_sort
+from glad.util import Version, topological_sort, memoize
 
 logger = logging.getLogger(__name__)
 
@@ -36,14 +36,43 @@ logger = logging.getLogger(__name__)
 _ARRAY_RE = re.compile(r'\[\d+\]')
 
 _FeatureExtensionCommands = namedtuple('_FeatureExtensionCommands', ['features', 'commands'])
-_TypeEnumCommand = namedtuple('_TypeEnumCommand', ['types', 'enums', 'commands'])
 
 
-class FeatureSet(namedtuple(
-    'FeatureSet',
-    ['api', 'version', 'profile', 'features', 'extensions', 'types', 'enums', 'commands']
-)):
-    pass
+class FeatureSet(object):
+    def __init__(self, api, version, profile, features, extensions, types, enums, commands):
+        self.api = api
+        self.version = version
+        self.profile = profile
+        self.features = features
+        self.extensions = extensions
+        self.types = types
+        self.enums = enums
+        self.commands = commands
+
+    def __str__(self):
+        return 'FeatureSet@(api={self.api}, version={self.version}, profile={self.profile})' \
+            .format(self=self)
+    __repr__ = __str__
+
+    def __eq__(self, other):
+        if isinstance(self, other.__class__):
+            return self.__dict__ == other.__dict__
+        return NotImplemented
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        # good enough for now
+        return hash((
+            self.api, self.version,  self.profile,
+            len(self.features), len(self.extensions), len(self.types), len(self.enums), len(self.commands)
+        ))
+
+
+class TypeEnumCommand(namedtuple('_TypeEnumCommand', ['types', 'enums', 'commands'])):
+    def __contains__(self, item):
+        return item in self.types or item in self.enums or item in self.commands
 
 
 class Specification(object):
@@ -264,15 +293,14 @@ class Specification(object):
 
     @property
     def extensions(self):
-        # TODO protect=...
-
         if self._extensions is not None:
             return self._extensions
 
         self._extensions = defaultdict(dict)
         for element in self.root.find('extensions'):
+            extension = Extension(element)
             for api in element.attrib['supported'].split('|'):
-                self._extensions[api][element.attrib['name']] = Extension(element)
+                self._extensions[api][element.attrib['name']] = extension
 
         return self._extensions
 
@@ -288,6 +316,41 @@ class Specification(object):
                     profiles.add(r.profile)
 
         return profiles
+
+    def protections(self, symbol, api, profile, feature_set=None):
+        """
+        Returns a list of protections for a symbol.
+
+        Specifications that do not carry protection info
+        may choose to override this function and always
+        return an empty list.
+
+        :param symbol: symbol like Enum, Type, Extension etc.
+        :param api: api to evaluate for
+        :param profile: profile to evaluate for
+        :param feature_set: evaluate protections based on feature_set
+        :return: a list of protection names
+        """
+        if hasattr(symbol, 'protect'):
+            return symbol.protect
+
+        if feature_set:
+            extensions = chain(feature_set.features, feature_set.extensions)
+        else:
+            extensions = chain(self.features, self.extensions)
+
+        protections = list()
+        for ext in extensions:
+            requirements = ext.get_requirements(self, api, profile)
+
+            if symbol in requirements:
+                if not ext.protect:
+                    # symbol found in at least one unprotected extension
+                    return list()
+
+                protections.extend(ext.protect)
+
+        return protections
 
     def find(self, require, api, profile, recursive=False):
         """
@@ -572,7 +635,7 @@ class Enum(IdentifiedByName):
         self.vendor = vendor
         self.comment = comment
 
-        self.extended_by = set([extended_by]) if extended_by else set()
+        self.extended_by = set(extended_by) if extended_by else set()
 
     def also_extended_by(self, name):
         self.extended_by.add(name)
@@ -659,6 +722,8 @@ class OGLType(object):
         # assume just one comment element
         self.comment = ' '.join(c.text for c in element.iter('comment'))
 
+        # TODO optimize this, ~25% (for GL) is lost here, maybe cache by name
+
         # working copy to remove elements
         element = copy.deepcopy(element)
         for comment in element.findall('comment'): # hope that they are not nested
@@ -723,27 +788,39 @@ class Extension(IdentifiedByName):
         self.removes = [Remove(remove) for remove in element.findall('remove')]
 
         self.type = element.get('type')
-        self.protect = element.get('protect')
+        self.protect = [p.strip() for p in element.get('protect', '').split(',') if p.strip()]
 
-    def get_requirements(self, spec, feature_set):
+    @memoize()
+    def get_requirements(self, spec, api=None, profile=None, feature_set=None):
         """
         Find all types, enums and commands/functions which are required
         for this extension/feature.
 
         :param spec: the specification
-        :param api: API for this extension
-        :param profile: API profile
-        :return: a 3-tuple of lists ([types], [enums], [commands])
+        :param api: requested api, takes precedence over feature_set.api
+        :param profile: requested profile,
+                        takes precedence over feature_set.profile (only if not None)
+        :param feature_set: used to provide api and profile defaults,
+                            also limits the return values to symbols
+                            included in the feature set.
+        :return TypeEnumCommand: returns a :py:class:`TypeEnumCommand`
         """
         result = set()
 
+        if feature_set is not None:
+            api = api or feature_set.api
+            profile = profile or feature_set.profile
+
         for require in self.requires:
-            found = spec.find(require, feature_set.api, feature_set.profile, recursive=True)
+            found = spec.find(require, api, profile, recursive=True)
             result = result.union(found)
 
         types, enums, commands = spec.split_types(result, (Type, Enum, Command))
 
-        return _TypeEnumCommand(
+        if feature_set is None:
+            return TypeEnumCommand(types, enums, commands)
+
+        return TypeEnumCommand(
             types.intersection(feature_set.types),
             enums.intersection(feature_set.enums),
             commands.intersection(feature_set.commands)

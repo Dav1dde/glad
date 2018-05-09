@@ -4,6 +4,9 @@
     // TODO get rid of PFN_ mess, through context function?
     // TODO de-duplicate a lot of stuff with gl.c/h
     // TODO clean-up copy and paste stuff in here
+    // TODO call protect where it is missing
+    // TODO or better move everything that needs to protection to template utils
+    // TODO remove superfluous spaces in output
  #}
 
 {% macro mx_commands(feature_set, options) %}
@@ -58,17 +61,10 @@ GLAPI PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};
 {% endblock %}
 
 {% block commands %}
-
-
 {% for command in feature_set.commands %}
+{% call template_utils.protect(command) %}
 typedef {{ type_to_c(command.proto.ret) }} ({{ apiptrp }} PFN_{{ command.proto.name }})({{ params_to_c(command.params) }});
-{% endfor %}
-
-
-{% if options.mx %}
-{{ mx_commands(feature_set, options) }}
-{% else %}
-{% for command in feature_set.commands %}
+{% if not options.mx %}
 {{ apicall }} PFN_{{ command.proto.name }} glad_{{ command.proto.name }};
 {% if debug %}
 {{ apicall }} PFN{{ command.proto.name }} glad_debug_{{ command.proto.name }};
@@ -76,8 +72,14 @@ typedef {{ type_to_c(command.proto.ret) }} ({{ apiptrp }} PFN_{{ command.proto.n
 {% else %}
 #define {{ command.proto.name }} glad_{{ command.proto.name }}
 {% endif %}
-{% endfor %}
 {% endif %}
+{% endcall %}
+{% endfor %}
+
+{% if options.mx %}
+{{ mx_commands(feature_set, options) }}
+{% endif %}
+
 {% endblock %}
 
 
