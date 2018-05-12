@@ -77,14 +77,14 @@ static void load_{{ extension.name }}(struct Glad{{ feature_set.api|api }}Contex
 {% endfor %}
 {% else %}
 {% for extension, commands in loadable() %}
-static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
 {% call template_utils.protect(extension) %}
+static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
     if(!GLAD_{{ extension.name }}) return;
     {% for command in commands %}
     glad_{{ command.proto.name }} = ({{ command.proto.name|pfn }})load("{{ command.proto.name }}", userptr);
     {% endfor %}
-{% endcall %}
 }
+{% endcall %}
 {% endfor %}
 {% endif %}
 {% endblock %}
@@ -92,11 +92,11 @@ static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
 
 {% block loader %}
 {# /* TODO fill in extension checks */ #}
-static int get_exts({{ template_utils.context_arg(',') }}) {
+static int get_exts({{ template_utils.context_arg(',', def='void') }}) {
     return 1;
 }
 
-static void free_exts() {
+static void free_exts(void) {
 }
 
 static int has_ext(const char *name) {
@@ -104,7 +104,7 @@ static int has_ext(const char *name) {
     return 1;
 }
 
-static int find_extensions{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} int version) {
+static int find_extensions{{ feature_set.api|api }}({{ template_utils.context_arg(',', def='void') }}) {
     if (!get_exts()) return 0;
 
     {% for extension in feature_set.extensions %}
@@ -137,9 +137,11 @@ int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} GLAD
     load_{{ feature.name }}({{'context, ' if options.mx }}load, userptr);
     {% endfor %}
 
-    if (!find_extensions{{  feature_set.api|api }}({{ 'context, ' if options.mx }}version)) return 0;
+    if (!find_extensions{{  feature_set.api|api }}({{ 'context' if options.mx }})) return 0;
     {% for extension, _ in loadable(feature_set.extensions) %}
+{% call template_utils.protect(extension) %}
     load_{{ extension.name }}({{'context, ' if options.mx }}load, userptr);
+{% endcall %}
     {% endfor %}
 
     {% if options.mx_global %}
