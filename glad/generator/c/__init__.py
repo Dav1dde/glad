@@ -1,6 +1,8 @@
 import copy
 import functools
 import itertools
+
+import jinja2
 import os.path
 import re
 from collections import namedtuple
@@ -100,6 +102,14 @@ def make_ctx_func(is_mx, api_prefix):
             return name
         return prefix + name
     return ctx
+
+
+@jinja2.contextfilter
+def pfn(context, value):
+    feature_set = context['feature_set']
+    if feature_set.api == 'vulkan':
+        return 'PFN_' + value
+    return 'PFN' + value.upper() + 'PROC'
 
 
 def collect_alias_information(commands):
@@ -211,14 +221,15 @@ class CGenerator(BaseGenerator):
         BaseGenerator.__init__(self, *args, **kwargs)
 
         self.environment.globals.update(
-            type_to_c=type_to_c,
-            params_to_c=params_to_c,
             get_debug_impl=get_debug_impl,
             chain=itertools.chain,
         )
 
         self.environment.filters.update(
-            defined='defined({})'.format
+            defined=lambda x: 'defined({})'.format(x),
+            type_to_c=type_to_c,
+            params_to_c=params_to_c,
+            pfn=pfn
         )
 
     def get_additional_template_arguments(self, spec, feature_set, config):

@@ -75,7 +75,7 @@ typedef {{ type.category }} {{ type.name }} {
 {% macro write_function_definitions(commands) %}
 {% for command in commands %}
 {% call protect(command) %}
-{{ type_to_c(command.proto.ret) }} {{ command.proto.name }}({{ params_to_c(command.params) }});
+{{ command.proto.ret|type_to_c }} {{ command.proto.name }}({{ command.params|params_to_c }});
 {% endcall %}
 {% endfor %}
 {% endmacro %}
@@ -83,7 +83,7 @@ typedef {{ type.category }} {{ type.name }} {
 {% macro write_function_typedefs(commands) %}
 {% for command in commands %}
 {% call protect(command) %}
-typedef {{ type_to_c(command.proto.ret) }} ({{ apiptrp }} PFN{{ command.proto.name|upper }}PROC)({{ params_to_c(command.params) }});
+typedef {{ command.proto.ret|type_to_c }} ({{ apiptrp }} {{ command.proto.name|pfn }})({{ command.params|params_to_c }});
 {% endcall %}
 {% endfor %}
 {% endmacro %}
@@ -91,9 +91,9 @@ typedef {{ type_to_c(command.proto.ret) }} ({{ apiptrp }} PFN{{ command.proto.na
 {% macro write_function_declarations(commands, debug=False) %}
 {% for command in commands %}
 {% call protect(command) %}
-{{ apicall }} PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
+{{ apicall }} {{ command.proto.name|pfn }} glad_{{ command.proto.name }};
 {% if debug %}
-{{ apicall }} PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};
+{{ apicall }} {{ command.proto.name|pfn }} glad_debug_{{ command.proto.name }};
 #define {{ command.proto.name }} glad_debug_{{ command.proto.name }}
 {% else %}
 #define {{ command.proto.name }} glad_{{ command.proto.name }}

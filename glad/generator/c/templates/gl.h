@@ -4,7 +4,7 @@
 {{ template_utils.write_function_typedefs(feature_set.commands) }}
 struct Glad{{ feature_set.api.upper() }}Context {
 {% for command in feature_set.commands %}
-PFN{{ command.proto.name|upper }}PROC {{ ctx(command.proto.name, name_only=True) }};
+{{ command.proto.name|pfn }} {{ ctx(command.proto.name, name_only=True) }};
 {% endfor %}
 
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
@@ -25,7 +25,7 @@ GLAPI struct Glad{{ feature_set.api|api }}Context glad_{{ feature_set.api }}_con
 {% if options.mx_global %}
 {% for command in feature_set.commands %}
 {% if options.debug %}
-GLAPI PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};
+GLAPI {{ command.proto.name|pfn }} glad_debug_{{ command.proto.name }};
 #define {{ command.proto.name }} glad_debug_{{ command.proto.name }}
 {% elif options.mx_global %}
 #define {{ command.proto.name }} (glad_{{ feature_set.api }}_context.{{ command.proto.name[2:] }})

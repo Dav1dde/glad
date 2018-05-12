@@ -53,16 +53,16 @@ void gladSet{{ feature_set.api }}PostCallback(GLADpostcallback cb) {
 {% block commands %}
 {% for command in feature_set.commands %}
 {% call template_utils.protect(command) %}
-PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
+{{ command.proto.name|pfn }} glad_{{ command.proto.name }};
 {% if options.debug %}
 {% set impl = get_debug_impl(command) %}
-{{ type_to_c(command.proto.ret) }} APIENTRY glad_debug_impl_{{ command.proto.name }}({{ impl.impl }}) {
+{{ command.proto.ret|type_to_c }} APIENTRY glad_debug_impl_{{ command.proto.name }}({{ impl.impl }}) {
     {{ (impl.ret[0] + '\n    ').lstrip() }}_pre_call_{{ feature_set.api }}_callback({{ impl.pre_callback }});
     {{ impl.ret[1] }}glad_{{ command.proto.name }}({{ impl.function }});
     _post_call_{{ feature_set.api }}_callback({{ impl.post_callback }});
     {{ impl.ret[2] }}
 }
-PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }} = glad_debug_impl_{{ command.proto.name }};
+{{ command.proto.name|pfn }} glad_debug_{{ command.proto.name }} = glad_debug_impl_{{ command.proto.name }};
 {% endif %}
 {% endcall %}
 {% endfor %}
@@ -74,7 +74,7 @@ static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
     if(!GLAD_{{ extension.name }}) return;
     {% for command in commands %}
 {% call template_utils.protect(command) %}
-    glad_{{ command.proto.name }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}", userptr);
+    glad_{{ command.proto.name }} = ({{ command.proto.name|pfn }})load("{{ command.proto.name }}", userptr);
 {% endcall %}
     {% endfor %}
 }
@@ -87,7 +87,7 @@ static void resolve_aliases({{ template_utils.context_arg() }}) {
     {% for command in feature_set.commands %}
     {% for alias in aliases.get(command.proto.name, []) %}
     {% if not alias == command.proto.name %}
-    if ({{ ctx(command.proto.name) }} == NULL && {{ ctx(alias) }} != NULL) {{ ctx(command.proto.name) }} = (PFN{{ command.proto.name|upper }}PROC){{ ctx(alias) }};
+    if ({{ ctx(command.proto.name) }} == NULL && {{ ctx(alias) }} != NULL) {{ ctx(command.proto.name) }} = ({{ command.proto.name|pfn }}){{ ctx(alias) }};
     {% endif %}
     {% endfor %}
     {% endfor %}

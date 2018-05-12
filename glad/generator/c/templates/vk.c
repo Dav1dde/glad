@@ -1,7 +1,6 @@
 {% extends 'base_template.c' %}
 
 
-
 {% set global_context = 'glad_' + feature_set.api + '_context' %}
 
 
@@ -38,28 +37,28 @@ void _post_call_{{ feature_set.api }}_callback_default(void* ret, const char *na
 {% if options.debug %}
 {% for command in feature_set.commands %}
 {% set impl = get_debug_impl(command, ctx(command.proto.name, context=global_context)) %}
-{{ type_to_c(command.proto.ret) }} APIENTRY glad_debug_impl_{{ command.proto.name }}({{ impl.impl }}) {
+{{ command.proto.ret|type_to_c }} APIENTRY glad_debug_impl_{{ command.proto.name }}({{ impl.impl }}) {
     {{ (impl.ret[0] + '\n    ').lstrip() }}_pre_call_{{ feature_set.api }}_callback({{ impl.pre_callback }});
     {{ impl.ret[1] }}glad_{{ feature_set.api }}_context->{{ command.proto.name[2:] }}({{ impl.function }});
     _post_call_{{ feature_set.api }}_callback({{ impl.post_callback }});
     {{ impl.ret[2] }}
 }
-PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }} = glad_debug_impl_{{ command.proto.name }};
+{{ command.proto.name|pfn }} glad_debug_{{ command.proto.name }} = glad_debug_impl_{{ command.proto.name }};
 {% endfor %}
 {% endif %}
 {% else %}
 {% for command in feature_set.commands %}
 {% call template_utils.protect(command) %}
-PFN_{{ command.proto.name }} glad_{{ command.proto.name }};
+{{ command.proto.name|pfn }} glad_{{ command.proto.name }};
 {% if options.debug %}
 {% set impl = get_debug_impl(command) %}
-{{ type_to_c(command.proto.ret) }} APIENTRY glad_debug_impl_{{ command.proto.name }}({{ impl.impl }}) {
+{{ command.proto.ret|type_to_c }} APIENTRY glad_debug_impl_{{ command.proto.name }}({{ impl.impl }}) {
     {{ (impl.ret[0] + '\n    ').lstrip() }}_pre_call_{{ feature_set.api }}_callback({{ impl.pre_callback }});
     {{ impl.ret[1] }}glad_{{ command.proto.name }}({{ impl.function }});
     _post_call_{{ feature_set.api }}_callback({{ impl.post_callback }});
     {{ impl.ret[2] }}
 }
-PFN_{{ command.proto.name }} glad_debug_{{ command.proto.name }} = glad_debug_impl_{{ command.proto.name }};
+{{ command.proto.name|pfn }} glad_debug_{{ command.proto.name }} = glad_debug_impl_{{ command.proto.name }};
 {% endif %}
 {% endcall %}
 {% endfor %}
@@ -72,7 +71,7 @@ PFN_{{ command.proto.name }} glad_debug_{{ command.proto.name }} = glad_debug_im
 static void load_{{ extension.name }}(struct Glad{{ feature_set.api|api }}Context *context, GLADloadproc load, void* userptr) {
     if(!{{ ctx(extension.name) }}) return;
     {% for command in commands %}
-    {{ ctx(command.proto.name) }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}", userptr);
+    {{ ctx(command.proto.name) }} = ({{ command.proto.name|pfn }})load("{{ command.proto.name }}", userptr);
     {% endfor %}
 }
 {% endfor %}
@@ -82,7 +81,7 @@ static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
 {% call template_utils.protect(extension) %}
     if(!GLAD_{{ extension.name }}) return;
     {% for command in commands %}
-    glad_{{ command.proto.name }} = (PFN_{{ command.proto.name }})load("{{ command.proto.name }}", userptr);
+    glad_{{ command.proto.name }} = ({{ command.proto.name|pfn }})load("{{ command.proto.name }}", userptr);
     {% endfor %}
 {% endcall %}
 }

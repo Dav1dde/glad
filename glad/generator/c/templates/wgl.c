@@ -4,7 +4,7 @@
 
 {% block commands %}
 {% for command in feature_set.commands|reject('existsin', blacklist) %}
-PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
+{{ command.proto.name|pfn }} glad_{{ command.proto.name }};
 {% endfor %}
 {% endblock %}
 
@@ -13,7 +13,7 @@ PFN{{ command.proto.name|upper }}PROC glad_{{ command.proto.name }};
 static void load_{{ extension.name }}(GLADloadproc load, void *userptr) {
     if(!GLAD_{{ extension.name }}) return;
     {% for command in commands %}
-    glad_{{ command.proto.name }} = (PFN{{ command.proto.name|upper }}PROC)load("{{ command.proto.name }}", userptr);
+    glad_{{ command.proto.name }} = ({{ command.proto.name|pfn }})load("{{ command.proto.name }}", userptr);
     {% endfor %}
 }
 {% endfor %}

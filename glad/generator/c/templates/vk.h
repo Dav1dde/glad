@@ -1,19 +1,19 @@
 {% extends 'base_template.h' %}
 
 {#
-    // TODO get rid of PFN_ mess, through context function?
     // TODO de-duplicate a lot of stuff with gl.c/h
     // TODO clean-up copy and paste stuff in here
     // TODO call protect where it is missing
     // TODO or better move everything that needs to protection to template utils
     // TODO remove superfluous spaces in output
+    // TODO get rid of VKAPI_CALL
  #}
 
 {% macro mx_commands(feature_set, options) %}
 {{ template_utils.write_function_typedefs(feature_set.commands) }}
 struct Glad{{ feature_set.api.upper() }}Context {
 {% for command in feature_set.commands %}
-PFN_{{ command.proto.name }} {{ ctx(command.proto.name, name_only=True) }};
+{{ command.proto.name|pfn }} {{ ctx(command.proto.name, name_only=True) }};
 {% endfor %}
 
 {% block platform %}
@@ -37,7 +37,7 @@ VKAPI_CALL struct Glad{{ feature_set.api|api }}Context glad_{{ feature_set.api }
 {% if options.mx_global %}
 {% for command in feature_set.commands %}
 {% if options.debug %}
-GLAPI PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};
+GLAPI {{ command.proto.name|pfn }} glad_debug_{{ command.proto.name }};
 #define {{ command.proto.name }} glad_debug_{{ command.proto.name }}
 {% elif options.mx_global %}
 #define {{ command.proto.name }} (glad_{{ feature_set.api }}_context.{{ command.proto.name[2:] }})
@@ -61,30 +61,19 @@ GLAPI PFN{{ command.proto.name|upper }}PROC glad_debug_{{ command.proto.name }};
 {% endblock %}
 
 {% block commands %}
-{% for command in feature_set.commands %}
-{% call template_utils.protect(command) %}
-typedef {{ type_to_c(command.proto.ret) }} ({{ apiptrp }} PFN_{{ command.proto.name }})({{ params_to_c(command.params) }});
-{% if not options.mx %}
-{{ apicall }} PFN_{{ command.proto.name }} glad_{{ command.proto.name }};
-{% if debug %}
-{{ apicall }} PFN{{ command.proto.name }} glad_debug_{{ command.proto.name }};
-#define {{ command.proto.name }} glad_debug_{{ command.proto.name }}
+{% if options.mx %}
+{{ mx_commands(feature_set, options) }}
 {% else %}
-#define {{ command.proto.name }} glad_{{ command.proto.name }}
+{{ super() }}
 {% endif %}
-{% endif %}
-{% endcall %}
-{% endfor %}
+{% endblock %}
 
 {% if options.mx %}
 {{ mx_commands(feature_set, options) }}
 {% endif %}
 
-{% endblock %}
-
 
 {% block declarations %}
-
 VKAPI_CALL int gladLoad{{ feature_set.api|api }}({{ 'struct Glad' + feature_set.api|api + 'Context *context, ' if options.mx }}GLADloadproc load, void* userptr);
 VKAPI_CALL int gladLoad{{ feature_set.api|api }}Simple({{ 'struct Glad' + feature_set.api|api + 'Context *context, ' if options.mx }}GLADsimpleloadproc load);
 
@@ -92,5 +81,4 @@ VKAPI_CALL int gladLoad{{ feature_set.api|api }}Simple({{ 'struct Glad' + featur
 struct Glad{{ feature_set.api|api }}Context* gladGet{{ feature_set.api|api }}Context(void);
 void gladSet{{ feature_set.api|api }}Context(struct Glad{{ feature_set.api|api }}Context *context);
 {% endif %}
-
 {% endblock %}
