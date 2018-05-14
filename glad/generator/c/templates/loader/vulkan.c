@@ -17,8 +17,9 @@ static int glad_vulkan_is_device_function(const char *name) {
      * `vkGetDeviceProcAddr` does not return NULL for non-device functions.
      */
     int i;
+    int length = sizeof(DEVICE_FUNCTIONS) / sizeof(DEVICE_FUNCTIONS[0]);
 
-    for (i=0; i < sizeof(DEVICE_FUNCTIONS) / sizeof(DEVICE_FUNCTIONS[0]); ++i) {
+    for (i=0; i < length; ++i) {
         if (strcmp(DEVICE_FUNCTIONS[i], name) == 0) {
             return 1;
         }
