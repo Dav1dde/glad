@@ -156,7 +156,7 @@ def is_device_command(command):
         return False
 
     first_param = command.params[0]
-    # See: https://github.com/Igalia/mesa/blob/dda3efb51c26e24eda83f17cf6b9d99402511ee1/src/intel/vulkan/anv_entrypoints_gen.py#L434
+    # See: https://cgit.freedesktop.org/mesa/mesa/tree/src/intel/vulkan/anv_entrypoints_gen.py#n434
     return first_param.type.type in ('VkDevice', 'VkCommandBuffer', 'VkQueue')
 
 
