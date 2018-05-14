@@ -82,26 +82,32 @@ def get_debug_impl(command, command_code_name=None):
     return DebugArguments(impl, func, pre_callback, post_callback, ret)
 
 
-def make_ctx_func(is_mx, api_prefix):
-    def ctx(name, context='context', raw=False, name_only=False):
-        prefix = ''
-        if is_mx:
-            prefix = context + '->'
-            if name.startswith('GLAD_'):
-                name = name[5:]
-            # glFoo -> Foo
-            # GL_ARB_asd -> ARB_asd
-            if not raw and name.lower().startswith(api_prefix):
-                name = name[len(api_prefix):].lstrip('_')
+@jinja2.contextfilter
+def ctx(jinja_context, name, context='context', raw=False, name_only=False):
+    feature_set = jinja_context['feature_set']
+    options = jinja_context['options']
 
-        # 3DFX_tbuffer -> _3DFX_tbuffer
-        if not name[0].isalpha():
-            name = '_' + name
+    api_prefix = feature_set.api.lower()
+    if feature_set.api == 'vulkan':
+        api_prefix = 'vk'
 
-        if name_only:
-            return name
-        return prefix + name
-    return ctx
+    prefix = ''
+    if options['mx']:
+        prefix = context + '->'
+        if name.startswith('GLAD_'):
+            name = name[5:]
+        # glFoo -> Foo
+        # GL_ARB_asd -> ARB_asd
+        if not raw and name.lower().startswith(api_prefix):
+            name = name[len(api_prefix):].lstrip('_')
+
+    # 3DFX_tbuffer -> _3DFX_tbuffer
+    if not name[0].isalpha():
+        name = '_' + name
+
+    if name_only:
+        return name
+    return prefix + name
 
 
 @jinja2.contextfilter
@@ -229,15 +235,12 @@ class CGenerator(BaseGenerator):
             defined=lambda x: 'defined({})'.format(x),
             type_to_c=type_to_c,
             params_to_c=params_to_c,
-            pfn=pfn
+            pfn=pfn,
+            ctx=ctx
         )
 
     def get_additional_template_arguments(self, spec, feature_set, config):
-        if spec.name == 'vk':
-            pass
-
         return {
-            'ctx': make_ctx_func(config['MX'] and feature_set.api.startswith('gl'), feature_set.api.lower()),
             'loadable': functools.partial(loadable, spec, feature_set),
             'aliases': collect_alias_information(feature_set.commands),
             'apiptrp': 'VKAPI_PTR*' if spec.name == 'vk' else 'APIENTRYP',

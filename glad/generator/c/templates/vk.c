@@ -36,7 +36,7 @@ void _post_call_{{ feature_set.api }}_callback_default(void* ret, const char *na
 {% if options.mx %}
 {% if options.debug %}
 {% for command in feature_set.commands %}
-{% set impl = get_debug_impl(command, ctx(command.proto.name, context=global_context)) %}
+{% set impl = get_debug_impl(command, command.proto.name|ctx(context=global_context)) %}
 {{ command.proto.ret|type_to_c }} APIENTRY glad_debug_impl_{{ command.proto.name }}({{ impl.impl }}) {
     {{ (impl.ret[0] + '\n    ').lstrip() }}_pre_call_{{ feature_set.api }}_callback({{ impl.pre_callback }});
     {{ impl.ret[1] }}glad_{{ feature_set.api }}_context->{{ command.proto.name[2:] }}({{ impl.function }});
@@ -69,9 +69,9 @@ void _post_call_{{ feature_set.api }}_callback_default(void* ret, const char *na
 {% if options.mx %}
 {% for extension, commands in loadable() %}
 static void load_{{ extension.name }}(struct Glad{{ feature_set.api|api }}Context *context, GLADloadproc load, void* userptr) {
-    if(!{{ ctx(extension.name) }}) return;
+    if(!{{ extension.name|ctx }}) return;
     {% for command in commands %}
-    {{ ctx(command.proto.name) }} = ({{ command.proto.name|pfn }})load("{{ command.proto.name }}", userptr);
+    {{ command.proto.name|ctx }} = ({{ command.proto.name|pfn }})load("{{ command.proto.name }}", userptr);
     {% endfor %}
 }
 {% endfor %}
@@ -109,7 +109,7 @@ static int find_extensions{{ feature_set.api|api }}({{ template_utils.context_ar
 
     {% for extension in feature_set.extensions %}
 {% call template_utils.protect(extension) %}
-    {{ ctx('GLAD_' + extension.name) }} = has_ext("{{ extension.name }}");
+    {{ ('GLAD_' + extension.name)|ctx }} = has_ext("{{ extension.name }}");
 {% endcall %}
     {% else %}
     (void)has_ext;
@@ -123,7 +123,7 @@ static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(def=
     int major = 1;
     int minor = 1;
     {% for feature in feature_set.features %}
-    {{ ctx('GLAD_' + feature.name) }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
+    {{ ('GLAD_' + feature.name)|ctx }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
     {% endfor %}
 
     return major * 1000 + minor;

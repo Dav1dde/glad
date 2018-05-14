@@ -87,7 +87,7 @@ static void resolve_aliases({{ template_utils.context_arg() }}) {
     {% for command in feature_set.commands %}
     {% for alias in aliases.get(command.proto.name, []) %}
     {% if not alias == command.proto.name %}
-    if ({{ ctx(command.proto.name) }} == NULL && {{ ctx(alias) }} != NULL) {{ ctx(command.proto.name) }} = ({{ command.proto.name|pfn }}){{ ctx(alias) }};
+    if ({{ command.proto.name|ctx }} == NULL && {{ alias|ctx }} != NULL) {{ command.proto.name|ctx }} = ({{ command.proto.name|pfn }}){{ alias|ctx }};
     {% endif %}
     {% endfor %}
     {% endfor %}
