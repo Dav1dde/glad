@@ -1675,7 +1675,6 @@ static void demo_init_vk(struct demo *demo) {
     int glad_vk_version = 0;
     uint32_t i = 0;
     uint32_t required_extension_count = 0;
-    uint32_t instance_extension_count = 0;
     uint32_t instance_layer_count = 0;
     uint32_t validation_layer_count = 0;
     const char **required_extensions = NULL;
@@ -1694,7 +1693,7 @@ static void demo_init_vk(struct demo *demo) {
         "VK_LAYER_GOOGLE_unique_objects"
     };
 
-    glad_vk_version = gladLoadVulkanInternalLoader(NULL, NULL);
+    glad_vk_version = gladLoadVulkanInternalLoader(NULL, NULL, NULL);
     if (!glad_vk_version) {
         ERR_EXIT("Unable to load Vulkan symbols!\n",
                  "gladLoad Failure");
@@ -1767,29 +1766,11 @@ static void demo_init_vk(struct demo *demo) {
         assert(demo->enabled_extension_count < 64);
     }
 
-    err = vkEnumerateInstanceExtensionProperties(
-        NULL, &instance_extension_count, NULL);
-    assert(!err);
-
-    if (instance_extension_count > 0) {
-        VkExtensionProperties *instance_extensions =
-            malloc(sizeof(VkExtensionProperties) * instance_extension_count);
-        err = vkEnumerateInstanceExtensionProperties(
-            NULL, &instance_extension_count, instance_extensions);
-        assert(!err);
-        for (i = 0; i < instance_extension_count; i++) {
-            if (!strcmp(VK_EXT_DEBUG_REPORT_EXTENSION_NAME,
-                        instance_extensions[i].extensionName)) {
-                if (demo->validate) {
-                    demo->extension_names[demo->enabled_extension_count++] =
-                        VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
-                }
-            }
-            assert(demo->enabled_extension_count < 64);
-        }
-
-        free(instance_extensions);
+    if (GLAD_VK_EXT_debug_report && demo->validate) {
+        demo->extension_names[demo->enabled_extension_count++] =
+            VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
     }
+    assert(demo->enabled_extension_count < 64);
 
     const VkApplicationInfo app = {
         .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -1851,33 +1832,22 @@ static void demo_init_vk(struct demo *demo) {
     }
 
     /* Look for device extensions */
-    uint32_t device_extension_count = 0;
+    /* Re-Load glad here to load instance pointers and to populate available extensions */
+    glad_vk_version = gladLoadVulkanInternalLoader(demo->inst, demo->gpu, NULL);
+    if (!glad_vk_version) {
+        ERR_EXIT("Unable to re-load Vulkan symbols with instance!\n",
+                 "gladLoad Failure");
+    }
+
     VkBool32 swapchainExtFound = 0;
     demo->enabled_extension_count = 0;
 
-    err = vkEnumerateDeviceExtensionProperties(demo->gpu, NULL,
-                                               &device_extension_count, NULL);
-    assert(!err);
-
-    if (device_extension_count > 0) {
-        VkExtensionProperties *device_extensions =
-                malloc(sizeof(VkExtensionProperties) * device_extension_count);
-        err = vkEnumerateDeviceExtensionProperties(
-            demo->gpu, NULL, &device_extension_count, device_extensions);
-        assert(!err);
-
-        for (i = 0; i < device_extension_count; i++) {
-            if (!strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-                        device_extensions[i].extensionName)) {
-                swapchainExtFound = 1;
-                demo->extension_names[demo->enabled_extension_count++] =
-                    VK_KHR_SWAPCHAIN_EXTENSION_NAME;
-            }
-            assert(demo->enabled_extension_count < 64);
-        }
-
-        free(device_extensions);
+    if (GLAD_VK_KHR_swapchain) {
+        swapchainExtFound = 1;
+        demo->extension_names[demo->enabled_extension_count++] =
+            VK_KHR_SWAPCHAIN_EXTENSION_NAME;
     }
+    assert(demo->enabled_extension_count < 64);
 
     if (!swapchainExtFound) {
         ERR_EXIT("vkEnumerateDeviceExtensionProperties failed to find "
@@ -1937,12 +1907,6 @@ static void demo_init_vk(struct demo *demo) {
         }
     }
 
-    glad_vk_version = gladLoadVulkanInternalLoader(demo->inst, NULL);
-    if (!glad_vk_version) {
-        ERR_EXIT("Unable to re-load Vulkan symbols with instance!\n",
-                 "gladLoad Failure");
-    }
-
     vkGetPhysicalDeviceProperties(demo->gpu, &demo->gpu_props);
 
     // Query with NULL data to get count
@@ -1995,7 +1959,7 @@ static void demo_init_device(struct demo *demo) {
     err = vkCreateDevice(demo->gpu, &device, NULL, &demo->device);
     assert(!err);
 
-    int glad_vk_version = gladLoadVulkanInternalLoader(demo->inst, demo->device);
+    int glad_vk_version = gladLoadVulkanInternalLoader(demo->inst, demo->gpu, demo->device);
     if (!glad_vk_version) {
         ERR_EXIT("Unable to re-load Vulkan symbols with device!\n",
                  "gladLoad Failure");

@@ -59,7 +59,7 @@ static void* glad_vulkan_get_proc(const char *name, void *vuserptr) {
 
 static void* _vulkan_handle;
 
-int gladLoadVulkanInternalLoader({{ template_utils.context_arg(',') }} VkInstance instance, VkDevice device) {
+int gladLoadVulkanInternalLoader({{ template_utils.context_arg(',') }} VkInstance instance, VkPhysicalDevice physical_device, VkDevice device) {
     static const char *NAMES[] = {
 #ifdef __APPLE__
         "libvulkan.1.dylib",
@@ -89,7 +89,7 @@ int gladLoadVulkanInternalLoader({{ template_utils.context_arg(',') }} VkInstanc
         userptr.vkGetDeviceProcAddr = (PFN_vkGetDeviceProcAddr) glad_dlsym_handle(_vulkan_handle, "vkGetDeviceProcAddr");
 
         if (userptr.vkGetInstanceProcAddr != NULL && userptr.vkGetDeviceProcAddr != NULL) {
-            version = gladLoadVulkan({{ 'context,' if options.mx }} (GLADloadproc) glad_vulkan_get_proc, &userptr);
+            version = gladLoadVulkan({{ 'context,' if options.mx }} physical_device, (GLADloadproc) glad_vulkan_get_proc, &userptr);
         }
 
         if (!version && did_load) {

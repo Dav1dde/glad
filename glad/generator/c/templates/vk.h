@@ -74,8 +74,8 @@ GLAPI {{ command.proto.name|pfn }} glad_debug_{{ command.proto.name }};
 
 
 {% block declarations %}
-VKAPI_CALL int gladLoad{{ feature_set.api|api }}({{ 'struct Glad' + feature_set.api|api + 'Context *context, ' if options.mx }}GLADloadproc load, void* userptr);
-VKAPI_CALL int gladLoad{{ feature_set.api|api }}Simple({{ 'struct Glad' + feature_set.api|api + 'Context *context, ' if options.mx }}GLADsimpleloadproc load);
+VKAPI_CALL int gladLoad{{ feature_set.api|api }}({{ 'struct Glad' + feature_set.api|api + 'Context *context, ' if options.mx }}VkPhysicalDevice physical_device, GLADloadproc load, void* userptr);
+VKAPI_CALL int gladLoad{{ feature_set.api|api }}Simple({{ 'struct Glad' + feature_set.api|api + 'Context *context, ' if options.mx }}VkPhysicalDevice physical_device, GLADsimpleloadproc load);
 
 {% if options.mx_global %}
 struct Glad{{ feature_set.api|api }}Context* gladGet{{ feature_set.api|api }}Context(void);

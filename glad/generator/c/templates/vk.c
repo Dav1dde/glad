@@ -91,37 +91,142 @@ static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
 
 
 {% block loader %}
-{# /* TODO fill in extension checks */ #}
-static int get_exts({{ template_utils.context_arg(',', def='void') }}) {
+#if _MSC_VER >= 1400
+#define STRNCPY(dest, source, len) strncpy_s(dest, len, source, len-1);
+#else
+#define STRNCPY(dest, source, len) strncpy(dest, source, len);
+#endif
+
+static int get_exts({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, uint32_t *out_extension_count, char ***out_extensions) {
+    uint32_t i;
+    uint32_t instance_extension_count = 0;
+    uint32_t device_extension_count = 0;
+    uint32_t max_extension_count;
+    uint32_t total_extension_count;
+    char **extensions;
+    VkExtensionProperties *ext_properties;
+    VkResult result;
+
+    result = vkEnumerateInstanceExtensionProperties(NULL, &instance_extension_count, NULL);
+    if (result != VK_SUCCESS) {
+        return 0;
+    }
+
+    if (physical_device != NULL) {
+        result = vkEnumerateDeviceExtensionProperties(physical_device, NULL, &device_extension_count, NULL);
+        if (result != VK_SUCCESS) {
+            return 0;
+        }
+    }
+
+    total_extension_count = instance_extension_count + device_extension_count;
+    max_extension_count = instance_extension_count > device_extension_count
+        ? instance_extension_count : device_extension_count;
+
+	ext_properties = (VkExtensionProperties*) malloc(max_extension_count * sizeof(VkExtensionProperties));
+	if (ext_properties == NULL) {
+        return 0;
+	}
+
+	result = vkEnumerateInstanceExtensionProperties(NULL, &instance_extension_count, ext_properties);
+	if (result != VK_SUCCESS) {
+	    free((void*) ext_properties);
+	    return 0;
+	}
+
+	extensions = (char**) calloc(total_extension_count, sizeof(char*));
+	if (extensions == NULL) {
+	    free((void*) ext_properties);
+        return 0;
+	}
+
+	for (i = 0; i < instance_extension_count; ++i) {
+	    VkExtensionProperties ext = ext_properties[i];
+
+	    size_t extension_name_length = strlen(ext.extensionName) + 1;
+        extensions[i] = (char*) malloc(extension_name_length * sizeof(char));
+	    STRNCPY(extensions[i], ext.extensionName, extension_name_length);
+	}
+
+	if (physical_device != NULL) {
+        result = vkEnumerateDeviceExtensionProperties(physical_device, NULL, &device_extension_count, ext_properties);
+        if (result != VK_SUCCESS) {
+            for (i = 0; i < instance_extension_count; ++i) {
+                free((void*) extensions[i]);
+            }
+            free(extensions);
+            return 0;
+        }
+
+        for (i = 0; i < device_extension_count; ++i) {
+            VkExtensionProperties ext = ext_properties[i];
+
+            size_t extension_name_length = strlen(ext.extensionName) + 1;
+            extensions[instance_extension_count + i] = (char*) malloc(extension_name_length * sizeof(char));
+            STRNCPY(extensions[instance_extension_count + i], ext.extensionName, extension_name_length);
+        }
+	}
+
+	free((void*) ext_properties);
+
+	*out_extension_count = total_extension_count;
+	*out_extensions = extensions;
+
     return 1;
 }
 
-static void free_exts(void) {
+static void free_exts(uint32_t extension_count, char **extensions) {
+    uint32_t i;
+
+    for(i = 0; i < extension_count ; ++i) {
+        free((void*) (extensions[i]));
+    }
+
+    free((void*) extensions);
 }
 
-static int has_ext(const char *name) {
-    (void) name;
-    return 1;
+static int has_ext(const char *name, uint32_t extension_count, char **extensions) {
+    uint32_t i;
+
+    for (i = 0; i < extension_count; ++i) {
+        if(strcmp(name, extensions[i]) == 0) {
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
-static int find_extensions{{ feature_set.api|api }}({{ template_utils.context_arg(',', def='void') }}) {
-    if (!get_exts()) return 0;
+static int find_extensions{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device) {
+    uint32_t extension_count = 0;
+    char **extensions = NULL;
+    if (!get_exts(physical_device, &extension_count, &extensions)) return 0;
 
     {% for extension in feature_set.extensions %}
 {% call template_utils.protect(extension) %}
-    {{ ('GLAD_' + extension.name)|ctx }} = has_ext("{{ extension.name }}");
+    {{ ('GLAD_' + extension.name)|ctx }} = has_ext("{{ extension.name }}", extension_count, extensions);
 {% endcall %}
     {% else %}
     (void)has_ext;
     {% endfor %}
 
-    free_exts();
+    free_exts(extension_count, extensions);
+
     return 1;
 }
 
-static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(def='void') }}) {
+static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device) {
     int major = 1;
-    int minor = 1;
+    int minor = 0;
+
+    if (physical_device != NULL) {
+        VkPhysicalDeviceProperties properties;
+        vkGetPhysicalDeviceProperties(physical_device, &properties);
+
+        major = (int) VK_VERSION_MAJOR(properties.apiVersion);
+        minor = (int) VK_VERSION_MINOR(properties.apiVersion);
+    }
+
     {% for feature in feature_set.features %}
     {{ ('GLAD_' + feature.name)|ctx }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
     {% endfor %}
@@ -129,15 +234,15 @@ static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(def=
     return major * 1000 + minor;
 }
 
-int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} GLADloadproc load, void* userptr) {
+int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADloadproc load, void* userptr) {
     int version;
-    version = find_core{{ feature_set.api|api }}({{ 'context' if options.mx }});
 
+    version = find_core{{ feature_set.api|api }}({{ 'context,' if options.mx }} physical_device);
     {% for feature, _ in loadable(feature_set.features) %}
     load_{{ feature.name }}({{'context, ' if options.mx }}load, userptr);
     {% endfor %}
 
-    if (!find_extensions{{  feature_set.api|api }}({{ 'context' if options.mx }})) return 0;
+    if (!find_extensions{{  feature_set.api|api }}({{ 'context,' if options.mx }} physical_device)) return 0;
     {% for extension, _ in loadable(feature_set.extensions) %}
 {% call template_utils.protect(extension) %}
     load_{{ extension.name }}({{'context, ' if options.mx }}load, userptr);
@@ -155,12 +260,12 @@ int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} GLAD
     return version;
 }
 
-static void* glad_gl_get_proc_from_userptr(const char* name, void *userptr) {
+static void* glad_vk_get_proc_from_userptr(const char* name, void *userptr) {
     return ((void* (*)(const char *name))userptr)(name);
 }
 
-int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }} GLADsimpleloadproc load) {
-    return gladLoad{{ feature_set.api|api }}({{'context,' if options.mx }} glad_gl_get_proc_from_userptr, (void*) load);
+int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADsimpleloadproc load) {
+    return gladLoad{{ feature_set.api|api }}({{'context,' if options.mx }} physical_device, glad_vk_get_proc_from_userptr, (void*) load);
 }
 
 {% if options.mx_global %}
