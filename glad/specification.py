@@ -50,7 +50,7 @@ class WGL(Specification):
         return list()
 
 
-class Vulkan(Specification):
+class VK(Specification):
     DISPLAY_NAME = 'Vulkan'
 
     API = 'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/1.0/src/spec/'

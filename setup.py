@@ -44,7 +44,8 @@ if __name__ == '__main__':
                 'egl = glad.specification:EGL',
                 'gl = glad.specification:GL',
                 'glx = glad.specification:GLX',
-                'wgl = glad.specification:WGL'
+                'wgl = glad.specification:WGL',
+                'vk = glad.specification:VK'
             ]
         },
         classifiers=[
