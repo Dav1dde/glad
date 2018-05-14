@@ -51,6 +51,8 @@
 #include <windows.h>
 #endif
 
+/* in case we have a header only version of glad */
+#define GLAD_VULKAN_IMPLEMENTATION
 #include <glad/vulkan.h>
 
 #define GLFW_INCLUDE_NONE

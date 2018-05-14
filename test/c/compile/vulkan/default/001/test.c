@@ -13,5 +13,6 @@
 #endif
 
 int main(void) {
+    (void) gladLoadVulkanInternalLoader(NULL, NULL, NULL);
     return 0;
 }
