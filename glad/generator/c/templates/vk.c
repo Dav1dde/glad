@@ -231,7 +231,7 @@ static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(',')
     {{ ('GLAD_' + feature.name)|ctx }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
     {% endfor %}
 
-    return major * 1000 + minor;
+    return GLAD_MAKE_VERSION(major, minor);
 }
 
 int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADloadproc load, void* userptr) {

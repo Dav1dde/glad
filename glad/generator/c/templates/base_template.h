@@ -13,9 +13,10 @@
 {% endif %}
 {% endfor %}
 
-#ifndef GLAD_VERSION_MAJOR
-#define GLAD_VERSION_MAJOR(version) (version / 1000)
-#define GLAD_VERSION_MINOR(version) (version % 1000)
+#ifndef GLAD_MAKE_VERSION
+#define GLAD_MAKE_VERSION(major, minor) (major * 10000 + minor)
+#define GLAD_VERSION_MAJOR(version) (version / 10000)
+#define GLAD_VERSION_MINOR(version) (version % 10000)
 #endif
 
 
