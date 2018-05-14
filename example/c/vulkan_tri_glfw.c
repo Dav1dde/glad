@@ -1995,19 +1995,11 @@ static void demo_init_device(struct demo *demo) {
     err = vkCreateDevice(demo->gpu, &device, NULL, &demo->device);
     assert(!err);
 
-    /*
-    Currently can't load device pointers here,
-    since vkGetDeviceProcAddr does **not** return NULL for non-device functions.
-    This needs to be addressed within the glad loader.
-
-    See: https://github.com/KhronosGroup/Vulkan-LoaderAndValidationLayers/issues/2323
-
     int glad_vk_version = gladLoadVulkanInternalLoader(demo->inst, demo->device);
     if (!glad_vk_version) {
         ERR_EXIT("Unable to re-load Vulkan symbols with device!\n",
                  "gladLoad Failure");
     }
-    */
 }
 
 static void demo_init_vk_swapchain(struct demo *demo) {

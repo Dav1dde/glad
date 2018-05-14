@@ -151,7 +151,16 @@ def collect_alias_information(commands):
     return alias
 
 
-_CPP_STYLE_COMMENT_RE = re.compile(r'(^|\s)//(?P<'r'comment>.*)$', flags=re.MULTILINE)
+def is_device_command(command):
+    if len(command.params) == 0:
+        return False
+
+    first_param = command.params[0]
+    # See: https://github.com/Igalia/mesa/blob/dda3efb51c26e24eda83f17cf6b9d99402511ee1/src/intel/vulkan/anv_entrypoints_gen.py#L434
+    return first_param.type.type in ('VkDevice', 'VkCommandBuffer', 'VkQueue')
+
+
+_CPP_STYLE_COMMENT_RE = re.compile(r'(^|\s|\))//(?P<'r'comment>.*)$', flags=re.MULTILINE)
 
 
 def replace_cpp_style_comments(inp):
@@ -246,12 +255,14 @@ class CGenerator(BaseGenerator):
         )
 
     def get_additional_template_arguments(self, spec, feature_set, config):
-        return {
-            'loadable': functools.partial(loadable, spec, feature_set),
-            'aliases': collect_alias_information(feature_set.commands),
-            'apiptrp': 'VKAPI_PTR*' if spec.name == 'vk' else 'APIENTRYP',
-            'apicall': 'VKAPI_CALL' if spec.name == 'vk' else 'GLAPI'
-        }
+        return dict(
+            loadable=functools.partial(loadable, spec, feature_set),
+            aliases=collect_alias_information(feature_set.commands),
+            apiptrp='VKAPI_PTR*' if spec.name == 'vk' else 'APIENTRYP',
+            apicall='VKAPI_CALL' if spec.name == 'vk' else 'GLAPI',
+            # required for vulkan loader:
+            device_commands=list(filter(is_device_command, feature_set.commands))
+        )
 
     def get_templates(self, spec, feature_set, config):
         header = 'include/glad/{}.h'.format(feature_set.api)

@@ -3,6 +3,30 @@
 
 {% include 'loader/library.c' %}
 
+
+static const char* DEVICE_FUNCTIONS[] = {
+{% for command in device_commands %}
+    "{{ command.name }}",
+{% endfor %}
+};
+
+static int glad_vulkan_is_device_function(const char *name) {
+    /* Exists as a workaround for:
+     * https://github.com/KhronosGroup/Vulkan-LoaderAndValidationLayers/issues/2323
+     *
+     * `vkGetDeviceProcAddr` does not return NULL for non-device functions.
+     */
+    int i;
+
+    for (i=0; i < sizeof(DEVICE_FUNCTIONS) / sizeof(DEVICE_FUNCTIONS[0]); ++i) {
+        if (strcmp(DEVICE_FUNCTIONS[i], name) == 0) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 struct _glad_vulkan_userptr {
     void *vk_handle;
     VkInstance vk_instance;
@@ -15,8 +39,7 @@ static void* glad_vulkan_get_proc(const char *name, void *vuserptr) {
     struct _glad_vulkan_userptr userptr = *(struct _glad_vulkan_userptr*) vuserptr;
     PFN_vkVoidFunction result = NULL;
 
-    {# /* TODO fix: https://github.com/KhronosGroup/Vulkan-LoaderAndValidationLayers/issues/2323 */ #}
-    if (userptr.vk_device != NULL) {
+    if (userptr.vk_device != NULL && glad_vulkan_is_device_function(name)) {
         result = userptr.vkGetDeviceProcAddr(userptr.vk_device, name);
     }
 
