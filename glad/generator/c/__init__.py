@@ -151,8 +151,12 @@ def collect_alias_information(commands):
     return alias
 
 
-def _comment_out(matchobj):
-    return '/* {} */'.format(matchobj.group(0))
+_CPP_STYLE_COMMENT_RE = re.compile(r'(^|\s)//(?P<'r'comment>.*)$', flags=re.MULTILINE)
+
+
+def replace_cpp_style_comments(inp):
+    return _CPP_STYLE_COMMENT_RE.sub(r'\1/*\2 */', inp)
+
 
 
 # RANDOM TODOs:
@@ -226,6 +230,8 @@ class CGenerator(BaseGenerator):
     def __init__(self, *args, **kwargs):
         BaseGenerator.__init__(self, *args, **kwargs)
 
+        self._headers = dict()
+
         self.environment.globals.update(
             get_debug_impl=get_debug_impl,
             chain=itertools.chain,
@@ -271,8 +277,12 @@ class CGenerator(BaseGenerator):
     def modify_feature_set(self, spec, feature_set, config):
         feature_set = self._fix_issue_40(spec, feature_set)
         feature_set = self._add_extensions_for_aliasing(spec, feature_set, config)
-        feature_set = self._fix_issue_70(feature_set)
-        feature_set = self._replace_included_headers(feature_set, config)
+
+        # in-place operations
+        self._fix_issue_70(feature_set)
+        self._fix_cpp_style_comments(feature_set)
+        self._replace_included_headers(feature_set, config)
+
         return feature_set
 
     def _add_extensions_for_aliasing(self, spec, feature_set, config):
@@ -333,7 +343,16 @@ class CGenerator(BaseGenerator):
                     '&& (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ > 1060)\n' + \
                     type_element.raw.replace('ptrdiff_t', 'long') + '\n#else\n' + type_element.raw + '\n#endif'
 
-        return feature_set
+    def _fix_cpp_style_comments(self, feature_set):
+        """
+        Turns CPP-Style comments `//` into C90 compatible comments `/**/`
+
+        Currently the only "workaround" needed to make Vulkan compile with -ansi.
+        See also: https://github.com/KhronosGroup/Vulkan-Docs/pull/700
+        """
+        for type_ in feature_set.types:
+            if '//' in type_.raw:
+                type_.raw = replace_cpp_style_comments(type_.raw)
 
     def _replace_included_headers(self, feature_set, config):
         if not config['HEADER_ONLY']:
@@ -346,15 +365,11 @@ class CGenerator(BaseGenerator):
             except ValueError:
                 continue
 
-            with closing(self.opener.urlopen(header.url)) as src:
-                raw = src.read().decode('utf-8')
-
+            content = self._read_header(header.url)
             for pheader in self.ADDITIONAL_HEADERS:
-                raw = re.sub('^#include\\s*<' + pheader.include + '>', _comment_out, raw, flags=re.MULTILINE)
+                content = re.sub('^#include\\s*<' + pheader.include + '>', r'/* \0 */', content, flags=re.MULTILINE)
 
-            types[type_index] = Type(raw, None, header.name, None)
-
-        return feature_set
+            types[type_index] = Type(content, None, header.name, None)
 
     def _add_additional_headers(self, feature_set, config):
         if config['HEADER_ONLY']:
@@ -371,4 +386,17 @@ class CGenerator(BaseGenerator):
                 os.makedirs(directory_path)
 
             if not os.path.exists(path):
-                self.opener.urlretrieve(header.url, path)
+                content = self._read_header(header.url)
+                with open(path, 'w') as dest:
+                    dest.write(content)
+
+    def _read_header(self, url):
+        if url not in self._headers:
+            with closing(self.opener.urlopen(url)) as src:
+                header = src.read().decode('utf-8')
+
+            header = replace_cpp_style_comments(header)
+            self._headers[url] = header
+
+        return self._headers[url]
+
