@@ -61,8 +61,8 @@ int main()
     // Set the required callback functions
     glfwSetKeyCallback(window, key_callback);
 
-    struct GladGLContext context;
-    int version = gladLoadGL(&context, (GLADloadproc) glfwGetProcAddress);
+    GladGLContext context;
+    int version = gladLoadGLSimple(&context, (GLADsimpleloadproc) glfwGetProcAddress);
     if (version == 0)
     {
         std::cout << "Failed to initialize OpenGL context" << std::endl;
@@ -74,7 +74,7 @@ int main()
     return 0;
 }
 
-void draw(GLFWwindow *window, struct GladGLContext *gl) {
+void draw(GLFWwindow *window, GladGLContext *gl) {
     // Define the viewport dimensions
     gl->Viewport(0, 0, WIDTH, HEIGHT);
 

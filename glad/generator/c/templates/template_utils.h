@@ -7,7 +7,7 @@
 
 
 {% macro context_arg(suffix='', def='') -%}
-{{ 'struct Glad' + feature_set.api|api + 'Context *context' + suffix if options.mx else def }}
+{{ 'Glad' + feature_set.api|api + 'Context *context' + suffix if options.mx else def }}
 {%- endmacro %}
 
 
@@ -28,7 +28,7 @@
 {% call protect(extension) %}
 #define {{ extension.name }} 1
 {% if with_runtime %}
-{{ apicall }} int GLAD_{{ extension.name }};
+GLAD_API_CALL int GLAD_{{ extension.name }};
 {% endif %}
 {% endcall %}
 {% endfor %}
@@ -62,7 +62,7 @@ typedef {{ type.category }} {{ type.name }} {
 #define {{ type.name }} {{ type.alias }}
 {%- elif type.raw.strip() -%}
 {{ type.raw.strip() }}
-{% endif -%}
+{%- endif %}
 {% endcall %}
 {% endmacro %}
 
@@ -85,7 +85,7 @@ typedef {{ type.category }} {{ type.name }} {
 {% macro write_function_typedefs(commands) %}
 {% for command in commands %}
 {% call protect(command) %}
-typedef {{ command.proto.ret|type_to_c }} ({{ apiptrp }} {{ command.proto.name|pfn }})({{ command.params|params_to_c }});
+typedef {{ command.proto.ret|type_to_c }} (GLAD_API_PTR *{{ command.name|pfn }})({{ command.params|params_to_c }});
 {% endcall %}
 {% endfor %}
 {% endmacro %}
@@ -93,12 +93,12 @@ typedef {{ command.proto.ret|type_to_c }} ({{ apiptrp }} {{ command.proto.name|p
 {% macro write_function_declarations(commands, debug=False) %}
 {% for command in commands %}
 {% call protect(command) %}
-{{ apicall }} {{ command.proto.name|pfn }} glad_{{ command.proto.name }};
+GLAD_API_CALL {{ command.name|pfn }} glad_{{ command.name }};
 {% if debug %}
-{{ apicall }} {{ command.proto.name|pfn }} glad_debug_{{ command.proto.name }};
-#define {{ command.proto.name }} glad_debug_{{ command.proto.name }}
+GLAD_API_CALL {{ command.name|pfn }} glad_debug_{{ command.name }};
+#define {{ command.name }} glad_debug_{{ command.name }}
 {% else %}
-#define {{ command.proto.name }} glad_{{ command.proto.name }}
+#define {{ command.name }} glad_{{ command.name }}
 {% endif %}
 {% endcall %}
 {% endfor %}

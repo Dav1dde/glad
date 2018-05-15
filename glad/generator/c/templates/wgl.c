@@ -4,7 +4,7 @@
 
 {% block commands %}
 {% for command in feature_set.commands|reject('existsin', blacklist) %}
-{{ command.proto.name|pfn }} glad_{{ command.proto.name }};
+{{ command.name|pfn }} glad_{{ command.name }};
 {% endfor %}
 {% endblock %}
 
@@ -12,9 +12,9 @@
 {% for extension, commands in loadable(feature_set.features[1:], feature_set.extensions) %}
 static void load_{{ extension.name }}(GLADloadproc load, void *userptr) {
     if(!GLAD_{{ extension.name }}) return;
-    {% for command in commands %}
-    glad_{{ command.proto.name }} = ({{ command.proto.name|pfn }})load("{{ command.proto.name }}", userptr);
-    {% endfor %}
+{% for command in commands %}
+    glad_{{ command.name }} = ({{ command.name|pfn }})load("{{ command.name }}", userptr);
+{% endfor %}
 }
 {% endfor %}
 {% endblock %}
@@ -54,19 +54,19 @@ static int has_ext(HDC hdc, const char *ext) {
 }
 
 static int find_extensions{{ feature_set.api|api }}(HDC hdc) {
-    {% for extension in feature_set.extensions %}
+{% for extension in feature_set.extensions %}
     GLAD_{{ extension.name }} = has_ext(hdc, "{{ extension.name }}");
-    {% else %}
+{% else %}
     (void)has_ext;
-    {% endfor %}
+{% endfor %}
     return 1;
 }
 
 static int find_core{{ feature_set.api|api }}(void) {
     int major = {{ feature_set.version.major }}, minor = {{ feature_set.version.minor }};
-    {% for feature in feature_set.features %}
+{% for feature in feature_set.features %}
     GLAD_{{ feature.name }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
-    {% endfor %}
+{% endfor %}
     return GLAD_MAKE_VERSION(major, minor);
 }
 
@@ -77,14 +77,14 @@ int gladLoad{{ feature_set.api|api }}(HDC hdc, GLADloadproc load, void *userptr)
     if(wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return 0;
     version = find_core{{ feature_set.api|api }}();
 
-    {% for feature, _ in loadable(feature_set.features[1:]) %}
+{% for feature, _ in loadable(feature_set.features[1:]) %}
     load_{{ feature.name }}(load, userptr);
-    {% endfor %}
+{% endfor %}
 
     if (!find_extensions{{ feature_set.api|api }}(hdc)) return 0;
-    {% for extension, _ in loadable(feature_set.extensions) %}
+{% for extension, _ in loadable(feature_set.extensions) %}
     load_{{ extension.name }}(load, userptr);
-    {% endfor %}
+{% endfor %}
 
     return version;
 }

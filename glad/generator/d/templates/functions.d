@@ -14,7 +14,7 @@ alias fp_{{ command.name }} = {{ type_to_d(command.proto.ret) }} function({{  pa
 
 __gshared {
 {% for command in feature_set.commands %}
-fp_{{ command.proto.name }} {{ command.proto.name }};
+fp_{{ command.name }} {{ command.name }};
 {%  endfor %}
 }
 

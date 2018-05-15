@@ -28,13 +28,13 @@ GLFWwindow* create_window(void) {
 }
 
 void run(GLFWwindow *window) {
-    struct GladGLContext context = { 0 };
+    GladGLContext context = { 0 };
     context.userptr = (void*) &context;
 
     glfwMakeContextCurrent(window);
 
     int version = gladLoadGLSimple(&context, (GLADsimpleloadproc) glfwGetProcAddress);
-    ASSERT(memcmp(&context, gladGetGLContext(), sizeof(struct GladGLContext)) == 0, "invalid global context");
+    ASSERT(memcmp(&context, gladGetGLContext(), sizeof(GladGLContext)) == 0, "invalid global context");
     ASSERT(version >= 3003, "glad version %d < 3003", version);
     ASSERT(GLAD_VERSION_MAJOR(version) >= 3, "glad major version %d < 3", GLAD_VERSION_MAJOR(version));
     ASSERT(GLAD_VERSION_MAJOR(version) > 3 || GLAD_VERSION_MINOR(version) >= 3, "glad minor version %d < 3", GLAD_VERSION_MINOR(version));

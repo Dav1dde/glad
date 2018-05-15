@@ -32,11 +32,11 @@ static int has_ext(Display *display, int screen, const char *ext) {
 }
 
 static int find_extensions{{ feature_set.api|api }}(Display *display, int screen) {
-    {% for extension in feature_set.extensions %}
+{% for extension in feature_set.extensions %}
     GLAD_{{ extension.name }} = has_ext(display, screen, "{{ extension.name }}");
-    {% else %}
+{% else %}
     (void)has_ext;
-    {% endfor %}
+{% endfor %}
     return 1;
 }
 
@@ -50,9 +50,9 @@ static int find_core{{ feature_set.api|api }}(Display **display, int *screen) {
         *screen = XScreenNumberOfScreen(XDefaultScreenOfDisplay(*display));
     }
     glXQueryVersion(*display, &major, &minor);
-    {% for feature in feature_set.features %}
+{% for feature in feature_set.features %}
     GLAD_{{ feature.name }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
-    {% endfor %}
+{% endfor %}
     return GLAD_MAKE_VERSION(major, minor);
 }
 
@@ -62,14 +62,14 @@ int gladLoad{{ feature_set.api|api }}(Display *display, int screen, GLADloadproc
     if(glXQueryVersion == NULL) return 0;
     version = find_core{{ feature_set.api|api }}(&display, &screen);
 
-    {% for feature, _ in loadable(feature_set.features) %}
+{% for feature, _ in loadable(feature_set.features) %}
     load_{{ feature.name }}(load, userptr);
-    {% endfor %}
+{% endfor %}
 
     if (!find_extensions{{ feature_set.api|api }}(display, screen)) return 0;
-    {% for extension, _ in loadable(feature_set.extensions) %}
+{% for extension, _ in loadable(feature_set.extensions) %}
     load_{{ extension.name }}(load, userptr);
-    {% endfor %}
+{% endfor %}
 
     return version;
 }

@@ -26,7 +26,7 @@ GLFWwindow* create_window(void) {
 }
 
 void run(GLFWwindow *window) {
-    struct GladGLContext context;
+    GladGLContext context;
 
     glfwMakeContextCurrent(window);
 

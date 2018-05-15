@@ -20,7 +20,7 @@ void* simple_loader(const char *name) {
 }
 
 int main(void) {
-    struct GladGLContext gl;
+    GladGLContext gl;
     gladLoadGL(&gl, (GLADloadproc) loader, NULL);
     gladLoadGLSimple(&gl, (GLADsimpleloadproc) simple_loader);
     gladLoadGLInternalLoader(&gl);

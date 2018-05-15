@@ -8,6 +8,6 @@ bool {{ extension.name }};
 
 extern(System) @loadDynamic {
 {% for command in feature_set.commands %}
-fn {{ command.proto.name }}({{  params_to_volt(command.params) }}) {{ type_to_volt(command.proto.ret) }};
+fn {{ command.name }}({{  params_to_volt(command.params) }}) {{ type_to_volt(command.proto.ret) }};
 {%  endfor %}
 }

@@ -1,102 +1,7 @@
 {% extends 'base_template.c' %}
 
 
-{% set global_context = 'glad_' + feature_set.api + '_context' %}
-
-
-{% block variables %}
-{% if options.mx_global %}
-struct Glad{{ feature_set.api|api }}Context {{ global_context }} = { 0 };
-{% endif %}
-{% endblock %}
-
-{% block extensions %}
-{% if not options.mx %}
-{{ super() }}
-{% endif %}
-{% endblock %}
-
-{% block debug_default_pre %}
-void _pre_call_{{ feature_set.api }}_callback_default(const char *name, void *funcptr, int len_args, ...) {
-    (void) name;
-    (void) funcptr;
-    (void) len_args;
-}
-{% endblock %}
-{% block debug_default_post %}
-void _post_call_{{ feature_set.api }}_callback_default(void* ret, const char *name, void *funcptr, int len_args, ...) {
-    (void) ret;
-    (void) name;
-    (void) funcptr;
-    (void) len_args;
-}
-{% endblock %}
-
-{% block commands %}
-{% if options.mx %}
-{% if options.debug %}
-{% for command in feature_set.commands %}
-{% set impl = get_debug_impl(command, command.proto.name|ctx(context=global_context)) %}
-{{ command.proto.ret|type_to_c }} APIENTRY glad_debug_impl_{{ command.proto.name }}({{ impl.impl }}) {
-    {{ (impl.ret[0] + '\n    ').lstrip() }}_pre_call_{{ feature_set.api }}_callback({{ impl.pre_callback }});
-    {{ impl.ret[1] }}glad_{{ feature_set.api }}_context->{{ command.proto.name[2:] }}({{ impl.function }});
-    _post_call_{{ feature_set.api }}_callback({{ impl.post_callback }});
-    {{ impl.ret[2] }}
-}
-{{ command.proto.name|pfn }} glad_debug_{{ command.proto.name }} = glad_debug_impl_{{ command.proto.name }};
-{% endfor %}
-{% endif %}
-{% else %}
-{% for command in feature_set.commands %}
-{% call template_utils.protect(command) %}
-{{ command.proto.name|pfn }} glad_{{ command.proto.name }};
-{% if options.debug %}
-{% set impl = get_debug_impl(command) %}
-{{ command.proto.ret|type_to_c }} APIENTRY glad_debug_impl_{{ command.proto.name }}({{ impl.impl }}) {
-    {{ (impl.ret[0] + '\n    ').lstrip() }}_pre_call_{{ feature_set.api }}_callback({{ impl.pre_callback }});
-    {{ impl.ret[1] }}glad_{{ command.proto.name }}({{ impl.function }});
-    _post_call_{{ feature_set.api }}_callback({{ impl.post_callback }});
-    {{ impl.ret[2] }}
-}
-{{ command.proto.name|pfn }} glad_debug_{{ command.proto.name }} = glad_debug_impl_{{ command.proto.name }};
-{% endif %}
-{% endcall %}
-{% endfor %}
-{% endif %}
-{% endblock %}
-
-{% block extension_loaders %}
-{% if options.mx %}
-{% for extension, commands in loadable() %}
-static void load_{{ extension.name }}(struct Glad{{ feature_set.api|api }}Context *context, GLADloadproc load, void* userptr) {
-    if(!{{ extension.name|ctx }}) return;
-    {% for command in commands %}
-    {{ command.proto.name|ctx }} = ({{ command.proto.name|pfn }})load("{{ command.proto.name }}", userptr);
-    {% endfor %}
-}
-{% endfor %}
-{% else %}
-{% for extension, commands in loadable() %}
-{% call template_utils.protect(extension) %}
-static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
-    if(!GLAD_{{ extension.name }}) return;
-    {% for command in commands %}
-    glad_{{ command.proto.name }} = ({{ command.proto.name|pfn }})load("{{ command.proto.name }}", userptr);
-    {% endfor %}
-}
-{% endcall %}
-{% endfor %}
-{% endif %}
-{% endblock %}
-
-
 {% block loader %}
-#if _MSC_VER >= 1400
-#define STRNCPY(dest, source, len) strncpy_s(dest, len, source, len-1);
-#else
-#define STRNCPY(dest, source, len) strncpy(dest, source, len);
-#endif
-
 static int get_exts({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, uint32_t *out_extension_count, char ***out_extensions) {
     uint32_t i;
     uint32_t instance_extension_count = 0;
@@ -145,7 +50,7 @@ static int get_exts({{ template_utils.context_arg(',') }} VkPhysicalDevice physi
 
 	    size_t extension_name_length = strlen(ext.extensionName) + 1;
         extensions[i] = (char*) malloc(extension_name_length * sizeof(char));
-	    STRNCPY(extensions[i], ext.extensionName, extension_name_length);
+	    GLAD_IMPL_UTIL_STRNCPY(extensions[i], ext.extensionName, extension_name_length);
 	}
 
 	if (physical_device != NULL) {
@@ -163,7 +68,7 @@ static int get_exts({{ template_utils.context_arg(',') }} VkPhysicalDevice physi
 
             size_t extension_name_length = strlen(ext.extensionName) + 1;
             extensions[instance_extension_count + i] = (char*) malloc(extension_name_length * sizeof(char));
-            STRNCPY(extensions[instance_extension_count + i], ext.extensionName, extension_name_length);
+            GLAD_IMPL_UTIL_STRNCPY(extensions[instance_extension_count + i], ext.extensionName, extension_name_length);
         }
 	}
 
@@ -202,13 +107,13 @@ static int find_extensions{{ feature_set.api|api }}({{ template_utils.context_ar
     char **extensions = NULL;
     if (!get_exts(physical_device, &extension_count, &extensions)) return 0;
 
-    {% for extension in feature_set.extensions %}
+{% for extension in feature_set.extensions %}
 {% call template_utils.protect(extension) %}
     {{ ('GLAD_' + extension.name)|ctx }} = has_ext("{{ extension.name }}", extension_count, extensions);
 {% endcall %}
-    {% else %}
+{% else %}
     (void)has_ext;
-    {% endfor %}
+{% endfor %}
 
     free_exts(extension_count, extensions);
 
@@ -240,9 +145,9 @@ static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(',')
         minor = (int) VK_VERSION_MINOR(properties.apiVersion);
     }
 
-    {% for feature in feature_set.features %}
+{% for feature in feature_set.features %}
     {{ ('GLAD_' + feature.name)|ctx }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
-    {% endfor %}
+{% endfor %}
 
     return GLAD_MAKE_VERSION(major, minor);
 }
@@ -256,24 +161,24 @@ int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPh
         return 0;
     }
 
-    {% for feature, _ in loadable(feature_set.features) %}
+{% for feature, _ in loadable(feature_set.features) %}
     load_{{ feature.name }}({{'context, ' if options.mx }}load, userptr);
-    {% endfor %}
+{% endfor %}
 
     if (!find_extensions{{  feature_set.api|api }}({{ 'context,' if options.mx }} physical_device)) return 0;
-    {% for extension, _ in loadable(feature_set.extensions) %}
+{% for extension, _ in loadable(feature_set.extensions) %}
 {% call template_utils.protect(extension) %}
     load_{{ extension.name }}({{'context, ' if options.mx }}load, userptr);
 {% endcall %}
-    {% endfor %}
+{% endfor %}
 
-    {% if options.mx_global %}
+{% if options.mx_global %}
     gladSet{{ feature_set.api|api }}Context(context);
-    {% endif %}
+{% endif %}
 
-    {%- if options.alias %}
+{%- if options.alias %}
     resolve_aliases({{ 'context' if options.mx }});
-    {% endif %}
+{% endif %}
 
     return version;
 }
@@ -287,11 +192,11 @@ int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }
 }
 
 {% if options.mx_global %}
-struct Glad{{ feature_set.api|api }}Context* gladGet{{ feature_set.api|api }}Context() {
+Glad{{ feature_set.api|api }}Context* gladGet{{ feature_set.api|api }}Context() {
     return &glad_{{ feature_set.api }}_context;
 }
 
-void gladSet{{ feature_set.api|api }}Context(struct Glad{{ feature_set.api|api }}Context *context) {
+void gladSet{{ feature_set.api|api }}Context(Glad{{ feature_set.api|api }}Context *context) {
     glad_{{ feature_set.api }}_context = *context;
 }
 {% endif %}

@@ -75,8 +75,12 @@ class BaseGenerator(object):
         """
         return feature_set
 
-    def get_additional_template_arguments(self, spec, feature_set, config):
-        return dict()
+    def get_template_arguments(self, spec, feature_set, config):
+        return dict(
+            spec=spec,
+            feature_set=feature_set,
+            options=config.to_dict(transform=lambda x: x.lower()),
+        )
 
     def generate(self, spec, feature_set, config=None):
         feature_set = self.modify_feature_set(spec, feature_set, config)
@@ -88,8 +92,7 @@ class BaseGenerator(object):
             #    raise ValueError('Unsupported specification/configuration')
 
             result = template.render(
-                spec=spec, feature_set=feature_set, options=config.to_dict(transform=lambda x: x.lower()),
-                **self.get_additional_template_arguments(spec, feature_set, config)
+                **self.get_template_arguments(spec, feature_set, config)
             )
 
             output_path = os.path.join(self.path, output_path)

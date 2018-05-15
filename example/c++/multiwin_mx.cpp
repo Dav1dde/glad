@@ -6,8 +6,8 @@
 
 // Function prototypes
 GLFWwindow* create_window(const char *name, int major, int minor);
-struct GladGLContext* create_context(GLFWwindow *window);
-void free_context(struct GladGLContext *context);
+GladGLContext* create_context(GLFWwindow *window);
+void free_context(GladGLContext *context);
 void draw(GLFWwindow *window, GladGLContext *context, float r, float g, float b);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
@@ -31,8 +31,8 @@ int main()
     glfwSetKeyCallback(window1, key_callback);
     glfwSetKeyCallback(window2, key_callback);
 
-    struct GladGLContext *context1 = create_context(window1);
-    struct GladGLContext *context2 = create_context(window2);
+    GladGLContext *context1 = create_context(window1);
+    GladGLContext *context2 = create_context(window2);
 
     if (!context1 || !context2) {
         std::cout << "Failed to initialize GL contexts" << std::endl;
@@ -75,24 +75,24 @@ GLFWwindow* create_window(const char *name, int major, int minor) {
     return window;
 }
 
-struct GladGLContext* create_context(GLFWwindow *window) {
+GladGLContext* create_context(GLFWwindow *window) {
     glfwMakeContextCurrent(window);
 
-    struct GladGLContext* context = (struct GladGLContext*)malloc(sizeof(struct GladGLContext));
+    GladGLContext* context = (GladGLContext*) malloc(sizeof(GladGLContext));
     if (!context) return NULL;
 
-    int version = gladLoadGL(context, (GLADloadproc)glfwGetProcAddress);
+    int version = gladLoadGLSimple(context, (GLADsimpleloadproc) glfwGetProcAddress);
     std::cout << "Loaded OpenGL " << GLAD_VERSION_MAJOR(version) << "." << GLAD_VERSION_MINOR(version) << std::endl;
 
     return context;
 }
 
-void free_context(struct GladGLContext *context) {
+void free_context(GladGLContext *context) {
     free(context);
 }
 
 
-void draw(GLFWwindow *window, struct GladGLContext *gl, float r, float g, float b) {
+void draw(GLFWwindow *window, GladGLContext *gl, float r, float g, float b) {
     glfwMakeContextCurrent(window);
 
     gl->ClearColor(r, g, b, 1.0f);

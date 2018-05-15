@@ -1,7 +1,7 @@
 #ifdef GLAD_EGL
 
-GLAPI int gladLoadEGLInternalLoader(EGLDisplay display);
+GLAD_API_CALL int gladLoadEGLInternalLoader(EGLDisplay display);
 
-GLAPI void gladUnloadEGLInternalLoader(void);
+GLAD_API_CALL void gladUnloadEGLInternalLoader(void);
 
 #endif

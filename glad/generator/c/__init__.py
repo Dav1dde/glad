@@ -11,10 +11,12 @@ from contextlib import closing
 from glad.config import Config, ConfigOption, RequirementConstraint, UnsupportedConstraint
 from glad.generator import BaseGenerator
 from glad.parse import Type
+from glad.specification import VK, GL
 
 _ARRAY_RE = re.compile(r'\[[\d\w]*\]')
 
 DebugArguments = namedtuple('_DebugParams', ['impl', 'function', 'pre_callback', 'post_callback', 'ret'])
+DebugReturn = namedtuple('_DebugReturn', ['declaration', 'assignment', 'ret'])
 
 Header = namedtuple('_Header', ['name', 'include', 'url'])
 
@@ -51,7 +53,7 @@ def loadable(spec, feature_set, *args):
 
 
 def get_debug_impl(command, command_code_name=None):
-    command_code_name = command_code_name or command.proto.name
+    command_code_name = command_code_name or command.name
 
     impl = ', '.join(
         '{type} arg{i}'.format(type=type_to_c(param.type), i=i)
@@ -60,7 +62,7 @@ def get_debug_impl(command, command_code_name=None):
 
     func = ', '.join('arg{}'.format(i) for i, _ in enumerate(command.params))
     pre_callback = ', '.join(filter(None, [
-        '"{}"'.format(command.proto.name),
+        '"{}"'.format(command.name),
         '(void*){}'.format(command_code_name),
         str(len(command.params)),
         func
@@ -71,10 +73,10 @@ def get_debug_impl(command, command_code_name=None):
 
     post_callback = ('NULL, ' if is_void_ret else '(void*) &ret, ') + pre_callback
 
-    ret = ('', '', '')
+    ret = DebugReturn('', '', '')
     if not is_void_ret:
-        ret = (
-            '{} ret;'.format(type_to_c(command.proto.ret)),
+        ret = DebugReturn(
+            '{} ret;\n    '.format(type_to_c(command.proto.ret)),
             'ret = ',
             'return ret;'
         )
@@ -87,23 +89,14 @@ def ctx(jinja_context, name, context='context', raw=False, name_only=False):
     feature_set = jinja_context['feature_set']
     options = jinja_context['options']
 
-    api_prefix = feature_set.api.lower()
-    if feature_set.api == 'vulkan':
-        api_prefix = 'vk'
-
     prefix = ''
     if options['mx']:
         prefix = context + '->'
         if name.startswith('GLAD_'):
             name = name[5:]
-        # glFoo -> Foo
-        # GL_ARB_asd -> ARB_asd
-        if not raw and name.lower().startswith(api_prefix):
-            name = name[len(api_prefix):].lstrip('_')
 
-    # 3DFX_tbuffer -> _3DFX_tbuffer
-    if not name[0].isalpha():
-        name = '_' + name
+        if not raw:
+            name = no_prefix(jinja_context, name)
 
     if name_only:
         return name
@@ -116,6 +109,28 @@ def pfn(context, value):
     if feature_set.api == 'vulkan':
         return 'PFN_' + value
     return 'PFN' + value.upper() + 'PROC'
+
+
+@jinja2.contextfilter
+def no_prefix(context, value):
+    feature_set = context['feature_set']
+
+    api_prefix = feature_set.api.lower()
+    if feature_set.api == 'vulkan':
+        api_prefix = 'vk'
+
+    # glFoo -> Foo
+    # GL_ARB_asd -> ARB_asd
+
+    name = value
+    if name.lower().startswith(api_prefix):
+        name = name[len(api_prefix):].lstrip('_')
+
+    # 3DFX_tbuffer -> _3DFX_tbuffer
+    if not name[0].isalpha():
+        name = '_' + name
+
+    return name
 
 
 def collect_alias_information(commands):
@@ -251,18 +266,26 @@ class CGenerator(BaseGenerator):
             type_to_c=type_to_c,
             params_to_c=params_to_c,
             pfn=pfn,
-            ctx=ctx
+            ctx=ctx,
+            no_prefix=no_prefix
         )
 
-    def get_additional_template_arguments(self, spec, feature_set, config):
-        return dict(
+    def get_template_arguments(self, spec, feature_set, config):
+        args = BaseGenerator.get_template_arguments(self, spec, feature_set, config)
+
+        # TODO allow MX for every specification/api
+        if spec.name not in (VK.NAME, GL.NAME):
+            args['options']['mx'] = False
+            args['options']['mx_global'] = False
+
+        args.update(
             loadable=functools.partial(loadable, spec, feature_set),
             aliases=collect_alias_information(feature_set.commands),
-            apiptrp='VKAPI_PTR*' if spec.name == 'vk' else 'APIENTRYP',
-            apicall='VKAPI_CALL' if spec.name == 'vk' else 'GLAPI',
             # required for vulkan loader:
             device_commands=list(filter(is_device_command, feature_set.commands))
         )
+
+        return args
 
     def get_templates(self, spec, feature_set, config):
         header = 'include/glad/{}.h'.format(feature_set.api)
@@ -300,7 +323,7 @@ class CGenerator(BaseGenerator):
         if not config['ALIAS']:
             return feature_set
 
-        command_names = [command.proto.name for command in feature_set.commands]
+        command_names = [command.name for command in feature_set.commands]
 
         new_extensions = set(ext.name for ext in feature_set.extensions)
         for extension in spec.extensions[feature_set.api].values():
@@ -314,7 +337,7 @@ class CGenerator(BaseGenerator):
                     break
 
                 # find all extensions that have a function with the same name
-                if command.proto.name in command_names:
+                if command.name in command_names:
                     new_extensions.add(extension.name)
                     break
 

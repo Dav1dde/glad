@@ -8,18 +8,31 @@
 #include <glad/{{ feature_set.api }}.h>
 {% endblock %}
 {% endif %}
+
+{% include 'impl_util.c' %}
 {% endblock %}
+
+
+{% set global_context = 'glad_' + feature_set.api + '_context' %}
+
 
 {% block variables %}
+{% if options.mx_global %}
+Glad{{ feature_set.api|api }}Context {{ global_context }} = { 0 };
+{% endif %}
 {% endblock %}
 
+
 {% block extensions %}
+{% if not options.mx %}
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
 {% call template_utils.protect(extension) %}
 int GLAD_{{ extension.name }};
 {% endcall %}
 {% endfor %}
+{% endif %}
 {% endblock %}
+
 
 {% block debug %}
 {% if options.debug %}
@@ -53,44 +66,46 @@ void gladSet{{ feature_set.api }}PostCallback(GLADpostcallback cb) {
 {% block commands %}
 {% for command in feature_set.commands %}
 {% call template_utils.protect(command) %}
-{{ command.proto.name|pfn }} glad_{{ command.proto.name }};
+{{ command.name|pfn }} glad_{{ command.name }};
 {% if options.debug %}
-{% set impl = get_debug_impl(command) %}
-{{ command.proto.ret|type_to_c }} APIENTRY glad_debug_impl_{{ command.proto.name }}({{ impl.impl }}) {
-    {{ (impl.ret[0] + '\n    ').lstrip() }}_pre_call_{{ feature_set.api }}_callback({{ impl.pre_callback }});
-    {{ impl.ret[1] }}glad_{{ command.proto.name }}({{ impl.function }});
+{% set impl = get_debug_impl(command, command.name|ctx(context=global_context)) %}
+{{ command.proto.ret|type_to_c }} GLAD_API_PTR glad_debug_impl_{{ command.name }}({{ impl.impl }}) {
+    {{ impl.ret.declaration }}_pre_call_{{ feature_set.api }}_callback({{ impl.pre_callback }});
+    {{ impl.ret.assignment }}{{ command.name|ctx(context=global_context) }}({{ impl.function }});
     _post_call_{{ feature_set.api }}_callback({{ impl.post_callback }});
-    {{ impl.ret[2] }}
+    {{ impl.ret.ret }}
 }
-{{ command.proto.name|pfn }} glad_debug_{{ command.proto.name }} = glad_debug_impl_{{ command.proto.name }};
+{{ command.name|pfn }} glad_debug_{{ command.name }} = glad_debug_impl_{{ command.name }};
 {% endif %}
 {% endcall %}
 {% endfor %}
 {% endblock %}
 
+
 {% block extension_loaders %}
 {% for extension, commands in loadable() %}
-static void load_{{ extension.name }}(GLADloadproc load, void* userptr) {
-    if(!GLAD_{{ extension.name }}) return;
-    {% for command in commands %}
-{% call template_utils.protect(command) %}
-    glad_{{ command.proto.name }} = ({{ command.proto.name|pfn }})load("{{ command.proto.name }}", userptr);
-{% endcall %}
-    {% endfor %}
+{% call template_utils.protect(extension) %}
+static void load_{{ extension.name }}({{ template_utils.context_arg(',') }} GLADloadproc load, void* userptr) {
+    if(!{{ ('GLAD_' + extension.name)|ctx }}) return;
+{% for command in commands %}
+    {{ command.name|ctx }} = ({{ command.name|pfn }})load("{{ command.name }}", userptr);
+{% endfor %}
 }
+{% endcall %}
 {% endfor %}
 {% endblock %}
+
 
 {% block aliasing %}
 {% if options.alias %}
 static void resolve_aliases({{ template_utils.context_arg() }}) {
-    {% for command in feature_set.commands %}
-    {% for alias in aliases.get(command.proto.name, []) %}
-    {% if not alias == command.proto.name %}
-    if ({{ command.proto.name|ctx }} == NULL && {{ alias|ctx }} != NULL) {{ command.proto.name|ctx }} = ({{ command.proto.name|pfn }}){{ alias|ctx }};
-    {% endif %}
-    {% endfor %}
-    {% endfor %}
+{% for command in feature_set.commands|sort(attribute='name') %}
+{% call template_utils.protect(extension) %}
+{% for alias in aliases.get(command.name, [])|reject('equalto', command.name) %}
+    if ({{ command.name|ctx }} == NULL && {{ alias|ctx }} != NULL) {{ command.name|ctx }} = ({{ command.name|pfn }}){{ alias|ctx }};
+{% endfor %}
+{% endcall %}
+{% endfor %}
 }
 {% endif %}
 {% endblock %}

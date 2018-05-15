@@ -19,7 +19,7 @@ fn load_{{ extension.name }}(load : Loader) {
     {% if commands %}
     if (!{{ extension.name }}) return;
     {% for command in commands %}
-    {{ command.proto.name }} = cast(typeof({{ command.proto.name }}))load("{{ command.proto.name }}");
+    {{ command.name }} = cast(typeof({{ command.name }}))load("{{ command.name }}");
     {% endfor %}
     {% endif %}
 }

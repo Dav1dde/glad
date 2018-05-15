@@ -1,7 +1,7 @@
 #ifdef GLAD_GLX
 
-GLAPI int gladLoadGLXInternalLoader(Display *display, int screen);
+GLAD_API_CALL int gladLoadGLXInternalLoader(Display *display, int screen);
 
-GLAPI void gladUnloadGLXInternalLoader(void);
+GLAD_API_CALL void gladUnloadGLXInternalLoader(void);
 
 #endif

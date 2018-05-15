@@ -1,5 +1,6 @@
+{% import "template_utils.h" as template_utils with context %}
 #ifdef GLAD_GL
 
-GLAPI int gladLoadGLInternalLoader({{ 'struct GladGLContext *context' if options.mx else 'void' }});
+GLAD_API_CALL int gladLoadGLInternalLoader({{ template_utils.context_arg(def='void') }});
 
 #endif

@@ -31,11 +31,11 @@ static int find_extensions{{ feature_set.api|api }}(EGLDisplay display) {
     const char *extensions;
     if (!get_exts(display, &extensions)) return 0;
 
-    {% for extension in feature_set.extensions %}
+{% for extension in feature_set.extensions %}
     GLAD_{{ extension.name }} = has_ext(extensions, "{{ extension.name }}");
-    {% else %}
+{% else %}
     (void)has_ext;
-    {% endfor %}
+{% endfor %}
 
     return 1;
 }
@@ -64,16 +64,12 @@ static int find_core{{ feature_set.api|api }}(EGLDisplay display) {
         major = 1;
         minor = 0;
     } else {
-#ifdef _MSC_VER
-        sscanf_s(version, "%d.%d", &major, &minor);
-#else
-        sscanf(version, "%d.%d", &major, &minor);
-#endif
+        GLAD_IMPL_UTIL_SSCANF(version, "%d.%d", &major, &minor);
     }
 
-    {% for feature in feature_set.features %}
+{% for feature in feature_set.features %}
     GLAD_{{ feature.name }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
-    {% endfor %}
+{% endfor %}
 
     return GLAD_MAKE_VERSION(major, minor);
 }
@@ -88,14 +84,14 @@ int gladLoad{{ feature_set.api|api }}(EGLDisplay display, GLADloadproc load, voi
 
     version = find_core{{ feature_set.api|api }}(display);
     if (!version) return 0;
-    {% for feature, _ in loadable(feature_set.features) %}
+{% for feature, _ in loadable(feature_set.features) %}
     load_{{ feature.name }}(load, userptr);
-    {% endfor %}
+{% endfor %}
 
     if (!find_extensions{{ feature_set.api|api }}(display)) return 0;
-    {% for extension, _ in loadable(feature_set.extensions) %}
+{% for extension, _ in loadable(feature_set.extensions) %}
     load_{{ extension.name }}(load, userptr);
-    {% endfor %}
+{% endfor %}
 
     return version;
 }

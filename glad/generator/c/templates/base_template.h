@@ -3,7 +3,6 @@
 #define GLAD_{{ feature_set.api|upper }}_H_
 
 {% block header %}
-{{ template_utils.header_error(feature_set.api, '__' + feature_set.api + '_h_', feature_set.api|api) }}
 {% endblock %}
 
 #define GLAD_{{ feature_set.api|upper }}
@@ -13,86 +12,70 @@
 {% endif %}
 {% endfor %}
 
-#ifndef GLAD_MAKE_VERSION
-#define GLAD_MAKE_VERSION(major, minor) (major * 10000 + minor)
-#define GLAD_VERSION_MAJOR(version) (version / 10000)
-#define GLAD_VERSION_MINOR(version) (version % 10000)
-#endif
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef void* (* GLADloadproc)(const char *name, void* userptr);
-typedef void* (* GLADsimpleloadproc)(const char *name);
-typedef void (* GLADprecallback)(const char *name, void *funcptr, int len_args, ...);
-typedef void (* GLADpostcallback)(void* ret, const char *name, void *funcptr, int len_args, ...);
-
 {% block platform %}
-#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-#include <windows.h>
-#endif
-#ifndef APIENTRY
-#define APIENTRY
-#endif
-#ifndef APIENTRYP
-#define APIENTRYP APIENTRY *
-#endif
-
-#ifndef GLAPI
-# if defined(GLAD_GLAPI_EXPORT)
-#  if defined(_WIN32) || defined(__CYGWIN__)
-#   if defined(GLAD_GLAPI_EXPORT_BUILD)
-#    if defined(__GNUC__)
-#     define GLAPI __attribute__ ((dllexport)) extern
-#    else
-#     define GLAPI __declspec(dllexport) extern
-#    endif
-#   else
-#    if defined(__GNUC__)
-#     define GLAPI __attribute__ ((dllimport)) extern
-#    else
-#     define GLAPI __declspec(dllimport) extern
-#    endif
-#   endif
-#  elif defined(__GNUC__) && defined(GLAD_GLAPI_EXPORT_BUILD)
-#   define GLAPI __attribute__ ((visibility ("default"))) extern
-#  else
-#   define GLAPI extern
-#  endif
-# else
-#  define GLAPI extern
-# endif
-#endif
+{% include 'platform.h' %}
 {% endblock %}
 
 {% block enums %}
 {{ template_utils.write_enumerations(feature_set.enums) }}
 {% endblock %}
+
 {% block types %}
 {{ template_utils.write_types(feature_set.types) }}
 {% endblock %}
+
 {% block feature_information %}
-{{ template_utils.write_feature_information(chain(feature_set.features, feature_set.extensions), with_runtime=True) }}
+{{ template_utils.write_feature_information(chain(feature_set.features, feature_set.extensions), with_runtime=not options.mx) }}
 {% endblock %}
+
 {% block commands %}
 {{ template_utils.write_function_typedefs(feature_set.commands) }}
+{% if not options.mx %}
 {{ template_utils.write_function_declarations(feature_set.commands, debug=options.debug) }}
+{% else %}
+typedef struct Glad{{ feature_set.api|api }}Context {
+    void* userptr;
+
+{% for extension in chain(feature_set.features, feature_set.extensions) %}
+    int {{ extension.name|ctx(name_only=True) }};
+{% endfor %}
+
+{% for command in feature_set.commands %}
+    {{ command.name|pfn }} {{ command.name|ctx(name_only=True) }};
+{% endfor %}
+} Glad{{ feature_set.api|api }}Context;
+
+{% if options.mx_global %}
+GLAD_API_CALL Glad{{ feature_set.api|api }}Context glad_{{ feature_set.api }}_context;
+
+{% for extension in chain(feature_set.features, feature_set.extensions) %}
+#define GLAD_{{ extension.name }} (glad_{{ feature_set.api }}_context.{{ extension.name|no_prefix }})
+{% endfor %}
+
+{% for command in feature_set.commands %}
+#define {{ command.name }} (glad_{{ feature_set.api }}_context.{{ command.name|no_prefix }})
+{% endfor %}
+{% endif %}
+
+{% endif %}
 {% endblock %}
 
 {% block declarations %}
-{% endblock %}
+{% if options.mx_global %}
+Glad{{ feature_set.api|api }}Context* gladGet{{ feature_set.api|api }}Context(void);
+void gladSet{{ feature_set.api|api }}Context(Glad{{ feature_set.api|api }}Context *context);
+{% endif %}
 
-{% block debug %}
 {% if options.debug %}
-GLAPI void glad_set_{{ feature_set.api }}_pre_callback(GLADprecallback cb);
-GLAPI void glad_set_{{ feature_set.api }}_post_callback(GLADpostcallback cb);
+GLAD_API_CALL void gladSet{{ feature_set.api }}PreCallback(GLADprecallback cb);
+GLAD_API_CALL void gladSet{{ feature_set.api }}PostCallback(GLADpostcallback cb);
 {% endif %}
 {% endblock %}
+
 
 {% block loader_impl %}
 {% include 'loader/' + feature_set.api + '.h' %}

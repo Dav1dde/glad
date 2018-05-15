@@ -1,3 +1,4 @@
+{% import "template_utils.h" as template_utils with context %}
 #ifdef GLAD_GL
 
 {% include 'loader/library.c' %}
@@ -24,7 +25,7 @@ static void* glad_gl_get_proc(const char *name, void *vuserptr) {
     return result;
 }
 
-int gladLoadGLInternalLoader({{ 'struct GladGLContext *context' if options.mx else 'void' }}) {
+int gladLoadGLInternalLoader({{ template_utils.context_arg(def='void') }}) {
 #ifdef __APPLE__
     static const char *NAMES[] = {
         "../Frameworks/OpenGL.framework/OpenGL",
