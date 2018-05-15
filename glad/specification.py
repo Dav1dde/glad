@@ -53,7 +53,7 @@ class WGL(Specification):
 class VK(Specification):
     DISPLAY_NAME = 'Vulkan'
 
-    API = 'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/1.0/src/spec/'
+    API = 'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/master/xml/'
     NAME = 'vk'
 
     def _magic_require(self, api, profile):

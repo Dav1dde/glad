@@ -124,12 +124,12 @@ def collect_alias_information(commands):
 
     # keep a dictionary, store the set of aliases known for each function
     # initialize it to identity, each function aliases itself
-    alias = dict((command.proto.name, set([command.proto.name])) for command in commands)
+    alias = dict((command.name, set([command.name])) for command in commands)
     # now, add all further aliases
     for command in commands:
         if command.alias is not None:
             # aliasses is the set of all aliasses known for this function
-            aliasses = alias[command.proto.name]
+            aliasses = alias[command.name]
             aliasses.add(command.alias)
             # unify all alias sets of all aliased functions
             new_aliasses=set()
@@ -146,8 +146,8 @@ def collect_alias_information(commands):
                 alias[command]=new_aliasses
     # clean up the alias dict: remove entries where the set contains only one element
     for command in commands:
-        if len(alias[command.proto.name]) < 2:
-            del alias[command.proto.name]
+        if len(alias[command.name]) < 2:
+            del alias[command.name]
     return alias
 
 

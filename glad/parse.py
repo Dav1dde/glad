@@ -23,7 +23,7 @@ except ImportError:
 
 import re
 import logging
-from collections import defaultdict, OrderedDict, namedtuple
+from collections import defaultdict, OrderedDict, namedtuple, deque
 from contextlib import closing
 from itertools import chain
 
@@ -81,6 +81,8 @@ class Specification(object):
 
     def __init__(self, root):
         self.root = root
+
+        self._platforms = None
 
         self._types = None
         self._groups = None
@@ -167,6 +169,17 @@ class Specification(object):
         return self._groups
 
     @property
+    def platforms(self):
+        if self._platforms is None:
+            self._platforms = dict()
+
+            for element in self.root.find('platforms'):
+                platform = Platform.from_element(element)
+                self._platforms[platform.name] = platform
+
+        return self._platforms
+
+    @property
     def types(self):
         if self._types is None:
             self._types = OrderedDict()
@@ -194,7 +207,12 @@ class Specification(object):
                         enums[e.name] = e
 
                     for extension in self.root.findall('.//require/enum[@extends="{}"]/../..'.format(t.name)):
-                        extnumber = int(extension.attrib['number'])
+                        try:
+                            extnumber = int(extension.attrib['number'])
+                        except ValueError:
+                            # Most likely a feature, if that happens every extending enum needs
+                            # to specify its own extnumber
+                            extnumber = None
 
                         for extending_enum in extension.findall('.//require/enum[@extends="{}"]'.format(t.name)):
                             enum = Enum.from_element(extending_enum, extnumber=extnumber)
@@ -221,7 +239,9 @@ class Specification(object):
             def _type_dependencies(item):
                 # all requirements of all types (types can exist more than once, e.g. specialized for an API)
                 # but only requirements that are types as well
-                return set(r for r in chain.from_iterable(t.requires for t in item[1]) if r in self._types)
+                requirements = set(r for r in chain.from_iterable(t.requires for t in item[1]) if r in self._types)
+                aliases = set(t.alias for t in item[1] if t.alias and t.alias in self._types)
+                return requirements.union(aliases)
 
             self._types = OrderedDict(topological_sort(self._types.items(), lambda x: x[0], _type_dependencies))
 
@@ -234,6 +254,16 @@ class Specification(object):
             for element in self.root.find('commands'):
                 command = Command(element)
                 self._commands[command.name].append(command)
+
+            self._commands = dict(self._commands)
+
+            # fixup aliases
+            for command in chain.from_iterable(self._commands.values()):
+                if command.alias is not None and command.proto is None:
+                    aliased_command = next(c for c in self._commands[command.alias] if c.api == command.api)
+
+                    command.proto = Proto(command.name, copy.deepcopy(aliased_command.proto.ret))
+                    command.params = copy.deepcopy(aliased_command.params)
 
         return self._commands
 
@@ -331,8 +361,11 @@ class Specification(object):
         :param feature_set: evaluate protections based on feature_set
         :return: a list of protection names
         """
-        if hasattr(symbol, 'protect'):
+        if getattr(symbol, 'protect', []):
             return symbol.protect
+
+        if getattr(symbol, 'platform', None):
+            return [self.platforms[symbol.platform].protect]
 
         if feature_set:
             extensions = chain(feature_set.features, feature_set.extensions)
@@ -344,11 +377,13 @@ class Specification(object):
             requirements = ext.get_requirements(self, api, profile)
 
             if symbol in requirements:
-                if not ext.protect:
+                if ext.protect:
+                    protections.extend(ext.protect)
+                elif ext.platform is not None:
+                    protections.append(self.platforms[ext.platform].protect)
+                else:
                     # symbol found in at least one unprotected extension
                     return list()
-
-                protections.extend(ext.protect)
 
         return protections
 
@@ -373,9 +408,9 @@ class Specification(object):
             self._combined.update(self.enums)
 
         requirements = set(require.requirements)
-        open_requirements = list(requirements)
+        open_requirements = deque(requirements)
         while open_requirements:
-            name = open_requirements.pop(0)
+            name = open_requirements.popleft()
 
             if name in self._combined:
                 results = self._combined[name]
@@ -402,7 +437,6 @@ class Specification(object):
                 assert best_match is not None
 
                 # maybe we got more requirements (types can require other types)
-                # TODO maybe generalize this so everything can require more -> recursive?
                 # TODO check if _magic_require is still necessary with recursive
                 # TODO auto-require types from commands etc.
                 if recursive and hasattr(best_match, 'requires'):
@@ -411,6 +445,11 @@ class Specification(object):
                     if new_requirements:
                         requirements.update(new_requirements)
                         open_requirements.extend(new_requirements)
+
+                if recursive and hasattr(best_match, 'alias'):
+                    if best_match.alias not in requirements:
+                        requirements.add(best_match.alias)
+                        open_requirements.append(best_match.alias)
 
                 yield best_match
 
@@ -559,13 +598,28 @@ class IdentifiedByName(object):
         return self.name == name
 
 
+class Platform(object):
+    def __init__(self, name, protect, comment=''):
+        self.name = name
+        self.protect = protect
+        self.comment = comment
+
+    @classmethod
+    def from_element(cls, element):
+        name = element.attrib['name']
+        protect = element.attrib['protect']
+        comment = element.get('comment', '')
+        return Platform(name, protect, comment=comment)
+
+
 class Type(IdentifiedByName):
-    def __init__(self, raw, api, category, name, requires=None, enums=None, members=None):
+    def __init__(self, raw, api, category, name, alias=None, requires=None, enums=None, members=None):
         self.raw = raw
         self.api = api
         self.category = category
         self.name = name
 
+        self.alias = alias
         self.requires = requires or []
 
         self.enums = enums
@@ -585,13 +639,16 @@ class Type(IdentifiedByName):
         api = element.get('api')
         category = element.get('category')
         name = element.get('name') or element.find('name').text
+
+        alias = element.get('alias')
+
         # a type referenced by a struct/funcptr is required by this type
         requires = set(t.text for t in element.iter('type') if not t is element)
         requires.update(e.text for e in element.iter('enum'))
         if element.get('requires'):
             requires.add(element.get('requires'))
 
-        return cls(raw, api, category, name, requires)
+        return cls(raw, api, category, name, alias=alias, requires=requires)
 
     @property
     def is_preprocessor(self):
@@ -621,14 +678,16 @@ class Enum(IdentifiedByName):
     EXTENSION_NUMBER_OFFSET = -1
 
     def __init__(self, name, value, bitpos, api,
-                 namespace=None, group=None, vendor=None, comment='',
-                 extended_by=None):
+                 alias=None, namespace=None, group=None, vendor=None,
+                 comment='', extended_by=None):
         self.name = name
         self.value = value
         if self.value is None and bitpos is not None:
             self.value = 1 << int(bitpos)
         self.bitpos = bitpos
         self.api = api
+
+        self.alias = alias
 
         self.namespace = namespace
         self.group = group
@@ -651,6 +710,8 @@ class Enum(IdentifiedByName):
         bitpos = element.get('bitpos')
         api = element.get('api')
 
+        alias = element.get('alias')
+
         if element.get('extnumber'):
             extnumber = int(element.get('extnumber'))
 
@@ -664,21 +725,36 @@ class Enum(IdentifiedByName):
             if element.get('dir') == '-':
                 value = -value
 
-        return cls(name, value, bitpos, api, **kwargs)
+        return cls(name, value, bitpos, api, alias=alias, **kwargs)
 
 
 class Command(IdentifiedByName):
     def __init__(self, element):
-        self.proto = Proto(element.find('proto'))
-        self.params = [Param(ele) for ele in filter(lambda e: e.tag == 'param', iter(element))]
-        self.alias = element.find('alias')
-        if self.alias is not None:
-            self.alias = self.alias.get('name')
+        self.proto = None
+        self.params = None
+
+        proto = element.find('proto')
+        if proto is not None:
+            self.proto = Proto.from_element(proto)
+            self.params = [Param(ele) for ele in filter(lambda e: e.tag == 'param', iter(element))]
+
+        self.alias = element.get('alias')
+        self._name = element.get('name')
+
+        alias = element.find('alias')
+        if alias is not None:
+            self.alias = alias.attrib['name']
 
         self.api = element.get('api')
 
+        if self.alias is None and self.proto is None:
+            raise ValueError("command is neither a full command nor an alias")
+
     @property
     def requires(self):
+        if self.params is None:
+            return list()
+
         requires = [param.type.orig_type for param in self.params if param.type.orig_type]
         if self.proto.ret.orig_type:
             requires.append(self.proto.ret.orig_type)
@@ -686,7 +762,7 @@ class Command(IdentifiedByName):
 
     @property
     def name(self):
-        return self.proto.name
+        return self._name or self.proto.name
 
     def __str__(self):
         return '{self.proto.name}({params})'.format(
@@ -697,9 +773,13 @@ class Command(IdentifiedByName):
 
 
 class Proto(object):
-    def __init__(self, element):
-        self.name = element.find('name').text
-        self.ret = OGLType(element)
+    def __init__(self, name, ret):
+        self.name = name
+        self.ret = ret
+
+    @classmethod
+    def from_element(cls, element):
+        return Proto(element.find('name').text, OGLType(element))
 
     def __str__(self):
         return '{self.ret} {self.name}'.format(self=self)
@@ -789,6 +869,7 @@ class Extension(IdentifiedByName):
 
         self.type = element.get('type')
         self.protect = [p.strip() for p in element.get('protect', '').split(',') if p.strip()]
+        self.platform = element.get('platform')
 
     @memoize()
     def get_requirements(self, spec, api=None, profile=None, feature_set=None):

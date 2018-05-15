@@ -48,7 +48,7 @@
 {%- if type.enums_for(feature_set) -%}
 typedef enum {{ type.name }} {
 {% for member in type.enums_for(feature_set) %}
-    {{ member.name }} = {{ member.value }},
+    {{ member.name }} = {{ member.alias if member.alias else member.value }},
 {% endfor %}
 } {{ type.name }};
 {%- endif -%}
@@ -58,6 +58,8 @@ typedef {{ type.category }} {{ type.name }} {
     {{ member.type.raw }};
 {% endfor %}
 } {{ type.name }};
+{%- elif type.alias %}
+#define {{ type.name }} {{ type.alias }}
 {%- elif type.raw.strip() -%}
 {{ type.raw.strip() }}
 {% endif -%}
@@ -67,7 +69,7 @@ typedef {{ type.category }} {{ type.name }} {
 {% macro write_enumerations(enumerations) %}
 {% for enum in enumerations %}
 {% call protect(enum) %}
-#define {{ enum.name }} {{ enum.value }}
+#define {{ enum.name }} {{ enum.alias if enum.alias else enum.value }}
 {% endcall %}
 {% endfor %}
 {% endmacro %}
@@ -75,7 +77,7 @@ typedef {{ type.category }} {{ type.name }} {
 {% macro write_function_definitions(commands) %}
 {% for command in commands %}
 {% call protect(command) %}
-{{ command.proto.ret|type_to_c }} {{ command.proto.name }}({{ command.params|params_to_c }});
+{{ command.proto.ret|type_to_c }} {{ command.name }}({{ command.params|params_to_c }});
 {% endcall %}
 {% endfor %}
 {% endmacro %}

@@ -219,7 +219,20 @@ static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(',')
     int major = 1;
     int minor = 0;
 
-    if (physical_device != NULL) {
+#ifdef VK_VERSION_1_1
+    if (vkEnumerateInstanceVersion != NULL) {
+        uint32_t version;
+        VkResult result;
+
+        result = vkEnumerateInstanceVersion(&version);
+        if (result == VK_SUCCESS) {
+            major = (int) VK_VERSION_MAJOR(version);
+            minor = (int) VK_VERSION_MINOR(version);
+        }
+    }
+#endif
+
+    if (physical_device != NULL && vkGetPhysicalDeviceProperties != NULL) {
         VkPhysicalDeviceProperties properties;
         vkGetPhysicalDeviceProperties(physical_device, &properties);
 
@@ -237,7 +250,12 @@ static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(',')
 int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADloadproc load, void* userptr) {
     int version;
 
+    vkEnumerateInstanceVersion = (PFN_vkEnumerateInstanceVersion)load("vkEnumerateInstanceVersion", userptr);
     version = find_core{{ feature_set.api|api }}({{ 'context,' if options.mx }} physical_device);
+    if (!version) {
+        return 0;
+    }
+
     {% for feature, _ in loadable(feature_set.features) %}
     load_{{ feature.name }}({{'context, ' if options.mx }}load, userptr);
     {% endfor %}
@@ -253,7 +271,7 @@ int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPh
     gladSet{{ feature_set.api|api }}Context(context);
     {% endif %}
 
-    {% if options.alias %}
+    {%- if options.alias %}
     resolve_aliases({{ 'context' if options.mx }});
     {% endif %}
 
