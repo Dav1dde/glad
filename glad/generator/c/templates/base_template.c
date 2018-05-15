@@ -98,9 +98,9 @@ static void load_{{ extension.name }}({{ template_utils.context_arg(',') }} GLAD
 
 {% block aliasing %}
 {% if options.alias %}
-static void resolve_aliases({{ template_utils.context_arg() }}) {
+static void resolve_aliases({{ template_utils.context_arg(def='void') }}) {
 {% for command in feature_set.commands|sort(attribute='name') %}
-{% call template_utils.protect(extension) %}
+{% call template_utils.protect(command) %}
 {% for alias in aliases.get(command.name, [])|reject('equalto', command.name) %}
     if ({{ command.name|ctx }} == NULL && {{ alias|ctx }} != NULL) {{ command.name|ctx }} = ({{ command.name|pfn }}){{ alias|ctx }};
 {% endfor %}
