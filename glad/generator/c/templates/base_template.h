@@ -45,7 +45,9 @@ typedef struct Glad{{ feature_set.api|api }}Context {
 {% endfor %}
 
 {% for command in feature_set.commands %}
+{% call template_utils.protect(command) %}
     {{ command.name|pfn }} {{ command.name|ctx(name_only=True) }};
+{% endcall %}
 {% endfor %}
 } Glad{{ feature_set.api|api }}Context;
 

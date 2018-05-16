@@ -32,8 +32,8 @@ struct _glad_vulkan_userptr {
     void *vk_handle;
     VkInstance vk_instance;
     VkDevice vk_device;
-    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
-    PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr;
+    PFN_vkGetInstanceProcAddr get_instance_proc_addr;
+    PFN_vkGetDeviceProcAddr get_device_proc_addr;
 };
 
 static GLADapiproc glad_vulkan_get_proc(const char *name, void *vuserptr) {
@@ -41,11 +41,11 @@ static GLADapiproc glad_vulkan_get_proc(const char *name, void *vuserptr) {
     PFN_vkVoidFunction result = NULL;
 
     if (userptr.vk_device != NULL && glad_vulkan_is_device_function(name)) {
-        result = userptr.vkGetDeviceProcAddr(userptr.vk_device, name);
+        result = userptr.get_device_proc_addr(userptr.vk_device, name);
     }
 
     if (result == NULL && userptr.vk_instance != NULL) {
-        result = userptr.vkGetInstanceProcAddr(userptr.vk_instance, name);
+        result = userptr.get_instance_proc_addr(userptr.vk_instance, name);
     }
 
     if(result == NULL) {
@@ -58,7 +58,7 @@ static GLADapiproc glad_vulkan_get_proc(const char *name, void *vuserptr) {
 
 static void* _vulkan_handle;
 
-int gladLoadVulkanInternalLoader({{ template_utils.context_arg(',') }} VkInstance instance, VkPhysicalDevice physical_device, VkDevice device) {
+int gladLoadVulkanInternalLoader{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} VkInstance instance, VkPhysicalDevice physical_device, VkDevice device) {
     static const char *NAMES[] = {
 #ifdef __APPLE__
         "libvulkan.1.dylib",
@@ -84,11 +84,11 @@ int gladLoadVulkanInternalLoader({{ template_utils.context_arg(',') }} VkInstanc
         userptr.vk_handle = _vulkan_handle;
         userptr.vk_instance = instance;
         userptr.vk_device = device;
-        userptr.vkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr) glad_dlsym_handle(_vulkan_handle, "vkGetInstanceProcAddr");
-        userptr.vkGetDeviceProcAddr = (PFN_vkGetDeviceProcAddr) glad_dlsym_handle(_vulkan_handle, "vkGetDeviceProcAddr");
+        userptr.get_instance_proc_addr = (PFN_vkGetInstanceProcAddr) glad_dlsym_handle(_vulkan_handle, "vkGetInstanceProcAddr");
+        userptr.get_device_proc_addr = (PFN_vkGetDeviceProcAddr) glad_dlsym_handle(_vulkan_handle, "vkGetDeviceProcAddr");
 
-        if (userptr.vkGetInstanceProcAddr != NULL && userptr.vkGetDeviceProcAddr != NULL) {
-            version = gladLoadVulkan({{ 'context,' if options.mx }} physical_device, glad_vulkan_get_proc, &userptr);
+        if (userptr.get_instance_proc_addr != NULL && userptr.get_device_proc_addr != NULL) {
+            version = gladLoadVulkan{{ 'Context' if options.mx }}({{ 'context,' if options.mx }} physical_device, glad_vulkan_get_proc, &userptr);
         }
 
         if (!version && did_load) {
@@ -100,8 +100,13 @@ int gladLoadVulkanInternalLoader({{ template_utils.context_arg(',') }} VkInstanc
     return version;
 }
 
+{% if options.mx_global %}
+int gladLoadVulkanInternalLoader(VkInstance instance, VkPhysicalDevice physical_device, VkDevice device) {
+    return gladLoadVulkanInternalLoaderContext(gladGetVulkanContext(), instance, physical_device, device);
+}
+{% endif %}
 
-void gladUnloadVulkanInternalLoader() {
+void gladUnloadVulkanInternalLoader(void) {
     if (_vulkan_handle != NULL) {
         glad_close_dlopen_handle(_vulkan_handle);
         _vulkan_handle = NULL;

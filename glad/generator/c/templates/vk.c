@@ -12,13 +12,17 @@ static int get_exts({{ template_utils.context_arg(',') }} VkPhysicalDevice physi
     VkExtensionProperties *ext_properties;
     VkResult result;
 
-    result = vkEnumerateInstanceExtensionProperties(NULL, &instance_extension_count, NULL);
+    if ({{ 'vkEnumerateInstanceExtensionProperties'|ctx }} == NULL || (physical_device != NULL && {{ 'vkEnumerateDeviceExtensionProperties'|ctx }} == NULL)) {
+        return 0;
+    }
+
+    result = {{ 'vkEnumerateInstanceExtensionProperties'|ctx }}(NULL, &instance_extension_count, NULL);
     if (result != VK_SUCCESS) {
         return 0;
     }
 
     if (physical_device != NULL) {
-        result = vkEnumerateDeviceExtensionProperties(physical_device, NULL, &device_extension_count, NULL);
+        result = {{ 'vkEnumerateDeviceExtensionProperties'|ctx }}(physical_device, NULL, &device_extension_count, NULL);
         if (result != VK_SUCCESS) {
             return 0;
         }
@@ -33,7 +37,7 @@ static int get_exts({{ template_utils.context_arg(',') }} VkPhysicalDevice physi
         return 0;
 	}
 
-	result = vkEnumerateInstanceExtensionProperties(NULL, &instance_extension_count, ext_properties);
+	result = {{ 'vkEnumerateInstanceExtensionProperties'|ctx }}(NULL, &instance_extension_count, ext_properties);
 	if (result != VK_SUCCESS) {
 	    free((void*) ext_properties);
 	    return 0;
@@ -54,7 +58,7 @@ static int get_exts({{ template_utils.context_arg(',') }} VkPhysicalDevice physi
 	}
 
 	if (physical_device != NULL) {
-        result = vkEnumerateDeviceExtensionProperties(physical_device, NULL, &device_extension_count, ext_properties);
+        result = {{ 'vkEnumerateDeviceExtensionProperties'|ctx }}(physical_device, NULL, &device_extension_count, ext_properties);
         if (result != VK_SUCCESS) {
             for (i = 0; i < instance_extension_count; ++i) {
                 free((void*) extensions[i]);
@@ -105,7 +109,7 @@ static int has_ext(const char *name, uint32_t extension_count, char **extensions
 static int find_extensions{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device) {
     uint32_t extension_count = 0;
     char **extensions = NULL;
-    if (!get_exts(physical_device, &extension_count, &extensions)) return 0;
+    if (!get_exts({{'context, ' if options.mx }}physical_device, &extension_count, &extensions)) return 0;
 
 {% for extension in feature_set.extensions %}
 {% call template_utils.protect(extension) %}
@@ -125,11 +129,11 @@ static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(',')
     int minor = 0;
 
 #ifdef VK_VERSION_1_1
-    if (vkEnumerateInstanceVersion != NULL) {
+    if ({{ 'vkEnumerateInstanceVersion '|ctx }} != NULL) {
         uint32_t version;
         VkResult result;
 
-        result = vkEnumerateInstanceVersion(&version);
+        result = {{ 'vkEnumerateInstanceVersion'|ctx }}(&version);
         if (result == VK_SUCCESS) {
             major = (int) VK_VERSION_MAJOR(version);
             minor = (int) VK_VERSION_MINOR(version);
@@ -137,9 +141,9 @@ static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(',')
     }
 #endif
 
-    if (physical_device != NULL && vkGetPhysicalDeviceProperties != NULL) {
+    if (physical_device != NULL && {{ 'vkGetPhysicalDeviceProperties '|ctx }} != NULL) {
         VkPhysicalDeviceProperties properties;
-        vkGetPhysicalDeviceProperties(physical_device, &properties);
+        {{ 'vkGetPhysicalDeviceProperties'|ctx }}(physical_device, &properties);
 
         major = (int) VK_VERSION_MAJOR(properties.apiVersion);
         minor = (int) VK_VERSION_MINOR(properties.apiVersion);
@@ -152,10 +156,12 @@ static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(',')
     return GLAD_MAKE_VERSION(major, minor);
 }
 
-int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADloadfunc load, void *userptr) {
+int gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADloadfunc load, void *userptr) {
     int version;
 
-    vkEnumerateInstanceVersion = (PFN_vkEnumerateInstanceVersion) load("vkEnumerateInstanceVersion", userptr);
+#ifdef VK_VERSION_1_1
+    {{ 'vkEnumerateInstanceVersion '|ctx }} = (PFN_vkEnumerateInstanceVersion) load("vkEnumerateInstanceVersion", userptr);
+#endif
     version = find_core{{ feature_set.api|api }}({{ 'context,' if options.mx }} physical_device);
     if (!version) {
         return 0;
@@ -183,13 +189,25 @@ int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPh
     return version;
 }
 
+{% if options.mx_global %}
+int gladLoad{{ feature_set.api|api }}(VkPhysicalDevice physical_device, GLADloadfunc load, void *userptr) {
+    return gladLoad{{ feature_set.api|api }}Context(gladGet{{ feature_set.api|api }}Context(), physical_device, load, userptr);
+}
+{% endif %}
+
 static GLADapiproc glad_vk_get_proc_from_userptr(const char* name, void *userptr) {
     return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
 }
 
-int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADsimpleloadfunc load) {
-    return gladLoad{{ feature_set.api|api }}({{'context,' if options.mx }} physical_device, glad_vk_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
+int gladLoad{{ feature_set.api|api }}Simple{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADsimpleloadfunc load) {
+    return gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}({{'context,' if options.mx }} physical_device, glad_vk_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
 }
+
+{% if options.mx_global %}
+int gladLoad{{ feature_set.api|api }}Simple(VkPhysicalDevice physical_device, GLADsimpleloadfunc load) {
+    return gladLoad{{ feature_set.api|api }}SimpleContext(gladGet{{ feature_set.api|api }}Context(), physical_device, load);
+}
+{% endif %}
 
 {% if options.mx_global %}
 Glad{{ feature_set.api|api }}Context* gladGet{{ feature_set.api|api }}Context() {

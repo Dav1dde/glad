@@ -33,7 +33,7 @@ void run(GLFWwindow *window) {
 
     glfwMakeContextCurrent(window);
 
-    int version = gladLoadGLSimple(&context, glfwGetProcAddress);
+    int version = gladLoadGLSimpleContext(&context, glfwGetProcAddress);
     ASSERT(memcmp(&context, gladGetGLContext(), sizeof(GladGLContext)) == 0, "invalid global context");
     ASSERT(version >= 3003, "glad version %d < 3003", version);
     ASSERT(GLAD_VERSION_MAJOR(version) >= 3, "glad major version %d < 3", GLAD_VERSION_MAJOR(version));

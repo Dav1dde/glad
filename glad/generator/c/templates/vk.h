@@ -8,8 +8,13 @@
 
 
 {% block declarations %}
-GLAD_API_CALL int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADloadfunc load, void *userptr);
-GLAD_API_CALL int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADsimpleloadfunc load);
+GLAD_API_CALL int gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADloadfunc load, void *userptr);
+GLAD_API_CALL int gladLoad{{ feature_set.api|api }}Simple{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADsimpleloadfunc load);
+
+{% if options.mx_global %}
+GLAD_API_CALL int gladLoad{{ feature_set.api|api }}(VkPhysicalDevice physical_device, GLADloadfunc load, void *userptr);
+GLAD_API_CALL int gladLoad{{ feature_set.api|api }}Simple(VkPhysicalDevice physical_device, GLADsimpleloadfunc load);
+{% endif %}
 
 {{ super() }}
 {% endblock %}

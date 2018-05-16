@@ -26,7 +26,7 @@ static GLADapiproc glad_gles1_get_proc(const char* name, void *vuserptr) {
 
 static void* _gles1_handle = NULL;
 
-int gladLoadGLES1InternalLoader(void) {
+int gladLoadGLES1InternalLoader{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
 #ifdef __APPLE__
     static const char *NAMES[] = {"libGLESv1_CM.dylib"};
 #elif defined(GLAD_PLATFORM_WIN32)
@@ -52,7 +52,7 @@ int gladLoadGLES1InternalLoader(void) {
         userptr.handle = _gles1_handle;
         userptr.get_proc_address_ptr = eglGetProcAddress;
 
-        version = gladLoadGLES1(glad_gles1_get_proc, &userptr);
+        version = gladLoadGLES1{{ 'Context' if options.mx }}({{ 'context, ' if options.mx }}glad_gles1_get_proc, &userptr);
 
         if (!version && did_load) {
             glad_close_dlopen_handle(_gles1_handle);
@@ -63,7 +63,13 @@ int gladLoadGLES1InternalLoader(void) {
     return version;
 }
 
-void gladUnloadGLES1InternalLoader() {
+{% if options.mx_global %}
+int gladLoadGLES1InternalLoader(void) {
+    return gladLoadGLES1InternalLoaderContext(gladGetGLES1Context());
+}
+{% endif %}
+
+void gladUnloadGLES1InternalLoader(void) {
     if (_gles1_handle != NULL) {
         glad_close_dlopen_handle(_gles1_handle);
         _gles1_handle = NULL;

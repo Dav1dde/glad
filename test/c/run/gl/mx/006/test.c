@@ -1,13 +1,15 @@
 /*
- * MX Core 3.3 profile using internal loader
+ * MX Core 3.3 profile using internal loader.
+ * Using MX Global for GL calls and the global context.
  *
- * GLAD: $GLAD --out-path=$tmp --api="gl:core" c --mx --loader
+ * GLAD: $GLAD --out-path=$tmp --api="gl:core" c --mx --mx-global --loader
  * COMPILE: $GCC -Wno-pedantic $test -o $tmp/test -I$tmp/include $tmp/src/gl.c -ldl -lglfw
  * RUN: $tmp/test
  */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
@@ -26,20 +28,20 @@ GLFWwindow* create_window(void) {
 }
 
 void run(GLFWwindow *window) {
-    GladGLContext context;
+    GladGLContext *context = gladGetGLContext();
 
     glfwMakeContextCurrent(window);
 
-    int version = gladLoadGLInternalLoaderContext(&context);
+    int version = gladLoadGLInternalLoader();
     ASSERT(version >= 3003, "glad version %d < 3003", version);
     ASSERT(GLAD_VERSION_MAJOR(version) >= 3, "glad major version %d < 3", GLAD_VERSION_MAJOR(version));
     ASSERT(GLAD_VERSION_MAJOR(version) > 3 || GLAD_VERSION_MINOR(version) >= 3, "glad minor version %d < 3", GLAD_VERSION_MINOR(version));
-    ASSERT(context.VERSION_3_3, "GL_VERSION_3_3 not set");
-    ASSERT(context.KHR_debug, "KHR_debug not available");
+    ASSERT(context->VERSION_3_3, "GL_VERSION_3_3 not set");
+    ASSERT(context->KHR_debug, "KHR_debug not available");
 
-    context.Viewport(0, 0, WIDTH, HEIGHT);
-    context.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    context.Clear(GL_COLOR_BUFFER_BIT);
+    glViewport(0, 0, WIDTH, HEIGHT);
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     glfwSwapBuffers(window);
 }

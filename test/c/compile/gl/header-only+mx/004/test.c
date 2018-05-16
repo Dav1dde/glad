@@ -10,5 +10,8 @@
 #include <glad/gl.h>
 
 int main(void) {
+    GladGLContext gl;
+    (void) gladLoadGLInternalLoader();
+    (void) gladLoadGLInternalLoaderContext(&gl);
     return 0;
 }
