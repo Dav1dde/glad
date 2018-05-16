@@ -13,7 +13,7 @@
 {% endblock %}
 
 
-{% set global_context = 'glad_' + feature_set.api + '_context' %}
+{%- set global_context = 'glad_' + feature_set.api + '_context' -%}
 
 
 {% block variables %}
@@ -37,17 +37,17 @@ int GLAD_{{ extension.name }};
 {% block debug %}
 {% if options.debug %}
 {% block debug_default_pre %}
-void _pre_call_{{ feature_set.api }}_callback_default(const char *name, void *funcptr, int len_args, ...) {
+void _pre_call_{{ feature_set.api }}_callback_default(const char *name, GLADapiproc apiproc, int len_args, ...) {
     (void) name;
-    (void) funcptr;
+    (void) apiproc;
     (void) len_args;
 }
 {% endblock %}
 {% block debug_default_post %}
-void _post_call_{{ feature_set.api }}_callback_default(void *ret, const char *name, void *funcptr, int len_args, ...) {
+void _post_call_{{ feature_set.api }}_callback_default(void *ret, const char *name, GLADapiproc apiproc, int len_args, ...) {
     (void) ret;
     (void) name;
-    (void) funcptr;
+    (void) apiproc;
     (void) len_args;
 }
 {% endblock %}
@@ -85,10 +85,10 @@ void gladSet{{ feature_set.api }}PostCallback(GLADpostcallback cb) {
 {% block extension_loaders %}
 {% for extension, commands in loadable() %}
 {% call template_utils.protect(extension) %}
-static void load_{{ extension.name }}({{ template_utils.context_arg(',') }} GLADloadproc load, void* userptr) {
+static void load_{{ extension.name }}({{ template_utils.context_arg(',') }} GLADloadfunc load, void* userptr) {
     if(!{{ ('GLAD_' + extension.name)|ctx }}) return;
 {% for command in commands %}
-    {{ command.name|ctx }} = ({{ command.name|pfn }})load("{{ command.name }}", userptr);
+    {{ command.name|ctx }} = ({{ command.name|pfn }}) load("{{ command.name }}", userptr);
 {% endfor %}
 }
 {% endcall %}

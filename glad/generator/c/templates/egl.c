@@ -74,12 +74,12 @@ static int find_core{{ feature_set.api|api }}(EGLDisplay display) {
     return GLAD_MAKE_VERSION(major, minor);
 }
 
-int gladLoad{{ feature_set.api|api }}(EGLDisplay display, GLADloadproc load, void* userptr) {
+int gladLoad{{ feature_set.api|api }}(EGLDisplay display, GLADloadfunc load, void* userptr) {
     int version;
-    eglGetDisplay = (PFNEGLGETDISPLAYPROC)load("eglGetDisplay", userptr);
-    eglGetCurrentDisplay = (PFNEGLGETCURRENTDISPLAYPROC)load("eglGetCurrentDisplay", userptr);
-    eglQueryString = (PFNEGLQUERYSTRINGPROC)load("eglQueryString", userptr);
-    eglGetError = (PFNEGLGETERRORPROC)load("eglGetError", userptr);
+    eglGetDisplay = (PFNEGLGETDISPLAYPROC) load("eglGetDisplay", userptr);
+    eglGetCurrentDisplay = (PFNEGLGETCURRENTDISPLAYPROC) load("eglGetCurrentDisplay", userptr);
+    eglQueryString = (PFNEGLQUERYSTRINGPROC) load("eglQueryString", userptr);
+    eglGetError = (PFNEGLGETERRORPROC) load("eglGetError", userptr);
     if (eglGetDisplay == NULL || eglGetCurrentDisplay == NULL || eglQueryString == NULL || eglGetError == NULL) return 0;
 
     version = find_core{{ feature_set.api|api }}(display);
@@ -96,12 +96,12 @@ int gladLoad{{ feature_set.api|api }}(EGLDisplay display, GLADloadproc load, voi
     return version;
 }
 
-static void* glad_egl_get_proc_from_userptr(const char* name, void *userptr) {
-    return ((void* (*)(const char *name))userptr)(name);
+static GLADapiproc glad_egl_get_proc_from_userptr(const char *name, void *userptr) {
+    return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
 }
 
-int gladLoad{{ feature_set.api|api }}Simple(EGLDisplay display, GLADsimpleloadproc load) {
-    return gladLoad{{ feature_set.api|api }}(display, glad_egl_get_proc_from_userptr, (void*) load);
+int gladLoad{{ feature_set.api|api }}Simple(EGLDisplay display, GLADsimpleloadfunc load) {
+    return gladLoad{{ feature_set.api|api }}(display, glad_egl_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
 }
 
 {% endblock %}

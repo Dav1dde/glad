@@ -81,7 +81,7 @@ GladGLContext* create_context(GLFWwindow *window) {
     GladGLContext* context = (GladGLContext*) malloc(sizeof(GladGLContext));
     if (!context) return NULL;
 
-    int version = gladLoadGLSimple(context, (GLADsimpleloadproc) glfwGetProcAddress);
+    int version = gladLoadGLSimple(context, glfwGetProcAddress);
     std::cout << "Loaded OpenGL " << GLAD_VERSION_MAJOR(version) << "." << GLAD_VERSION_MINOR(version) << std::endl;
 
     return context;

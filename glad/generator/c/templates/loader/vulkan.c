@@ -36,7 +36,7 @@ struct _glad_vulkan_userptr {
     PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr;
 };
 
-static void* glad_vulkan_get_proc(const char *name, void *vuserptr) {
+static GLADapiproc glad_vulkan_get_proc(const char *name, void *vuserptr) {
     struct _glad_vulkan_userptr userptr = *(struct _glad_vulkan_userptr*) vuserptr;
     PFN_vkVoidFunction result = NULL;
 
@@ -52,8 +52,7 @@ static void* glad_vulkan_get_proc(const char *name, void *vuserptr) {
         result = (PFN_vkVoidFunction) glad_dlsym_handle(userptr.vk_handle, name);
     }
 
-    /* TODO return PFN_vkVoidFunction */
-    return (void*) result;
+    return (GLADapiproc) result;
 }
 
 
@@ -63,7 +62,7 @@ int gladLoadVulkanInternalLoader({{ template_utils.context_arg(',') }} VkInstanc
     static const char *NAMES[] = {
 #ifdef __APPLE__
         "libvulkan.1.dylib",
-#elif defined _WIN32
+#elif defined(GLAD_PLATFORM_WIN32)
         "vulkan-1.dll",
         "vulkan.dll",
 #else
@@ -89,7 +88,7 @@ int gladLoadVulkanInternalLoader({{ template_utils.context_arg(',') }} VkInstanc
         userptr.vkGetDeviceProcAddr = (PFN_vkGetDeviceProcAddr) glad_dlsym_handle(_vulkan_handle, "vkGetDeviceProcAddr");
 
         if (userptr.vkGetInstanceProcAddr != NULL && userptr.vkGetDeviceProcAddr != NULL) {
-            version = gladLoadVulkan({{ 'context,' if options.mx }} physical_device, (GLADloadproc) glad_vulkan_get_proc, &userptr);
+            version = gladLoadVulkan({{ 'context,' if options.mx }} physical_device, glad_vulkan_get_proc, &userptr);
         }
 
         if (!version && did_load) {

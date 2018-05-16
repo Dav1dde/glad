@@ -3,7 +3,7 @@
  * Using MX Global for GL calls.
  *
  * GLAD: $GLAD --out-path=$tmp --api="gl:core" c --mx --mx-global --loader
- * COMPILE: $GCC $test -o $tmp/test -I$tmp/include $tmp/src/gl.c -ldl -lglfw
+ * COMPILE: $GCC -Wno-pedantic $test -o $tmp/test -I$tmp/include $tmp/src/gl.c -ldl -lglfw
  * RUN: $tmp/test
  */
 

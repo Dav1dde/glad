@@ -2,10 +2,10 @@
 
 
 {% block debug_default_pre %}
-void _pre_call_{{ feature_set.api }}_callback_default(const char *name, void *funcptr, int len_args, ...) {
+void _pre_call_{{ feature_set.api }}_callback_default(const char *name, GLADapiproc apiproc, int len_args, ...) {
     (void) len_args;
 
-    if (funcptr == NULL) {
+    if (apiproc == NULL) {
         fprintf(stderr, "GLAD: ERROR %s is NULL!\n", name);
         return;
     }
@@ -19,12 +19,13 @@ void _pre_call_{{ feature_set.api }}_callback_default(const char *name, void *fu
 {% endblock %}
 
 {% block debug_default_post %}
-void _post_call_{{ feature_set.api }}_callback_default(void* ret, const char *name, void *funcptr, int len_args, ...) {
+void _post_call_{{ feature_set.api }}_callback_default(void *ret, const char *name, GLADapiproc apiproc, int len_args, ...) {
+    GLenum error_code;
+
     (void) ret;
-    (void) funcptr;
+    (void) apiproc;
     (void) len_args;
 
-    GLenum error_code;
     error_code = glad_glGetError();
 
     if (error_code != GL_NO_ERROR) {
@@ -173,9 +174,9 @@ static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(def=
     return GLAD_MAKE_VERSION(major, minor);
 }
 
-int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} GLADloadproc load, void* userptr) {
+int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} GLADloadfunc load, void *userptr) {
     int version;
-    {{ 'glGetString'|ctx }} = (PFNGLGETSTRINGPROC)load("glGetString", userptr);
+    {{ 'glGetString'|ctx }} = (PFNGLGETSTRINGPROC) load("glGetString", userptr);
     if({{ 'glGetString'|ctx }} == NULL) return 0;
     if({{ 'glGetString'|ctx }}(GL_VERSION) == NULL) return 0;
     version = find_core{{ feature_set.api|api }}({{ 'context' if options.mx }});
@@ -200,12 +201,12 @@ int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} GLAD
     return version;
 }
 
-static void* glad_gl_get_proc_from_userptr(const char* name, void *userptr) {
-    return ((void* (*)(const char *name))userptr)(name);
+static GLADapiproc glad_gl_get_proc_from_userptr(const char* name, void *userptr) {
+    return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
 }
 
-int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }} GLADsimpleloadproc load) {
-    return gladLoad{{ feature_set.api|api }}({{'context,' if options.mx }} glad_gl_get_proc_from_userptr, (void*) load);
+int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }} GLADsimpleloadfunc load) {
+    return gladLoad{{ feature_set.api|api }}({{'context,' if options.mx }} glad_gl_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
 }
 
 {% if options.mx_global %}

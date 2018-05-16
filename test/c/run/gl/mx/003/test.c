@@ -3,7 +3,7 @@
  * Using MX Global for GL calls.
  *
  * GLAD: $GLAD --out-path=$tmp --api="gl:core" c --mx --mx-global
- * COMPILE: $GCC $test -o $tmp/test -I$tmp/include $tmp/src/gl.c -ldl -lglfw
+ * COMPILE: $GCC -Wno-pedantic $test -o $tmp/test -I$tmp/include $tmp/src/gl.c -ldl -lglfw
  * RUN: $tmp/test
  */
 
@@ -33,7 +33,7 @@ void run(GLFWwindow *window) {
 
     glfwMakeContextCurrent(window);
 
-    int version = gladLoadGLSimple(&context, (GLADsimpleloadproc) glfwGetProcAddress);
+    int version = gladLoadGLSimple(&context, glfwGetProcAddress);
     ASSERT(memcmp(&context, gladGetGLContext(), sizeof(GladGLContext)) == 0, "invalid global context");
     ASSERT(version >= 3003, "glad version %d < 3003", version);
     ASSERT(GLAD_VERSION_MAJOR(version) >= 3, "glad major version %d < 3", GLAD_VERSION_MAJOR(version));

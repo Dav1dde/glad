@@ -152,10 +152,10 @@ static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(',')
     return GLAD_MAKE_VERSION(major, minor);
 }
 
-int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADloadproc load, void* userptr) {
+int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADloadfunc load, void *userptr) {
     int version;
 
-    vkEnumerateInstanceVersion = (PFN_vkEnumerateInstanceVersion)load("vkEnumerateInstanceVersion", userptr);
+    vkEnumerateInstanceVersion = (PFN_vkEnumerateInstanceVersion) load("vkEnumerateInstanceVersion", userptr);
     version = find_core{{ feature_set.api|api }}({{ 'context,' if options.mx }} physical_device);
     if (!version) {
         return 0;
@@ -183,12 +183,12 @@ int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPh
     return version;
 }
 
-static void* glad_vk_get_proc_from_userptr(const char* name, void *userptr) {
-    return ((void* (*)(const char *name))userptr)(name);
+static GLADapiproc glad_vk_get_proc_from_userptr(const char* name, void *userptr) {
+    return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
 }
 
-int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADsimpleloadproc load) {
-    return gladLoad{{ feature_set.api|api }}({{'context,' if options.mx }} physical_device, glad_vk_get_proc_from_userptr, (void*) load);
+int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADsimpleloadfunc load) {
+    return gladLoad{{ feature_set.api|api }}({{'context,' if options.mx }} physical_device, glad_vk_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
 }
 
 {% if options.mx_global %}

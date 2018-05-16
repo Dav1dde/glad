@@ -16,8 +16,8 @@
 
 
 {% block declarations %}
-GLAD_API_CALL int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} GLADloadproc load, void* userptr);
-GLAD_API_CALL int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }} GLADsimpleloadproc load);
+GLAD_API_CALL int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} GLADloadfunc load, void *userptr);
+GLAD_API_CALL int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }} GLADsimpleloadfunc load);
 
 {{ super() }}
 {% endblock %}

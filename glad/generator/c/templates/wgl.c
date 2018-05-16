@@ -10,10 +10,10 @@
 
 {% block extension_loaders %}
 {% for extension, commands in loadable(feature_set.features[1:], feature_set.extensions) %}
-static void load_{{ extension.name }}(GLADloadproc load, void *userptr) {
+static void load_{{ extension.name }}(GLADloadfunc load, void *userptr) {
     if(!GLAD_{{ extension.name }}) return;
 {% for command in commands %}
-    glad_{{ command.name }} = ({{ command.name|pfn }})load("{{ command.name }}", userptr);
+    glad_{{ command.name }} = ({{ command.name|pfn }}) load("{{ command.name }}", userptr);
 {% endfor %}
 }
 {% endfor %}
@@ -70,10 +70,10 @@ static int find_core{{ feature_set.api|api }}(void) {
     return GLAD_MAKE_VERSION(major, minor);
 }
 
-int gladLoad{{ feature_set.api|api }}(HDC hdc, GLADloadproc load, void *userptr) {
+int gladLoad{{ feature_set.api|api }}(HDC hdc, GLADloadfunc load, void *userptr) {
     int version;
-    wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)load("wglGetExtensionsStringARB", userptr);
-    wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)load("wglGetExtensionsStringEXT", userptr);
+    wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC) load("wglGetExtensionsStringARB", userptr);
+    wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC) load("wglGetExtensionsStringEXT", userptr);
     if(wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return 0;
     version = find_core{{ feature_set.api|api }}();
 
@@ -89,11 +89,11 @@ int gladLoad{{ feature_set.api|api }}(HDC hdc, GLADloadproc load, void *userptr)
     return version;
 }
 
-static void* glad_wgl_get_proc_from_userptr(const char* name, void *userptr) {
-    return ((void* (*)(const char *name))userptr)(name);
+static GLADapiproc glad_wgl_get_proc_from_userptr(const char* name, void *userptr) {
+    return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
 }
 
-int gladLoad{{ feature_set.api|api }}Simple(HDC hdc, GLADsimpleloadproc load) {
-    return gladLoad{{ feature_set.api|api }}(hdc, glad_wgl_get_proc_from_userptr, (void*) load);
+int gladLoad{{ feature_set.api|api }}Simple(HDC hdc, GLADsimpleloadfunc load) {
+    return gladLoad{{ feature_set.api|api }}(hdc, glad_wgl_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
 }
 {% endblock %}

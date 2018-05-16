@@ -3,19 +3,19 @@
 
 {% include 'loader/library.c' %}
 
-typedef void* (APIENTRYP GLAD_PFNGETPROCADDRESSPROC_PRIVATE)(const char*);
+typedef void* (APIENTRYP GLADglprocaddrfunc)(const char*);
 struct _glad_gl_userptr {
     void *gl_handle;
-    GLAD_PFNGETPROCADDRESSPROC_PRIVATE gl_get_proc_address_ptr;
+    GLADglprocaddrfunc gl_get_proc_address_ptr;
 };
 
-static void* glad_gl_get_proc(const char *name, void *vuserptr) {
+static GLADapiproc glad_gl_get_proc(const char *name, void *vuserptr) {
     struct _glad_gl_userptr userptr = *(struct _glad_gl_userptr*) vuserptr;
-    void* result = NULL;
+    GLADapiproc result = NULL;
 
 #ifndef __APPLE__
     if(userptr.gl_get_proc_address_ptr != NULL) {
-        result = userptr.gl_get_proc_address_ptr(name);
+        result = GLAD_GNUC_EXTENSION (GLADapiproc) userptr.gl_get_proc_address_ptr(name);
     }
 #endif
     if(result == NULL) {
@@ -33,7 +33,7 @@ int gladLoadGLInternalLoader({{ template_utils.context_arg(def='void') }}) {
         "/System/Library/Frameworks/OpenGL.framework/OpenGL",
         "/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL"
     };
-#elif defined _WIN32
+#elif defined(GLAD_PLATFORM_WIN32)
     static const char *NAMES[] = {"opengl32.dll"};
 #else
     static const char *NAMES[] = {
@@ -54,14 +54,14 @@ int gladLoadGLInternalLoader({{ template_utils.context_arg(def='void') }}) {
         userptr.gl_handle = handle;
 #ifdef __APPLE__
         userptr.gl_get_proc_address_ptr = NULL;
-#elif defined _WIN32
+#elif defined(GLAD_PLATFORM_WIN32)
         userptr.gl_get_proc_address_ptr =
-            (GLAD_PFNGETPROCADDRESSPROC_PRIVATE)glad_dlsym_handle(handle, "wglGetProcAddress");
+            (GLADglprocaddrfunc) glad_dlsym_handle(handle, "wglGetProcAddress");
 #else
         userptr.gl_get_proc_address_ptr =
-            (GLAD_PFNGETPROCADDRESSPROC_PRIVATE) glad_dlsym_handle(handle, "glXGetProcAddressARB");
+            (GLADglprocaddrfunc) glad_dlsym_handle(handle, "glXGetProcAddressARB");
 #endif
-        version = gladLoadGL({{ 'context,' if options.mx }} (GLADloadproc) glad_gl_get_proc, &userptr);
+        version = gladLoadGL({{ 'context,' if options.mx }} glad_gl_get_proc, &userptr);
 
         glad_close_dlopen_handle(handle);
     }

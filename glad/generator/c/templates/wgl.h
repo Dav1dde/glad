@@ -1,7 +1,7 @@
 {% extends 'base_template.h' %}
 
 {% block header %}
-#define GLAD_PLATFORM_NEEDS_WINDOWS 1
+#include <windows.h>
 #include <glad/gl.h>
 {% endblock %}
 
@@ -15,8 +15,8 @@
 
 
 {% block declarations %}
-GLAD_API_CALL int gladLoad{{ feature_set.api|api }}(HDC hdc, GLADloadproc load, void *userptr);
-GLAD_API_CALL int gladLoad{{ feature_set.api|api }}Simple(HDC hdc, GLADsimpleloadproc load);
+GLAD_API_CALL int gladLoad{{ feature_set.api|api }}(HDC hdc, GLADloadfunc load, void *userptr);
+GLAD_API_CALL int gladLoad{{ feature_set.api|api }}Simple(HDC hdc, GLADsimpleloadfunc load);
 
 {{ super() }}
 {% endblock %}

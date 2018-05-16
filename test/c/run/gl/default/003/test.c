@@ -2,7 +2,7 @@
  * 2.1 using internal loader to load
  *
  * GLAD: $GLAD --out-path=$tmp --api="gl:core=2.1" c --loader
- * COMPILE: $GCC $test -o $tmp/test -I$tmp/include $tmp/src/gl.c -ldl -lglfw
+ * COMPILE: $GCC -Wno-pedantic $test -o $tmp/test -I$tmp/include $tmp/src/gl.c -ldl -lglfw
  * RUN: $tmp/test
  */
 

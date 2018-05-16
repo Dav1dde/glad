@@ -4,21 +4,21 @@
 
 #include <glad/egl.h>
 
-typedef void* (APIENTRYP GLAD_GLES1_PFNGETPROCADDRESSPROC_PRIVATE)(const char*);
+typedef void* (GLAD_API_PTR *GLADgles1procaddrfunc)(const char*);
 struct _glad_gles1_userptr {
     void *handle;
-    GLAD_GLES1_PFNGETPROCADDRESSPROC_PRIVATE get_proc_address_ptr;
+    GLADgles1procaddrfunc get_proc_address_ptr;
 };
 
 
-static void* glad_gles1_get_proc(const char* name, void *vuserptr) {
+static GLADapiproc glad_gles1_get_proc(const char* name, void *vuserptr) {
     struct _glad_gles1_userptr userptr = *(struct _glad_gles1_userptr*) vuserptr;
-    void* result = NULL;
+    GLADapiproc result = NULL;
 
-    /* dlsym first, since some implementations don't return function pointers for core functions */
-    result = (void*) glad_dlsym_handle(userptr.handle, name);
+    {# /* dlsym first, since some implementations don't return function pointers for core functions */ #}
+    result = glad_dlsym_handle(userptr.handle, name);
     if (result == NULL) {
-        result = (void*) userptr.get_proc_address_ptr(name);
+        result = userptr.get_proc_address_ptr(name);
     }
 
     return result;
@@ -29,7 +29,7 @@ static void* _gles1_handle = NULL;
 int gladLoadGLES1InternalLoader(void) {
 #ifdef __APPLE__
     static const char *NAMES[] = {"libGLESv1_CM.dylib"};
-#elif defined _WIN32
+#elif defined(GLAD_PLATFORM_WIN32)
     static const char *NAMES[] = {"GLESv1_CM.dll", "libGLESv1_CM", "libGLES_CM.dll"};
 #else
     static const char *NAMES[] = {"libGLESv1_CM.so.1", "libGLESv1_CM.so", "libGLES_CM.so.1"};
@@ -50,9 +50,9 @@ int gladLoadGLES1InternalLoader(void) {
 
     if (_gles1_handle != NULL) {
         userptr.handle = _gles1_handle;
-        userptr.get_proc_address_ptr = (GLAD_GLES1_PFNGETPROCADDRESSPROC_PRIVATE) eglGetProcAddress;
+        userptr.get_proc_address_ptr = eglGetProcAddress;
 
-        version = gladLoadGLES1((GLADloadproc) glad_gles1_get_proc, &userptr);
+        version = gladLoadGLES1(glad_gles1_get_proc, &userptr);
 
         if (!version && did_load) {
             glad_close_dlopen_handle(_gles1_handle);

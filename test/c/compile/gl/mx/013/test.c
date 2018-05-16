@@ -8,21 +8,23 @@
 
 #include <glad/gl.h>
 
-void* loader(const char *name, void *userptr) {
+typedef void (*VOID_FUNCPTR)(void);
+
+VOID_FUNCPTR loader(const char *name, void *userptr) {
     (void) name;
     (void) userptr;
     return NULL;
 }
 
-void* simple_loader(const char *name) {
+VOID_FUNCPTR simple_loader(const char *name) {
     (void) name;
     return NULL;
 }
 
 int main(void) {
     GladGLContext gl;
-    gladLoadGL(&gl, (GLADloadproc) loader, NULL);
-    gladLoadGLSimple(&gl, (GLADsimpleloadproc) simple_loader);
+    gladLoadGL(&gl, loader, NULL);
+    gladLoadGLSimple(&gl, simple_loader);
     gladLoadGLInternalLoader(&gl);
     gladSetGLContext(&gl);
     (void) gladGetGLContext();

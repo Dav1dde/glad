@@ -20,7 +20,7 @@ int main() {
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", NULL, NULL);
     glfwMakeContextCurrent(window);
 
-    int version = gladLoadGLSimple((GLADsimpleloadproc) glfwGetProcAddress);
+    int version = gladLoadGLSimple(glfwGetProcAddress);
     if (version == 0) {
         printf("Failed to initialize OpenGL context\n");
         return -1;

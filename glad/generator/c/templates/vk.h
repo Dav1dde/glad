@@ -8,8 +8,8 @@
 
 
 {% block declarations %}
-GLAD_API_CALL int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADloadproc load, void* userptr);
-GLAD_API_CALL int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADsimpleloadproc load);
+GLAD_API_CALL int gladLoad{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADloadfunc load, void *userptr);
+GLAD_API_CALL int gladLoad{{ feature_set.api|api }}Simple({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADsimpleloadfunc load);
 
 {{ super() }}
 {% endblock %}

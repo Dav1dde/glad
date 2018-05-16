@@ -2,7 +2,7 @@
  * MX Core 3.3 profile using glfw to load
  *
  * GLAD: $GLAD --out-path=$tmp --api="gl:core" c --mx
- * COMPILE: $GCC $test -o $tmp/test -I$tmp/include $tmp/src/gl.c -ldl -lglfw
+ * COMPILE: $GCC -Wno-pedantic $test -o $tmp/test -I$tmp/include $tmp/src/gl.c -ldl -lglfw
  * RUN: $tmp/test
  */
 
@@ -30,7 +30,7 @@ void run(GLFWwindow *window) {
 
     glfwMakeContextCurrent(window);
 
-    int version = gladLoadGLSimple(&context, (GLADsimpleloadproc) glfwGetProcAddress);
+    int version = gladLoadGLSimple(&context, glfwGetProcAddress);
     ASSERT(version >= 3003, "glad version %d < 3003", version);
     ASSERT(GLAD_VERSION_MAJOR(version) >= 3, "glad major version %d < 3", GLAD_VERSION_MAJOR(version));
     ASSERT(GLAD_VERSION_MAJOR(version) > 3 || GLAD_VERSION_MINOR(version) >= 3, "glad minor version %d < 3", GLAD_VERSION_MINOR(version));

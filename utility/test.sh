@@ -1,14 +1,17 @@
 #!/bin/bash
 
-EXIT_ON_FAILURE=${EXIT_ON_FAILRE:=0}
+EXIT_ON_FAILURE=${EXIT_ON_FAILURE:=0}
 PRINT_MESSAGE=${PRINT_MESSAGE:=0}
 
 PYTHON=${PYTHON:="python"}
 GLAD=${GLAD:="$PYTHON -m glad"}
 
-_GCC_FLAGS="-Wall -Wextra -Wsign-conversion -Wcast-qual -Wstrict-prototypes -Werror -ansi"
-GCC=${GCC:="gcc $_GCC_FLAGS"}
-MINGW_GCC=${WIN_GCC:="x86_64-w64-mingw32-gcc $_GCC_FLAGS"}
+_GCC=${_GCC:="gcc"}
+_MINGW_GCC=${_MINGW_GCC:="x86_64-w64-mingw32-gcc"}
+_GCC_FLAGS="-Wall -Wextra -Werror -Wsign-conversion -Wcast-qual -Wstrict-prototypes -ansi -pedantic"
+
+GCC=${GCC:="$_GCC $_GCC_FLAGS"}
+MINGW_GCC=${MINGW_GCC:="$_MINGW_GCC $_GCC_FLAGS"}
 
 WINE=${WINE:="wine"}
 
@@ -116,7 +119,9 @@ function log_failure {
 
     if [ $status -ne 0 ]; then
         if [ $PRINT_MESSAGE -ne 0 ]; then
+            echo
             echo "$message" >&2
+            echo
         fi
     fi
 }

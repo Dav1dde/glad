@@ -81,13 +81,13 @@ int main()
   #ifdef GLAD_OPTION_GL_LOADER
     int version = gladLoadGLInternalLoader(&context);
   #else
-    int version = gladLoadGL(&context, (GLADloadproc) glfwGetProcAddress);
+    int version = gladLoadGL(&context, glfwGetProcAddress);
   #endif
 #else
   #ifdef GLAD_OPTION_GL_LOADER
     int version = gladLoadGLInternalLoader();
   #else
-    int version = gladLoadGL((GLADloadproc) glfwGetProcAddress);
+    int version = gladLoadGL(glfwGetProcAddress);
   #endif
 #endif
 

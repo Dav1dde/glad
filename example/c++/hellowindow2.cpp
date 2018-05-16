@@ -48,7 +48,7 @@ int main()
     glfwSetKeyCallback(window, key_callback);
 
     // Load OpenGL functions, gladLoadGL returns the loaded version, 0 on error.
-    int version = gladLoadGLSimple((GLADsimpleloadproc) glfwGetProcAddress);
+    int version = gladLoadGLSimple(glfwGetProcAddress);
     if (version == 0)
     {
         std::cout << "Failed to initialize OpenGL context" << std::endl;

@@ -2,8 +2,10 @@
 
 {% include 'loader/library.c' %}
 
-static void* glad_glx_get_proc(const char *name, void *userptr) {
-    return ((void* (*)(const char *name))userptr)(name);
+typedef void* (APIENTRYP GLADglxprocaddrfunc)(const char*);
+
+static GLADapiproc glad_glx_get_proc(const char *name, void *userptr) {
+    return GLAD_GNUC_EXTENSION ((GLADapiproc (*)(const char *name)) userptr)(name);
 }
 
 static void* _glx_handle;
@@ -19,7 +21,7 @@ int gladLoadGLXInternalLoader(Display *display, int screen) {
 
     int version = 0;
     int did_load = 0;
-    void *userptrLoader;
+    GLADglxprocaddrfunc loader;
 
     if (_glx_handle == NULL) {
         _glx_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
@@ -27,9 +29,9 @@ int gladLoadGLXInternalLoader(Display *display, int screen) {
     }
 
     if (_glx_handle != NULL) {
-        userptrLoader = glad_dlsym_handle(_glx_handle, "glXGetProcAddressARB");
-        if (userptrLoader != NULL) {
-            version = gladLoadGLX(display, screen, (GLADloadproc) glad_glx_get_proc, userptrLoader);
+        loader = (GLADglxprocaddrfunc) glad_dlsym_handle(_glx_handle, "glXGetProcAddressARB");
+        if (loader != NULL) {
+            version = gladLoadGLX(display, screen, glad_glx_get_proc, GLAD_GNUC_EXTENSION (void*) loader);
         }
 
         if (!version && did_load) {

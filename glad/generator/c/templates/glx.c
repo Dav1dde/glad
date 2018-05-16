@@ -56,9 +56,9 @@ static int find_core{{ feature_set.api|api }}(Display **display, int *screen) {
     return GLAD_MAKE_VERSION(major, minor);
 }
 
-int gladLoad{{ feature_set.api|api }}(Display *display, int screen, GLADloadproc load, void* userptr) {
+int gladLoad{{ feature_set.api|api }}(Display *display, int screen, GLADloadfunc load, void *userptr) {
     int version;
-    glXQueryVersion = (PFNGLXQUERYVERSIONPROC)load("glXQueryVersion", userptr);
+    glXQueryVersion = (PFNGLXQUERYVERSIONPROC) load("glXQueryVersion", userptr);
     if(glXQueryVersion == NULL) return 0;
     version = find_core{{ feature_set.api|api }}(&display, &screen);
 
@@ -74,12 +74,12 @@ int gladLoad{{ feature_set.api|api }}(Display *display, int screen, GLADloadproc
     return version;
 }
 
-static void* glad_glx_get_proc_from_userptr(const char* name, void *userptr) {
-    return ((void* (*)(const char *name))userptr)(name);
+static GLADapiproc glad_glx_get_proc_from_userptr(const char* name, void *userptr) {
+    return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
 }
 
-int gladLoad{{ feature_set.api|api }}Simple(Display *display, int screen, GLADsimpleloadproc load) {
-    return gladLoad{{ feature_set.api|api }}(display, screen, glad_glx_get_proc_from_userptr, (void*) load);
+int gladLoad{{ feature_set.api|api }}Simple(Display *display, int screen, GLADsimpleloadfunc load) {
+    return gladLoad{{ feature_set.api|api }}(display, screen, glad_glx_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
 }
 
 {% endblock %}

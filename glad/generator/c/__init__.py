@@ -63,7 +63,7 @@ def get_debug_impl(command, command_code_name=None):
     func = ', '.join('arg{}'.format(i) for i, _ in enumerate(command.params))
     pre_callback = ', '.join(filter(None, [
         '"{}"'.format(command.name),
-        '(void*){}'.format(command_code_name),
+        '(GLADapiproc) {}'.format(command_code_name),
         str(len(command.params)),
         func
     ]))

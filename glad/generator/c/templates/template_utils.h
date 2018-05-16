@@ -48,16 +48,16 @@ GLAD_API_CALL int GLAD_{{ extension.name }};
 {%- if type.enums_for(feature_set) -%}
 typedef enum {{ type.name }} {
 {% for member in type.enums_for(feature_set) %}
-    {{ member.name }} = {{ member.alias if member.alias else member.value }},
+    {{ member.name }} = {{ member.alias if member.alias else member.value }}{{ ',' if not loop.last }}
 {% endfor %}
 } {{ type.name }};
 {%- endif -%}
 {%- elif type.category in ('struct', 'union') -%}
-typedef {{ type.category }} {{ type.name }} {
+typedef {{ type.category }} {{ type.name }} {% if type.members %}{
 {% for member in type.members %}
     {{ member.type.raw }};
 {% endfor %}
-} {{ type.name }};
+}{% endif %} {{ type.name }};
 {%- elif type.alias %}
 #define {{ type.name }} {{ type.alias }}
 {%- elif type.raw.strip() -%}
