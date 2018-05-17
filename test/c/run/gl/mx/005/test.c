@@ -32,7 +32,7 @@ void run(GLFWwindow *window) {
 
     glfwMakeContextCurrent(window);
 
-    int version = gladLoadGLSimple(glfwGetProcAddress);
+    int version = gladLoadGL(glfwGetProcAddress);
     ASSERT(version >= 3003, "glad version %d < 3003", version);
     ASSERT(GLAD_VERSION_MAJOR(version) >= 3, "glad major version %d < 3", GLAD_VERSION_MAJOR(version));
     ASSERT(GLAD_VERSION_MAJOR(version) > 3 || GLAD_VERSION_MINOR(version) >= 3, "glad minor version %d < 3", GLAD_VERSION_MINOR(version));

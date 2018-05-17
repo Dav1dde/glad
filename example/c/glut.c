@@ -34,6 +34,16 @@ static void reshape(int w, int h)
     glEnable(GL_DEPTH_TEST);
 }
 
+static void keyboard(unsigned char key, int x, int y)
+{
+    switch (key) {
+        case 27: // Escape key
+          glutDestroyWindow(1);
+          return;
+    }
+    glutPostRedisplay();
+}
+
 int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
@@ -43,9 +53,10 @@ int main(int argc, char **argv)
 
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);
+    glutKeyboardFunc(keyboard);
 
     // initialize glad after creating a context
-    int version = gladLoadGLInternalLoader();
+    int version = gladLoaderLoadGL();
     if(version == 0) {
         printf("Something went wrong!\n");
         exit(-1);

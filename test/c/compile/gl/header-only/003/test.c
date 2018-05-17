@@ -10,6 +10,6 @@
 #include <glad/gl.h>
 
 int main(void) {
-    (void) gladLoadGLInternalLoader();
+    (void) gladLoaderLoadGL();
     return 0;
 }

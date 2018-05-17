@@ -25,7 +25,7 @@ int main(void) {
     ASSERT(window != NULL, "glfw window creation failed");
     glfwMakeContextCurrent(window);
 
-    int version = gladLoadGLInternalLoader();
+    int version = gladLoaderLoadGL();
     ASSERT(version >= 2001, "glad version %d < 2001", version);
     ASSERT(GLAD_VERSION_MAJOR(version) >= 2, "glad major version %d < 2", GLAD_VERSION_MAJOR(version));
     ASSERT(GLAD_VERSION_MAJOR(version) > 2 || GLAD_VERSION_MINOR(version) >= 1, "glad minor version %d < 1", GLAD_VERSION_MINOR(version));

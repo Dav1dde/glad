@@ -1695,7 +1695,7 @@ static void demo_init_vk(struct demo *demo) {
         "VK_LAYER_GOOGLE_unique_objects"
     };
 
-    glad_vk_version = gladLoadVulkanInternalLoader(NULL, NULL, NULL);
+    glad_vk_version = gladLoaderLoadVulkan(NULL, NULL, NULL);
     if (!glad_vk_version) {
         ERR_EXIT("Unable to load Vulkan symbols!\n",
                  "gladLoad Failure");
@@ -1835,7 +1835,7 @@ static void demo_init_vk(struct demo *demo) {
 
     /* Look for device extensions */
     /* Re-Load glad here to load instance pointers and to populate available extensions */
-    glad_vk_version = gladLoadVulkanInternalLoader(demo->inst, demo->gpu, NULL);
+    glad_vk_version = gladLoaderLoadVulkan(demo->inst, demo->gpu, NULL);
     if (!glad_vk_version) {
         ERR_EXIT("Unable to re-load Vulkan symbols with instance!\n",
                  "gladLoad Failure");
@@ -1961,7 +1961,7 @@ static void demo_init_device(struct demo *demo) {
     err = vkCreateDevice(demo->gpu, &device, NULL, &demo->device);
     assert(!err);
 
-    int glad_vk_version = gladLoadVulkanInternalLoader(demo->inst, demo->gpu, demo->device);
+    int glad_vk_version = gladLoaderLoadVulkan(demo->inst, demo->gpu, demo->device);
     if (!glad_vk_version) {
         ERR_EXIT("Unable to re-load Vulkan symbols with device!\n",
                  "gladLoad Failure");

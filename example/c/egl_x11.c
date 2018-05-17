@@ -33,8 +33,6 @@ int main(void) {
     attributes.colormap = colormap;
     attributes.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask;
 
-    int depth = DefaultDepth(display, screen);
-
     Window window =
         XCreateWindow(display, root, 0, 0, window_width, window_height, 0,
                       DefaultDepth(display, screen), InputOutput, visual,
@@ -50,7 +48,7 @@ int main(void) {
         return 1;
     }
 
-    int egl_version = gladLoadEGLInternalLoader(NULL);
+    int egl_version = gladLoaderLoadEGL(NULL);
     if (!egl_version) {
         printf("Unable to load EGL.\n");
         return 1;
@@ -69,7 +67,7 @@ int main(void) {
         return 1;
     }
 
-    egl_version = gladLoadEGLInternalLoader(egl_display);
+    egl_version = gladLoaderLoadEGL(egl_display);
     if (!egl_version) {
         printf("Unable to reload EGL.\n");
         return 1;
@@ -119,7 +117,7 @@ int main(void) {
     // activate context before loading GL functions using glad
     eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
 
-    int gles_version = gladLoadGLES2InternalLoader();
+    int gles_version = gladLoaderLoadGLES2();
     if (!gles_version) {
         printf("Unable to load GLES.\n");
         return 1;

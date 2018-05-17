@@ -174,7 +174,7 @@ static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(def=
     return GLAD_MAKE_VERSION(major, minor);
 }
 
-int gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} GLADloadfunc load, void *userptr) {
+int gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}UserPtr({{ template_utils.context_arg(',') }} GLADuserptrloadfunc load, void *userptr) {
     int version;
 
     {{ 'glGetString'|ctx }} = (PFNGLGETSTRINGPROC) load("glGetString", userptr);
@@ -203,8 +203,8 @@ int gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}({{ template_u
 }
 
 {% if options.mx_global %}
-int gladLoad{{ feature_set.api|api }}(GLADloadfunc load, void *userptr) {
-    return gladLoad{{ feature_set.api|api }}Context(gladGet{{ feature_set.api|api }}Context(), load, userptr);
+int gladLoad{{ feature_set.api|api }}UserPtr(GLADuserptrloadfunc load, void *userptr) {
+    return gladLoad{{ feature_set.api|api }}ContextUserPtr(gladGet{{ feature_set.api|api }}Context(), load, userptr);
 }
 {% endif %}
 
@@ -212,13 +212,13 @@ static GLADapiproc glad_gl_get_proc_from_userptr(const char* name, void *userptr
     return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
 }
 
-int gladLoad{{ feature_set.api|api }}Simple{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} GLADsimpleloadfunc load) {
-    return gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}({{'context,' if options.mx }} glad_gl_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
+int gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} GLADloadfunc load) {
+    return gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}UserPtr({{'context,' if options.mx }} glad_gl_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
 }
 
 {% if options.mx_global %}
-int gladLoad{{ feature_set.api|api }}Simple(GLADsimpleloadfunc load) {
-    return gladLoad{{ feature_set.api|api }}SimpleContext(gladGet{{ feature_set.api|api }}Context(), load);
+int gladLoad{{ feature_set.api|api }}(GLADloadfunc load) {
+    return gladLoad{{ feature_set.api|api }}Context(gladGet{{ feature_set.api|api }}Context(), load);
 }
 {% endif %}
 

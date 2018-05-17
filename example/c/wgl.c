@@ -86,7 +86,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     wglMakeCurrent(hdc, temp_context);
 
     // Load WGL Extensions:
-    gladLoadWGLInternalLoader(hdc);
+    gladLoaderLoadWGL(hdc);
 
     // Set the desired OpenGL version:
     int attributes[] = {
@@ -111,7 +111,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     wglMakeCurrent(hdc, opengl_context);    // Make our OpenGL 3.2 context current
 
     // Glad Loader!
-    if (!gladLoadGLInternalLoader()) {
+    if (!gladLoaderLoadGL()) {
         wglMakeCurrent(NULL, NULL);
         wglDeleteContext(opengl_context);
         ReleaseDC(hWnd, hdc);
@@ -134,7 +134,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             TranslateMessage(&msg);
             DispatchMessage(&msg);
 
-            if (msg.message == WM_QUIT)
+            if (msg.message == WM_QUIT || (msg.message == WM_KEYDOWN && msg.wParam == VK_ESCAPE))
                 should_quit = true;
         }
 

@@ -156,7 +156,7 @@ static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(',')
     return GLAD_MAKE_VERSION(major, minor);
 }
 
-int gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADloadfunc load, void *userptr) {
+int gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}UserPtr({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADuserptrloadfunc load, void *userptr) {
     int version;
 
 #ifdef VK_VERSION_1_1
@@ -190,8 +190,8 @@ int gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}({{ template_u
 }
 
 {% if options.mx_global %}
-int gladLoad{{ feature_set.api|api }}(VkPhysicalDevice physical_device, GLADloadfunc load, void *userptr) {
-    return gladLoad{{ feature_set.api|api }}Context(gladGet{{ feature_set.api|api }}Context(), physical_device, load, userptr);
+int gladLoad{{ feature_set.api|api }}UserPtr(VkPhysicalDevice physical_device, GLADuserptrloadfunc load, void *userptr) {
+    return gladLoad{{ feature_set.api|api }}ContextUserPtr(gladGet{{ feature_set.api|api }}Context(), physical_device, load, userptr);
 }
 {% endif %}
 
@@ -199,13 +199,13 @@ static GLADapiproc glad_vk_get_proc_from_userptr(const char* name, void *userptr
     return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
 }
 
-int gladLoad{{ feature_set.api|api }}Simple{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADsimpleloadfunc load) {
-    return gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}({{'context,' if options.mx }} physical_device, glad_vk_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
+int gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADloadfunc load) {
+    return gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}UserPtr({{'context,' if options.mx }} physical_device, glad_vk_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
 }
 
 {% if options.mx_global %}
-int gladLoad{{ feature_set.api|api }}Simple(VkPhysicalDevice physical_device, GLADsimpleloadfunc load) {
-    return gladLoad{{ feature_set.api|api }}SimpleContext(gladGet{{ feature_set.api|api }}Context(), physical_device, load);
+int gladLoad{{ feature_set.api|api }}(VkPhysicalDevice physical_device, GLADloadfunc load) {
+    return gladLoad{{ feature_set.api|api }}Context(gladGet{{ feature_set.api|api }}Context(), physical_device, load);
 }
 {% endif %}
 

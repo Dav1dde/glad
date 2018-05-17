@@ -61,7 +61,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     wglMakeCurrent(hdc, temp_context);
 
-    int wgl_version = gladLoadWGLInternalLoader(hdc);
+    int wgl_version = gladLoaderLoadWGL(hdc);
     ASSERT(wgl_version >= 1000, "failed to load WGL");
     ASSERT(GLAD_VERSION_MAJOR(wgl_version) >= 1, "wgl major version %d < 1", GLAD_VERSION_MAJOR(wgl_version));
     ASSERT(GLAD_VERSION_MINOR(wgl_version) >= 0, "wgl minor version %d < 0", GLAD_VERSION_MINOR(wgl_version));
@@ -81,7 +81,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     wglDeleteContext(temp_context);
     wglMakeCurrent(hdc, opengl_context);
 
-    int version = gladLoadGLInternalLoader();
+    int version = gladLoaderLoadGL();
     ASSERT(version >= 3002, "glad version %d < 32", version);
     ASSERT(GLAD_VERSION_MAJOR(version) >= 3, "gl major version %d < 3", GLAD_VERSION_MAJOR(version));
     ASSERT(GLAD_VERSION_MAJOR(version) > 3 || GLAD_VERSION_MINOR(version) >= 2, "gl minor version too small %d < 2", GLAD_VERSION_MINOR(version));

@@ -10,7 +10,7 @@
 
 int main(void) {
     GladGLContext gl;
-    (void) gladLoadGLInternalLoader();
-    (void) gladLoadGLInternalLoaderContext(&gl);
+    (void) gladLoaderLoadGL();
+    (void) gladLoaderLoadGLContext(&gl);
     return 0;
 }

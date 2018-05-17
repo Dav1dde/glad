@@ -58,10 +58,10 @@
 #define GLAD_VERSION_MAJOR(version) (version / 10000)
 #define GLAD_VERSION_MINOR(version) (version % 10000)
 
-typedef void (GLAD_API_PTR *GLADapiproc)(void);
+typedef void (*GLADapiproc)(void);
 
-typedef GLADapiproc (*GLADloadfunc)(const char* name, void *userptr);
-typedef GLADapiproc (*GLADsimpleloadfunc)(const char* name);
+typedef GLADapiproc (*GLADloadfunc)(const char *name);
+typedef GLADapiproc (*GLADuserptrloadfunc)(const char *name, void *userptr);
 
 typedef void (*GLADprecallback)(const char *name, GLADapiproc apiproc, int len_args, ...);
 typedef void (*GLADpostcallback)(void *ret, const char *name, GLADapiproc funcptr, int len_args, ...);

@@ -25,7 +25,7 @@ static GLADapiproc glad_gl_get_proc(const char *name, void *vuserptr) {
     return result;
 }
 
-int gladLoadGLInternalLoader{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
+int gladLoaderLoadGL{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
 #ifdef __APPLE__
     static const char *NAMES[] = {
         "../Frameworks/OpenGL.framework/OpenGL",
@@ -61,7 +61,7 @@ int gladLoadGLInternalLoader{{ 'Context' if options.mx }}({{ template_utils.cont
         userptr.gl_get_proc_address_ptr =
             (GLADglprocaddrfunc) glad_dlsym_handle(handle, "glXGetProcAddressARB");
 #endif
-        version = gladLoadGL{{ 'Context' if options.mx }}({{ 'context,' if options.mx }}glad_gl_get_proc, &userptr);
+        version = gladLoadGL{{ 'Context' if options.mx }}UserPtr({{ 'context,' if options.mx }}glad_gl_get_proc, &userptr);
 
         glad_close_dlopen_handle(handle);
     }
@@ -70,8 +70,8 @@ int gladLoadGLInternalLoader{{ 'Context' if options.mx }}({{ template_utils.cont
 }
 
 {% if options.mx_global %}
-int gladLoadGLInternalLoader(void) {
-    return gladLoadGLInternalLoaderContext(gladGetGLContext());
+int gladLoaderLoadGL(void) {
+    return gladLoaderLoadGLContext(gladGetGLContext());
 }
 {% endif %}
 

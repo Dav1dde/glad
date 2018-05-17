@@ -10,16 +10,17 @@
 #include <glad/vulkan.h>
 
 typedef void (*VOID_FUNCPTR)(void);
-VOID_FUNCPTR loader(const char *name, void *userptr) { (void) name; (void) userptr; return NULL; }
-VOID_FUNCPTR simple_loader(const char *name) { (void) name; return NULL; }
+VOID_FUNCPTR loader_userptr(const char *name, void *userptr) { (void) name; (void) userptr; return NULL; }
+VOID_FUNCPTR loader(const char *name) { (void) name; return NULL; }
 
 int main(void) {
     GladVulkanContext context;
-    (void) gladLoadVulkan(NULL, loader, NULL);
-    (void) gladLoadVulkanContext(&context, NULL, loader, NULL);
-    (void) gladLoadVulkanSimple(NULL, simple_loader);
-    (void) gladLoadVulkanSimpleContext(&context, NULL, simple_loader);
-    (void) gladLoadVulkanInternalLoader(NULL, NULL, NULL);
-    (void) gladLoadVulkanInternalLoaderContext(&context, NULL, NULL, NULL);
+    (void) gladLoadVulkanUserPtr(NULL, loader_userptr, NULL);
+    (void) gladLoadVulkanContextUserPtr(&context, NULL, loader_userptr, NULL);
+    (void) gladLoadVulkan(NULL, loader);
+    (void) gladLoadVulkanContext(&context, NULL, loader);
+    (void) gladLoaderLoadVulkan(NULL, NULL, NULL);
+    (void) gladLoaderLoadVulkanContext(&context, NULL, NULL, NULL);
     return 0;
 }
+

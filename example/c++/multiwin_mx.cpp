@@ -81,7 +81,7 @@ GladGLContext* create_context(GLFWwindow *window) {
     GladGLContext* context = (GladGLContext*) malloc(sizeof(GladGLContext));
     if (!context) return NULL;
 
-    int version = gladLoadGLSimpleContext(context, glfwGetProcAddress);
+    int version = gladLoadGLContext(context, glfwGetProcAddress);
     std::cout << "Loaded OpenGL " << GLAD_VERSION_MAJOR(version) << "." << GLAD_VERSION_MINOR(version) << std::endl;
 
     return context;
@@ -104,7 +104,6 @@ void draw(GLFWwindow *window, GladGLContext *gl, float r, float g, float b) {
 // Is called whenever a key is pressed/released via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-    std::cout << key << std::endl;
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 }

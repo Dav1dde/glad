@@ -10,7 +10,7 @@ static GLADapiproc glad_glx_get_proc(const char *name, void *userptr) {
 
 static void* _glx_handle;
 
-int gladLoadGLXInternalLoader(Display *display, int screen) {
+int gladLoaderLoadGLX(Display *display, int screen) {
     static const char *NAMES[] = {
 #if defined __CYGWIN__
         "libGL-1.so",
@@ -31,7 +31,7 @@ int gladLoadGLXInternalLoader(Display *display, int screen) {
     if (_glx_handle != NULL) {
         loader = (GLADglxprocaddrfunc) glad_dlsym_handle(_glx_handle, "glXGetProcAddressARB");
         if (loader != NULL) {
-            version = gladLoadGLX(display, screen, glad_glx_get_proc, GLAD_GNUC_EXTENSION (void*) loader);
+            version = gladLoadGLXUserPtr(display, screen, glad_glx_get_proc, GLAD_GNUC_EXTENSION (void*) loader);
         }
 
         if (!version && did_load) {

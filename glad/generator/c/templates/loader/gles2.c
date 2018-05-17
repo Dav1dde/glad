@@ -1,13 +1,13 @@
+{% import "template_utils.h" as template_utils with context %}
 #ifdef GLAD_GLES2
 
 {% include 'loader/library.c' %}
 
 #include <glad/egl.h>
 
-typedef void* (GLAD_API_PTR *GLADgles2procaddrfunc)(const char*);
 struct _glad_gles2_userptr {
     void *handle;
-    GLADgles2procaddrfunc get_proc_address_ptr;
+    PFNEGLGETPROCADDRESSPROC get_proc_address_ptr;
 };
 
 
@@ -26,7 +26,7 @@ static GLADapiproc glad_gles2_get_proc(const char* name, void *vuserptr) {
 
 static void* _gles2_handle = NULL;
 
-int gladLoadGLES2InternalLoader{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
+int gladLoaderLoadGLES2{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
 #ifdef __APPLE__
     static const char *NAMES[] = {"libGLESv2.dylib"};
 #elif defined(GLAD_PLATFORM_WIN32)
@@ -52,7 +52,7 @@ int gladLoadGLES2InternalLoader{{ 'Context' if options.mx }}({{ template_utils.c
         userptr.handle = _gles2_handle;
         userptr.get_proc_address_ptr = eglGetProcAddress;
 
-        version = gladLoadGLES2{{ 'Context' if options.mx }}({{ 'context, ' if options.mx }}glad_gles2_get_proc, &userptr);
+        version = gladLoadGLES2{{ 'Context' if options.mx }}UserPtr({{ 'context, ' if options.mx }}glad_gles2_get_proc, &userptr);
 
         if (!version && did_load) {
             glad_close_dlopen_handle(_gles2_handle);
@@ -64,8 +64,8 @@ int gladLoadGLES2InternalLoader{{ 'Context' if options.mx }}({{ template_utils.c
 }
 
 {% if options.mx_global %}
-int gladLoadGLES2InternalLoader(void) {
-    return gladLoadGLES2InternalLoaderContext(gladGetGLES2Context());
+int gladLoaderLoadGLES2(void) {
+    return gladLoaderLoadGLES2Context(gladGetGLES2Context());
 }
 {% endif %}
 

@@ -85,7 +85,7 @@ void gladSet{{ feature_set.api }}PostCallback(GLADpostcallback cb) {
 {% block extension_loaders %}
 {% for extension, commands in loadable() %}
 {% call template_utils.protect(extension) %}
-static void load_{{ extension.name }}({{ template_utils.context_arg(',') }} GLADloadfunc load, void* userptr) {
+static void load_{{ extension.name }}({{ template_utils.context_arg(',') }} GLADuserptrloadfunc load, void* userptr) {
     if(!{{ ('GLAD_' + extension.name)|ctx }}) return;
 {% for command in commands %}
     {{ command.name|ctx }} = ({{ command.name|pfn }}) load("{{ command.name }}", userptr);

@@ -49,7 +49,7 @@ int main()
     glfwSetKeyCallback(window, key_callback);
 
     GladGLContext context;
-    int version = gladLoadGLSimple(&context, glfwGetProcAddress);
+    int version = gladLoadGLContext(&context, glfwGetProcAddress);
     if (version == 0)
     {
         std::cout << "Failed to initialize OpenGL context" << std::endl;
@@ -87,7 +87,6 @@ void draw(GLFWwindow *window, GladGLContext *gl) {
 // Is called whenever a key is pressed/released via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-    std::cout << key << std::endl;
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 }

@@ -66,15 +66,15 @@ int main()
 #ifdef GLAD_OPTION_GL_MX
     GladGLContext context;
   #ifdef GLAD_OPTION_GL_LOADER
-    int version = gladLoadGLInternalLoaderContext(&context);
+    int version = gladLoaderLoadGLContext(&context);
   #else
-    int version = gladLoadGLSimpleContext(&context, glfwGetProcAddress);
+    int version = gladLoadGLContext(&context, glfwGetProcAddress);
   #endif
 #else
   #ifdef GLAD_OPTION_GL_LOADER
-    int version = gladLoadGLInternalLoader();
+    int version = gladLoaderLoadGL();
   #else
-    int version = gladLoadGLSimple(glfwGetProcAddress);
+    int version = gladLoadGL(glfwGetProcAddress);
   #endif
 #endif
 
@@ -125,7 +125,6 @@ int main()
 // Is called whenever a key is pressed/released via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-    std::cout << key << std::endl;
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 }

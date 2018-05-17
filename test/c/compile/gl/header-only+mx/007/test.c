@@ -11,13 +11,13 @@
 
 typedef void (*VOID_FUNCPTR)(void);
 
-VOID_FUNCPTR loader(const char *name, void *userptr) {
+VOID_FUNCPTR loader_userptr(const char *name, void *userptr) {
     (void) name;
     (void) userptr;
     return NULL;
 }
 
-VOID_FUNCPTR simple_loader(const char *name) {
+VOID_FUNCPTR loader(const char *name) {
     (void) name;
     return NULL;
 }
@@ -25,13 +25,13 @@ VOID_FUNCPTR simple_loader(const char *name) {
 int main(void) {
     GladGLContext gl;
 
-    gladLoadGLContext(&gl, loader, NULL);
-    gladLoadGLSimpleContext(&gl, simple_loader);
-    gladLoadGLInternalLoaderContext(&gl);
+    gladLoadGLContextUserPtr(&gl, loader_userptr, NULL);
+    gladLoadGLContext(&gl, loader);
+    gladLoaderLoadGLContext(&gl);
 
-    gladLoadGL(loader, NULL);
-    gladLoadGLSimple(simple_loader);
-    gladLoadGLInternalLoader();
+    gladLoadGLUserPtr(loader_userptr, NULL);
+    gladLoadGL(loader);
+    gladLoaderLoadGL();
 
     gladSetGLContext(&gl);
     (void) gladGetGLContext();

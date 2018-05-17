@@ -12,8 +12,8 @@
 
 
 {% block declarations %}
-GLAD_API_CALL int gladLoad{{ feature_set.api|api }}(Display *display, int screen, GLADloadfunc load, void *userptr);
-GLAD_API_CALL int gladLoad{{ feature_set.api|api }}Simple(Display *display, int screen, GLADsimpleloadfunc load);
+GLAD_API_CALL int gladLoad{{ feature_set.api|api }}UserPtr(Display *display, int screen, GLADuserptrloadfunc load, void *userptr);
+GLAD_API_CALL int gladLoad{{ feature_set.api|api }}(Display *display, int screen, GLADloadfunc load);
 
 {{ super() }}
 {% endblock %}

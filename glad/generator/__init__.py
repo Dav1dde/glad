@@ -8,7 +8,7 @@ from glad.util import makefiledir
 
 
 def _api_filter(api):
-    if len(api) > 4:
+    if len(api) > 5:
         return api.capitalize()
     return api.upper()
 

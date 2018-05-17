@@ -17,7 +17,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-int main(int argc, char ** argv) {
+int main(void) {
     /* Set up GLFW */
     glfwInit();
 
@@ -32,11 +32,11 @@ int main(int argc, char ** argv) {
 
     /* Load EGL */
     EGLDisplay display = glfwGetEGLDisplay();
-    int egl_version = gladLoadEGLInternalLoader(display);
-    printf("EGL %d.%d\n", GLAD_VERSION_MAJOR(egl_version) GLAD_VERSION_MINOR(egl_version));
+    int egl_version = gladLoaderLoadEGL(display);
+    printf("EGL %d.%d\n", GLAD_VERSION_MAJOR(egl_version), GLAD_VERSION_MINOR(egl_version));
 
     /* Load GLES */
-    int gles_version = gladLoadGLES1Simple(glfwGetProcAddress);
+    int gles_version = gladLoadGLES1(glfwGetProcAddress);
     printf("GLES %d.%d\n", GLAD_VERSION_MAJOR(gles_version), GLAD_VERSION_MINOR(gles_version));
 
     /* Main Loop */

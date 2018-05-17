@@ -21,7 +21,7 @@ static GLADapiproc glad_egl_get_proc(const char* name, void *vuserptr) {
 
 static void* _egl_handle = NULL;
 
-int gladLoadEGLInternalLoader(EGLDisplay display) {
+int gladLoaderLoadEGL(EGLDisplay display) {
 #ifdef __APPLE__
     static const char *NAMES[] = {"libEGL.dylib"};
 #elif defined(GLAD_PLATFORM_WIN32)
@@ -43,7 +43,7 @@ int gladLoadEGLInternalLoader(EGLDisplay display) {
         userptr.handle = _egl_handle;
         userptr.get_proc_address_ptr = (PFNEGLGETPROCADDRESSPROC) glad_dlsym_handle(_egl_handle, "eglGetProcAddress");
         if (userptr.get_proc_address_ptr != NULL) {
-            version = gladLoadEGL(display, glad_egl_get_proc, &userptr);
+            version = gladLoadEGLUserPtr(display, glad_egl_get_proc, &userptr);
         }
 
         if (!version && did_load) {

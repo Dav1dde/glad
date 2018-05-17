@@ -44,7 +44,7 @@ int main(void) {
         return 1;
     }
 
-    int glx_version = gladLoadGLXInternalLoader(display, screen);
+    int glx_version = gladLoaderLoadGLX(display, screen);
     if (!glx_version) {
         printf("Unable to load GLX.\n");
         return 1;
@@ -76,7 +76,7 @@ int main(void) {
 
     glXMakeCurrent(display, window, context);
 
-    int gl_version = gladLoadGLInternalLoader();
+    int gl_version = gladLoaderLoadGL();
     if (!gl_version) {
         printf("Unable to load GL.\n");
         return 1;

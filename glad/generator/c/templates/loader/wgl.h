@@ -1,5 +1,5 @@
 #ifdef GLAD_WGL
 
-GLAD_API_CALL int gladLoadWGLInternalLoader(HDC hdc);
+GLAD_API_CALL int gladLoaderLoadWGL(HDC hdc);
 
 #endif

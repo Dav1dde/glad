@@ -10,7 +10,7 @@
 
 int main(void) {
     EGLDisplay display = NULL;
-    (void) gladLoadEGLInternalLoader(display);
+    (void) gladLoaderLoadEGL(display);
     (void) gladUnloadEGLInternalLoader();
     return 0;
 }
