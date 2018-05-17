@@ -241,7 +241,9 @@ class Specification(object):
                 # but only requirements that are types as well
                 requirements = set(r for r in chain.from_iterable(t.requires for t in item[1]) if r in self._types)
                 aliases = set(t.alias for t in item[1] if t.alias and t.alias in self._types)
-                return requirements.union(aliases)
+                dependencies = requirements.union(aliases)
+                dependencies.discard(item[0])
+                return dependencies
 
             self._types = OrderedDict(topological_sort(self._types.items(), lambda x: x[0], _type_dependencies))
 
