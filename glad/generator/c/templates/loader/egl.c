@@ -55,7 +55,7 @@ int gladLoaderLoadEGL(EGLDisplay display) {
     return version;
 }
 
-void gladUnloadEGLInternalLoader() {
+void gladLoaderUnloadEGL() {
     if (_egl_handle != NULL) {
         glad_close_dlopen_handle(_egl_handle);
         _egl_handle = NULL;

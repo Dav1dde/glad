@@ -5,6 +5,6 @@ GLAD_API_CALL int gladLoaderLoadVulkan{{ 'Context' if options.mx }}({{ template_
 {% if options.mx_global %}
 GLAD_API_CALL int gladLoaderLoadVulkan(VkInstance instance, VkPhysicalDevice physical_device, VkDevice device);
 {% endif %}
-GLAD_API_CALL void gladUnloadVulkanInternalLoader(void);
+GLAD_API_CALL void gladLoaderUnloadVulkan(void);
 
 #endif

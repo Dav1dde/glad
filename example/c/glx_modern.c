@@ -113,5 +113,5 @@ int main(void) {
     XFreeColormap(display, colormap);
     XCloseDisplay(display);
 
-    gladUnloadGLXInternalLoader();
+    gladLoaderUnloadGLX();
 }

@@ -148,13 +148,13 @@ int main(void) {
         usleep(1000 * 10);
     }
 
-    gladUnloadGLES2InternalLoader();
+    gladLoaderUnloadGLES2();
 
     eglDestroyContext(egl_display, egl_context);
     eglDestroySurface(egl_display, egl_surface);
     eglTerminate(egl_display);
 
-    gladUnloadEGLInternalLoader();
+    gladLoaderUnloadEGL();
 
     XDestroyWindow(display, window);
     XCloseDisplay(display);

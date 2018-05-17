@@ -2,6 +2,6 @@
 
 GLAD_API_CALL int gladLoaderLoadGLX(Display *display, int screen);
 
-GLAD_API_CALL void gladUnloadGLXInternalLoader(void);
+GLAD_API_CALL void gladLoaderUnloadGLX(void);
 
 #endif

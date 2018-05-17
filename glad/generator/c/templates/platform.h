@@ -64,6 +64,6 @@ typedef GLADapiproc (*GLADloadfunc)(const char *name);
 typedef GLADapiproc (*GLADuserptrloadfunc)(const char *name, void *userptr);
 
 typedef void (*GLADprecallback)(const char *name, GLADapiproc apiproc, int len_args, ...);
-typedef void (*GLADpostcallback)(void *ret, const char *name, GLADapiproc funcptr, int len_args, ...);
+typedef void (*GLADpostcallback)(void *ret, const char *name, GLADapiproc apiproc, int len_args, ...);
 
 #endif /* GLAD_PLATFORM_H_ */

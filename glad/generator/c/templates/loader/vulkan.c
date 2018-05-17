@@ -106,7 +106,7 @@ int gladLoaderLoadVulkan(VkInstance instance, VkPhysicalDevice physical_device, 
 }
 {% endif %}
 
-void gladUnloadVulkanInternalLoader(void) {
+void gladLoaderUnloadVulkan(void) {
     if (_vulkan_handle != NULL) {
         glad_close_dlopen_handle(_vulkan_handle);
         _vulkan_handle = NULL;

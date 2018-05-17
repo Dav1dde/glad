@@ -69,7 +69,7 @@ int gladLoaderLoadGLES2(void) {
 }
 {% endif %}
 
-void gladUnloadGLES2InternalLoader(void) {
+void gladLoaderUnloadGLES2(void) {
     if (_gles2_handle != NULL) {
         glad_close_dlopen_handle(_gles2_handle);
         _gles2_handle = NULL;

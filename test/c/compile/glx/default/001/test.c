@@ -11,6 +11,6 @@
 int main(void) {
     Display *display = NULL;
     (void) gladLoaderLoadGLX(display, 0);
-    (void) gladUnloadGLXInternalLoader();
+    (void) gladLoaderUnloadGLX();
     return 0;
 }
