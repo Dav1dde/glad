@@ -3,7 +3,7 @@
 
 {% include 'loader/library.c' %}
 
-typedef void* (APIENTRYP GLADglprocaddrfunc)(const char*);
+typedef void* (GLAD_API_PTR *GLADglprocaddrfunc)(const char*);
 struct _glad_gl_userptr {
     void *gl_handle;
     GLADglprocaddrfunc gl_get_proc_address_ptr;

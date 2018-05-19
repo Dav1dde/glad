@@ -2,7 +2,7 @@
 
 {% include 'loader/library.c' %}
 
-typedef void* (APIENTRYP GLADglxprocaddrfunc)(const char*);
+typedef void* (GLAD_API_PTR *GLADglxprocaddrfunc)(const char*);
 
 static GLADapiproc glad_glx_get_proc(const char *name, void *userptr) {
     return GLAD_GNUC_EXTENSION ((GLADapiproc (*)(const char *name)) userptr)(name);

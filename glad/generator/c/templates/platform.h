@@ -45,14 +45,6 @@
   #define GLAD_API_PTR
 #endif
 
-#ifndef APIENTRY
-#define APIENTRY GLAD_API_PTR
-#endif
-
-#ifndef APIENTRYP
-#define APIENTRYP APIENTRY *
-#endif
-
 
 #define GLAD_MAKE_VERSION(major, minor) (major * 10000 + minor)
 #define GLAD_VERSION_MAJOR(version) (version / 10000)

@@ -60,8 +60,8 @@ typedef {{ type.category }} {{ type.name }} {% if type.members %}{
 }{% endif %} {{ type.name }};
 {%- elif type.alias %}
 #define {{ type.name }} {{ type.alias }}
-{%- elif type._raw.strip() -%}
-{{ type._raw.strip() }}
+{%- elif type._raw|trim -%}
+{{ type._raw|trim|replace('APIENTRY', 'GLAD_API_PTR') }}
 {%- endif %}
 {% endcall %}
 {% endmacro %}
