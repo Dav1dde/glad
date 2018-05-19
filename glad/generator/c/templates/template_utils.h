@@ -7,12 +7,12 @@
 
 
 {% macro context_arg(suffix='', def='') -%}
-{{ 'Glad' + feature_set.api|api + 'Context *context' + suffix if options.mx else def }}
+{{ 'Glad' + feature_set.name|api + 'Context *context' + suffix if options.mx else def }}
 {%- endmacro %}
 
 
 {% macro protect(symbol) %}
-{% set protections = spec.protections(symbol, feature_set.api, feature_set.profile, feature_set=feature_set) %}
+{% set protections = spec.protections(symbol, feature_set=feature_set) %}
 {% if protections %}
 #if {{ protections|map('defined')|join(' || ') }}
 {% endif %}

@@ -15,8 +15,10 @@
 
 
 {% block declarations %}
-GLAD_API_CALL int gladLoad{{ feature_set.api|api }}UserPtr(HDC hdc, GLADuserptrloadfunc load, void *userptr);
-GLAD_API_CALL int gladLoad{{ feature_set.api|api }}(HDC hdc, GLADloadfunc load);
+{% for api in feature_set.info.apis %}
+GLAD_API_CALL int gladLoad{{ api|api }}UserPtr(HDC hdc, GLADuserptrloadfunc load, void *userptr);
+GLAD_API_CALL int gladLoad{{ api|api }}(HDC hdc, GLADloadfunc load);
+{% endfor %}
 
 {{ super() }}
 {% endblock %}

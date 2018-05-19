@@ -9,7 +9,7 @@ from collections import namedtuple
 from contextlib import closing
 
 from glad.config import Config, ConfigOption, RequirementConstraint, UnsupportedConstraint
-from glad.generator import BaseGenerator
+from glad.generator import JinjaGenerator
 from glad.parse import Type
 from glad.specification import VK, GL
 import glad.util
@@ -39,14 +39,25 @@ def params_to_c(params):
     return ', '.join(param.type._raw for param in params) if params else 'void'
 
 
-def loadable(spec, feature_set, *args):
-    if len(args) == 0:
-        args = (feature_set.features, feature_set.extensions)
+@jinja2.contextfunction
+def loadable(context, extensions=None, api=None):
+    spec = context['spec']
+    feature_set = context['feature_set']
 
-    for extension in itertools.chain(*args):
-        commands = extension.get_requirements(spec, feature_set=feature_set).commands
-        if commands:
-            yield extension, commands
+    if extensions is None:
+        extensions = (feature_set.features, feature_set.extensions)
+    elif len(extensions) > 0:
+        # allow loadable(feature_set.features), nicer syntax in templates
+        try:
+            iter(extensions[0])
+        except TypeError:
+            extensions = [extensions]
+
+    for extension in itertools.chain.from_iterable(extensions):
+        if api is None or extension.supports(api):
+            commands = extension.get_requirements(spec, feature_set=feature_set).commands
+            if commands:
+                yield extension, commands
 
 
 def get_debug_impl(command, command_code_name=None):
@@ -102,19 +113,17 @@ def ctx(jinja_context, name, context='context', raw=False, name_only=False):
 
 @jinja2.contextfilter
 def pfn(context, value):
-    feature_set = context['feature_set']
-    if feature_set.api == 'vulkan':
+    spec = context['spec']
+    if spec.name in (VK.NAME,):
         return 'PFN_' + value
     return 'PFN' + value.upper() + 'PROC'
 
 
 @jinja2.contextfilter
 def no_prefix(context, value):
-    feature_set = context['feature_set']
+    spec = context['spec']
 
-    api_prefix = feature_set.api.lower()
-    if feature_set.api == 'vulkan':
-        api_prefix = 'vk'
+    api_prefix = spec.name
 
     # glFoo -> Foo
     # GL_ARB_asd -> ARB_asd
@@ -224,7 +233,7 @@ class CConfig(Config):
     ]
 
 
-class CGenerator(BaseGenerator):
+class CGenerator(JinjaGenerator):
     DISPLAY_NAME = 'C/C++'
 
     TEMPLATES = ['glad.generator.c']
@@ -249,12 +258,13 @@ class CGenerator(BaseGenerator):
     ]
 
     def __init__(self, *args, **kwargs):
-        BaseGenerator.__init__(self, *args, **kwargs)
+        JinjaGenerator.__init__(self, *args, **kwargs)
 
         self._headers = dict()
 
         self.environment.globals.update(
             get_debug_impl=get_debug_impl,
+            loadable=loadable,
             chain=itertools.chain,
         )
 
@@ -267,8 +277,51 @@ class CGenerator(BaseGenerator):
             no_prefix=no_prefix
         )
 
+        self.environment.tests.update(
+            supports=lambda x, arg: x.supports(arg)
+        )
+
+    def select(self, spec, api, version, profile, extensions, config):
+        if extensions is not None:
+            extensions = set(extensions)
+
+            if api == 'wgl':
+                # See issue #40: https://github.com/Dav1dde/glad/issues/40
+                # > Currently if you generate a loader without these extensions
+                # > (WGL_ARB_extensions_string and WGL_EXT_extensions_string) it won't compile.
+                # Adds these 2 extensions if they are missing.
+                extensions.update(('WGL_ARB_extensions_string', 'WGL_EXT_extensions_string'))
+
+            if config['ALIAS']:
+                extensions.update(self._find_extensions_for_aliasing(spec, api, version, profile, extensions))
+
+        return JinjaGenerator.select(self, spec, api, version, profile, extensions, config)
+
+    def _find_extensions_for_aliasing(self, spec, api, version, profile, extensions):
+        feature_set = spec.select(api, version, profile, extensions)
+
+        command_names = [command.name for command in feature_set.commands]
+
+        new_extensions = set()
+        for extension in spec.extensions[api].values():
+            if extension in feature_set.extensions:
+                continue
+
+            for command in extension.get_requirements(spec, api, profile, feature_set=feature_set).commands:
+                # find all extensions which have an alias to a selected function
+                if command.alias and command.alias in command_names:
+                    new_extensions.add(extension.name)
+                    break
+
+                # find all extensions that have a function with the same name
+                if command.name in command_names:
+                    new_extensions.add(extension.name)
+                    break
+
+        return new_extensions
+
     def get_template_arguments(self, spec, feature_set, config):
-        args = BaseGenerator.get_template_arguments(self, spec, feature_set, config)
+        args = JinjaGenerator.get_template_arguments(self, spec, feature_set, config)
 
         # TODO allow MX for every specification/api
         if spec.name not in (VK.NAME, GL.NAME):
@@ -276,7 +329,6 @@ class CGenerator(BaseGenerator):
             args['options']['mx_global'] = False
 
         args.update(
-            loadable=functools.partial(loadable, spec, feature_set),
             aliases=collect_alias_information(feature_set.commands),
             # required for vulkan loader:
             device_commands=list(filter(is_device_command, feature_set.commands))
@@ -285,8 +337,8 @@ class CGenerator(BaseGenerator):
         return args
 
     def get_templates(self, spec, feature_set, config):
-        header = 'include/glad/{}.h'.format(feature_set.api)
-        source = 'src/{}.c'.format(feature_set.api)
+        header = 'include/glad/{}.h'.format(feature_set.name)
+        source = 'src/{}.c'.format(feature_set.name)
 
         templates = list()
 
@@ -306,58 +358,11 @@ class CGenerator(BaseGenerator):
         self._add_additional_headers(feature_set, config)
 
     def modify_feature_set(self, spec, feature_set, config):
-        feature_set = self._fix_issue_40(spec, feature_set)
-        feature_set = self._add_extensions_for_aliasing(spec, feature_set, config)
-
-        # in-place operations
         self._fix_issue_70(feature_set)
         self._fix_cpp_style_comments(feature_set)
         self._replace_included_headers(feature_set, config)
 
         return feature_set
-
-    def _add_extensions_for_aliasing(self, spec, feature_set, config):
-        if not config['ALIAS']:
-            return feature_set
-
-        command_names = [command.name for command in feature_set.commands]
-
-        new_extensions = set(ext.name for ext in feature_set.extensions)
-        for extension in spec.extensions[feature_set.api].values():
-            if extension in feature_set.extensions:
-                continue
-
-            for command in extension.get_requirements(spec, feature_set=feature_set).commands:
-                # find all extensions which have an alias to a selected function
-                if command.alias and command.alias in command_names:
-                    new_extensions.add(extension.name)
-                    break
-
-                # find all extensions that have a function with the same name
-                if command.name in command_names:
-                    new_extensions.add(extension.name)
-                    break
-
-        return spec.select(feature_set.api, feature_set.version, feature_set.profile, new_extensions)
-
-    def _fix_issue_40(self, spec, feature_set):
-        """
-        See issue #40: https://github.com/Dav1dde/glad/issues/40
-        > Currently if you generate a loader without these extensions
-        > (WGL_ARB_extensions_string and WGL_EXT_extensions_string) it won't compile.
-        Adds these 2 extensions if they are missing.
-        """
-        if not feature_set.api == 'wgl':
-            return feature_set
-
-        recreate = False
-        extensions = set(ext.name for ext in feature_set.extensions)
-        for required_extension in ('WGL_ARB_extensions_string', 'WGL_EXT_extensions_string'):
-            if required_extension not in extensions:
-                extensions.add(required_extension)
-                recreate = True
-
-        return spec.select(feature_set.api, feature_set.version, feature_set.profile, extensions)
 
     def _fix_issue_70(self, feature_set):
         """

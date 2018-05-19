@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block extension_loaders %}
-{% for extension, commands in loadable(feature_set.features[1:], feature_set.extensions) %}
+{% for extension, commands in loadable((feature_set.features[1:], feature_set.extensions)) %}
 static void load_{{ extension.name }}(GLADuserptrloadfunc load, void *userptr) {
     if(!GLAD_{{ extension.name }}) return;
 {% for command in commands %}
@@ -53,7 +53,12 @@ static int has_ext(HDC hdc, const char *ext) {
     return 0;
 }
 
-static int find_extensions{{ feature_set.api|api }}(HDC hdc) {
+static GLADapiproc glad_wgl_get_proc_from_userptr(const char* name, void *userptr) {
+    return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
+}
+
+{% for api in feature_set.info.apis %}
+static int find_extensions{{ api|api }}(HDC hdc) {
 {% for extension in feature_set.extensions %}
     GLAD_{{ extension.name }} = has_ext(hdc, "{{ extension.name }}");
 {% else %}
@@ -62,38 +67,36 @@ static int find_extensions{{ feature_set.api|api }}(HDC hdc) {
     return 1;
 }
 
-static int find_core{{ feature_set.api|api }}(void) {
-    int major = {{ feature_set.version.major }}, minor = {{ feature_set.version.minor }};
-{% for feature in feature_set.features %}
+static int find_core{{ api|api }}(void) {
+    {% set hv = feature_set.features|select('supports', api)|list|last %}
+    int major = {{ hv.version.major }}, minor = {{ hv.version.minor }};
+{% for feature in feature_set.features|select('supports', api) %}
     GLAD_{{ feature.name }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
 {% endfor %}
     return GLAD_MAKE_VERSION(major, minor);
 }
 
-int gladLoad{{ feature_set.api|api }}UserPtr(HDC hdc, GLADuserptrloadfunc load, void *userptr) {
+int gladLoad{{ api|api }}UserPtr(HDC hdc, GLADuserptrloadfunc load, void *userptr) {
     int version;
     wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC) load("wglGetExtensionsStringARB", userptr);
     wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC) load("wglGetExtensionsStringEXT", userptr);
     if(wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return 0;
-    version = find_core{{ feature_set.api|api }}();
+    version = find_core{{ api|api }}();
 
-{% for feature, _ in loadable(feature_set.features[1:]) %}
+{% for feature, _ in loadable(feature_set.features[1:], api=api) %}
     load_{{ feature.name }}(load, userptr);
 {% endfor %}
 
-    if (!find_extensions{{ feature_set.api|api }}(hdc)) return 0;
-{% for extension, _ in loadable(feature_set.extensions) %}
+    if (!find_extensions{{ api|api }}(hdc)) return 0;
+{% for extension, _ in loadable(feature_set.extensions, api=api) %}
     load_{{ extension.name }}(load, userptr);
 {% endfor %}
 
     return version;
 }
 
-static GLADapiproc glad_wgl_get_proc_from_userptr(const char* name, void *userptr) {
-    return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
+int gladLoad{{ api|api }}(HDC hdc, GLADloadfunc load) {
+    return gladLoad{{ api|api }}UserPtr(hdc, glad_wgl_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
 }
-
-int gladLoad{{ feature_set.api|api }}(HDC hdc, GLADloadfunc load) {
-    return gladLoad{{ feature_set.api|api }}UserPtr(hdc, glad_wgl_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
-}
+{% endfor %}
 {% endblock %}

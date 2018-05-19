@@ -65,7 +65,7 @@ int gladLoaderLoadGLES2{{ 'Context' if options.mx }}({{ template_utils.context_a
 
 {% if options.mx_global %}
 int gladLoaderLoadGLES2(void) {
-    return gladLoaderLoadGLES2Context(gladGetGLES2Context());
+    return gladLoaderLoadGLES2Context(gladGet{{ feature_set.name|api }}Context());
 }
 {% endif %}
 

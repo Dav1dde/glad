@@ -2,7 +2,7 @@ import itertools
 from collections import namedtuple
 
 from glad.config import Config
-from glad.generator import BaseGenerator
+from glad.generator import JinjaGenerator
 
 
 DEnum = namedtuple('DEnum', ['type', 'value'])
@@ -67,12 +67,12 @@ class DConfig(Config):
     pass
 
 
-class DGenerator(BaseGenerator):
+class DGenerator(JinjaGenerator):
     TEMPLATES = ['glad.generator.d']
     Config = DConfig
 
     def __init__(self, *args, **kwargs):
-        BaseGenerator.__init__(self, *args, **kwargs)
+        JinjaGenerator.__init__(self, *args, **kwargs)
 
         self.environment.globals.update(
             type_to_d=type_to_d,

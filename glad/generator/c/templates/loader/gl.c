@@ -71,7 +71,7 @@ int gladLoaderLoadGL{{ 'Context' if options.mx }}({{ template_utils.context_arg(
 
 {% if options.mx_global %}
 int gladLoaderLoadGL(void) {
-    return gladLoaderLoadGLContext(gladGetGLContext());
+    return gladLoaderLoadGLContext(gladGet{{ feature_set.name|api }}Context());
 }
 {% endif %}
 

@@ -38,11 +38,43 @@ _ARRAY_RE = re.compile(r'\[\d+\]')
 _FeatureExtensionCommands = namedtuple('_FeatureExtensionCommands', ['features', 'commands'])
 
 
+class FeatureSetInfo(object):
+    class InfoItem(namedtuple('InfoItem', ['api', 'version', 'profile', 'identifier'])):
+        def __str__(self):
+            result = self.api
+            if self.profile:
+                result += ':{}'.format(self.profile)
+            result += '={version.major}.{version.minor}'.format(version=self.version)
+            if self.identifier:
+                result += '-{!r}'.format(self.identifier)
+            return result
+        __repr__ = __str__
+
+    def __init__(self, items):
+        self._items = OrderedDict()
+        for item in items:
+            self._items.setdefault(item.api, []).append(item)
+
+    @classmethod
+    def one(cls, api, version, profile, identifier=None):
+        return cls([FeatureSetInfo.InfoItem(api, version, profile, identifier)])
+
+    @property
+    def apis(self):
+        return list(self._items.keys())
+
+    def __str__(self):
+        return repr(list(self))
+    __repr__ = __str__
+
+    def __iter__(self):
+        return iter(chain.from_iterable(self._items.values()))
+
+
 class FeatureSet(object):
-    def __init__(self, api, version, profile, features, extensions, types, enums, commands):
-        self.api = api
-        self.version = version
-        self.profile = profile
+    def __init__(self, name, info, features, extensions, types, enums, commands):
+        self.name = name
+        self.info = info
         self.features = features
         self.extensions = extensions
         self.types = types
@@ -50,8 +82,7 @@ class FeatureSet(object):
         self.commands = commands
 
     def __str__(self):
-        return 'FeatureSet@(api={self.api}, version={self.version}, profile={self.profile})' \
-            .format(self=self)
+        return 'FeatureSet@(name={self.name}, info={self.info})'.format(self=self)
     __repr__ = __str__
 
     def __eq__(self, other):
@@ -65,9 +96,47 @@ class FeatureSet(object):
     def __hash__(self):
         # good enough for now
         return hash((
-            self.api, self.version,  self.profile,
+            self.info,
             len(self.features), len(self.extensions), len(self.types), len(self.enums), len(self.commands)
         ))
+
+    @classmethod
+    def merge(cls, feature_set, *others):
+        def to_ordered_dict(items):
+            return OrderedDict((item.name, item) for item in items)
+
+        def merge_items(items, new_items):
+            for new_item in new_items:
+                in_dict = items.setdefault(new_item.name, new_item)
+                if not in_dict is new_item:
+                    if not in_dict._raw == new_item._raw:
+                        logger.warn('potentially incompatibility: %r <-> %r', new_item._raw, in_dict._raw)
+
+        info = list(feature_set.info)
+        features = to_ordered_dict(feature_set.features)
+        extensions = to_ordered_dict(feature_set.extensions)
+        types = to_ordered_dict(feature_set.types)
+        enums = to_ordered_dict(feature_set.enums)
+        commands = to_ordered_dict(feature_set.commands)
+
+        for other in others:
+            if other.info not in info:
+                info.extend(other.info)
+                merge_items(features, other.features)
+                merge_items(extensions, other.extensions)
+                merge_items(types, other.types)
+                merge_items(enums, other.enums)
+                merge_items(commands, other.commands)
+
+        return FeatureSet(
+            feature_set.name,
+            FeatureSetInfo(info),
+            list(features.values()),
+            list(extensions.values()),
+            list(types.values()),
+            list(enums.values()),
+            list(commands.values())
+        )
 
 
 class TypeEnumCommand(namedtuple('_TypeEnumCommand', ['types', 'enums', 'commands'])):
@@ -313,7 +382,7 @@ class Specification(object):
         self._features = defaultdict(OrderedDict)
         for element in self.root.iter('feature'):
             num = Version(*map(int, element.attrib['number'].split('.')))
-            self._features[element.attrib['api']][num] = Feature(element)
+            self._features[element.attrib['api']][num] = Feature.from_element(element)
 
         for api, features in self._features.items():
             self._features[api] = OrderedDict(sorted(features.items(), key=lambda x: x[0]))
@@ -330,8 +399,8 @@ class Specification(object):
 
         self._extensions = defaultdict(dict)
         for element in self.root.find('extensions'):
-            extension = Extension(element)
-            for api in element.attrib['supported'].split('|'):
+            extension = Extension.from_element(element)
+            for api in extension.supported:
                 self._extensions[api][element.attrib['name']] = extension
 
         return self._extensions
@@ -343,13 +412,13 @@ class Specification(object):
         profiles = set()
 
         for feature in chain(self.features[api].values(), self.extensions[api].values()):
-            for r in chain(feature.removes, feature.requires):
+            for r in chain(getattr(feature, 'removes', []), feature.requires):
                 if (r.api is None or r.api == api) and r.profile is not None:
                     profiles.add(r.profile)
 
         return profiles
 
-    def protections(self, symbol, api, profile, feature_set=None):
+    def protections(self, symbol, api=None, profile=None, feature_set=None):
         """
         Returns a list of protections for a symbol.
 
@@ -376,7 +445,7 @@ class Specification(object):
 
         protections = list()
         for ext in extensions:
-            requirements = ext.get_requirements(self, api, profile)
+            requirements = ext.get_requirements(self, api=api, profile=profile, feature_set=feature_set)
 
             if symbol in requirements:
                 if ext.protect:
@@ -441,17 +510,19 @@ class Specification(object):
                 # maybe we got more requirements (types can require other types)
                 # TODO check if _magic_require is still necessary with recursive
                 # TODO auto-require types from commands etc.
-                if recursive and hasattr(best_match, 'requires'):
+                requires = getattr(best_match, 'requires', None)
+                if recursive and requires is not None:
                     # just add new requirements
-                    new_requirements = set(best_match.requires).difference(requirements)
+                    new_requirements = set(requires).difference(requirements)
                     if new_requirements:
                         requirements.update(new_requirements)
                         open_requirements.extend(new_requirements)
 
-                if recursive and hasattr(best_match, 'alias'):
-                    if best_match.alias not in requirements:
-                        requirements.add(best_match.alias)
-                        open_requirements.append(best_match.alias)
+                alias = getattr(best_match, 'alias', None)
+                if recursive and alias is not None:
+                    if alias not in requirements:
+                        requirements.add(alias)
+                        open_requirements.append(alias)
 
                 yield best_match
 
@@ -549,7 +620,7 @@ class Specification(object):
                 found = self.find(require, api, profile, recursive=True)
                 result = result.union(found)
 
-            for remove in extension.removes:
+            for remove in getattr(extension, 'removes', []):
                 if ((remove.profile is None or remove.profile == profile) and
                         (remove.api is None or remove.api == api)):
                     result = result.difference(remove.removes)
@@ -580,7 +651,8 @@ class Specification(object):
         all_sorted_types = list(self.types.keys())
         types = sorted(types, key=all_sorted_types.index)
 
-        return FeatureSet(api, version, profile, features, extensions, types, enums, commands)
+        return FeatureSet(api, FeatureSetInfo.one(api, version, profile),
+                          features, extensions, types, enums, commands)
 
 
 class Group(object):
@@ -874,17 +946,31 @@ class Remove(object):
 
 
 class Extension(IdentifiedByName):
-    def __init__(self, element):
-        self.name = element.attrib['name']
+    def __init__(self, name, supported=None, requires=None,
+                 type_=None, protect=None, platform=None):
+        self.name = name
+        self.supported = supported
+        self.requires = requires or []
+        self.type = type_
+        self.protect = protect or []
+        self.platform = platform
 
-        self.requires = [Require.from_element(require) for require in element.findall('require')]
-        # so far only features contain remove tags,
-        # so this should be empty for every extension which is not a feature
-        self.removes = [Remove(remove) for remove in element.findall('remove')]
+    @classmethod
+    def from_element(cls, element):
+        name = element.attrib['name']
+        supported = element.attrib['supported'].split('|')
 
-        self.type = element.get('type')
-        self.protect = [p.strip() for p in element.get('protect', '').split(',') if p.strip()]
-        self.platform = element.get('platform')
+        requires = [Require.from_element(require) for require in element.findall('require')]
+
+        type_ = element.get('type')
+        protect = [p.strip() for p in element.get('protect', '').split(',') if p.strip()]
+        platform = element.get('platform')
+
+        return cls(name, supported=supported, requires=requires,
+                   type_=type_, protect=protect, platform=platform)
+
+    def supports(self, api):
+        return api in self.supported
 
     @memoize()
     def get_requirements(self, spec, api=None, profile=None, feature_set=None):
@@ -893,23 +979,25 @@ class Extension(IdentifiedByName):
         for this extension/feature.
 
         :param spec: the specification
-        :param api: requested api, takes precedence over feature_set.api
-        :param profile: requested profile,
-                        takes precedence over feature_set.profile (only if not None)
-        :param feature_set: used to provide api and profile defaults,
-                            also limits the return values to symbols
+        :param api: requested api, takes precedence over feature_set.info
+        :param profile: requested profile (requires `api`)
+        :param feature_set: used to provide api and profile, if supplied uses
+                            all APIs and profiles stored in `feature_set.info`.
+                            Also limits the return values to symbols
                             included in the feature set.
         :return TypeEnumCommand: returns a :py:class:`TypeEnumCommand`
         """
         result = set()
 
-        if feature_set is not None:
-            api = api or feature_set.api
-            profile = profile or feature_set.profile
+        if api is None and feature_set is None:
+            raise ValueError('either API or feature_set required')
 
         for require in self.requires:
-            found = spec.find(require, api, profile, recursive=True)
-            result = result.union(found)
+            if api is not None:
+                result.update(spec.find(require, api, profile, recursive=True))
+            else:
+                for info in feature_set.info:
+                    result.update(spec.find(require, info.api, info.profile, recursive=True))
 
         types, enums, commands = spec.split_types(result, (Type, Enum, Command))
 
@@ -928,13 +1016,30 @@ class Extension(IdentifiedByName):
 
 
 class Feature(Extension):
-    def __init__(self, element):
-        Extension.__init__(self, element)
+    def __init__(self, name, api, version, removes=None, **kwargs):
+        Extension.__init__(self, name, **kwargs)
 
-        self.number = tuple(map(int, element.attrib['number'].split('.')))
-        self.version = Version(*self.number)
-        self.api = element.attrib['api']
+        self.api = api
+        self.version = version
+
+        self.removes = removes or []
+
+    @classmethod
+    def from_element(cls, element):
+        name = element.attrib['name']
+        api = element.attrib['api']
+        version = Version(*tuple(map(int, element.attrib['number'].split('.'))))
+
+        requires = [Require.from_element(require) for require in element.findall('require')]
+        removes = [Remove(remove) for remove in element.findall('remove')]
+
+        type_ = element.get('type')
+        protect = [p.strip() for p in element.get('protect', '').split(',') if p.strip()]
+        platform = element.get('platform')
+
+        return cls(name, api, version, supported=[api], requires=requires,
+                   removes=removes, type_=type_, protect=protect, platform=platform)
 
     def __str__(self):
-        return '{self.name}@{self.number!r}'.format(self=self)
+        return '{self.name}@{self.version!r}'.format(self=self)
     __repr__ = __str__

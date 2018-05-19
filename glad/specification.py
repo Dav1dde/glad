@@ -7,7 +7,7 @@ class EGL(Specification):
     API = 'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/'
     NAME = 'egl'
 
-    def protections(self, symbol, api, profile, feature_set=None):
+    def protections(self, symbol, api=None, profile=None, feature_set=None):
         return list()
 
 
@@ -26,7 +26,7 @@ class GL(Specification):
         requirements = [r for r in require.requirements if r not in magic_blacklist]
         return Require(api, profile, requirements)
 
-    def protections(self, symbol, api, profile, feature_set=None):
+    def protections(self, symbol, api=None, profile=None, feature_set=None):
         return list()
 
 
@@ -36,7 +36,7 @@ class GLX(Specification):
     API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/master/xml/'
     NAME = 'glx'
 
-    def protections(self, symbol, api, profile, feature_set=None):
+    def protections(self, symbol, api=None, profile=None, feature_set=None):
         return list()
 
 
@@ -46,7 +46,7 @@ class WGL(Specification):
     API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/master/xml/'
     NAME = 'wgl'
 
-    def protections(self, symbol, api, profile, feature_set=None):
+    def protections(self, symbol, api=None, profile=None, feature_set=None):
         return list()
 
 

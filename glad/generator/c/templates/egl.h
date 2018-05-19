@@ -1,8 +1,10 @@
 {% extends 'base_template.h' %}
 
 {% block declarations %}
-GLAD_API_CALL int gladLoad{{ feature_set.api|api }}UserPtr(EGLDisplay display, GLADuserptrloadfunc load, void *userptr);
-GLAD_API_CALL int gladLoad{{ feature_set.api|api }}(EGLDisplay display, GLADloadfunc load);
+{% for api in feature_set.info.apis %}
+GLAD_API_CALL int gladLoad{{ api|api }}UserPtr(EGLDisplay display, GLADuserptrloadfunc load, void *userptr);
+GLAD_API_CALL int gladLoad{{ api|api }}(EGLDisplay display, GLADloadfunc load);
+{% endfor %}
 
 {{ super() }}
 {% endblock %}

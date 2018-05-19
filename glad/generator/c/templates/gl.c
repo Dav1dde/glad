@@ -2,7 +2,7 @@
 
 
 {% block debug_default_pre %}
-void _pre_call_{{ feature_set.api }}_callback_default(const char *name, GLADapiproc apiproc, int len_args, ...) {
+void _pre_call_{{ feature_set.name }}_callback_default(const char *name, GLADapiproc apiproc, int len_args, ...) {
     (void) len_args;
 
     if (apiproc == NULL) {
@@ -19,7 +19,7 @@ void _pre_call_{{ feature_set.api }}_callback_default(const char *name, GLADapip
 {% endblock %}
 
 {% block debug_default_post %}
-void _post_call_{{ feature_set.api }}_callback_default(void *ret, const char *name, GLADapiproc apiproc, int len_args, ...) {
+void _post_call_{{ feature_set.name }}_callback_default(void *ret, const char *name, GLADapiproc apiproc, int len_args, ...) {
     GLenum error_code;
 
     (void) ret;
@@ -130,13 +130,18 @@ static int has_ext(int version, const char *exts, unsigned int num_exts_i, char 
     return 0;
 }
 
-static int find_extensions{{ feature_set.api|api }}({{ template_utils.context_arg(',') }} int version) {
+static GLADapiproc glad_gl_get_proc_from_userptr(const char* name, void *userptr) {
+    return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
+}
+
+{% for api in feature_set.info.apis %}
+static int find_extensions{{ api|api }}({{ template_utils.context_arg(',') }} int version) {
     const char *exts = NULL;
     unsigned int num_exts_i = 0;
     char **exts_i = NULL;
     if (!get_exts({{ 'context, ' if options.mx }}version, &exts, &num_exts_i, &exts_i)) return 0;
 
-{% for extension in feature_set.extensions %}
+{% for extension in feature_set.extensions|select('supports', api) %}
     {{ ('GLAD_' + extension.name)|ctx }} = has_ext(version, exts, num_exts_i, exts_i, "{{ extension.name }}");
 {% else %}
     (void)has_ext;
@@ -146,7 +151,7 @@ static int find_extensions{{ feature_set.api|api }}({{ template_utils.context_ar
     return 1;
 }
 
-static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(def='void') }}) {
+static int find_core{{ api|api }}({{ template_utils.context_arg(def='void') }}) {
     int i, major, minor;
     const char* version;
     const char* prefixes[] = {
@@ -167,32 +172,32 @@ static int find_core{{ feature_set.api|api }}({{ template_utils.context_arg(def=
 
     GLAD_IMPL_UTIL_SSCANF(version, "%d.%d", &major, &minor);
 
-{% for feature in feature_set.features %}
+{% for feature in feature_set.features|select('supports', api) %}
     {{ ('GLAD_' + feature.name)|ctx }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
 {% endfor %}
 
     return GLAD_MAKE_VERSION(major, minor);
 }
 
-int gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}UserPtr({{ template_utils.context_arg(',') }} GLADuserptrloadfunc load, void *userptr) {
+int gladLoad{{ api|api }}{{ 'Context' if options.mx }}UserPtr({{ template_utils.context_arg(',') }} GLADuserptrloadfunc load, void *userptr) {
     int version;
 
     {{ 'glGetString'|ctx }} = (PFNGLGETSTRINGPROC) load("glGetString", userptr);
     if({{ 'glGetString'|ctx }} == NULL) return 0;
     if({{ 'glGetString'|ctx }}(GL_VERSION) == NULL) return 0;
-    version = find_core{{ feature_set.api|api }}({{ 'context' if options.mx }});
+    version = find_core{{ api|api }}({{ 'context' if options.mx }});
 
-{% for feature, _ in loadable(feature_set.features) %}
+{% for feature, _ in loadable(feature_set.features, api=api) %}
     load_{{ feature.name }}({{'context, ' if options.mx }}load, userptr);
 {% endfor %}
 
-    if (!find_extensions{{  feature_set.api|api }}({{ 'context, ' if options.mx }}version)) return 0;
-{% for extension, _ in loadable(feature_set.extensions) %}
+    if (!find_extensions{{  api|api }}({{ 'context, ' if options.mx }}version)) return 0;
+{% for extension, _ in loadable(feature_set.extensions, api=api) %}
     load_{{ extension.name }}({{'context, ' if options.mx }}load, userptr);
 {% endfor %}
 
 {% if options.mx_global %}
-    gladSet{{ feature_set.api|api }}Context(context);
+    gladSet{{ feature_set.name|api }}Context(context);
 {% endif %}
 
 {% if options.alias %}
@@ -203,32 +208,29 @@ int gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}UserPtr({{ tem
 }
 
 {% if options.mx_global %}
-int gladLoad{{ feature_set.api|api }}UserPtr(GLADuserptrloadfunc load, void *userptr) {
-    return gladLoad{{ feature_set.api|api }}ContextUserPtr(gladGet{{ feature_set.api|api }}Context(), load, userptr);
+int gladLoad{{ api|api }}UserPtr(GLADuserptrloadfunc load, void *userptr) {
+    return gladLoad{{ api|api }}ContextUserPtr(gladGet{{ feature_set.name|api }}Context(), load, userptr);
 }
 {% endif %}
 
-static GLADapiproc glad_gl_get_proc_from_userptr(const char* name, void *userptr) {
-    return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
-}
-
-int gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} GLADloadfunc load) {
-    return gladLoad{{ feature_set.api|api }}{{ 'Context' if options.mx }}UserPtr({{'context,' if options.mx }} glad_gl_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
+int gladLoad{{ api|api }}{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} GLADloadfunc load) {
+    return gladLoad{{ api|api }}{{ 'Context' if options.mx }}UserPtr({{'context,' if options.mx }} glad_gl_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
 }
 
 {% if options.mx_global %}
-int gladLoad{{ feature_set.api|api }}(GLADloadfunc load) {
-    return gladLoad{{ feature_set.api|api }}Context(gladGet{{ feature_set.api|api }}Context(), load);
+int gladLoad{{ api|api }}(GLADloadfunc load) {
+    return gladLoad{{ api|api }}Context(gladGet{{ feature_set.name|api }}Context(), load);
 }
 {% endif %}
+{% endfor %}
 
 {% if options.mx_global %}
-Glad{{ feature_set.api|api }}Context* gladGet{{ feature_set.api|api }}Context() {
-    return &glad_{{ feature_set.api }}_context;
+Glad{{ feature_set.name|api }}Context* gladGet{{ feature_set.name|api }}Context() {
+    return &{{ global_context }};
 }
 
-void gladSet{{ feature_set.api|api }}Context(Glad{{ feature_set.api|api }}Context *context) {
-    glad_{{ feature_set.api }}_context = *context;
+void gladSet{{ feature_set.name|api }}Context(Glad{{ feature_set.name|api }}Context *context) {
+    {{ global_context }} = *context;
 }
 {% endif %}
 

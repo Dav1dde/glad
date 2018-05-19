@@ -2,7 +2,7 @@ import itertools
 from collections import namedtuple
 
 from glad.config import Config
-from glad.generator import BaseGenerator
+from glad.generator import JinjaGenerator
 
 
 VoltEnum = namedtuple('VoltEnum', ['type', 'value'])
@@ -74,12 +74,12 @@ class VoltConfig(Config):
     pass
 
 
-class VoltGenerator(BaseGenerator):
+class VoltGenerator(JinjaGenerator):
     TEMPLATES = ['glad.generator.volt']
     Config = VoltConfig
 
     def __init__(self, *args, **kwargs):
-        BaseGenerator.__init__(self, *args, **kwargs)
+        JinjaGenerator.__init__(self, *args, **kwargs)
 
         self.environment.globals.update(
             type_to_volt=type_to_volt,
