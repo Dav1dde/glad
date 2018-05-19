@@ -78,10 +78,11 @@ GLAD_API_CALL void gladSet{{ feature_set.api }}PostCallback(GLADpostcallback cb)
 {% endif %}
 {% endblock %}
 
-
+{% if options.loader %}
 {% block loader_impl %}
 {% include 'loader/' + feature_set.api + '.h' %}
 {% endblock %}
+{% endif %}
 
 #ifdef __cplusplus
 }

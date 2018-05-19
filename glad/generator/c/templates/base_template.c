@@ -113,6 +113,8 @@ static void resolve_aliases({{ template_utils.context_arg(def='void') }}) {
 {% block loader %}
 {% endblock %}
 
+{% if options.loader %}
 {% block loader_impl %}
 {% include 'loader/' + feature_set.api + '.c' %}
 {% endblock %}
+{% endif %}

@@ -1,7 +1,12 @@
 import functools
 import os
 import re
+import sys
 from collections import namedtuple
+
+
+if sys.version_info >= (3, 0, 0):
+    basestring = str
 
 
 Version = namedtuple('Version', ['major', 'minor'])
@@ -124,4 +129,18 @@ def memoize(key=None):
         return wrapped
 
     return memoize_decorator
+
+
+def itertext(element, ignore=()):
+    tag = element.tag
+    if not isinstance(tag, basestring) and tag is not None:
+        return
+    if element.text:
+        yield element.text
+    for e in element:
+        if not e.tag in ignore:
+            for s in itertext(e, ignore=ignore):
+                yield s
+            if e.tail:
+                yield e.tail
 

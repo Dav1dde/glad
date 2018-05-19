@@ -55,13 +55,13 @@ typedef enum {{ type.name }} {
 {%- elif type.category in ('struct', 'union') -%}
 typedef {{ type.category }} {{ type.name }} {% if type.members %}{
 {% for member in type.members %}
-    {{ member.type.raw }};
+    {{ member.type._raw }};
 {% endfor %}
 }{% endif %} {{ type.name }};
 {%- elif type.alias %}
 #define {{ type.name }} {{ type.alias }}
-{%- elif type.raw.strip() -%}
-{{ type.raw.strip() }}
+{%- elif type._raw.strip() -%}
+{{ type._raw.strip() }}
 {%- endif %}
 {% endcall %}
 {% endmacro %}

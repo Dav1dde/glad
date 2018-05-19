@@ -1,5 +1,3 @@
-import copy
-
 try:
     from lxml import etree
     from lxml.etree import ETCompatXMLParser as parser
@@ -22,6 +20,7 @@ except ImportError:
         return etree.parse(path).getroot()
 
 import re
+import copy
 import logging
 from collections import defaultdict, OrderedDict, namedtuple, deque
 from contextlib import closing
@@ -29,6 +28,7 @@ from itertools import chain
 
 from glad.opener import URLOpener
 from glad.util import Version, topological_sort, memoize
+import glad.util
 
 logger = logging.getLogger(__name__)
 
@@ -615,17 +615,18 @@ class Platform(object):
 
 
 class Type(IdentifiedByName):
-    def __init__(self, raw, api, category, name, alias=None, requires=None, enums=None, members=None):
-        self.raw = raw
+    def __init__(self, name, api=None, category=None, alias=None, requires=None, enums=None, members=None, raw=None):
+        self.name = name
         self.api = api
         self.category = category
-        self.name = name
 
         self.alias = alias
         self.requires = requires or []
 
         self.enums = enums
         self.members = members
+
+        self._raw = raw
 
     def enums_for(self, feature_set):
         relevant = set(feature_set.features) | set(feature_set.extensions)
@@ -650,11 +651,7 @@ class Type(IdentifiedByName):
         if element.get('requires'):
             requires.add(element.get('requires'))
 
-        return cls(raw, api, category, name, alias=alias, requires=requires)
-
-    @property
-    def is_preprocessor(self):
-        return '#' in self.raw
+        return cls(name, api=api, category=category, alias=alias, requires=requires, raw=raw)
 
     def __str__(self):
         return self.name
@@ -668,10 +665,9 @@ class Member(IdentifiedByName):
 
     @classmethod
     def from_element(cls, element):
-        name = element.find('name').text
-        type = OGLType(element)
+        type_ = ParsedType.from_element(element)
 
-        return Member(name, type)
+        return Member(type_.name, type_)
 
 
 class Enum(IdentifiedByName):
@@ -757,9 +753,9 @@ class Command(IdentifiedByName):
         if self.params is None:
             return list()
 
-        requires = [param.type.orig_type for param in self.params if param.type.orig_type]
-        if self.proto.ret.orig_type:
-            requires.append(self.proto.ret.orig_type)
+        requires = [param.type.original_type for param in self.params if param.type.original_type]
+        if self.proto.ret.original_type:
+            requires.append(self.proto.ret.original_type)
         return requires
 
     @property
@@ -781,7 +777,7 @@ class Proto(object):
 
     @classmethod
     def from_element(cls, element):
-        return Proto(element.find('name').text, OGLType(element))
+        return Proto(element.find('name').text, ParsedType.from_element(element))
 
     def __str__(self):
         return '{self.ret} {self.name}'.format(self=self)
@@ -790,47 +786,64 @@ class Proto(object):
 class Param(object):
     def __init__(self, element):
         self.group = element.get('group')
-        self.type = OGLType(element)
+        self.type = ParsedType.from_element(element)
         self.name = element.find('name').text.strip('*')
 
     def __str__(self):
         return '{0!r} {1}'.format(self.type, self.name)
 
 
-class OGLType(object):
-    def __init__(self, element):
-        self.element = element
+class ParsedType(object):
+    def __init__(self, name, type_, original_type,
+                 is_pointer=0, is_const=False, is_unsigned=False,
+                 comment='', raw=None, element=None):
+        self.name = name
+        self.type = type_
+        self.original_type = original_type
 
+        self.is_pointer = is_pointer
+        self.is_const = is_const
+        self.is_unsigned = is_unsigned
+
+        self.comment = comment
+
+        self._raw = raw
+        self._element = element
+
+    @classmethod
+    @memoize(key=lambda cls, element: tuple(element.itertext()))
+    def from_element(cls, element):
         # assume just one comment element
-        self.comment = ' '.join(c.text for c in element.iter('comment'))
+        comment = ' '.join(c.text for c in element.iter('comment'))
 
-        # TODO optimize this, ~25% (for GL) is lost here, maybe cache by name
+        raw = ' '.join(glad.util.itertext(element, ignore=('comment',)))
+        name = element.find('name').text
 
-        # working copy to remove elements
-        element = copy.deepcopy(element)
-        for comment in element.findall('comment'): # hope that they are not nested
-            element.remove(comment)
-
-        self.raw = ' '.join(t.strip() for t in element.itertext())
-
-        self.name = element.find('name').text
-
-        self.orig_type = None if element.find('type') is None else element.find('type').text
-        self.type = (self.raw.replace('const', '').replace('unsigned', '')
-                     .replace('struct', '').strip().split(None, 1)[0]
-                     if element.find('ptype') is None else element.find('ptype').text)
-        # 0 if no pointer, 1 if *, 2 if **
-        self.is_pointer = 0 if self.raw is None else self.raw.count('*')
-        # it can be a pointer to an array, or just an array
-        self.is_pointer += len(_ARRAY_RE.findall(self.raw))
-        self.is_const = False if self.raw is None else 'const' in self.raw
-        self.is_unsigned = False if self.raw is None else 'unsigned' in self.raw
-
-        if 'struct' in self.raw and 'struct' not in self.type:
-            self.type = 'struct {}'.format(self.type)
+        original_type = None if element.find('type') is None else element.find('type').text
 
         ptype = element.find('ptype')
-        self.ptype = ptype.text if ptype is not None else None
+        if ptype is not None:
+            ptype = ptype.text if ptype is not None else None
+            type_ = ptype
+        else:
+            type_ = raw.replace('const', '') \
+                       .replace('unsigned', '') \
+                       .replace('struct', '') \
+                       .strip().split(None, 1)[0]
+
+        # 0 if no pointer, 1 if *, 2 if **
+        is_pointer = 0 if raw is None else raw.count('*')
+        # it can be a pointer to an array, or just an array
+        is_pointer += len(_ARRAY_RE.findall(raw))
+        is_const = False if raw is None else 'const' in raw
+        is_unsigned = False if raw is None else 'unsigned' in raw
+
+        if 'struct' in raw and 'struct' not in type_:
+            type_ = 'struct {}'.format(type_)
+
+        return cls(name, type_, original_type, is_pointer=is_pointer,
+                   is_const=is_const, is_unsigned=is_unsigned,
+                   comment=comment, raw=raw, element=element)
 
 
 # TODO unify API

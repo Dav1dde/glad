@@ -12,6 +12,7 @@ from glad.config import Config, ConfigOption, RequirementConstraint, Unsupported
 from glad.generator import BaseGenerator
 from glad.parse import Type
 from glad.specification import VK, GL
+import glad.util
 
 _ARRAY_RE = re.compile(r'\[[\d\w]*\]')
 
@@ -21,15 +22,11 @@ DebugReturn = namedtuple('_DebugReturn', ['declaration', 'assignment', 'ret'])
 Header = namedtuple('_Header', ['name', 'include', 'url'])
 
 
-def type_to_c(ogl_type):
+def type_to_c(parsed_type):
     result = ''
 
-    element = copy.deepcopy(ogl_type.element)
-    for comment in element.findall('comment'):
-        comment.getparent().remove(comment)
-
-    for text in element.itertext():
-        if text == ogl_type.name:
+    for text in glad.util.itertext(parsed_type._element, ignore=('comment',)):
+        if text == parsed_type.name:
             # yup * is sometimes part of the name
             result += '*' * text.count('*')
         else:
@@ -39,7 +36,7 @@ def type_to_c(ogl_type):
 
 
 def params_to_c(params):
-    return ', '.join(param.type.raw for param in params) if params else 'void'
+    return ', '.join(param.type._raw for param in params) if params else 'void'
 
 
 def loadable(spec, feature_set, *args):
@@ -371,11 +368,13 @@ class CGenerator(BaseGenerator):
         """
         for type_name in  ('GLsizeiptr', 'GLintptr', 'GLsizeiptrARB', 'GLintptrARB'):
             if type_name in feature_set.types:
-                type_element = feature_set.types[feature_set.types.index(type_name)]
-                type_element.raw = \
+                index = feature_set.types.index(type_name)
+                type_ = copy.deepcopy(feature_set.types[index])
+                type_._raw = \
                     '#if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) ' + \
                     '&& (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ > 1060)\n' + \
-                    type_element.raw.replace('ptrdiff_t', 'long') + '\n#else\n' + type_element.raw + '\n#endif'
+                    type_._raw.replace('ptrdiff_t', 'long') + '\n#else\n' + type_._raw + '\n#endif'
+                feature_set.types[index] = type_
 
     def _fix_cpp_style_comments(self, feature_set):
         """
@@ -384,9 +383,11 @@ class CGenerator(BaseGenerator):
         Currently the only "workaround" needed to make Vulkan compile with -ansi.
         See also: https://github.com/KhronosGroup/Vulkan-Docs/pull/700
         """
-        for type_ in feature_set.types:
-            if '//' in type_.raw:
-                type_.raw = replace_cpp_style_comments(type_.raw)
+        for i, type_ in enumerate(feature_set.types):
+            if '//' in type_._raw:
+                new_type = copy.deepcopy(type_)
+                new_type._raw = replace_cpp_style_comments(new_type._raw)
+                feature_set.types[i] = new_type
 
     def _replace_included_headers(self, feature_set, config):
         if not config['HEADER_ONLY']:
@@ -403,7 +404,7 @@ class CGenerator(BaseGenerator):
             for pheader in self.ADDITIONAL_HEADERS:
                 content = re.sub('^#include\\s*<' + pheader.include + '>', r'/* \0 */', content, flags=re.MULTILINE)
 
-            types[type_index] = Type(content, None, header.name, None)
+            types[type_index] = Type(header.name, raw=content)
 
     def _add_additional_headers(self, feature_set, config):
         if config['HEADER_ONLY']:
