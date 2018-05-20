@@ -134,7 +134,7 @@ def main():
 
     generator = generators[ns.subparser_name](global_config['OUT_PATH'], opener=opener)
 
-    def select(api, info):
+    def select(specification, api, info):
         logger.info('generating %s:%s/%s=%s', api, info.profile, info.specification, info.version)
 
         extensions = global_config['EXTENSIONS']
@@ -144,7 +144,7 @@ def main():
         return generator.select(specification, api, info.version, info.profile, extensions, config)
 
     for specification, apis in apis_by_spec:
-        feature_sets = list(select(api, info) for api, info in apis)
+        feature_sets = list(select(specification, api, info) for api, info in apis)
 
         if global_config['MERGE']:
             logger.info('merging %s', feature_sets)

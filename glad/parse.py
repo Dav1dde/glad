@@ -22,6 +22,7 @@ except ImportError:
 import re
 import copy
 import logging
+import os.path
 from collections import defaultdict, OrderedDict, namedtuple, deque
 from contextlib import closing
 from itertools import chain
@@ -110,7 +111,7 @@ class FeatureSet(object):
                 in_dict = items.setdefault(new_item.name, new_item)
                 if not in_dict is new_item:
                     if not in_dict._raw == new_item._raw:
-                        logger.warn('potentially incompatibility: %r <-> %r', new_item._raw, in_dict._raw)
+                        logger.warn('potential incompatibility: %r <-> %r', new_item._raw, in_dict._raw)
 
         info = list(feature_set.info)
         features = to_ordered_dict(feature_set.features)
@@ -128,8 +129,12 @@ class FeatureSet(object):
                 merge_items(enums, other.enums)
                 merge_items(commands, other.commands)
 
+        name = os.path.commonprefix(list(chain([feature_set.name], [f.name for f in others])))
+        if not name:
+            name = feature_set.name
+
         return FeatureSet(
-            feature_set.name,
+            name,
             FeatureSetInfo(info),
             list(features.values()),
             list(extensions.values()),
