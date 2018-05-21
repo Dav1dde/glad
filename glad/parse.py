@@ -156,15 +156,6 @@ class Specification(object):
     def __init__(self, root):
         self.root = root
 
-        self._platforms = None
-
-        self._types = None
-        self._groups = None
-        self._enums = None
-        self._commands = None
-        self._features = None
-        self._extensions = None
-
         self._combined = None
 
     def _magic_require(self, api, profile):
@@ -243,112 +234,105 @@ class Specification(object):
         return self._groups
 
     @property
+    @memoize()
     def platforms(self):
-        if self._platforms is None:
-            self._platforms = dict()
+        platforms = dict()
 
-            for element in self.root.find('platforms'):
-                platform = Platform.from_element(element)
-                self._platforms[platform.name] = platform
+        for element in self.root.find('platforms'):
+            platform = Platform.from_element(element)
+            platforms[platform.name] = platform
 
-        return self._platforms
+        return platforms
 
     @property
+    @memoize()
     def types(self):
-        if self._types is None:
-            self._types = OrderedDict()
-            for element in filter(lambda e: e.tag == 'type', iter(self.root.find('types'))):
-                t = Type.from_element(element)
+        types = OrderedDict()
+        for element in filter(lambda e: e.tag == 'type', iter(self.root.find('types'))):
+            t = Type.from_element(element)
 
-                if t.category == 'enum':
-                    enums_element = self.root.findall('.//enums[@type][@name="{}"]'.format(t.name))
-                    if len(enums_element) == 0:
-                        # yep the type exists but there is actually no enum for it...
-                        logger.debug('type {} with category enum but without <enums>'.format(t.name))
-                        continue
-                    if not len(enums_element) == 1:
-                        # this should never happen, if it does ... well shit
-                        raise ValueError('multiple enums with type attribute and name {}'.format(t.name))
-                    enums_element = enums_element[0]
+            if t.category == 'enum':
+                enums_element = self.root.findall('.//enums[@type][@name="{}"]'.format(t.name))
+                if len(enums_element) == 0:
+                    # yep the type exists but there is actually no enum for it...
+                    logger.debug('type {} with category enum but without <enums>'.format(t.name))
+                    continue
+                if not len(enums_element) == 1:
+                    # this should never happen, if it does ... well shit
+                    raise ValueError('multiple enums with type attribute and name {}'.format(t.name))
+                enums_element = enums_element[0]
 
-                    kwargs = dict(namespace=enums_element.get('namespace'),
-                                  group=enums_element.get('group'),
-                                  vendor=enums_element.get('vendor'),
-                                  comment=enums_element.get('comment', ''))
+                kwargs = dict(namespace=enums_element.get('namespace'),
+                              group=enums_element.get('group'),
+                              vendor=enums_element.get('vendor'),
+                              comment=enums_element.get('comment', ''))
 
-                    enums = OrderedDict()
-                    for e in (Enum.from_element(e, **kwargs) for e in enums_element.findall('enum')):
-                        enums[e.name] = e
+                enums = OrderedDict()
+                for e in (Enum.from_element(e, **kwargs) for e in enums_element.findall('enum')):
+                    enums[e.name] = e
 
-                    for extension in self.root.findall('.//require/enum[@extends="{}"]/../..'.format(t.name)):
-                        try:
-                            extnumber = int(extension.attrib['number'])
-                        except ValueError:
-                            # Most likely a feature, if that happens every extending enum needs
-                            # to specify its own extnumber
-                            extnumber = None
+                for extension in self.root.findall('.//require/enum[@extends="{}"]/../..'.format(t.name)):
+                    try:
+                        extnumber = int(extension.attrib['number'])
+                    except ValueError:
+                        # Most likely a feature, if that happens every extending enum needs
+                        # to specify its own extnumber
+                        extnumber = None
 
-                        for extending_enum in extension.findall('.//require/enum[@extends="{}"]'.format(t.name)):
-                            enum = Enum.from_element(extending_enum, extnumber=extnumber)
+                    for extending_enum in extension.findall('.//require/enum[@extends="{}"]'.format(t.name)):
+                        enum = Enum.from_element(extending_enum, extnumber=extnumber)
 
-                            if enum.name not in enums:
-                                enums[enum.name] = enum
-                            else:
-                                # technically not required, but better throw more
-                                # than generate broken code because of a broken specification
-                                if not enum.value == enums[enum.name].value:
-                                    raise ValueError('extension enum {} required multiple times '
-                                                     'with different values'.format(e.name))
+                        if enum.name not in enums:
+                            enums[enum.name] = enum
+                        else:
+                            # technically not required, but better throw more
+                            # than generate broken code because of a broken specification
+                            if not enum.value == enums[enum.name].value:
+                                raise ValueError('extension enum {} required multiple times '
+                                                 'with different values'.format(e.name))
 
-                            enums[enum.name].also_extended_by(extension.attrib['name'])
+                        enums[enum.name].also_extended_by(extension.attrib['name'])
 
-                    t.enums = list(enums.values())
-                elif t.category in ('struct', 'union'):
-                    t.members = [Member.from_element(e) for e in element.findall('member')]
+                t.enums = list(enums.values())
+            elif t.category in ('struct', 'union'):
+                t.members = [Member.from_element(e) for e in element.findall('member')]
 
-                if t.name not in self._types:
-                    self._types[t.name] = list()
-                self._types[t.name].append(t)
+            if t.name not in types:
+                types[t.name] = list()
+            types[t.name].append(t)
 
-            def _type_dependencies(item):
-                # all requirements of all types (types can exist more than once, e.g. specialized for an API)
-                # but only requirements that are types as well
-                requirements = set(r for r in chain.from_iterable(t.requires for t in item[1]) if r in self._types)
-                aliases = set(t.alias for t in item[1] if t.alias and t.alias in self._types)
-                dependencies = requirements.union(aliases)
-                dependencies.discard(item[0])
-                return dependencies
+        def _type_dependencies(item):
+            # all requirements of all types (types can exist more than once, e.g. specialized for an API)
+            # but only requirements that are types as well
+            requirements = set(r for r in chain.from_iterable(t.requires for t in item[1]) if r in types)
+            aliases = set(t.alias for t in item[1] if t.alias and t.alias in types)
+            dependencies = requirements.union(aliases)
+            dependencies.discard(item[0])
+            return dependencies
 
-            self._types = OrderedDict(topological_sort(self._types.items(), lambda x: x[0], _type_dependencies))
-
-        return self._types
+        return OrderedDict(topological_sort(types.items(), lambda x: x[0], _type_dependencies))
 
     @property
     def commands(self):
-        if self._commands is None:
-            self._commands = defaultdict(list)
-            for element in self.root.find('commands'):
-                command = Command(element)
-                self._commands[command.name].append(command)
+        commands = dict()
+        for element in self.root.find('commands'):
+            command = Command(element)
+            commands.setdefault(command.name, []).append(command)
 
-            self._commands = dict(self._commands)
+        # fixup aliases
+        for command in chain.from_iterable(commands.values()):
+            if command.alias is not None and command.proto is None:
+                aliased_command = next(c for c in commands[command.alias] if c.api == command.api)
 
-            # fixup aliases
-            for command in chain.from_iterable(self._commands.values()):
-                if command.alias is not None and command.proto is None:
-                    aliased_command = next(c for c in self._commands[command.alias] if c.api == command.api)
+                command.proto = Proto(command.name, copy.deepcopy(aliased_command.proto.ret))
+                command.params = copy.deepcopy(aliased_command.params)
 
-                    command.proto = Proto(command.name, copy.deepcopy(aliased_command.proto.ret))
-                    command.params = copy.deepcopy(aliased_command.params)
-
-        return self._commands
+        return commands
 
     @property
+    @memoize()
     def enums(self):
-        if self._enums is not None:
-            return self._enums
-
-        self._enums = defaultdict(list)
+        enums = dict()
         for element in self.root.iter('enums'):
             # check if the enum is actually a type
             if self._magic_are_enums_blacklisted(element):
@@ -365,7 +349,7 @@ class Specification(object):
                 assert enum.tag == 'enum'
 
                 name = enum.attrib['name']
-                self._enums[name].append(
+                enums.setdefault(name, []).append(
                     Enum.from_element(enum, namespace=namespace, group=group, vendor=vendor, comment=comment)
                 )
 
@@ -375,40 +359,36 @@ class Specification(object):
                 continue
 
             enum = Enum.from_element(element)
-            self._enums[enum.name].append(enum)
+            enums.setdefault(enum.name, []).append(enum)
 
-        return self._enums
+        return enums
 
     @property
+    @memoize()
     def features(self):
-        if self._features is not None:
-            return self._features
-
-        self._features = defaultdict(OrderedDict)
+        features = defaultdict(dict)
         for element in self.root.iter('feature'):
             num = Version(*map(int, element.attrib['number'].split('.')))
-            self._features[element.attrib['api']][num] = Feature.from_element(element)
+            features[element.attrib['api']][num] = Feature.from_element(element)
 
-        for api, features in self._features.items():
-            self._features[api] = OrderedDict(sorted(features.items(), key=lambda x: x[0]))
+        for api, api_features in features.items():
+            features[api] = OrderedDict(sorted(api_features.items(), key=lambda x: x[0]))
 
-        return self._features
+        return features
 
     def highest_version(self, api):
         return sorted(self.features[api].keys(), reverse=True)[0]
 
     @property
+    @memoize()
     def extensions(self):
-        if self._extensions is not None:
-            return self._extensions
-
-        self._extensions = defaultdict(dict)
+        extensions = defaultdict(dict)
         for element in self.root.find('extensions'):
             extension = Extension.from_element(element)
             for api in extension.supported:
-                self._extensions[api][element.attrib['name']] = extension
+                extensions[api][element.attrib['name']] = extension
 
-        return self._extensions
+        return extensions
 
     def is_extension(self, api, extension_name):
         return extension_name in self.extensions[api]

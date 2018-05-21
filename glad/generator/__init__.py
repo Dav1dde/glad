@@ -120,7 +120,6 @@ class JinjaGenerator(BaseGenerator):
         )
 
     def generate(self, spec, feature_set, config):
-        feature_set = copy.deepcopy(feature_set)
         feature_set = self.modify_feature_set(spec, feature_set, config)
         for template, output_path in self.get_templates(spec, feature_set, config):
             #try:

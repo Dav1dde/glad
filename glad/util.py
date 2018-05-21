@@ -105,7 +105,7 @@ def topological_sort(items, key, dependencies):
                 emitted.append(key_item)
                 next_emitted.append(key_item)
         if not next_emitted:
-            raise ValueError("cyclic or missing dependancy detected: %r" % (next_pending,))
+            raise ValueError("cyclic or missing dependency detected: %r" % (next_pending,))
         pending = next_pending
         emitted = next_emitted
 
@@ -120,13 +120,13 @@ def memoize(key=None):
         cache = dict()
 
         @functools.wraps(func)
-        def wrapped(*args, **kwargs):
+        def memoized(*args, **kwargs):
             key = key_func(*args, **kwargs)
             if key not in cache:
                 cache[key] = func(*args, **kwargs)
             return cache[key]
 
-        return wrapped
+        return memoized
 
     return memoize_decorator
 

@@ -1,5 +1,4 @@
 import copy
-import functools
 import itertools
 
 import jinja2
@@ -188,12 +187,6 @@ def replace_cpp_style_comments(inp):
     return _CPP_STYLE_COMMENT_RE.sub(r'\1/*\2 */', inp)
 
 
-
-# RANDOM TODOs:
-# TODO: glad_get_gl_version(), glad_get_egl_version(), glad_get_*_version()
-# TODO: merge option -> https://github.com/Dav1dde/glad/issues/24
-
-
 class CConfig(Config):
     DEBUG = ConfigOption(
         converter=bool,
@@ -358,6 +351,9 @@ class CGenerator(JinjaGenerator):
         self._add_additional_headers(feature_set, config)
 
     def modify_feature_set(self, spec, feature_set, config):
+        # TODO this takes rather lonng (~30%), maybe drop it?
+        feature_set = copy.deepcopy(feature_set)
+
         self._fix_issue_70(feature_set)
         self._fix_cpp_style_comments(feature_set)
         self._replace_included_headers(feature_set, config)
