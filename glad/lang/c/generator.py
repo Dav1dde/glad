@@ -170,8 +170,18 @@ class CGenerator(Generator):
                     continue
                 elif self.local_files:
                     output_string = '#include "khrplatform.h"\n'
-            if not self.spec.NAME in ('egl',) and 'khronos' in type.raw:
+
+            if type.name in ('GLintptr', 'GLsizeiptr') and output_string.strip():
+                output_string = output_string.strip()
+                parts = output_string.split() # ['typedef', 'khronos_', 'GLintptr;']
+                parts[1] = 'ptrdiff_t' # ['typdef', 'ptrdiff_t', 'GLintptr;']
+                replaced_type = ' '.join(parts)
+                output_string = \
+                    '#if defined(__khrplatform_h_)\n' + output_string + '\n#else\n' + \
+                    replaced_type + '\n#endif\n'
+            elif not self.spec.NAME in ('egl',) and 'khronos' in type.raw:
                 continue
+
             if type.name in ('GLsizeiptr', 'GLintptr', 'GLsizeiptrARB', 'GLintptrARB'):
                 # 10.6 is the last version supporting more than 64 bit (>1060)
                 output_string = \
