@@ -33,7 +33,7 @@ int gladLoaderLoadGL{{ 'Context' if options.mx }}({{ template_utils.context_arg(
         "/System/Library/Frameworks/OpenGL.framework/OpenGL",
         "/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL"
     };
-#elif defined(GLAD_PLATFORM_WIN32)
+#elif GLAD_PLATFORM_WIN32
     static const char *NAMES[] = {"opengl32.dll"};
 #else
     static const char *NAMES[] = {
@@ -54,7 +54,7 @@ int gladLoaderLoadGL{{ 'Context' if options.mx }}({{ template_utils.context_arg(
         userptr.gl_handle = handle;
 #ifdef __APPLE__
         userptr.gl_get_proc_address_ptr = NULL;
-#elif defined(GLAD_PLATFORM_WIN32)
+#elif GLAD_PLATFORM_WIN32
         userptr.gl_get_proc_address_ptr =
             (GLADglprocaddrfunc) glad_dlsym_handle(handle, "wglGetProcAddress");
 #else

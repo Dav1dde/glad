@@ -24,7 +24,7 @@ static void* _egl_handle = NULL;
 int gladLoaderLoadEGL(EGLDisplay display) {
 #ifdef __APPLE__
     static const char *NAMES[] = {"libEGL.dylib"};
-#elif defined(GLAD_PLATFORM_WIN32)
+#elif GLAD_PLATFORM_WIN32
     static const char *NAMES[] = {"libEGL.dll", "EGL.dll"};
 #else
     static const char *NAMES[] = {"libEGL.so.1", "libEGL.so"};

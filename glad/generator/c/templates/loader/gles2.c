@@ -29,7 +29,7 @@ static void* _gles2_handle = NULL;
 int gladLoaderLoadGLES2{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
 #ifdef __APPLE__
     static const char *NAMES[] = {"libGLESv2.dylib"};
-#elif defined(GLAD_PLATFORM_WIN32)
+#elif GLAD_PLATFORM_WIN32
     static const char *NAMES[] = {"GLESv2.dll", "libGLESv2.dll"};
 #else
     static const char *NAMES[] = {"libGLESv2.so.2", "libGLESv2.so"};

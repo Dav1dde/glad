@@ -62,7 +62,7 @@ int gladLoaderLoadVulkan{{ 'Context' if options.mx }}({{ template_utils.context_
     static const char *NAMES[] = {
 #ifdef __APPLE__
         "libvulkan.1.dylib",
-#elif defined(GLAD_PLATFORM_WIN32)
+#elif GLAD_PLATFORM_WIN32
         "vulkan-1.dll",
         "vulkan.dll",
 #else

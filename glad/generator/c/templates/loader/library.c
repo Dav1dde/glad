@@ -2,8 +2,9 @@
 #define GLAD_LOADER_LIBRARY_C_
 
 #include <stddef.h>
+#include <stdlib.h>
 
-#ifdef GLAD_PLATFORM_WIN32
+#if GLAD_PLATFORM_WIN32
 #include <windows.h>
 #else
 #include <dlfcn.h>
@@ -11,12 +12,24 @@
 
 
 static void* glad_get_dlopen_handle(const char *lib_names[], int length) {
+    void *handle = NULL;
     int i;
-    void *handle;
 
     for (i = 0; i < length; ++i) {
-#ifdef GLAD_PLATFORM_WIN32
-        handle = LoadLibraryA(lib_names[i]);
+#if GLAD_PLATFORM_WIN32
+  #if GLAD_PLATFORM_UWP
+        size_t buffer_size = (strlen(lib_names[i]) + 1) * sizeof(WCHAR);
+        LPWSTR buffer = (LPWSTR) malloc(buffer_size);
+        if (buffer != NULL) {
+            int ret = MultiByteToWideChar(CP_ACP, 0, lib_names[i], -1, buffer, buffer_size);
+            if (ret != 0) {
+                handle = (void*) LoadPackagedLibrary(buffer, 0);
+            }
+            free((void*) buffer);
+        }
+  #else
+        handle = (void*) LoadLibraryA(lib_names[i]);
+  #endif
 #else
         handle = dlopen(lib_names[i], RTLD_LAZY | RTLD_LOCAL);
 #endif
@@ -30,7 +43,7 @@ static void* glad_get_dlopen_handle(const char *lib_names[], int length) {
 
 static void glad_close_dlopen_handle(void* handle) {
     if (handle != NULL) {
-#ifdef GLAD_PLATFORM_WIN32
+#if GLAD_PLATFORM_WIN32
         FreeLibrary((HMODULE) handle);
 #else
         dlclose(handle);
@@ -43,7 +56,7 @@ static GLADapiproc glad_dlsym_handle(void* handle, const char *name) {
         return NULL;
     }
 
-#ifdef GLAD_PLATFORM_WIN32
+#if GLAD_PLATFORM_WIN32
     return (GLADapiproc) GetProcAddress((HMODULE) handle, name);
 #else
     return GLAD_GNUC_EXTENSION (GLADapiproc) dlsym(handle, name);

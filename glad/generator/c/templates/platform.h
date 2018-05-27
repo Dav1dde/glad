@@ -3,6 +3,32 @@
 
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__MINGW32__)
   #define GLAD_PLATFORM_WIN32 1
+#else
+  #define GLAD_PLATFORM_WIN32 0
+#endif
+
+
+#ifndef GLAD_PLATFORM_UWP
+  #if defined(_MSC_VER) && !defined(GLAD_INTERNAL_HAVE_WINAPIFAMILY)
+    #ifdef __has_include
+      #if __has_include(<winapifamily.h>)
+        #define GLAD_INTERNAL_HAVE_WINAPIFAMILY 1
+      #endif
+    #elif _MSC_VER >= 1700 && !_USING_V110_SDK71_
+      #define GLAD_INTERNAL_HAVE_WINAPIFAMILY 1
+    #endif
+  #endif
+
+  #ifdef GLAD_INTERNAL_HAVE_WINAPIFAMILY
+    #include <winapifamily.h>
+    #if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
+      #define GLAD_PLATFORM_UWP 1
+    #endif
+  #endif
+
+  #ifndef GLAD_PLATFORM_UWP
+    #define GLAD_PLATFORM_UWP 0
+  #endif
 #endif
 
 #ifdef __GNUC__
@@ -13,7 +39,7 @@
 
 #ifndef GLAD_API_CALL
   #if defined(GLAD_API_CALL_EXPORT)
-    #if defined(GLAD_PLATFORM_WIN32) || defined(__CYGWIN__)
+    #if GLAD_PLATFORM_WIN32 || defined(__CYGWIN__)
       #if defined(GLAD_API_CALL_EXPORT_BUILD)
         #if defined(__GNUC__)
           #define GLAD_API_CALL __attribute__ ((dllexport)) extern
@@ -39,7 +65,7 @@
 
 #ifdef APIENTRY
   #define GLAD_API_PTR APIENTRY
-#elif defined(GLAD_PLATFORM_WIN32)
+#elif GLAD_PLATFORM_WIN32
   #define GLAD_API_PTR __stdcall
 #else
   #define GLAD_API_PTR
