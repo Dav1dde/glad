@@ -6,7 +6,7 @@ import sys
 
 from glad.lang.common.loader import NullLoader
 from glad.opener import URLOpener
-from glad.util import api_name
+from glad.util import api_name, Version
 import glad
 
 
@@ -90,7 +90,7 @@ class Generator(object):
 
             if version is None:
                 version = list(self.spec.features[api].keys())[-1]
-                self.api[api] = version
+                self.api[api] = Version(*version)
 
             if version not in self.spec.features[api]:
                 raise ValueError(

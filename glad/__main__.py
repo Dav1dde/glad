@@ -5,16 +5,12 @@ Uses the official Khronos-XML specs to generate a
 GL/GLES/EGL/GLX/WGL Loader made for your needs. Glad currently supports
 the languages C, D, Nim, Pascal and Volt.
 """
-from collections import namedtuple
 import logging
-import sys
 
 from glad.opener import URLOpener
 from glad.spec import SPECS
 import glad.lang
 
-
-Version = namedtuple('Version', ['major', 'minor'])
 
 logger = logging.getLogger('glad')
 

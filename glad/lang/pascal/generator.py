@@ -5,11 +5,7 @@ from glad.lang.common.generator import Generator
 from glad.lang.common.util import makefiledir
 
 if sys.version_info >= (3, 0):
-    from io import StringIO
-
     basestring = str
-else:
-    from StringIO import StringIO
 
 
 def _gl_types(gen, f):
