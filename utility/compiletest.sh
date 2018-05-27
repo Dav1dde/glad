@@ -95,6 +95,11 @@ function c_example {
 c_egl --generator=c
 c_egl --generator=c --extensions=
 
+c_gl --generator=c
+c_gl --generator=c --api="gl=2.1"
+c_gl --generator=c --api="gl=,gles2="
+c_gl --generator=c --extensions=
+
 c_glx --generator=c
 c_glx --generator=c --extensions=
 
@@ -110,6 +115,11 @@ echo -e "====================== Generating and compiling C/C++ Debug: ==========
 
 c_egl --generator=c-debug
 c_egl --generator=c-debug --extensions=
+
+c_gl --generator=c-debug
+c_gl --generator=c-debug --api="gl=2.1"
+c_gl --generator=c-debug --api="gl=,gles2="
+c_gl --generator=c-debug --extensions=
 
 c_glx --generator=c-debug
 c_glx --generator=c-debug --extensions=

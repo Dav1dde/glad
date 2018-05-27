@@ -10,7 +10,7 @@ import logging
 from glad.opener import URLOpener
 from glad.spec import SPECS
 import glad.lang
-
+from glad.util import Version
 
 logger = logging.getLogger('glad')
 
