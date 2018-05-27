@@ -300,6 +300,17 @@ class OGLType(object):
             s = self.NIM_POINTER_MAP.get(s, default)
         return s
 
+    def to_pascal(self):
+        s = self.type
+        if self.is_pointer == 2:
+            s = 'PPointer' if s == 'void' else 'PP' + s
+        elif self.is_pointer == 1:
+            if s[0:6] == 'struct':
+                s = s[7:]
+            else:
+                s = 'Pointer' if s == 'void' else 'P' + s
+        return s
+
     __str__ = to_d
     __repr__ = __str__
 
