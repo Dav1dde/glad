@@ -1,11 +1,29 @@
+from collections import OrderedDict
+
 import os
-import sys
 
 from glad.lang.common.generator import Generator
 from glad.lang.common.util import makefiledir
 
 
 KHRPLATFORM = 'https://www.khronos.org/registry/egl/api/KHR/khrplatform.h'
+
+
+_KHR_TYPE_REPLACEMENTS = {
+    'khronos_intptr_t': 'ptrdiff_t',
+    'khronos_ssize_t': 'ptrdiff_t'
+}
+
+
+def replace_khr_types(output_str):
+    replaced = output_str
+    for before, after in _KHR_TYPE_REPLACEMENTS.items():
+        replaced = replaced.replace(before, after)
+
+    if replaced == output_str:
+        return output_str
+
+    return '#if defined(__khrplatform_h_)\n' + output_str + '#else\n' + replaced + '#endif\n'
 
 
 class CGenerator(Generator):
@@ -163,26 +181,25 @@ class CGenerator(Generator):
         self.loader.write_header(f)
         self.write_api_header(f)
 
+        dedup_types = OrderedDict()
         for type in types:
+            dedup_types.setdefault(type.name, []).append(type)
+
+        for types in dedup_types.values():
+            type = types[0]
+
             output_string = (type.raw + '\n').lstrip().replace('        ', ' ')
+
+            if self.omit_khrplatform:
+                output_string = replace_khr_types(output_string)
+
             if output_string == '#include <KHR/khrplatform.h>\n':
                 if self.omit_khrplatform:
                     continue
                 elif self.local_files:
                     output_string = '#include "khrplatform.h"\n'
 
-            if type.name in ('GLintptr', 'GLsizeiptr') and output_string.strip():
-                output_string = output_string.strip()
-                parts = output_string.split() # ['typedef', 'khronos_', 'GLintptr;']
-                parts[1] = 'ptrdiff_t' # ['typdef', 'ptrdiff_t', 'GLintptr;']
-                replaced_type = ' '.join(parts)
-                output_string = \
-                    '#if defined(__khrplatform_h_)\n' + output_string + '\n#else\n' + \
-                    replaced_type + '\n#endif\n'
-            elif not self.spec.NAME in ('egl',) and 'khronos' in type.raw:
-                continue
-
-            if type.name in ('GLsizeiptr', 'GLintptr', 'GLsizeiptrARB', 'GLintptrARB'):
+            if 'ptrdiff_t' in output_string:
                 # 10.6 is the last version supporting more than 64 bit (>1060)
                 output_string = \
                     '#if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) ' +\
