@@ -3,65 +3,33 @@ glad
 
 GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.
 
-Checkout the [webservice](http://glad.dav1d.de) to generate the files you need!
+Use the [webservice](http://glad.dav1d.de) to generate the files you need!
 
+
+**IMPORTANT:** If you're experiencing errors like `identifier "GLintptr" is undefined`,
+*update* to the latest glad version!
 
 ```c
-// GLAD_DEBUG is only defined if the c-debug generator was used
-#ifdef GLAD_DEBUG
-// logs every gl call to the console
-void pre_gl_call(const char *name, void *funcptr, int len_args, ...) {
-    printf("Calling: %s (%d arguments)\n", name, len_args);
-}
-#endif
-
+#include <glad/glad.h>
 
 int main(int argc, char **argv)
 {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-    glutInitWindowSize(width, height);
-    glutCreateWindow("cookie");
-
-    glutReshapeFunc(reshape);
-    glutDisplayFunc(display);
+    // .. setup the context
 
     if(!gladLoadGL()) {
         printf("Something went wrong!\n");
         exit(-1);
     }
-    
-#ifdef GLAD_DEBUG
-    // before every opengl call call pre_gl_call
-    glad_set_pre_callback(pre_gl_call);
-    
-    // post callback checks for glGetError by default
-    
-    // don't use the callback for glClear
-    // (glClear could be replaced with your own function)
-    glad_debug_glClear = glad_glClear;
-#endif
-    
-    // gladLoadGLLoader(&glutGetProcAddress);
     printf("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
-    if (GLVersion.major < 2) {
-        printf("Your system doesn't support OpenGL >= 2!\n");
-        return -1;
-    }
 
-    printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION),
-           glGetString(GL_SHADING_LANGUAGE_VERSION));
-
-    glutMainLoop();
-
-    return 0;
+    // .. render here ..
 }
 ```
 
-Checkout the full example: [simple.c](https://github.com/Dav1dde/glad/blob/master/example/c/simple.c)
-
-Or the C++ example using [GLFW](http://glfw.org):
-[hellowindow2.cpp](https://github.com/Dav1dde/glad/blob/master/example/c%2B%2B/hellowindow2.cpp)
+Examples: 
+ * [simple.c](https://github.com/Dav1dde/glad/blob/master/example/c/simple.c)
+ * [hellowindow2.cpp](https://github.com/Dav1dde/glad/blob/master/example/c%2B%2B/hellowindow2.cpp)
+ using [GLFW](http://glfw.org):
 
 
 ## Usage ##
