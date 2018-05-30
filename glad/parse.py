@@ -51,10 +51,12 @@ class FeatureSetInfo(object):
             return result
         __repr__ = __str__
 
-    def __init__(self, items):
+    def __init__(self, items, merged=False):
         self._items = OrderedDict()
         for item in items:
             self._items.setdefault(item.api, []).append(item)
+
+        self.merged = merged
 
     @classmethod
     def one(cls, api, version, profile, identifier=None):
@@ -83,7 +85,8 @@ class FeatureSet(object):
         self.commands = commands
 
     def __str__(self):
-        return 'FeatureSet@(name={self.name}, info={self.info})'.format(self=self)
+        return 'FeatureSet@(name={self.name}, info={self.info}, extensions={extensions})' \
+            .format(self=self, extensions=len(self.extensions))
     __repr__ = __str__
 
     def __eq__(self, other):
@@ -110,8 +113,8 @@ class FeatureSet(object):
             for new_item in new_items:
                 in_dict = items.setdefault(new_item.name, new_item)
                 if not in_dict is new_item:
-                    if not in_dict._raw == new_item._raw:
-                        logger.warn('potential incompatibility: %r <-> %r', new_item._raw, in_dict._raw)
+                    if not in_dict.is_equivalent(new_item):
+                        logger.warn('potential incompatibility: %r <-> %r', new_item, in_dict)
 
         info = list(feature_set.info)
         features = to_ordered_dict(feature_set.features)
@@ -135,7 +138,7 @@ class FeatureSet(object):
 
         return FeatureSet(
             name,
-            FeatureSetInfo(info),
+            FeatureSetInfo(info, merged=True),
             list(features.values()),
             list(extensions.values()),
             list(types.values()),
@@ -710,9 +713,14 @@ class Type(IdentifiedByName):
 
         return cls(name, api=api, category=category, alias=alias, requires=requires, raw=raw)
 
+    def is_equivalent(self, other):
+        return self._raw == other._raw
+
     def __str__(self):
         return self.name
-    __repr__ = __str__
+
+    def __repr__(self):
+        return 'Type(raw={self._raw!r})'.format(self=self)
 
 
 class Member(IdentifiedByName):
@@ -754,9 +762,14 @@ class Enum(IdentifiedByName):
     def also_extended_by(self, name):
         self.extended_by.add(name)
 
+    def is_equivalent(self, other):
+        return self.name == other.name and self.value == other.value
+
     def __str__(self):
         return self.name
-    __repr__ = __str__
+
+    def __repr__(self):
+        return 'Enum(name={self.name}, value={self.value})'.format(self=self)
 
     @classmethod
     def from_element(cls, element, extnumber=None, **kwargs):
@@ -819,6 +832,9 @@ class Command(IdentifiedByName):
     def name(self):
         return self._name or self.proto.name
 
+    def is_equivalent(self, other):
+        return self.proto == other.proto and self.params == other.params
+
     def __str__(self):
         return '{self.proto.name}({params})'.format(
             self=self,
@@ -836,6 +852,9 @@ class Proto(object):
     def from_element(cls, element):
         return Proto(element.find('name').text, ParsedType.from_element(element))
 
+    def is_equivalent(self, other):
+        return self.ret == other.ret
+
     def __str__(self):
         return '{self.ret} {self.name}'.format(self=self)
 
@@ -845,6 +864,9 @@ class Param(object):
         self.group = element.get('group')
         self.type = ParsedType.from_element(element)
         self.name = element.find('name').text.strip('*')
+
+    def is_equivalent(self, other):
+        return self.type == other.type
 
     def __str__(self):
         return '{0!r} {1}'.format(self.type, self.name)
@@ -866,6 +888,9 @@ class ParsedType(object):
 
         self._raw = raw
         self._element = element
+
+    def is_equivalent(self, other):
+        return self._raw == other._raw
 
     @classmethod
     @memoize(key=lambda cls, element: tuple(element.itertext()))
@@ -915,6 +940,9 @@ class Require(object):
 
         self.comment = comment
 
+    def is_equivalent(self, other):
+        return self.requirements == other.requirements
+
     @classmethod
     def from_element(cls, element):
         requirements = [child.get('name') for child in element if not child.get('extends')]
@@ -928,6 +956,9 @@ class Remove(object):
         self.profile = element.get('profile')
 
         self.removes = [child.get('name') for child in element]
+
+    def is_equivalent(self, other):
+        return self.removes == other.removes
 
 
 class Extension(IdentifiedByName):
@@ -956,6 +987,9 @@ class Extension(IdentifiedByName):
 
     def supports(self, api):
         return api in self.supported
+
+    def is_equivalent(self, other):
+        return self.requires == other.requires
 
     @memoize()
     def get_requirements(self, spec, api=None, profile=None, feature_set=None):
@@ -1008,6 +1042,9 @@ class Feature(Extension):
         self.version = version
 
         self.removes = removes or []
+
+    def is_equivalent(self, other):
+        return Extension.is_equivalent(self, other) and self.removes == other.removes
 
     @classmethod
     def from_element(cls, element):

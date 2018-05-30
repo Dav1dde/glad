@@ -1,17 +1,20 @@
-import copy
+from datetime import datetime
+
+import sys
+
+import collections
 import os.path
+from jinja2 import Environment, ChoiceLoader, PackageLoader
 
-from jinja2 import Environment, ChoiceLoader, PackageLoader, TemplateNotFound
-
+import glad
 from glad.config import Config
 from glad.opener import URLOpener
 from glad.util import makefiledir
 
-
-def _api_filter(api):
-    if len(api) > 5:
-        return api.capitalize()
-    return api.upper()
+if sys.version_info >= (3, 0):
+    from urllib.parse import urlencode
+else:
+    from urllib import urlencode
 
 
 class NullConfig(Config):
@@ -22,12 +25,22 @@ class BaseGenerator(object):
     DISPLAY_NAME = None
     Config = NullConfig
 
-    def __init__(self, path, opener=None):
+    def __init__(self, path, opener=None, gen_info_factory=None):
         self.path = os.path.abspath(path)
 
         self.opener = opener
         if self.opener is None:
             self.opener = URLOpener.default()
+
+        self.gen_info_factory = gen_info_factory or GenerationInfo.create
+
+    @property
+    def name(self):
+        return self.DISPLAY_NAME
+
+    @property
+    def id(self):
+        raise NotImplementedError
 
     def select(self, spec, api, version, profile, extensions, config):
         """
@@ -55,11 +68,17 @@ class BaseGenerator(object):
         raise NotImplementedError
 
 
+def _api_filter(api):
+    if len(api) > 5:
+        return api.capitalize()
+    return api.upper()
+
+
 class JinjaGenerator(BaseGenerator):
     TEMPLATES = None
 
-    def __init__(self, path, opener=None):
-        BaseGenerator.__init__(self, path, opener=opener)
+    def __init__(self, path, opener=None, gen_info_factory=None):
+        BaseGenerator.__init__(self, path, opener=opener, gen_info_factory=gen_info_factory)
 
         assert self.TEMPLATES is not None
         self.environment = Environment(
@@ -91,7 +110,7 @@ class JinjaGenerator(BaseGenerator):
 
         :param spec: specification
         :param feature_set: feature set
-        :param config: configuraiton
+        :param config: configuration
         :return: [(destination, name)]
         """
         raise NotImplementedError
@@ -117,6 +136,7 @@ class JinjaGenerator(BaseGenerator):
             spec=spec,
             feature_set=feature_set,
             options=config.to_dict(transform=lambda x: x.lower()),
+            gen_info=self.gen_info_factory(self, spec, feature_set, config)
         )
 
     def generate(self, spec, feature_set, config):
@@ -141,3 +161,162 @@ class JinjaGenerator(BaseGenerator):
 
     def post_generate(self, spec, feature_set, config):
         pass
+
+
+class GenerationInfo(object):
+    def __init__(self, generator_name, generator_id, spec, info, options, extensions,
+                 when=None, commandline=None, online=None):
+        """
+        Collection of information used to describe a single "generation".
+        All held information should either be a string or be "stringifyable".
+
+        :param generator_name: the generator name
+        :param generator_id: the generator id (as it was registered with glad.plugin)
+        :param spec: the specification name
+        :param info: feature set information, usually glad.parse.FeatureSetInfo
+        :param options: dictionary containing all enabled options and their value
+        :param when: datetime when the code was generated, defaults to now
+        :param commandline: callable used to build commandline parameters (will be pased this instance)
+        :param online: callable used to build online parameters (will be passed this instance)
+        """
+        self.generator_name = generator_name
+        self.generator_id = generator_id
+        self.specification = spec
+        self.info = info
+        self.options = options
+        self.extensions = extensions
+        self.when = when or datetime.now().strftime('%c')
+
+        self._commandline = commandline or Commandline()
+        self._online = online or Online()
+
+    @classmethod
+    def create(cls, generator, spec, feature_set, config, **kwargs):
+        return cls(
+            generator.name,
+            generator.id,
+            spec.name,
+            feature_set.info,
+            config.to_dict(),
+            [ext.name for ext in feature_set.extensions],
+            **kwargs
+        )
+
+    @property
+    def version(self):
+        return glad.__version__
+
+    @property
+    def commandline(self):
+        return self._commandline.build(self)
+
+    @property
+    def online(self):
+        return self._online.build(self)
+
+
+class ParameterBuilder(object):
+    def build(self, gen_info):
+        raise NotImplementedError
+
+    def __call__(self, gen_info):
+        return self.build(gen_info)
+
+
+class NullParameterBuilder(ParameterBuilder):
+    def build(self, gen_info):
+        return ''
+
+
+class Commandline(ParameterBuilder):
+    def __init__(self):
+        """
+        Parameter builder which serializes a GeneratorInfo
+        into commandline arguments.
+        """
+        pass
+
+    def format_argument(self, name, value):
+        name = name.lower().replace('_', '-')
+
+        if isinstance(value, bool):
+            return '--{name}'.format(name=name) if value else None
+
+        if isinstance(value, (list, tuple)):
+            value = ','.join(str(element) for element in value)
+
+        return '--{name}=\'{value}\''.format(name=name, value=value)
+
+    def build(self, gen_info):
+        args = []
+
+        def push(name, value):
+            formatted = self.format_argument(name, value)
+            if formatted is not None:
+                args.append(formatted)
+
+        # general options
+        push('merge', gen_info.info.merged)
+        push('api', list(gen_info.info))
+        push('extensions', gen_info.extensions)
+
+        # generator options
+        args.append(gen_info.generator_id)
+        for name, value in gen_info.options.items():
+            push(name, value)
+
+        return ' '.join(args)
+
+
+class Online(ParameterBuilder):
+    def __init__(self, base_url='http://glad2.dav1d.de'):
+        """
+        Parameter builder which serializes a GeneratorInfo
+        into commandline arguments.
+
+        :param base_url: base url of the web generator.
+        """
+        self.base_url = base_url
+
+        self._max_len_threshold = 2000
+
+    def format_argument(self, name, value):
+        name = name.lower().replace('-', '_')
+
+        if isinstance(value, bool):
+            return name, 'on' if value else 'off'
+
+        if isinstance(value, (list, tuple)):
+            value = ','.join(str(element) for element in value)
+
+        return name, value
+
+    def build(self, gen_info):
+        args = collections.OrderedDict()
+
+        def push(name, value):
+            name, value = self.format_argument(name, value)
+            args[name] = value
+
+        # general options
+        push('merge', gen_info.info.merged)
+        push('api', list(gen_info.info))
+        push('extensions', gen_info.extensions)
+
+        # generator options
+        push('generator', gen_info.generator_id)
+        for name, value in gen_info.options.items():
+            push(name, value)
+
+        def build_url():
+            return '{base_url}/#{data}'.format(
+                base_url=self.base_url.rstrip('/'),
+                data=urlencode(args)
+            )
+
+        url = build_url()
+        if self._max_len_threshold and len(url) > self._max_len_threshold:
+            args.pop('extensions')
+            url = build_url()
+
+        return url

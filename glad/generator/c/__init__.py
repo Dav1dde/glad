@@ -274,6 +274,10 @@ class CGenerator(JinjaGenerator):
             supports=lambda x, arg: x.supports(arg)
         )
 
+    @property
+    def id(self):
+        return 'c'
+
     def select(self, spec, api, version, profile, extensions, config):
         if extensions is not None:
             extensions = set(extensions)
