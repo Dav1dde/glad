@@ -49,6 +49,7 @@ static int find_core{{ api|api }}(Display **display, int *screen) {
     int major = 0, minor = 0;
     if(*display == NULL) {
 #ifdef GLAD_GLX_NO_X11
+        (void) screen;
         return 0;
 #else
         *display = XOpenDisplay(0);
