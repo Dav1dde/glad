@@ -7,7 +7,7 @@ static int glad_egl_get_extensions(EGLDisplay display, const char **extensions) 
     return extensions != NULL;
 }
 
-static int glad_egl_has_extensions(const char *extensions, const char *ext) {
+static int glad_egl_has_extension(const char *extensions, const char *ext) {
     const char *loc;
     const char *terminator;
     if(extensions == NULL) {
@@ -37,9 +37,9 @@ static int glad_egl_find_extensions_{{ api|lower }}(EGLDisplay display) {
     if (!glad_egl_get_extensions(display, &extensions)) return 0;
 
 {% for extension in feature_set.extensions %}
-    GLAD_{{ extension.name }} = glad_egl_has_extensions(extensions, "{{ extension.name }}");
+    GLAD_{{ extension.name }} = glad_egl_has_extension(extensions, "{{ extension.name }}");
 {% else %}
-    (void) glad_egl_has_extensions;
+    (void) glad_egl_has_extension;
 {% endfor %}
 
     return 1;
