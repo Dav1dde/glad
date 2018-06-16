@@ -269,7 +269,7 @@ class Commandline(ParameterBuilder):
 
 
 class Online(ParameterBuilder):
-    def __init__(self, base_url='http://glad2.dav1d.de'):
+    def __init__(self, base_url='http://glad.sh'):
         """
         Parameter builder which serializes a GeneratorInfo
         into commandline arguments.
@@ -287,7 +287,17 @@ class Online(ParameterBuilder):
             return name, 'on' if value else 'off'
 
         if isinstance(value, (list, tuple)):
-            value = ','.join(str(element) for element in value)
+            result = list()
+            for element in value:
+                if isinstance(element, (list, tuple)) and len(element) == 2:
+                    if isinstance(element[1], bool):
+                        if element[1]:
+                            result.append(element[0].upper())
+                    else:
+                        result.append('{0}={1}'.format(*element))
+                else:
+                    result.append(str(element))
+            value = ','.join(result)
 
         return name, value
 
@@ -299,14 +309,15 @@ class Online(ParameterBuilder):
             args[name] = value
 
         # general options
-        push('merge', gen_info.info.merged)
         push('api', list(gen_info.info))
         push('extensions', gen_info.extensions)
 
         # generator options
         push('generator', gen_info.generator_id)
-        for name, value in gen_info.options.items():
-            push(name, value)
+
+        options = [('merge', gen_info.info.merged)]
+        options.extend(gen_info.options.items())
+        push('options', options)
 
         def build_url():
             return '{base_url}/#{data}'.format(
