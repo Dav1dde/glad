@@ -48,11 +48,15 @@ static int find_extensions{{ api|api }}(Display *display, int screen) {
 static int find_core{{ api|api }}(Display **display, int *screen) {
     int major = 0, minor = 0;
     if(*display == NULL) {
+#ifdef GLAD_GLX_NO_X11
+        return 0;
+#else
         *display = XOpenDisplay(0);
         if (*display == NULL) {
             return 0;
         }
         *screen = XScreenNumberOfScreen(XDefaultScreenOfDisplay(*display));
+#endif
     }
     glXQueryVersion(*display, &major, &minor);
 {% for feature in feature_set.features %}
