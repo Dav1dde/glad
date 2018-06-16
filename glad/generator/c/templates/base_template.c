@@ -85,7 +85,7 @@ void gladSet{{ feature_set.name }}PostCallback(GLADpostcallback cb) {
 {% block extension_loaders %}
 {% for extension, commands in loadable() %}
 {% call template_utils.protect(extension) %}
-static void load_{{ extension.name }}({{ template_utils.context_arg(',') }} GLADuserptrloadfunc load, void* userptr) {
+static void glad_{{ spec.name }}_load_{{ extension.name }}({{ template_utils.context_arg(',') }} GLADuserptrloadfunc load, void* userptr) {
     if(!{{ ('GLAD_' + extension.name)|ctx }}) return;
 {% for command in commands %}
     {{ command.name|ctx }} = ({{ command.name|pfn }}) load("{{ command.name }}", userptr);
@@ -98,7 +98,7 @@ static void load_{{ extension.name }}({{ template_utils.context_arg(',') }} GLAD
 
 {% block aliasing %}
 {% if options.alias %}
-static void resolve_aliases({{ template_utils.context_arg(def='void') }}) {
+static void glad_{{ spec.name }}_resolve_aliases({{ template_utils.context_arg(def='void') }}) {
 {% for command in feature_set.commands|sort(attribute='name') %}
 {% call template_utils.protect(command) %}
 {% for alias in aliases.get(command.name, [])|reject('equalto', command.name) %}

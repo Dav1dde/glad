@@ -10,7 +10,7 @@
 
 {% block extension_loaders %}
 {% for extension, commands in loadable((feature_set.features[1:], feature_set.extensions)) %}
-static void load_{{ extension.name }}(GLADuserptrloadfunc load, void *userptr) {
+static void glad_wgl_load_{{ extension.name }}(GLADuserptrloadfunc load, void *userptr) {
     if(!GLAD_{{ extension.name }}) return;
 {% for command in commands %}
     glad_{{ command.name }} = ({{ command.name|pfn }}) load("{{ command.name }}", userptr);
@@ -20,7 +20,7 @@ static void load_{{ extension.name }}(GLADuserptrloadfunc load, void *userptr) {
 {% endblock %}
 
 {% block loader %}
-static int has_ext(HDC hdc, const char *ext) {
+static int glad_wgl_has_extension(HDC hdc, const char *ext) {
     const char *terminator;
     const char *loc;
     const char *extensions;
@@ -58,16 +58,16 @@ static GLADapiproc glad_wgl_get_proc_from_userptr(const char* name, void *userpt
 }
 
 {% for api in feature_set.info.apis %}
-static int find_extensions{{ api|api }}(HDC hdc) {
+static int glad_wgl_find_extensions_{{ api|lower }}(HDC hdc) {
 {% for extension in feature_set.extensions %}
-    GLAD_{{ extension.name }} = has_ext(hdc, "{{ extension.name }}");
+    GLAD_{{ extension.name }} = glad_wgl_has_extension(hdc, "{{ extension.name }}");
 {% else %}
-    (void)has_ext;
+    (void) glad_wgl_has_extension;
 {% endfor %}
     return 1;
 }
 
-static int find_core{{ api|api }}(void) {
+static int glad_wgl_find_core_{{ api|lower }}(void) {
     {% set hv = feature_set.features|select('supports', api)|list|last %}
     int major = {{ hv.version.major }}, minor = {{ hv.version.minor }};
 {% for feature in feature_set.features|select('supports', api) %}
@@ -81,15 +81,15 @@ int gladLoad{{ api|api }}UserPtr(HDC hdc, GLADuserptrloadfunc load, void *userpt
     wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC) load("wglGetExtensionsStringARB", userptr);
     wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC) load("wglGetExtensionsStringEXT", userptr);
     if(wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return 0;
-    version = find_core{{ api|api }}();
+    version = glad_wgl_find_core_{{ api|lower }}();
 
 {% for feature, _ in loadable(feature_set.features[1:], api=api) %}
-    load_{{ feature.name }}(load, userptr);
+    glad_wgl_load_{{ feature.name }}(load, userptr);
 {% endfor %}
 
-    if (!find_extensions{{ api|api }}(hdc)) return 0;
+    if (!glad_wgl_find_extensions_{{ api|lower }}(hdc)) return 0;
 {% for extension, _ in loadable(feature_set.extensions, api=api) %}
-    load_{{ extension.name }}(load, userptr);
+    glad_wgl_load_{{ extension.name }}(load, userptr);
 {% endfor %}
 
     return version;

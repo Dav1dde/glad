@@ -1,7 +1,7 @@
 {% extends 'base_template.c' %}
 
 {% block loader %}
-static int has_ext(Display *display, int screen, const char *ext) {
+static int glad_glx_has_extension(Display *display, int screen, const char *ext) {
     const char *terminator;
     const char *loc;
     const char *extensions;
@@ -36,16 +36,16 @@ static GLADapiproc glad_glx_get_proc_from_userptr(const char* name, void *userpt
 }
 
 {% for api in feature_set.info.apis %}
-static int find_extensions{{ api|api }}(Display *display, int screen) {
+static int glad_glx_find_extensions(Display *display, int screen) {
 {% for extension in feature_set.extensions %}
-    GLAD_{{ extension.name }} = has_ext(display, screen, "{{ extension.name }}");
+    GLAD_{{ extension.name }} = glad_glx_has_extension(display, screen, "{{ extension.name }}");
 {% else %}
-    (void)has_ext;
+    (void) glad_glx_has_extension;
 {% endfor %}
     return 1;
 }
 
-static int find_core{{ api|api }}(Display **display, int *screen) {
+static int glad_glx_find_core_{{ api|lower }}(Display **display, int *screen) {
     int major = 0, minor = 0;
     if(*display == NULL) {
 #ifdef GLAD_GLX_NO_X11
@@ -70,15 +70,15 @@ int gladLoad{{ api|api }}UserPtr(Display *display, int screen, GLADuserptrloadfu
     int version;
     glXQueryVersion = (PFNGLXQUERYVERSIONPROC) load("glXQueryVersion", userptr);
     if(glXQueryVersion == NULL) return 0;
-    version = find_core{{ api|api }}(&display, &screen);
+    version = glad_glx_find_core_{{ api|lower }}(&display, &screen);
 
 {% for feature, _ in loadable(feature_set.features) %}
-    load_{{ feature.name }}(load, userptr);
+    glad_glx_load_{{ feature.name }}(load, userptr);
 {% endfor %}
 
-    if (!find_extensions{{ api|api }}(display, screen)) return 0;
+    if (!glad_glx_find_extensions(display, screen)) return 0;
 {% for extension, _ in loadable(feature_set.extensions) %}
-    load_{{ extension.name }}(load, userptr);
+    glad_glx_load_{{ extension.name }}(load, userptr);
 {% endfor %}
 
     return version;

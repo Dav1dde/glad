@@ -1,13 +1,13 @@
 {% extends 'base_template.c' %}
 
 {% block loader %}
-static int get_exts(EGLDisplay display, const char **extensions) {
+static int glad_egl_get_extensions(EGLDisplay display, const char **extensions) {
     *extensions = eglQueryString(display, EGL_EXTENSIONS);
 
     return extensions != NULL;
 }
 
-static int has_ext(const char *extensions, const char *ext) {
+static int glad_egl_has_extensions(const char *extensions, const char *ext) {
     const char *loc;
     const char *terminator;
     if(extensions == NULL) {
@@ -32,20 +32,20 @@ static GLADapiproc glad_egl_get_proc_from_userptr(const char *name, void *userpt
 }
 
 {% for api in feature_set.info.apis %}
-static int find_extensions{{ api|api }}(EGLDisplay display) {
+static int glad_egl_find_extensions_{{ api|lower }}(EGLDisplay display) {
     const char *extensions;
-    if (!get_exts(display, &extensions)) return 0;
+    if (!glad_egl_get_extensions(display, &extensions)) return 0;
 
 {% for extension in feature_set.extensions %}
-    GLAD_{{ extension.name }} = has_ext(extensions, "{{ extension.name }}");
+    GLAD_{{ extension.name }} = glad_egl_has_extensions(extensions, "{{ extension.name }}");
 {% else %}
-    (void)has_ext;
+    (void) glad_egl_has_extensions;
 {% endfor %}
 
     return 1;
 }
 
-static int find_core{{ api|api }}(EGLDisplay display) {
+static int glad_egl_find_core_{{ api|lower }}(EGLDisplay display) {
     int major, minor;
     const char *version;
 
@@ -87,15 +87,15 @@ int gladLoad{{ api|api }}UserPtr(EGLDisplay display, GLADuserptrloadfunc load, v
     eglGetError = (PFNEGLGETERRORPROC) load("eglGetError", userptr);
     if (eglGetDisplay == NULL || eglGetCurrentDisplay == NULL || eglQueryString == NULL || eglGetError == NULL) return 0;
 
-    version = find_core{{ api|api }}(display);
+    version = glad_egl_find_core_{{ api|lower }}(display);
     if (!version) return 0;
 {% for feature, _ in loadable(feature_set.features) %}
-    load_{{ feature.name }}(load, userptr);
+    glad_egl_load_{{ feature.name }}(load, userptr);
 {% endfor %}
 
-    if (!find_extensions{{ api|api }}(display)) return 0;
+    if (!glad_egl_find_extensions_{{ api|lower }}(display)) return 0;
 {% for extension, _ in loadable(feature_set.extensions) %}
-    load_{{ extension.name }}(load, userptr);
+    glad_egl_load_{{ extension.name }}(load, userptr);
 {% endfor %}
 
     return version;

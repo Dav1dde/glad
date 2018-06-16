@@ -42,7 +42,7 @@ void _post_call_{{ feature_set.name }}_callback_default(void *ret, const char *n
 #define GLAD_GL_IS_SOME_NEW_VERSION 0
 #endif
 
-static int get_exts({{ template_utils.context_arg(',') }} int version, const char **out_exts, unsigned int *out_num_exts_i, char ***out_exts_i) {
+static int glad_gl_get_extensions({{ template_utils.context_arg(',') }} int version, const char **out_exts, unsigned int *out_num_exts_i, char ***out_exts_i) {
 #if GLAD_GL_IS_SOME_NEW_VERSION
     if(GLAD_VERSION_MAJOR(version) < 3) {
 #else
@@ -87,7 +87,7 @@ static int get_exts({{ template_utils.context_arg(',') }} int version, const cha
 #endif
     return 1;
 }
-static void free_exts(char **exts_i, unsigned int num_exts_i) {
+static void glad_gl_free_extensions(char **exts_i, unsigned int num_exts_i) {
     if (exts_i != NULL) {
         unsigned int index;
         for(index = 0; index < num_exts_i; index++) {
@@ -97,7 +97,7 @@ static void free_exts(char **exts_i, unsigned int num_exts_i) {
         exts_i = NULL;
     }
 }
-static int has_ext(int version, const char *exts, unsigned int num_exts_i, char **exts_i, const char *ext) {
+static int glad_gl_has_extension(int version, const char *exts, unsigned int num_exts_i, char **exts_i, const char *ext) {
     if(GLAD_VERSION_MAJOR(version) < 3 || !GLAD_GL_IS_SOME_NEW_VERSION) {
         const char *extensions;
         const char *loc;
@@ -135,23 +135,24 @@ static GLADapiproc glad_gl_get_proc_from_userptr(const char* name, void *userptr
 }
 
 {% for api in feature_set.info.apis %}
-static int find_extensions{{ api|api }}({{ template_utils.context_arg(',') }} int version) {
+static int glad_gl_find_extensions_{{ api|lower }}({{ template_utils.context_arg(',') }} int version) {
     const char *exts = NULL;
     unsigned int num_exts_i = 0;
     char **exts_i = NULL;
-    if (!get_exts({{ 'context, ' if options.mx }}version, &exts, &num_exts_i, &exts_i)) return 0;
+    if (!glad_gl_get_extensions({{ 'context, ' if options.mx }}version, &exts, &num_exts_i, &exts_i)) return 0;
 
 {% for extension in feature_set.extensions|select('supports', api) %}
-    {{ ('GLAD_' + extension.name)|ctx }} = has_ext(version, exts, num_exts_i, exts_i, "{{ extension.name }}");
+    {{ ('GLAD_' + extension.name)|ctx }} = glad_gl_has_extension(version, exts, num_exts_i, exts_i, "{{ extension.name }}");
 {% else %}
-    (void)has_ext;
+    (void) glad_gl_has_extension;
 {% endfor %}
 
-    free_exts(exts_i, num_exts_i);
+    glad_gl_free_extensions(exts_i, num_exts_i);
+
     return 1;
 }
 
-static int find_core{{ api|api }}({{ template_utils.context_arg(def='void') }}) {
+static int glad_gl_find_core_{{ api|lower }}({{ template_utils.context_arg(def='void') }}) {
     int i, major, minor;
     const char* version;
     const char* prefixes[] = {
@@ -185,15 +186,15 @@ int gladLoad{{ api|api }}{{ 'Context' if options.mx }}UserPtr({{ template_utils.
     {{ 'glGetString'|ctx }} = (PFNGLGETSTRINGPROC) load("glGetString", userptr);
     if({{ 'glGetString'|ctx }} == NULL) return 0;
     if({{ 'glGetString'|ctx }}(GL_VERSION) == NULL) return 0;
-    version = find_core{{ api|api }}({{ 'context' if options.mx }});
+    version = glad_gl_find_core_{{ api|lower }}({{ 'context' if options.mx }});
 
 {% for feature, _ in loadable(feature_set.features, api=api) %}
-    load_{{ feature.name }}({{'context, ' if options.mx }}load, userptr);
+    glad_gl_load_{{ feature.name }}({{'context, ' if options.mx }}load, userptr);
 {% endfor %}
 
-    if (!find_extensions{{  api|api }}({{ 'context, ' if options.mx }}version)) return 0;
+    if (!glad_gl_find_extensions_{{ api|lower }}({{ 'context, ' if options.mx }}version)) return 0;
 {% for extension, _ in loadable(feature_set.extensions, api=api) %}
-    load_{{ extension.name }}({{'context, ' if options.mx }}load, userptr);
+    glad_gl_load_{{ extension.name }}({{'context, ' if options.mx }}load, userptr);
 {% endfor %}
 
 {% if options.mx_global %}
@@ -201,7 +202,7 @@ int gladLoad{{ api|api }}{{ 'Context' if options.mx }}UserPtr({{ template_utils.
 {% endif %}
 
 {% if options.alias %}
-    resolve_aliases({{ 'context' if options.mx }});
+    glad_gl_resolve_aliases({{ 'context' if options.mx }});
 {% endif %}
 
     return version;
