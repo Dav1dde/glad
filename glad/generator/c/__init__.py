@@ -8,6 +8,7 @@ from collections import namedtuple
 from contextlib import closing
 
 from glad.config import Config, ConfigOption, RequirementConstraint, UnsupportedConstraint
+from glad.sink import LoggingSink
 from glad.generator import JinjaGenerator
 from glad.parse import Type
 from glad.specification import VK, GL
@@ -278,7 +279,7 @@ class CGenerator(JinjaGenerator):
     def id(self):
         return 'c'
 
-    def select(self, spec, api, version, profile, extensions, config):
+    def select(self, spec, api, version, profile, extensions, config, sink=LoggingSink(__name__)):
         if extensions is not None:
             extensions = set(extensions)
 
@@ -292,7 +293,7 @@ class CGenerator(JinjaGenerator):
             if config['ALIAS']:
                 extensions.update(self._find_extensions_for_aliasing(spec, api, version, profile, extensions))
 
-        return JinjaGenerator.select(self, spec, api, version, profile, extensions, config)
+        return JinjaGenerator.select(self, spec, api, version, profile, extensions, config, sink=sink)
 
     def _find_extensions_for_aliasing(self, spec, api, version, profile, extensions):
         feature_set = spec.select(api, version, profile, extensions)

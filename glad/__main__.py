@@ -10,6 +10,7 @@ import logging
 import os
 
 from glad.config import Config, ConfigOption
+from glad.sink import LoggingSink
 from glad.opener import URLOpener
 from glad.parse import FeatureSet
 from glad.plugin import find_specifications, find_generators
@@ -92,6 +93,8 @@ def main():
             datefmt='%d.%m.%Y %H:%M:%S', level=logging.DEBUG
         )
 
+    logging_sink = LoggingSink(logger=logger)
+
     description = __doc__
     parser = ArgumentParser(description=description)
 
@@ -135,24 +138,24 @@ def main():
     generator = generators[ns.subparser_name](global_config['OUT_PATH'], opener=opener)
 
     def select(specification, api, info):
-        logger.info('generating %s:%s/%s=%s', api, info.profile, info.specification, info.version)
+        logging_sink.info('generating {}:{}/{}={}'.format(api, info.profile, info.specification, info.version))
 
         extensions = global_config['EXTENSIONS']
         if extensions:
             extensions = [ext for ext in extensions if specification.is_extension(api, ext)]
 
-        return generator.select(specification, api, info.version, info.profile, extensions, config)
+        return generator.select(specification, api, info.version, info.profile, extensions, config, sink=logging_sink)
 
     for specification, apis in apis_by_spec:
         feature_sets = list(select(specification, api, info) for api, info in apis)
 
         if global_config['MERGE']:
-            logger.info('merging %s', feature_sets)
-            feature_sets = [FeatureSet.merge(*feature_sets)]
-            logger.info('merged into %s', feature_sets[0])
+            logging_sink.info('merging {}'.format(feature_sets))
+            feature_sets = [FeatureSet.merge(feature_sets, sink=logging_sink)]
+            logging_sink.info('merged into {}'.format(feature_sets[0]))
 
         for feature_set in feature_sets:
-            generator.generate(specification, feature_set, config)
+            generator.generate(specification, feature_set, config, sink=logging_sink)
 
 
 if __name__ == '__main__':

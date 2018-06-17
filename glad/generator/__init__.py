@@ -8,6 +8,7 @@ from jinja2 import Environment, ChoiceLoader, PackageLoader
 
 import glad
 from glad.config import Config
+from glad.sink import LoggingSink
 from glad.opener import URLOpener
 from glad.util import makefiledir
 
@@ -42,28 +43,30 @@ class BaseGenerator(object):
     def id(self):
         raise NotImplementedError
 
-    def select(self, spec, api, version, profile, extensions, config):
+    def select(self, spec, api, version, profile, extensions, config, sink=LoggingSink(__name__)):
         """
         Basically equivalent to `Specification.select` but gives the generator
         a chance to add additionally required extension, modify the result, etc.
 
-        :param config: instance of of config specified in `CONFIG`
         :param spec: Specification to use
         :param api: API name
         :param version: API version, None means latest
         :param profile: desired profile
         :param extensions: a list of desired extension names, None means all
+        :param config: instance of of config specified in `CONFIG`
+        :param sink: sink used to collect non fatal errors and information
         :return: FeatureSet with the required types, enums, commands/functions
         """
-        return spec.select(api, version, profile, extensions)
+        return spec.select(api, version, profile, extensions, sink=sink)
 
-    def generate(self, spec, feature_set, config):
+    def generate(self, spec, feature_set, config, sink=LoggingSink(__name__)):
         """
         Generates a feature set with the generator.
 
         :param spec: specification of `feature_set`
         :param feature_set: feature set to generate
         :param config: instance of config specified in `CONFIG`
+        :param sink: sink used to collect non fatal errors and information
         """
         raise NotImplementedError
 
@@ -139,7 +142,7 @@ class JinjaGenerator(BaseGenerator):
             gen_info=self.gen_info_factory(self, spec, feature_set, config)
         )
 
-    def generate(self, spec, feature_set, config):
+    def generate(self, spec, feature_set, config, sink=LoggingSink(__name__)):
         feature_set = self.modify_feature_set(spec, feature_set, config)
         for template, output_path in self.get_templates(spec, feature_set, config):
             #try:

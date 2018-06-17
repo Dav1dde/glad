@@ -1,3 +1,5 @@
+from glad.sink import LoggingSink
+
 try:
     from lxml import etree
     from lxml.etree import ETCompatXMLParser as parser
@@ -105,16 +107,20 @@ class FeatureSet(object):
         ))
 
     @classmethod
-    def merge(cls, feature_set, *others):
+    def merge(cls, feature_sets, sink=LoggingSink()):
         def to_ordered_dict(items):
             return OrderedDict((item.name, item) for item in items)
 
         def merge_items(items, new_items):
             for new_item in new_items:
+                # TODO merge strategy, prefer khronos types
                 in_dict = items.setdefault(new_item.name, new_item)
                 if not in_dict is new_item:
                     if not in_dict.is_equivalent(new_item):
-                        logger.warn('potential incompatibility: %r <-> %r', new_item, in_dict)
+                        sink.warning('potential incompatibility: {!r} <-> {!r}'.format(new_item, in_dict))
+
+        feature_set = feature_sets[0]
+        others = feature_sets[1:]
 
         info = list(feature_set.info)
         features = to_ordered_dict(feature_set.features)
@@ -525,7 +531,7 @@ class Specification(object):
 
         return result
 
-    def select(self, api, version, profile, extension_names):
+    def select(self, api, version, profile, extension_names, sink=LoggingSink(__name__)):
         """
         Select a specific configuration from the specification.
 
@@ -533,6 +539,7 @@ class Specification(object):
         :param version: API version, None means latest
         :param profile: desired profile
         :param extension_names: a list of desired extension names, None means all
+        :param sink: sink used to store informations, warnings and errors that are not fatal
         :return: FeatureSet with the required types, enums, commands/functions
         """
         # make sure that there is a profile if one is required/available
@@ -557,6 +564,7 @@ class Specification(object):
         # None means latest version, update the dictionary with the latest version
         if version is None:
             version = self.highest_version(api)
+            sink.info('no explicit version given for api {}, using {}'.format(api, version))
 
         # make sure the version is valid
         if version not in self.features[api]:
@@ -567,6 +575,7 @@ class Specification(object):
 
         all_extensions = list(self.extensions[api].keys())
         if extension_names is None:
+            sink.info('adding all extensions for api {} to result'.format(api))
             # None means all extensions
             extension_names = all_extensions
         else:
@@ -588,7 +597,8 @@ class Specification(object):
                 extension_names.remove(extension)
             except KeyError:
                 pass
-            # TODO log warning
+            else:
+                sink.warning('removed extension {}, it uses unsupported types'.format(extension))
 
         # OpenGL version 3.3 includes all versions up to 3.3
         # Collect a list of all required features grouped by API
