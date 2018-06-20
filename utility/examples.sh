@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 TMP=${TMP:="./build"}
 
 PYTHON=${PYTHON:="python"}
@@ -28,14 +30,24 @@ function end {
 
 start "egl_glfw.c"
 ${GLAD} --out-path="${TMP}" --api="gles1" c --loader
-${GLAD} --out-path="${TMP}" --api="egl" c
+${GLAD} --out-path="${TMP}" --api="egl" c --loader
 ${GCC} example/c/egl_glfw.c -o ${TMP}/run -Ibuild/include ${TMP}/src/*.c -ldl -lglfw && ${TMP}/run
 end
 
 start "egl_x11.c"
 ${GLAD} --out-path="${TMP}" --api="gles2" c --loader
-${GLAD} --out-path="${TMP}" --api="egl" c
+${GLAD} --out-path="${TMP}" --api="egl" c --loader
 ${GCC} example/c/egl_x11.c -o ${TMP}/run -Ibuild/include ${TMP}/src/*.c -ldl -lX11 && ${TMP}/run
+end
+
+start "gl_glfw.c"
+${GLAD} --out-path="${TMP}" --api="gl:core" c
+${GCC} example/c/gl_glfw.c -o ${TMP}/run -Ibuild/include ${TMP}/src/*.c -ldl -lglfw && ${TMP}/run
+end
+
+start "gl_sdl2.c"
+${GLAD} --out-path="${TMP}" --api="gl:core" c
+${GCC} example/c/gl_sdl2.c -o ${TMP}/run -Ibuild/include ${TMP}/src/*.c -ldl `sdl2-config --libs --cflags` && ${TMP}/run
 end
 
 start "glut.c"
@@ -45,13 +57,13 @@ end
 
 start "glx.c"
 ${GLAD} --out-path="${TMP}" --api="gl:core" c --loader
-${GLAD} --out-path="${TMP}" --api="glx" c
+${GLAD} --out-path="${TMP}" --api="glx" c --loader
 ${GCC} example/c/glx.c -o ${TMP}/run -Ibuild/include ${TMP}/src/*.c -ldl -lX11 && ${TMP}/run
 end
 
 start "glx_modern.c"
 ${GLAD} --out-path="${TMP}" --api="gl:core" c --loader
-${GLAD} --out-path="${TMP}" --api="glx" c
+${GLAD} --out-path="${TMP}" --api="glx" c --loader
 ${GCC} example/c/glx_modern.c -o ${TMP}/run -Ibuild/include ${TMP}/src/*.c -ldl -lX11 && ${TMP}/run
 end
 
