@@ -750,7 +750,7 @@ class Enum(IdentifiedByName):
     EXTENSION_NUMBER_MULTIPLIER = 1000
     EXTENSION_NUMBER_OFFSET = -1
 
-    def __init__(self, name, value, bitpos, api,
+    def __init__(self, name, value, bitpos, api, type_,
                  alias=None, namespace=None, group=None, vendor=None,
                  comment='', extended_by=None):
         self.name = name
@@ -759,6 +759,7 @@ class Enum(IdentifiedByName):
             self.value = 1 << int(bitpos)
         self.bitpos = bitpos
         self.api = api
+        self.type = type_
 
         self.alias = alias
 
@@ -779,7 +780,7 @@ class Enum(IdentifiedByName):
         return self.name
 
     def __repr__(self):
-        return 'Enum(name={self.name}, value={self.value})'.format(self=self)
+        return 'Enum(name={self.name}, value={self.value}, type={self.type})'.format(self=self)
 
     @classmethod
     def from_element(cls, element, extnumber=None, **kwargs):
@@ -787,6 +788,7 @@ class Enum(IdentifiedByName):
         value = element.get('value')
         bitpos = element.get('bitpos')
         api = element.get('api')
+        type_ = element.get('type')
 
         alias = element.get('alias')
 
@@ -803,7 +805,7 @@ class Enum(IdentifiedByName):
             if element.get('dir') == '-':
                 value = -value
 
-        return cls(name, value, bitpos, api, alias=alias, **kwargs)
+        return cls(name, value, bitpos, api, type_, alias=alias, **kwargs)
 
 
 class Command(IdentifiedByName):
