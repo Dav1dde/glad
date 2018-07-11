@@ -53,7 +53,7 @@ class CGenerator(Generator):
         if not self.omit_khrplatform:
             khr_url = KHRPLATFORM
             if os.path.exists('khrplatform.h'):
-                khr_url = 'file://' + os.path.abspath('khrplatform.h')
+                khr_url = 'file:' + os.path.abspath('khrplatform.h')
 
             khrplatform = os.path.join(khr, 'khrplatform.h')
             if not os.path.exists(khrplatform):
