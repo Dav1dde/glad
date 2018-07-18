@@ -75,7 +75,7 @@ static int glad_gl_get_extensions({{ template_utils.context_arg(',') }} int vers
 
             char *local_str = (char*) malloc(len * sizeof(char));
             if(local_str != NULL) {
-                GLAD_IMPL_UTIL_STRNCPY(local_str, gl_str_tmp, len);
+                memcpy(local_str, gl_str_tmp, len * sizeof(char));
             }
 
             exts_i[index] = local_str;

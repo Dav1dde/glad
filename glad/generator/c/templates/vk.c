@@ -54,7 +54,7 @@ static int glad_vk_get_extensions({{ template_utils.context_arg(',') }} VkPhysic
 
         size_t extension_name_length = strlen(ext.extensionName) + 1;
         extensions[i] = (char*) malloc(extension_name_length * sizeof(char));
-        GLAD_IMPL_UTIL_STRNCPY(extensions[i], ext.extensionName, extension_name_length);
+        memcpy(extensions[i], ext.extensionName, extension_name_length * sizeof(char));
     }
 
     if (physical_device != NULL) {
@@ -72,7 +72,7 @@ static int glad_vk_get_extensions({{ template_utils.context_arg(',') }} VkPhysic
 
             size_t extension_name_length = strlen(ext.extensionName) + 1;
             extensions[instance_extension_count + i] = (char*) malloc(extension_name_length * sizeof(char));
-            GLAD_IMPL_UTIL_STRNCPY(extensions[instance_extension_count + i], ext.extensionName, extension_name_length);
+            memcpy(extensions[instance_extension_count + i], ext.extensionName, extension_name_length * sizeof(char));
         }
     }
 
