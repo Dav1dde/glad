@@ -31,8 +31,9 @@ int %(init)s(void) {
 #ifndef IS_UWP
     libGL = LoadLibraryW(L"opengl32.dll");
     if(libGL != NULL) {
-        gladGetProcAddressPtr = (PFNWGLGETPROCADDRESSPROC_PRIVATE)GetProcAddress(
-                libGL, "wglGetProcAddress");
+        void (* tmp)(void);
+        tmp = (void(*)(void)) GetProcAddress(libGL, "wglGetProcAddress");
+        gladGetProcAddressPtr = (PFNWGLGETPROCADDRESSPROC_PRIVATE) tmp;
         return gladGetProcAddressPtr != NULL;
     }
 #endif
