@@ -6,10 +6,10 @@ if [ -z "$1" ]; then
 fi
 
 VERSION="$1"
-VERSION_PYTHON="__version__ = '${VERSION}a0'"
+VERSION_PYTHON="__version__ = '${VERSION}'"
 VERSION_CMAKE=$(echo $VERSION)
 
-OLD_VERSION=$(python2 -c "import glad; print glad.__version__" | sed -e 's/a[[:digit:]]$//')
+OLD_VERSION=$(python -c "import glad; print(glad.__version__)")
 
 echo "Old Version: $OLD_VERSION"
 echo "New Version: $VERSION"
@@ -18,12 +18,6 @@ echo
 if [ "$VERSION" == "$OLD_VERSION" ]
 then
     echo "Version equals the old version"
-    exit 1
-fi
-
-if [[ $VERSION =~ a0$ ]]
-then
-    echo "Version suffxied with a0"
     exit 1
 fi
 
@@ -48,6 +42,6 @@ git tag "v$VERSION"
 rm -rf build/
 rm -rf dist/
 
-python2 setup.py sdist bdist_wheel
+python setup.py sdist bdist_wheel
 twine upload dist/*
 
