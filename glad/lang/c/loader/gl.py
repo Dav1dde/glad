@@ -56,7 +56,7 @@ static int get_exts(void) {
 
             char *local_str = (char*)malloc((len+1) * sizeof(char));
             if(local_str != NULL) {
-                memcpy(local_str, gl_str_tmp, len+1);
+                memcpy(local_str, gl_str_tmp, (len+1) * sizeof(char));
             }
             exts_i[index] = local_str;
         }
