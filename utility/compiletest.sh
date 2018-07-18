@@ -12,8 +12,8 @@ if [ "$1" != "no-download" ]; then
 fi
 
 
-GCC_FLAGS="-o build/tmp.o -Wall -Wextra -Wsign-conversion -Wcast-qual -Wstringop-overflow -Wstrict-prototypes -Werror -ansi -c"
-GPP_FLAGS="-o build/tmp.o -Wall -Wextra -Wsign-conversion -Wcast-qual -Wstringop-overflow -Werror -c"
+GCC_FLAGS="-o build/tmp.o -O3 -Wall -Wextra -Wsign-conversion -Wcast-qual -Wstringop-overflow=3 -Wstrict-prototypes -Werror -ansi -c"
+GPP_FLAGS="-o build/tmp.o -O3 -Wall -Wextra -Wsign-conversion -Wcast-qual -Wstringop-overflow=3 -Werror -c"
 
 
 function mingwc_compile {
@@ -87,7 +87,7 @@ function c_wgl {
 function c_example {
     ${PYTHON} -m glad --spec=gl --out-path=build $@
     gcc example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lglut -ldl
-    mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lfreeglut
+    #mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lfreeglut
     g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw -ldl
     mingwcpp_compile example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw3 -luser32 -lgdi32
 }
