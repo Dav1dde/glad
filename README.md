@@ -6,6 +6,11 @@ Vulkan/GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.
 Check out the [webservice](http://glad.sh) to generate the files you need!
 
 
+
+**NOTE:** The 2.0 branch is currently a beta version, the beta version number will
+not be updated and refers to the git *HEAD*.
+
+
 ## Examples
 
 ```c
@@ -36,3 +41,10 @@ int main() {
 The full code: [hellowindow2.cpp](example/c++/hellowindow2.cpp)
 
 More examples in the [examples directory](example/) of this repository.
+
+
+## Documentation
+
+* Documentation can be found in the [wiki](https://github.com/Dav1dde/glad/wiki).
+* Examples can be found [in the example directory](/example).
+
