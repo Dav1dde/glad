@@ -6,7 +6,7 @@ from glad.lang.common.generator import Generator
 from glad.lang.common.util import makefiledir
 
 
-KHRPLATFORM = 'https://www.khronos.org/registry/egl/api/KHR/khrplatform.h'
+KHRPLATFORM = 'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h'
 
 
 _KHR_TYPE_REPLACEMENTS = {
@@ -39,7 +39,7 @@ class CGenerator(Generator):
             self.h_include = '"glad{}.h"'.format(suffix)
             self._f_c = open(make_path(self.path,
                                         'glad{}.c'.format(suffix)), 'w')
-            self._f_h = open(make_path(self.path, 
+            self._f_h = open(make_path(self.path,
                                         'glad{}.h'.format(suffix)), 'w')
             khr = self.path
         else:
