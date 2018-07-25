@@ -944,8 +944,12 @@ class ParsedType(object):
         is_const = False if raw is None else 'const' in raw
         is_unsigned = False if raw is None else 'unsigned' in raw
 
+        # TODO why is this here?
+        # structs only exist for C like languages, replace with is_struct?
         if 'struct' in raw and 'struct' not in type_:
             type_ = 'struct {}'.format(type_)
+
+        type_ = type_.strip()
 
         return cls(name, type_, original_type, is_pointer=is_pointer,
                    is_const=is_const, is_unsigned=is_unsigned,
