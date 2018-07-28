@@ -1,0 +1,4 @@
+[package]
+name = "glad-{{ feature_set.name }}"
+version = "{{ version }}"
+authors = ["David Herberth <github@dav1d.de>"]

@@ -1,3 +1,6 @@
+import jinja2
+
+import glad
 from glad.config import Config
 from glad.generator import JinjaGenerator
 
@@ -9,7 +12,7 @@ def enum_type(enum):
         }.get(enum.type, 'GLenum')
 
     if enum.value.startswith('0x'):
-        return 'GLuint64' if len(enum.value) > 8 else 'GLenum'
+        return 'GLuint64' if len(enum.value[2:]) > 8 else 'GLenum'
 
     if enum.name in ('GL_TRUE', 'GL_FALSE'):
         return 'GLubyte'
@@ -63,6 +66,26 @@ def to_rust_params(command, mode='full'):
     raise ValueError('invalid mode: ' + mode)
 
 
+@jinja2.contextfilter
+def no_prefix(context, value):
+    spec = context['spec']
+
+    api_prefix = spec.name
+
+    # glFoo -> Foo
+    # GL_ARB_asd -> ARB_asd
+
+    name = value
+    if name.lower().startswith(api_prefix):
+        name = name[len(api_prefix):].lstrip('_')
+
+    # 3DFX_tbuffer -> _3DFX_tbuffer
+    if not name[0].isalpha():
+        name = '_' + name
+
+    return name
+
+
 class RustConfig(Config):
     pass
 
@@ -79,16 +102,27 @@ class RustGenerator(JinjaGenerator):
         self.environment.filters.update(
             enum_type=enum_type,
             type=to_rust_type,
-            params=to_rust_params
+            params=to_rust_params,
+            no_prefix=no_prefix
         )
 
     @property
     def id(self):
         return 'rust'
 
+    def get_template_arguments(self, spec, feature_set, config):
+        args = JinjaGenerator.get_template_arguments(self, spec, feature_set, config)
+
+        args.update(
+            version=glad.__version__
+        )
+
+        return args
+
     def get_templates(self, spec, feature_set, config):
         return [
-            ('lib.rs', 'glad/src/lib.rs'),
-            ('{}.rs'.format(feature_set.name), 'glad/src/{}.rs'.format(feature_set.name))
+            ('Cargo.toml', 'glad-{}/Cargo.toml'.format(feature_set.name)),
+            ('lib.rs', 'glad-{}/src/lib.rs'.format(feature_set.name)),
+            ('impl.rs'.format(feature_set.name), 'glad-{0}/src/{0}.rs'.format(feature_set.name))
         ]
 

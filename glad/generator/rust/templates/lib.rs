@@ -1,1 +1,1 @@
-pub mod gl;
+pub mod {{ feature_set.name }};
