@@ -1,8 +1,14 @@
 import jinja2
 
 import glad
-from glad.config import Config
+from glad.config import Config, ConfigOption
 from glad.generator import JinjaGenerator
+from glad.generator.util import (
+    strip_specification_prefix,
+    collect_alias_information,
+    find_extensions_with_aliases
+)
+from glad.sink import LoggingSink
 
 
 def enum_type(enum):
@@ -44,7 +50,7 @@ def to_rust_type(parsed_type):
 
     type_ = type_.replace('struct', '')
 
-    return ' '.join(e.strip() for e in (prefix, type_))
+    return ' '.join(e.strip() for e in (prefix, type_)).strip()
 
 
 def to_rust_params(command, mode='full'):
@@ -66,28 +72,13 @@ def to_rust_params(command, mode='full'):
     raise ValueError('invalid mode: ' + mode)
 
 
-@jinja2.contextfilter
-def no_prefix(context, value):
-    spec = context['spec']
-
-    api_prefix = spec.name
-
-    # glFoo -> Foo
-    # GL_ARB_asd -> ARB_asd
-
-    name = value
-    if name.lower().startswith(api_prefix):
-        name = name[len(api_prefix):].lstrip('_')
-
-    # 3DFX_tbuffer -> _3DFX_tbuffer
-    if not name[0].isalpha():
-        name = '_' + name
-
-    return name
-
-
 class RustConfig(Config):
-    pass
+    ALIAS = ConfigOption(
+        converter=bool,
+        default=False,
+        description='Automatically adds all extensions that ' +
+                    'provide aliases for the current feature set.'
+    )
 
 
 class RustGenerator(JinjaGenerator):
@@ -103,18 +94,28 @@ class RustGenerator(JinjaGenerator):
             enum_type=enum_type,
             type=to_rust_type,
             params=to_rust_params,
-            no_prefix=no_prefix
+            no_prefix=jinja2.contextfilter(lambda ctx, value: strip_specification_prefix(value, ctx['spec']))
         )
 
     @property
     def id(self):
         return 'rust'
 
+    def select(self, spec, api, version, profile, extensions, config, sink=LoggingSink(__name__)):
+        if extensions is not None:
+            extensions = set(extensions)
+
+            if config['ALIAS']:
+                extensions.update(find_extensions_with_aliases(spec, api, version, profile, extensions))
+
+        return JinjaGenerator.select(self, spec, api, version, profile, extensions, config, sink=sink)
+
     def get_template_arguments(self, spec, feature_set, config):
         args = JinjaGenerator.get_template_arguments(self, spec, feature_set, config)
 
         args.update(
-            version=glad.__version__
+            version=glad.__version__,
+            aliases=collect_alias_information(feature_set.commands)
         )
 
         return args

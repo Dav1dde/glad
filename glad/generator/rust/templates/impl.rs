@@ -6,18 +6,30 @@ use std::os::raw;
 
 pub struct FnPtr {
     ptr: *const raw::c_void,
+    is_loaded: bool
 }
 
 impl FnPtr {
     pub fn empty() -> FnPtr {
-        FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void }
+        FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void, is_loaded: false }
     }
 
     pub fn load<F>(&mut self, loadfn: &mut F, name: &'static str) where F: FnMut(&'static str) -> *const raw::c_void {
         let loaded = loadfn(name);
         if !loaded.is_null() {
             self.ptr = loaded;
+            self.is_loaded = true;
+        } else {
+            self.ptr = FnPtr::not_initialized as *const raw::c_void;
+            self.is_loaded = false;
         };
+    }
+
+    pub fn aliased(&mut self, other: &FnPtr) {
+        if !self.is_loaded && other.is_loaded {
+            self.ptr = other.ptr;
+            self.is_loaded = other.is_loaded;
+        }
     }
 
     #[inline(never)]
@@ -57,7 +69,7 @@ mod storage {
     use std::os::raw;
 
     {% for command in feature_set.commands %}
-    pub static mut {{ command.name|no_prefix }}: FnPtr = FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void };
+    pub static mut {{ command.name|no_prefix }}: FnPtr = FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void, is_loaded: false };
     {% endfor %}
 }
 
@@ -66,5 +78,12 @@ pub fn load<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const raw::c_void
         {% for command in feature_set.commands %}
         storage::{{ command.name | no_prefix }}.load(&mut loadfn, "{{ command.name }}");
         {% endfor %}
+
+        {% for command, caliases in aliases|dictsort %}
+        {% for alias in caliases|reject('equalto', command) %}
+        storage::{{ command|no_prefix }}.aliased(&storage::{{ alias|no_prefix }});
+        {% endfor %}
+        {% endfor %}
     }
 }
+

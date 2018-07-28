@@ -10,6 +10,12 @@ from contextlib import closing
 from glad.config import Config, ConfigOption, RequirementConstraint, UnsupportedConstraint
 from glad.sink import LoggingSink
 from glad.generator import JinjaGenerator
+from glad.generator.util import (
+    is_device_command,
+    strip_specification_prefix,
+    collect_alias_information,
+    find_extensions_with_aliases
+)
 from glad.parse import Type
 from glad.specification import VK, GL
 import glad.util
@@ -104,7 +110,7 @@ def ctx(jinja_context, name, context='context', raw=False, name_only=False):
             name = name[5:]
 
         if not raw:
-            name = no_prefix(jinja_context, name)
+            name = strip_specification_prefix(name, jinja_context['spec'])
 
     if name_only:
         return name
@@ -119,69 +125,7 @@ def pfn(context, value):
     return 'PFN' + value.upper() + 'PROC'
 
 
-@jinja2.contextfilter
-def no_prefix(context, value):
-    spec = context['spec']
-
-    api_prefix = spec.name
-
-    # glFoo -> Foo
-    # GL_ARB_asd -> ARB_asd
-
-    name = value
-    if name.lower().startswith(api_prefix):
-        name = name[len(api_prefix):].lstrip('_')
-
-    # 3DFX_tbuffer -> _3DFX_tbuffer
-    if not name[0].isalpha():
-        name = '_' + name
-
-    return name
-
-
-def collect_alias_information(commands):
-    # Thanks @derhass
-    # https://github.com/derhass/glad/commit/9302dc566c695aebece901809f170297627950c9#diff-25f472d6fbc5268fe9a449252923b693
-
-    # keep a dictionary, store the set of aliases known for each function
-    # initialize it to identity, each function aliases itself
-    alias = dict((command.name, set([command.name])) for command in commands)
-    # now, add all further aliases
-    for command in commands:
-        if command.alias is not None:
-            # aliasses is the set of all aliasses known for this function
-            aliasses = alias[command.name]
-            aliasses.add(command.alias)
-            # unify all alias sets of all aliased functions
-            new_aliasses=set()
-            missing_funcs=set()
-            for aliased_func in aliasses:
-                try:
-                    new_aliasses.update(alias[aliased_func])
-                except KeyError:
-                    missing_funcs.add(aliased_func)
-            # remove all missing functions
-            new_aliasses = new_aliasses - missing_funcs
-            # add the alias set to all aliased functions
-            for command in new_aliasses:
-                alias[command]=new_aliasses
-    # clean up the alias dict: remove entries where the set contains only one element
-    for command in commands:
-        if len(alias[command.name]) < 2:
-            del alias[command.name]
-    return alias
-
-
-def is_device_command(command):
-    if len(command.params) == 0:
-        return False
-
-    first_param = command.params[0]
-    # See: https://cgit.freedesktop.org/mesa/mesa/tree/src/intel/vulkan/anv_entrypoints_gen.py#n434
-    return first_param.type.type in ('VkDevice', 'VkCommandBuffer', 'VkQueue')
-
-
-_CPP_STYLE_COMMENT_RE = re.compile(r'(^|\s|\))//(?P<'r'comment>.*)$', flags=re.MULTILINE)
+_CPP_STYLE_COMMENT_RE = re.compile(r'(^|\s|\))//(?P<comment>.*)$', flags=re.MULTILINE)
 
 
 def replace_cpp_style_comments(inp):
@@ -268,7 +212,7 @@ class CGenerator(JinjaGenerator):
             params_to_c=params_to_c,
             pfn=pfn,
             ctx=ctx,
-            no_prefix=no_prefix
+            no_prefix=jinja2.contextfilter(lambda ctx, value: strip_specification_prefix(value, ctx['spec']))
         )
 
         self.environment.tests.update(
@@ -291,32 +235,9 @@ class CGenerator(JinjaGenerator):
                 extensions.update(('WGL_ARB_extensions_string', 'WGL_EXT_extensions_string'))
 
             if config['ALIAS']:
-                extensions.update(self._find_extensions_for_aliasing(spec, api, version, profile, extensions))
+                extensions.update(find_extensions_with_aliases(spec, api, version, profile, extensions))
 
         return JinjaGenerator.select(self, spec, api, version, profile, extensions, config, sink=sink)
-
-    def _find_extensions_for_aliasing(self, spec, api, version, profile, extensions):
-        feature_set = spec.select(api, version, profile, extensions)
-
-        command_names = [command.name for command in feature_set.commands]
-
-        new_extensions = set()
-        for extension in spec.extensions[api].values():
-            if extension in feature_set.extensions:
-                continue
-
-            for command in extension.get_requirements(spec, api, profile, feature_set=feature_set).commands:
-                # find all extensions which have an alias to a selected function
-                if command.alias and command.alias in command_names:
-                    new_extensions.add(extension.name)
-                    break
-
-                # find all extensions that have a function with the same name
-                if command.name in command_names:
-                    new_extensions.add(extension.name)
-                    break
-
-        return new_extensions
 
     def get_template_arguments(self, spec, feature_set, config):
         args = JinjaGenerator.get_template_arguments(self, spec, feature_set, config)
