@@ -32,7 +32,21 @@ _RUST_TYPE_MAPPING = {
 }
 
 
-def enum_type(enum):
+def enum_type(enum, feature_set):
+    if enum.alias:
+        aliased = feature_set.find_enum(enum.alias)
+        if aliased is None:
+            raise ValueError('unable to resolve enum alias {} of enum {}'.format(enum.alias, enum))
+        enum = aliased
+
+    # if the value links to another enum, resolve the enum right now
+    if enum.value is not None:
+        # enum = feature_set.find_enum(enum.value, default=enum)
+        referenced = feature_set.find_enum(enum.value)
+        # TODO currently every enum with a parent type is u32
+        if referenced is not None and referenced.parent_type is not None:
+            return 'u32'
+
     # we could return GLenum and friends here
     # but thanks to type aliasing we don't have to
     # this makes handling types for different specifications
@@ -54,6 +68,10 @@ def enum_type(enum):
     if enum.value.endswith('f'):
         return 'std::os::raw::c_float'
 
+    if enum.value.startswith('"'):
+        # TODO figure out correct type
+        return '&str'
+
     if enum.value.startswith('(('):
         # Casts: '((Type)value)' -> 'Type'
         raise NotImplementedError
@@ -61,8 +79,26 @@ def enum_type(enum):
     return 'std::os::raw::c_uint'
 
 
-def enum_value(enum):
+def enum_value(enum, feature_set):
+    if enum.alias:
+        enum = feature_set.find_enum(enum.alias)
+
+    # basically an alias to another enum (value contains another enum)
+    # resolve it here and adjust value accordingly.
+    referenced = feature_set.find_enum(enum.value)
+    if referenced is None:
+        pass
+    elif referenced.parent_type is not None:
+        # global value is a reference to a enum type value
+        return '{}::{} as u32'.format(referenced.parent_type, enum.value)
+    else:
+        enum = referenced
+
     value = enum.value
+    if value.endswith('"'):
+        value = value[:-1] + r'\0"'
+        return value
+
     for old, new in (('(', ''), (')', ''), ('f', ''),
                      ('U', ''), ('L', ''), ('~', '!')):
         value = value.replace(old, new)
@@ -130,8 +166,9 @@ class RustGenerator(JinjaGenerator):
         JinjaGenerator.__init__(self, *args, **kwargs)
 
         self.environment.filters.update(
-            enum_type=enum_type,
-            enum_value=enum_value,
+            feature=lambda x: 'feature = "{}"'.format(x),
+            enum_type=jinja2.contextfilter(lambda ctx, enum: enum_type(enum, ctx['feature_set'])),
+            enum_value=jinja2.contextfilter(lambda ctx, enum: enum_value(enum, ctx['feature_set'])),
             type=to_rust_type,
             params=to_rust_params,
             identifier=identifier,

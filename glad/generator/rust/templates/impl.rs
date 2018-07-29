@@ -1,3 +1,5 @@
+{% import 'template_utils.rs' as template_utils with context %}
+
 pub use self::types::*;
 pub use self::enumerations::*;
 pub use self::functions::*;
@@ -60,7 +62,7 @@ pub mod functions {
     use super::types::*;
 
     {% for command in feature_set.commands %}
-    #[inline] pub unsafe fn {{ command.name|no_prefix }}({{ command|params }}) -> {{ command.proto.ret|type }} { mem::transmute::<_, extern "system" fn({{ command|params('types') }}) -> {{ command.proto.ret|type }}>(storage::{{ command.name|no_prefix }}.ptr)({{ command|params('names') }}) }
+    {{ template_utils.protect(command) }} #[inline] pub unsafe fn {{ command.name|no_prefix }}({{ command|params }}) -> {{ command.proto.ret|type }} { mem::transmute::<_, extern "system" fn({{ command|params('types') }}) -> {{ command.proto.ret|type }}>(storage::{{ command.name|no_prefix }}.ptr)({{ command|params('names') }}) }
     {% endfor %}
 }
 
@@ -71,19 +73,19 @@ mod storage {
     use std::os::raw;
 
     {% for command in feature_set.commands %}
-    pub static mut {{ command.name|no_prefix }}: FnPtr = FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void, is_loaded: false };
+    {{ template_utils.protect(command) }} pub static mut {{ command.name|no_prefix }}: FnPtr = FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void, is_loaded: false };
     {% endfor %}
 }
 
 pub fn load<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const raw::c_void {
     unsafe {
         {% for command in feature_set.commands %}
-        storage::{{ command.name | no_prefix }}.load(&mut loadfn, "{{ command.name }}");
+        {{ template_utils.protect(command) }} storage::{{ command.name | no_prefix }}.load(&mut loadfn, "{{ command.name }}");
         {% endfor %}
 
         {% for command, caliases in aliases|dictsort %}
         {% for alias in caliases|reject('equalto', command) %}
-        storage::{{ command|no_prefix }}.aliased(&storage::{{ alias|no_prefix }});
+        {{ template_utils.protect(command) }} storage::{{ command|no_prefix }}.aliased(&storage::{{ alias|no_prefix }});
         {% endfor %}
         {% endfor %}
     }

@@ -100,6 +100,43 @@ class FeatureSet(object):
             len(self.features), len(self.extensions), len(self.types), len(self.enums), len(self.commands)
         ))
 
+    @property
+    @memoize()
+    def _all_enums(self):
+        """
+        Vulkan introduced grouping of enumerations, they turned from
+        basic `#define`'s into actual enumerations `enum Foo { ... }`.
+
+        Glad interprets the "actual" enumerations as types, it's
+        an enumeration type with values. But sometimes it is necessary
+        to just have all enumerations without grouping information
+        available (e.g. for quickly looking up a value). This lives
+        under the assumption that enum names are unique.
+
+        :return: a dictionary of name:enum pairs.
+        """
+        result = dict()
+        for enum in self.enums:
+            result[enum.name] = enum
+
+        for type_ in self.types:
+            if type_.category == 'enum':
+                for enum in type_.enums:
+                    result[enum.name] = enum
+
+        return result
+
+    def find_enum(self, name, default=None):
+        """
+        Finds any enum, this includes enums that are part of
+        types, by its name.
+
+        :param enum_name: name of the enum
+        :param default: default value to return if not found
+        :return: the enum if found or else the default
+        """
+        return self._all_enums.get(name, default)
+
     @classmethod
     def merge(cls, feature_sets, sink=LoggingSink()):
         def to_ordered_dict(items):
@@ -271,7 +308,7 @@ class Specification(object):
                               comment=enums_element.get('comment', ''))
 
                 enums = OrderedDict()
-                for e in (Enum.from_element(e, **kwargs) for e in enums_element.findall('enum')):
+                for e in (Enum.from_element(e, parent_type=t.name, **kwargs) for e in enums_element.findall('enum')):
                     enums[e.name] = e
 
                 for extension in self.root.findall('.//require/enum[@extends="{}"]/../..'.format(t.name)):
@@ -283,7 +320,7 @@ class Specification(object):
                         extnumber = None
 
                     for extending_enum in extension.findall('.//require/enum[@extends="{}"]'.format(t.name)):
-                        enum = Enum.from_element(extending_enum, extnumber=extnumber)
+                        enum = Enum.from_element(extending_enum, extnumber=extnumber, parent_type=t.name)
 
                         if enum.name not in enums:
                             enums[enum.name] = enum
@@ -355,6 +392,7 @@ class Specification(object):
 
         # add enums added through a <require>
         for element in self.root.findall('.//require/enum'):
+            # TODO element can be an alias (defined in value) to an extending enum
             if element.get('extends'):
                 continue
 
@@ -868,11 +906,11 @@ class Enum(IdentifiedByName):
 
     def __init__(self, name, value, bitpos, api, type_,
                  alias=None, namespace=None, group=None, vendor=None,
-                 comment='', extended_by=None):
+                 comment='', parent_type=None, extended_by=None):
         self.name = name
         self.value = value
         if self.value is None and bitpos is not None:
-            self.value = 1 << int(bitpos)
+            self.value = str(1 << int(bitpos))
         self.bitpos = bitpos
         self.api = api
         self.type = type_
@@ -883,6 +921,9 @@ class Enum(IdentifiedByName):
         self.group = group
         self.vendor = vendor
         self.comment = comment
+
+        # name of the type this enum is a part of
+        self.parent_type = parent_type
 
         self.extended_by = set(extended_by) if extended_by else set()
 
@@ -920,6 +961,9 @@ class Enum(IdentifiedByName):
 
             if element.get('dir') == '-':
                 value = -value
+
+        if value is not None:
+            value = str(value)
 
         return cls(name, value, bitpos, api, type_, alias=alias, **kwargs)
 

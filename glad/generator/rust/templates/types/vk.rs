@@ -1,5 +1,7 @@
 #![allow(dead_code, non_camel_case_types, non_snake_case)]
 
+{% import 'template_utils.rs' as template_utils with context %}
+
 use std;
 
 #[macro_export]
@@ -42,15 +44,19 @@ pub type {{ type.name }} = {{ type.type|type }};
 {% elif type.category == 'enum' %}
 {% set members = type.enums_for(feature_set) %}
 {% if members %}
+{{ template_utils.protect(type) }}
 #[repr(i32)]
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
 pub enum {{ type.name }} {
 {% for member in  members %}
-    {{ member.name }} = {{ member.alias if member.alias else member.value }},
+{% if not member.alias %} {# Aliasing of enums is not allowed in Rust #}
+    {{ member.name }} = {{ member.value }},
+{% endif %}
 {% endfor %}
 }
 {% endif %}
 {% elif type.category in ('struct', 'union') %}
+{{ template_utils.protect(type) }}
 #[allow(non_snake_case)]
 #[repr(C)]
 #[derive(Copy, Clone)]
