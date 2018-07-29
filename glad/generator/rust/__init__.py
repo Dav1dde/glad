@@ -8,32 +8,71 @@ from glad.generator.util import (
     collect_alias_information,
     find_extensions_with_aliases
 )
+from glad.parse import ParsedType
 from glad.sink import LoggingSink
 
 
+_RUST_TYPE_MAPPING = {
+    'void': 'std::os::raw::c_void',
+    'char': 'std::os::raw::c_char',
+    'uchar': 'std::os::raw::c_uchar',
+    'float': 'std::os::raw::c_float',
+    'double': 'std::os::raw::c_double',
+    'int': 'std::os::raw::c_int',
+    'long': 'std::os::raw::c_long',
+    'int8_t': 'i8',
+    'uint8_t': 'u8',
+    'int16_t': 'i16',
+    'uint16_t': 'u16',
+    'int32_t': 'i32',
+    'int64_t': 'i32',
+    'uint32_t': 'u32',
+    'uint64_t': 'u64',
+    'size_t': 'usize'
+}
+
+
 def enum_type(enum):
+    # we could return GLenum and friends here
+    # but thanks to type aliasing we don't have to
+    # this makes handling types for different specifications
+    # easier, since we don't have to swap types. GLenum -> XXenum.
     if enum.type:
         return {
-            'ull': 'GLuint64',
-        }.get(enum.type, 'GLenum')
+            'ull': 'u64',
+        }.get(enum.type, 'std::os::raw::c_uint')
 
     if enum.value.startswith('0x'):
-        return 'GLuint64' if len(enum.value[2:]) > 8 else 'GLenum'
+        return 'u64' if len(enum.value[2:]) > 8 else 'std::os::raw::c_uint'
 
     if enum.name in ('GL_TRUE', 'GL_FALSE'):
-        return 'GLubyte'
+        return 'std::os::raw::c_uchar'
 
     if enum.value.startswith('-'):
-        return 'GLint'
+        return 'std::os::raw::c_int'
+
+    if enum.value.endswith('f'):
+        return 'std::os::raw::c_float'
 
     if enum.value.startswith('(('):
         # Casts: '((Type)value)' -> 'Type'
         raise NotImplementedError
 
-    return 'GLenum'
+    return 'std::os::raw::c_uint'
 
 
-def to_rust_type(parsed_type):
+def enum_value(enum):
+    value = enum.value
+    for old, new in (('(', ''), (')', ''), ('f', ''),
+                     ('U', ''), ('L', ''), ('~', '!')):
+        value = value.replace(old, new)
+
+    return value
+
+
+def to_rust_type(type_):
+    parsed_type = type_ if isinstance(type_, ParsedType) else ParsedType.from_string(type_)
+
     if not parsed_type.is_pointer and parsed_type.type == 'void':
         return '()'
 
@@ -44,32 +83,32 @@ def to_rust_type(parsed_type):
         else:
             prefix = '*mut ' * parsed_type.is_pointer
 
-    type_ = parsed_type.type
-    if parsed_type.type == 'void':
-        type_ = 'GLvoid'
+    type_ = _RUST_TYPE_MAPPING.get(parsed_type.type, parsed_type.type)
 
-    type_ = type_.replace('struct', '')
+    if parsed_type.is_array > 0:
+        type_ = '[{};{}]'.format(type_, parsed_type.is_array)
 
     return ' '.join(e.strip() for e in (prefix, type_)).strip()
 
 
 def to_rust_params(command, mode='full'):
-    def pn(name):
-        if name in ('type', 'ref', 'box', 'in'):
-            return name + '_'
-        return name
-
     if mode == 'names':
-        return ', '.join(pn(param.name) for param in command.params)
+        return ', '.join(identifier(param.name) for param in command.params)
     elif mode == 'types':
         return ', '.join(to_rust_type(param.type) for param in command.params)
     elif mode == 'full':
         return ', '.join(
-            '{name}: {type}'.format(name=pn(param.name), type=to_rust_type(param.type))
+            '{name}: {type}'.format(name=identifier(param.name), type=to_rust_type(param.type))
             for param in command.params
         )
 
     raise ValueError('invalid mode: ' + mode)
+
+
+def identifier(name):
+    if name in ('type', 'ref', 'box', 'in'):
+        return name + '_'
+    return name
 
 
 class RustConfig(Config):
@@ -92,8 +131,10 @@ class RustGenerator(JinjaGenerator):
 
         self.environment.filters.update(
             enum_type=enum_type,
+            enum_value=enum_value,
             type=to_rust_type,
             params=to_rust_params,
+            identifier=identifier,
             no_prefix=jinja2.contextfilter(lambda ctx, value: strip_specification_prefix(value, ctx['spec']))
         )
 
@@ -124,6 +165,6 @@ class RustGenerator(JinjaGenerator):
         return [
             ('Cargo.toml', 'glad-{}/Cargo.toml'.format(feature_set.name)),
             ('lib.rs', 'glad-{}/src/lib.rs'.format(feature_set.name)),
-            ('impl.rs'.format(feature_set.name), 'glad-{0}/src/{0}.rs'.format(feature_set.name))
+            ('impl.rs'.format(spec.name), 'glad-{}/src/{}.rs'.format(feature_set.name, spec.name))
         ]
 

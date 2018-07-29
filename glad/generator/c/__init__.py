@@ -100,7 +100,6 @@ def get_debug_impl(command, command_code_name=None):
 
 @jinja2.contextfilter
 def ctx(jinja_context, name, context='context', raw=False, name_only=False):
-    feature_set = jinja_context['feature_set']
     options = jinja_context['options']
 
     prefix = ''

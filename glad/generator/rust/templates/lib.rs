@@ -1,1 +1,1 @@
-pub mod {{ feature_set.name }};
+pub mod {{ spec.name }};

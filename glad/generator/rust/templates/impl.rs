@@ -37,22 +37,24 @@ impl FnPtr {
 }
 
 pub mod types {
-    {% include 'types/' + spec.name + '.rs' %}
+    {% include 'types/' + spec.name + '.rs' ignore missing with context %}
 }
 
 pub mod enumerations {
-    #![allow(dead_code, non_upper_case_globals)]
+    #![allow(dead_code, non_upper_case_globals, unused_imports)]
 
+    use std;
     use super::types::*;
 
     {% for enum in feature_set.enums %}
-    pub const {{ enum.name }}: {{ enum | enum_type }} = {{ enum.value }};
+    pub const {{ enum.name }}: {{ enum|enum_type }} = {{ enum|enum_value }};
     {% endfor %}
 }
 
 pub mod functions {
     #![allow(non_snake_case, unused_variables, dead_code)]
 
+    use std;
     use std::mem;
     use super::storage;
     use super::types::*;
