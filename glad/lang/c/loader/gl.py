@@ -18,7 +18,7 @@ int gladLoadGL(void) {
 '''
 
 _OPENGL_HAS_EXT = '''
-struct gladGLversionStruct GLVersion;
+struct gladGLversionStruct GLVersion = { 0, 0 };
 
 #if defined(GL_ES_VERSION_3_0) || defined(GL_VERSION_3_0)
 #define _GLAD_IS_SOME_NEW_VERSION 1

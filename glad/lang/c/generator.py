@@ -229,7 +229,7 @@ class CGenerator(Generator):
 
         if self.spec.NAME in ('gl', 'glx', 'wgl'):
             for feature in features:
-                f.write('int GLAD_{};\n'.format(feature.name))
+                f.write('int GLAD_{} = 0;\n'.format(feature.name))
 
         for func in write:
             self.write_function(f, func)
@@ -245,7 +245,7 @@ class CGenerator(Generator):
         f = self._f_c
         if self.spec.NAME in ('gl', 'glx', 'wgl'):
             for ext in set(ext.name for ext in extensions):
-                f.write('int GLAD_{};\n'.format(ext))
+                f.write('int GLAD_{} = 0;\n'.format(ext))
 
         written = set()
         for ext in extensions:
@@ -316,8 +316,8 @@ class CGenerator(Generator):
         fobj.write('#define {0} glad_{0}\n'.format(func.proto.name))
 
     def write_function(self, fobj, func):
-        fobj.write('PFN{}PROC glad_{};\n'.format(func.proto.name.upper(),
-                                                 func.proto.name))
+        fobj.write('PFN{}PROC glad_{} = NULL;\n'.format(func.proto.name.upper(),
+                                                        func.proto.name))
 
 
 def make_path(path, *args):

@@ -3,6 +3,7 @@
 *.kdev4
 build/
 *.o
+*.a
 a.out
 *.kdev_include_paths
 main.c
@@ -12,3 +13,6 @@ dist/
 *.egg-info
 khrplatform.h
 eglplatform.h
+vk_platform.h
+rust/
+glad-rs/
