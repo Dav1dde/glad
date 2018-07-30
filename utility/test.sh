@@ -33,7 +33,7 @@ function run_test {
     local compile=$(extract "COMPILE" "$test")
     local run=$(extract "RUN" "$test")
 
-    rm -rf ${TEST_TMP}
+    rm -rf "${TEST_TMP}"
 
     local time=$(date +%s)
 

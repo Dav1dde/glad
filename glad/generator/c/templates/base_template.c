@@ -18,7 +18,11 @@
 
 {% block variables %}
 {% if options.mx_global %}
+#ifdef __cplusplus
+Glad{{ feature_set.name|api }}Context {{ global_context }} = {};
+#else
 Glad{{ feature_set.name|api }}Context {{ global_context }} = { 0 };
+#endif
 {% endif %}
 {% endblock %}
 
@@ -27,7 +31,7 @@ Glad{{ feature_set.name|api }}Context {{ global_context }} = { 0 };
 {% if not options.mx %}
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
 {% call template_utils.protect(extension) %}
-int GLAD_{{ extension.name }};
+int GLAD_{{ extension.name }} = 0;
 {% endcall %}
 {% endfor %}
 {% endif %}
@@ -66,7 +70,7 @@ void gladSet{{ feature_set.name }}PostCallback(GLADpostcallback cb) {
 {% block commands %}
 {% for command in feature_set.commands %}
 {% call template_utils.protect(command) %}
-{{ command.name|pfn }} glad_{{ command.name }};
+{{ command.name|pfn }} glad_{{ command.name }} = NULL;
 {% if options.debug %}
 {% set impl = get_debug_impl(command, command.name|ctx(context=global_context)) %}
 {{ command.proto.ret|type_to_c }} GLAD_API_PTR glad_debug_impl_{{ command.name }}({{ impl.impl }}) {
