@@ -4,6 +4,42 @@
 
 use std;
 
+// types required for: xcb
+pub type xcb_connection_t = std::os::raw::c_void;
+pub type xcb_window_t = u32;
+pub type xcb_visualid_t = u32;
+// types required for: xlib(_xrandr)
+pub type Display = std::os::raw::c_void;
+pub type RROutput = std::os::raw::c_ulong;
+pub type Window = std::os::raw::c_ulong;
+pub type VisualID = std::os::raw::c_ulong;
+// types required for: win32
+pub type BOOL = std::os::raw::c_int;
+pub type DWORD = std::os::raw::c_ulong;
+pub type LPVOID = *mut std::os::raw::c_void;
+pub type HANDLE = *mut std::os::raw::c_void;
+pub type WCHAR = u16;
+pub type LPCWSTR = *const WCHAR;
+pub type HINSTANCE = *mut std::os::raw::c_void;
+pub type HWND = *mut std::os::raw::c_void;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SECURITY_ATTRIBUTES {
+    nLength: DWORD,
+    lpSecurityDescriptor: LPVOID,
+    bInheritHandle: BOOL,
+}
+// types required for: wayland
+pub type wl_display = std::os::raw::c_void;
+pub type wl_surface = std::os::raw::c_void;
+// types required for: android
+pub type AHardwareBuffer = std::os::raw::c_void;
+pub type ANativeWindow = std::os::raw::c_void;
+// types required for: mir
+pub type MirConnection = std::os::raw::c_void;
+pub type MirSurface = std::os::raw::c_void;
+
+
 #[macro_export]
 macro_rules! VK_MAKE_VERSION {
     ($major:expr, $minor:expr, $patch:expr) => ((($major) << 22) | (($minor) << 12) | ($patch));

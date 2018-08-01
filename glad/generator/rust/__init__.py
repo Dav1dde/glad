@@ -33,7 +33,7 @@ _RUST_TYPE_MAPPING = {
 
 
 def enum_type(enum, feature_set):
-    if enum.alias:
+    if enum.alias and enum.value is None:
         aliased = feature_set.find_enum(enum.alias)
         if aliased is None:
             raise ValueError('unable to resolve enum alias {} of enum {}'.format(enum.alias, enum))
@@ -80,7 +80,7 @@ def enum_type(enum, feature_set):
 
 
 def enum_value(enum, feature_set):
-    if enum.alias:
+    if enum.alias and enum.value is None:
         enum = feature_set.find_enum(enum.alias)
 
     # basically an alias to another enum (value contains another enum)
