@@ -1,0 +1,8 @@
+[package]
+name = "gl-glfw"
+version = "0.1.0"
+
+[dependencies]
+glfw = "0.23.0"
+glad-gl = { path = "./build/glad-gl" }
+
