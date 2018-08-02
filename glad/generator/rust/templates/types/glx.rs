@@ -1,4 +1,4 @@
-#![allow(dead_code, non_camel_case_types)]
+#![allow(dead_code, non_camel_case_types, non_snake_case)]
 {% include 'types/gl.rs' %}
 
 use std;
@@ -31,7 +31,6 @@ pub type GLXFBConfigIDSGIX = XID;
 pub type GLXFBConfigSGIX = *const std::os::raw::c_void;
 pub type GLXPbufferSGIX = XID;
 
-#[allow(non_snake_case)]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct XVisualInfo {
@@ -47,7 +46,6 @@ pub struct XVisualInfo {
     pub bits_per_rgb: std::os::raw::c_int,
 }
 
-#[allow(non_snake_case)]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct GLXPbufferClobberEvent {
@@ -66,7 +64,6 @@ pub struct GLXPbufferClobberEvent {
     pub count: std::os::raw::c_int,
 }
 
-#[allow(non_snake_case)]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct GLXBufferSwapComplete {
@@ -81,7 +78,6 @@ pub struct GLXBufferSwapComplete {
     pub sbc: i64,
 }
 
-#[allow(non_snake_case)]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct GLXBufferClobberEventSGIX {
@@ -100,7 +96,6 @@ pub struct GLXBufferClobberEventSGIX {
     pub count: std::os::raw::c_int,
 }
 
-#[allow(non_snake_case)]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct GLXHyperpipeNetworkSGIX {
@@ -108,17 +103,15 @@ pub struct GLXHyperpipeNetworkSGIX {
     pub networkId: std::os::raw::c_int,
 }
 
-#[allow(non_snake_case)]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct GLXHyperpipeConfigSGIX {
-    pub pipeName: [std::os::raw::c_char; super::enumerations:GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX as usize],
+    pub pipeName: [std::os::raw::c_char; super::enumerations::GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX as usize],
     pub channel: std::os::raw::c_int,
     pub participationType: std::os::raw::c_uint,
     pub timeSlice: std::os::raw::c_int,
 }
 
-#[allow(non_snake_case)]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct GLXPipeRect {
@@ -133,7 +126,6 @@ pub struct GLXPipeRect {
     pub destHeight: std::os::raw::c_int,
 }
 
-#[allow(non_snake_case)]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct GLXPipeRectLimits {

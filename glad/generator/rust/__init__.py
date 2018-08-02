@@ -76,6 +76,10 @@ def enum_type(enum, feature_set):
         # Casts: '((Type)value)' -> 'Type'
         raise NotImplementedError
 
+    if enum.value.startswith('EGL_CAST'):
+        # EGL_CAST(type,value) -> type
+        return enum.value.split('(', 1)[1].split(',')[0]
+
     return 'std::os::raw::c_uint'
 
 
@@ -98,6 +102,11 @@ def enum_value(enum, feature_set):
     if value.endswith('"'):
         value = value[:-1] + r'\0"'
         return value
+
+    if enum.value.startswith('EGL_CAST'):
+        # EGL_CAST(type,value) -> value as type
+        type_, value = enum.value.split('(', 1)[1].rsplit(')', 1)[0].split(',')
+        return '{} as {}'.format(value, type_)
 
     for old, new in (('(', ''), (')', ''), ('f', ''),
                      ('U', ''), ('L', ''), ('~', '!')):

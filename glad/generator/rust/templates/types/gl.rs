@@ -1,4 +1,4 @@
-#![allow(dead_code, non_camel_case_types)]
+#![allow(dead_code, non_snake_case, non_camel_case_types)]
 
 use std::os::raw;
 
@@ -59,7 +59,6 @@ pub type GLeglClientBufferEXT = *const raw::c_void;
 pub type GLeglImageOES = *const raw::c_void;
 
 
-#[allow(non_snake_case)]
 pub type GLDEBUGPROC = extern "system" fn (
     source: GLenum,
     type_: GLenum,
@@ -69,7 +68,6 @@ pub type GLDEBUGPROC = extern "system" fn (
     message: *const GLchar,
     userParam: *mut raw::c_void,
 );
-#[allow(non_snake_case)]
 pub type GLDEBUGPROCARB = extern "system" fn (
     source: GLenum,
     type_: GLenum,
@@ -79,7 +77,6 @@ pub type GLDEBUGPROCARB = extern "system" fn (
     message: *const GLchar,
     userParam: *mut raw::c_void,
 );
-#[allow(non_snake_case)]
 pub type GLDEBUGPROCKHR = extern "system" fn (
     source: GLenum,
     type_: GLenum,
@@ -89,7 +86,6 @@ pub type GLDEBUGPROCKHR = extern "system" fn (
     message: *const GLchar,
     userParam: *mut GLvoid,
 );
-#[allow(non_snake_case)]
 pub type GLDEBUGPROCAMD = extern "system" fn (
     id: GLuint,
     category: GLenum,
