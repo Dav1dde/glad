@@ -132,6 +132,8 @@ def main():
         ns.generator, spec.NAME.lower()
     )
 
+    extensions = ns.extensions if ns.extensions else None
+
     if loader_cls is None:
         return parser.error('API/Spec not yet supported')
 
@@ -142,7 +144,7 @@ def main():
             ns.out,
             spec,
             api,
-            ns.extensions,
+            extensions,
             loader=loader,
             opener=opener,
             local_files=ns.local_files,
