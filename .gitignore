@@ -13,7 +13,7 @@ dist/
 *.egg-info
 khrplatform.h
 eglplatform.h
-glad-rs/
-rust/
+/glad-rs/
+/rust/
 target/
 Cargo.lock

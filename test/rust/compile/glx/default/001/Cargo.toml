@@ -1,0 +1,10 @@
+[package]
+name = "compile-glx-default-001"
+version = "0.1.0"
+
+[[bin]]
+path = "test.rs"
+name = "test"
+
+[dependencies]
+glad-glx = { path = "./glad-glx/" }

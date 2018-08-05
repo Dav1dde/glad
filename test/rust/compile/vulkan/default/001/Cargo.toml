@@ -1,0 +1,10 @@
+[package]
+name = "compile-vulkan-default-001"
+version = "0.1.0"
+
+[[bin]]
+path = "test.rs"
+name = "test"
+
+[dependencies]
+glad-vulkan = { path = "./glad-vulkan/", features = ["xcb", "macos", "xlib_xrandr", "xlib", "ios", "win32", "wayland", "vi", "android", "mir"] }

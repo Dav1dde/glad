@@ -1102,7 +1102,7 @@ class ParsedType(object):
         ptype = element.find('ptype')
         if ptype is not None:
             ptype = ptype.text if ptype is not None else None
-            type_ = ptype
+            type_ = ptype.replace('struct', '')
         else:
             type_ = raw.replace('const', '') \
                        .replace('unsigned', '') \
