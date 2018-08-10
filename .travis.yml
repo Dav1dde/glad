@@ -1,0 +1,7 @@
+language: cpp
+
+script:
+  - pip install --user -e "$TRAVIS_BUILD_DIR"
+  - mkdir build && cd build
+  - cmake "$TRAVIS_BUILD_DIR/test/c/cmake" -DGLAD_MODULE_PATH="$TRAVIS_BUILD_DIR/cmake"
+  - ctest -V
