@@ -36,6 +36,7 @@ class GlobalConfig(Config):
         description='Output directory for the generated files'
     )
     API = ConfigOption(
+        required=True,
         converter=parse_apis,
         description='Comma separated list of APIs in `name:profile=version` pairs '
                     'optionally including a specification `name:profile/spec=version`. '
@@ -105,6 +106,7 @@ def main():
         dest='subparser_name',
         description='Generator to use'
     )
+    subparsers.default = 'c'
 
     configs = dict()
     generators = find_generators()
