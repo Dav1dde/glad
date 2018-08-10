@@ -127,11 +127,15 @@ class JinjaGenerator(BaseGenerator):
         Even though it is possible to return a new feature set,
         such modifications should rather be done in `select`.
 
-        Default implementation does nothing.
+        Default implementation sorts.
 
         :param feature_set: feature set to modify (the one passed to `get_templates`)
         :return: modified feature set
         """
+        feature_set.commands = sorted(list(feature_set.commands), key=lambda x: x.name)
+        feature_set.enums = sorted(list(feature_set.enums), key=lambda x: x.name)
+        feature_set.extensions.sort(key=lambda x: x.name)
+
         return feature_set
 
     def get_template_arguments(self, spec, feature_set, config):

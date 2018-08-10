@@ -359,6 +359,8 @@ class CGenerator(JinjaGenerator):
         # TODO this takes rather lonng (~30%), maybe drop it?
         feature_set = copy.deepcopy(feature_set)
 
+        feature_set = JinjaGenerator.modify_feature_set(self, spec, feature_set, config)
+
         self._fix_issue_70(feature_set)
         self._fix_cpp_style_comments(feature_set)
         self._replace_included_headers(feature_set, config)
