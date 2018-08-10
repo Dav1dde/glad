@@ -231,7 +231,7 @@ class CGenerator(Generator):
             for feature in features:
                 f.write('int GLAD_{} = 0;\n'.format(feature.name))
 
-        for func in write:
+        for func in sorted(write, key=lambda x: x.proto.name):
             self.write_function(f, func)
 
     def generate_extensions(self, extensions, enums, functions):
@@ -244,7 +244,7 @@ class CGenerator(Generator):
 
         f = self._f_c
         if self.spec.NAME in ('gl', 'glx', 'wgl'):
-            for ext in set(ext.name for ext in extensions):
+            for ext in sorted(set(ext.name for ext in extensions)):
                 f.write('int GLAD_{} = 0;\n'.format(ext))
 
         written = set()
