@@ -1033,12 +1033,16 @@ class Extension(IdentifiedByName):
         types, enums, commands = spec.split_types(result, (Type, Enum, Command))
 
         if feature_set is None:
-            return TypeEnumCommand(types, enums, commands)
+            return TypeEnumCommand(
+                sorted(types, key=lambda x: x.name),
+                sorted(enums, key=lambda x: x.name),
+                sorted(commands, key=lambda x: x.name),
+            )
 
         return TypeEnumCommand(
-            types.intersection(feature_set.types),
-            enums.intersection(feature_set.enums),
-            commands.intersection(feature_set.commands)
+            sorted(list(types.intersection(feature_set.types)), key=lambda x: x.name),
+            sorted(list(enums.intersection(feature_set.enums)), key=lambda x: x.name),
+            sorted(list(commands.intersection(feature_set.commands)), key=lambda x: x.name),
         )
 
     def __str__(self):
