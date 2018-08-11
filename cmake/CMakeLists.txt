@@ -134,7 +134,7 @@ endfunction()
 
 # Create a glad library named "${TARGET}"
 function(glad_add_library TARGET)
-    cmake_parse_arguments(GG "MERGE;QUIET;EXCLUDE_FROM_ALL" "LOCATION;LANGUAGE" "API;EXTENSIONS" ${ARGN})
+    cmake_parse_arguments(GG "MERGE;QUIET;EXCLUDE_FROM_ALL;KEEP_SOURCES" "LOCATION;LANGUAGE" "API;EXTENSIONS" ${ARGN})
 
     if(NOT GG_LOCATION)
         message(FATAL_ERROR "Need LOCATION")
@@ -181,26 +181,32 @@ function(glad_add_library TARGET)
     # - do not remove the sources when cleaning
     # BUG: running clean directly after an initial make without sources present, removes the sources
 
-    string(REPLACE "${GLAD_DIR}" GLAD_DIRECTORY GLAD_ARGS_UNIVERSAL "${GLAD_ARGS}")
-    set(GLAD_OUT_OF_DATE OFF)
-    set(GLAD_ARGS_PATH "${GLAD_DIR}/args.txt")
-    if(NOT EXISTS "${GLAD_ARGS_PATH}")
-        set(GLAD_OUT_OF_DATE ON)
-    else()
-        file(READ "${GLAD_ARGS_PATH}" GLAD_ARGS_FILE)
-        if(NOT GLAD_ARGS_UNIVERSAL STREQUAL GLAD_ARGS_FILE)
-            set(GLAD_OUT_OF_DATE ON)
+    if(GG_KEEP_SOURCES)
+        string(REPLACE "${GLAD_DIR}" GLAD_DIRECTORY GLAD_ARGS_UNIVERSAL "${GLAD_ARGS}")
+        set(GLADD_ADD_CUSTOM_COMMAND OFF)
+        set(GLAD_ARGS_PATH "${GLAD_DIR}/args.txt")
+        if(NOT EXISTS "${GLAD_ARGS_PATH}")
+            set(GLADD_ADD_CUSTOM_COMMAND ON)
+        else()
+            file(READ "${GLAD_ARGS_PATH}" GLAD_ARGS_FILE)
+            if(NOT GLAD_ARGS_UNIVERSAL STREQUAL GLAD_ARGS_FILE)
+                set(GLADD_ADD_CUSTOM_COMMAND ON)
+            endif()
         endif()
-    endif()
-
-    # regenerate files when argument changes
-    if(GLAD_OUT_OF_DATE)
-        add_custom_command(OUTPUT ${GLAD_FILES} ${GLAD_ARGS_PATH}
-            COMMAND "${CMAKE_COMMAND}" -E remove_directory "${GLAD_DIR}"
-            COMMAND "${PYTHON_EXECUTABLE}" -m glad ${GLAD_ARGS}
+        list(APPEND GLAD_EXTRA_COMMANDS
             COMMAND "${CMAKE_COMMAND}" "-DPATH=${GLAD_ARGS_PATH}" "-DTEXT=\"${GLAD_ARGS_UNIVERSAL}\"" -P "${GLAD_CMAKE_DIR}/WriteFile.cmake"
             COMMAND "${CMAKE_COMMAND}" -E sleep 1
             COMMAND "${CMAKE_COMMAND}" -E touch "${GLAD_CMAKE_DIR}/CMakeLists.txt"
+            )
+    else()
+        set(GLADD_ADD_CUSTOM_COMMAND ON)
+    endif()
+
+    if(GLADD_ADD_CUSTOM_COMMAND)
+        add_custom_command(OUTPUT ${GLAD_FILES} ${GLAD_ARGS_PATH}
+            COMMAND "${CMAKE_COMMAND}" -E remove_directory "${GLAD_DIR}"
+            COMMAND "${PYTHON_EXECUTABLE}" -m glad ${GLAD_ARGS}
+            ${GLAD_EXTRA_COMMANDS}
             )
     endif()
 
@@ -209,8 +215,7 @@ function(glad_add_library TARGET)
         COMMAND "${CMAKE_COMMAND}" -E remove_directory "${GLAD_DIR}"
         COMMAND "${PYTHON_EXECUTABLE}" -m glad ${GLAD_ARGS}
         COMMAND "${CMAKE_COMMAND}" "-DPATH=${GLAD_ARGS_PATH}" "-DTEXT=\"${GLAD_ARGS_UNIVERSAL}\"" -P "${GLAD_CMAKE_DIR}/WriteFile.cmake"
-        COMMAND "${CMAKE_COMMAND}" -E sleep 1
-        COMMAND "${CMAKE_COMMAND}" -E touch "${GLAD_CMAKE_DIR}/CMakeLists.txt"
+        ${GLAD_EXTRA_COMMANDS}
         COMMENT "Regenerating glad source files for ${TARGET}..."
         )
 
