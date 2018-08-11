@@ -1,12 +1,9 @@
-find_program(GLAD_BIN
-    NAMES glad
-    HINTS
-        "$ENV{HOME}/.local/bin"
-    )
+cmake_minimum_required(VERSION 3.1)
+project(glad C)
 
-if(NOT GLAD_BIN)
-    message(FATAL_ERROR "Cannot find glad program.")
-endif()
+find_package(PythonInterp REQUIRED)
+
+set(GLAD_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE STRING "Directory containing glad generator CMakeLists.txt")
 
 # Extract specification, profile and version from a string
 # examples:
@@ -183,13 +180,15 @@ function(glad_add_library TARGET)
     # - bootstrap: generate sources when non-existent
     # - do not remove the sources when cleaning
     # BUG: running clean directly after an initial make without sources present, removes the sources
+
+    string(REPLACE "${GLAD_DIR}" GLAD_DIRECTORY GLAD_ARGS_UNIVERSAL "${GLAD_ARGS}")
     set(GLAD_OUT_OF_DATE OFF)
     set(GLAD_ARGS_PATH "${GLAD_DIR}/args.txt")
     if(NOT EXISTS "${GLAD_ARGS_PATH}")
         set(GLAD_OUT_OF_DATE ON)
     else()
         file(READ "${GLAD_ARGS_PATH}" GLAD_ARGS_FILE)
-        if(NOT GLAD_ARGS STREQUAL GLAD_ARGS_FILE)
+        if(NOT GLAD_ARGS_UNIVERSAL STREQUAL GLAD_ARGS_FILE)
             set(GLAD_OUT_OF_DATE ON)
         endif()
     endif()
@@ -198,20 +197,20 @@ function(glad_add_library TARGET)
     if(GLAD_OUT_OF_DATE)
         add_custom_command(OUTPUT ${GLAD_FILES} ${GLAD_ARGS_PATH}
             COMMAND "${CMAKE_COMMAND}" -E remove_directory "${GLAD_DIR}"
-            COMMAND "${GLAD_BIN}" ${GLAD_ARGS}
-            COMMAND "${CMAKE_COMMAND}" "-DPATH=${GLAD_ARGS_PATH}" "-DTEXT=\"${GLAD_ARGS}\"" -P "${GLAD_MODULE_PATH}/WriteFile.cmake"
+            COMMAND "${PYTHON_EXECUTABLE}" -m glad ${GLAD_ARGS}
+            COMMAND "${CMAKE_COMMAND}" "-DPATH=${GLAD_ARGS_PATH}" "-DTEXT=\"${GLAD_ARGS_UNIVERSAL}\"" -P "${GLAD_CMAKE_DIR}/WriteFile.cmake"
             COMMAND "${CMAKE_COMMAND}" -E sleep 1
-            COMMAND "${CMAKE_COMMAND}" -E touch "${CMAKE_CURRENT_LIST_FILE}"
+            COMMAND "${CMAKE_COMMAND}" -E touch "${GLAD_CMAKE_DIR}/CMakeLists.txt"
             )
     endif()
 
     # add make custom target
     add_custom_target("regenerate_${TARGET}"
         COMMAND "${CMAKE_COMMAND}" -E remove_directory "${GLAD_DIR}"
-        COMMAND "${GLAD_BIN}" ${GLAD_ARGS}
-        COMMAND "${CMAKE_COMMAND}" "-DPATH=${GLAD_ARGS_PATH}" "-DTEXT=\"${GLAD_ARGS}\"" -P "${GLAD_MODULE_PATH}/WriteFile.cmake"
+        COMMAND "${PYTHON_EXECUTABLE}" -m glad ${GLAD_ARGS}
+        COMMAND "${CMAKE_COMMAND}" "-DPATH=${GLAD_ARGS_PATH}" "-DTEXT=\"${GLAD_ARGS_UNIVERSAL}\"" -P "${GLAD_CMAKE_DIR}/WriteFile.cmake"
         COMMAND "${CMAKE_COMMAND}" -E sleep 1
-        COMMAND "${CMAKE_COMMAND}" -E touch "${CMAKE_CURRENT_LIST_FILE}"
+        COMMAND "${CMAKE_COMMAND}" -E touch "${GLAD_CMAKE_DIR}/CMakeLists.txt"
         COMMENT "Regenerating glad source files for ${TARGET}..."
         )
 

@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(glad_all_versions)
+project(glad_all_versions C)
 enable_testing()
 
-list(APPEND CMAKE_MODULE_PATH "${GLAD_MODULE_PATH}")
-include(GladLoaderGenerator)
+set(GLAD_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake")
+add_subdirectory("${GLAD_CMAKE_PATH}" "glad_cmake")
 
 set(egl_VERSIONS 1.0 1.1 1.2 1.3 1.4 1.5)
 set(gl_VERSIONS 1.0 1.1 1.2 1.3 1.4 1.5 2.0 2.1 3.0 3.1 3.2 3.3 4.0 4.1 4.2 4.3 4.4 4.5 4.6)
