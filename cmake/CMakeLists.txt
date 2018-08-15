@@ -4,6 +4,7 @@ project(glad C)
 find_package(PythonInterp REQUIRED)
 
 set(GLAD_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE STRING "Directory containing glad generator CMakeLists.txt")
+set(GLAD_SOURCES_DIR "${GLAD_CMAKE_DIR}/../" CACHE STRING "Directory containing glad sources (python modules), used as working directory")
 
 # Extract specification, profile and version from a string
 # examples:
@@ -75,12 +76,6 @@ function(__glad_c_library CARGS CFILES)
                 "${GLAD_DIR}/include/KHR/khrplatform.h"
                 "${GLAD_DIR}/include/glad/gles2.h"
                 "${GLAD_DIR}/src/gles2.c"
-                )
-        elseif(SPEC STREQUAL "gles3")
-            list(APPEND GGC_FILES
-                "${GLAD_DIR}/include/KHR/khrplatform.h"
-                "${GLAD_DIR}/include/glad/gles3.h"
-                "${GLAD_DIR}/src/gles3.c"
                 )
         elseif(SPEC STREQUAL "glsc2")
             list(APPEND GGC_FILES
@@ -207,6 +202,7 @@ function(glad_add_library TARGET)
             COMMAND "${CMAKE_COMMAND}" -E remove_directory "${GLAD_DIR}"
             COMMAND "${PYTHON_EXECUTABLE}" -m glad ${GLAD_ARGS}
             ${GLAD_EXTRA_COMMANDS}
+            WORKING_DIRECTORY "${GLAD_SOURCES_DIR}"
             )
     endif()
 
@@ -216,6 +212,7 @@ function(glad_add_library TARGET)
         COMMAND "${PYTHON_EXECUTABLE}" -m glad ${GLAD_ARGS}
         COMMAND "${CMAKE_COMMAND}" "-DPATH=${GLAD_ARGS_PATH}" "-DTEXT=\"${GLAD_ARGS_UNIVERSAL}\"" -P "${GLAD_CMAKE_DIR}/WriteFile.cmake"
         ${GLAD_EXTRA_COMMANDS}
+        WORKING_DIRECTORY "${GLAD_SOURCES_DIR}"
         COMMENT "Regenerating glad source files for ${TARGET}..."
         )
 

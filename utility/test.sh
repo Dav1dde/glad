@@ -15,7 +15,7 @@ MINGW_GCC=${MINGW_GCC:="$_MINGW_GCC $_GCC_FLAGS"}
 
 WINE=${WINE:="wine"}
 
-TEST_TMP=${TEST_TMP:="build"}
+TEST_TMP=$(realpath ${TEST_TMP:="build"})
 
 TEST_DIRECTORY=${TEST_DIRECTORY:="test"}
 TEST_PATTERN=${TEST_PATTERN:="test.*"}
@@ -34,8 +34,11 @@ function run_test {
     local run=$(extract "RUN" "$test")
 
     rm -rf "${TEST_TMP}"
+    mkdir -p "${TEST_TMP}"
 
     local time=$(date +%s)
+
+    local wd=$(pwd)
 
     local output;
     output=$({
@@ -46,6 +49,8 @@ function run_test {
     local status=$?
 
     time=$(($(date +%s) - ${time}))
+
+    cd "$wd"
 
     log_failure "${status}" "${output}"
     report_test "${test}" "${status}" "${time}" "${output}"
@@ -107,6 +112,7 @@ function extract {
 function execute {
     # define variables for use in test
     local tmp="$TEST_TMP"
+    local test_dir="$(dirname ${test})"
 
     eval $@
 
@@ -137,6 +143,7 @@ for test in "${TESTS[@]}"; do
     _tests_ran=$((_tests_ran+1))
 
     echo -n "  🡒 $test "
+    test=$(realpath $test)
     run_test $test
 
     if [ $? -ne 0 ]; then
