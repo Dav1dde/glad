@@ -150,6 +150,10 @@ _OPENGL_HEADER = '''
 #define APIENTRYP APIENTRY *
 #endif
 
+#ifndef GLAPIENTRY
+#define GLAPIENTRY APIENTRY
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
