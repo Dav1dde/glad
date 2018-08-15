@@ -1,3 +1,47 @@
+# This project defines a `glad_add_library` function that will create a glad library.
+# The created library will automatically generate the glad sources.
+# Consumers can link to the the library.
+#
+#  configuration variables:
+#    GLAD_SOURCES_DIR: path to the sources of glad (=python module)
+#
+#
+#  gladd_add_library(<TARGET> [SHARED|STATIC|MODULE] [EXCLUDE_FROM_ALL] [MERGE] [QUIET] [KEEP_SOURCES] [LOCATION <PATH>]
+#                       [LANGUAGE <LANG>] [API <API1> [<API2> ...]] [EXTENSIONS [<EXT1> [<EXT2> ...]]])
+#  - <TARGET>
+#       Name of the TARGET
+#  - SHARED|STATIC|MODULE
+#       Type of the library
+#   - EXCLUDE_FROM_ALL
+#       Exclude building the library from the all target
+#   - MERGE
+#       Merge multiple APIs of the same specitifation into one file.
+#   - QUIET
+#       Disable logging
+#   - KEEP_SOURCES
+#       After generating the sources, do not let a clean step remove the sources.
+#       This is useful for adding the glad sources to your scm.
+#   - LOCATION <PATH>
+#       Set the location where the generated glad should be saved.
+#       If KEEP_SOURCES is also defined, this path can be inside the source path.
+#   - LANGUAGE <LANG>
+#       Language of the generated glad sources.
+#   - API <API1> [<API2> ...]]
+#       Apis to include in the generated glad library.
+#   - EXTENSIONS [<EXT1> [<EXT2> ...]]
+#       Extensions to include in the generated glad library. Pass NONE to add no extensions whatsoever.
+#
+# examples:
+# - create a shared glad library of the core profile of opengl 3.3, having all extensions:
+#   ```
+#   glad_add_library(glad_gl_core_33 SHARED API gl:core=3.3)
+#   ```
+# - create a module glad library of the compatibility profile of opengl 1.0, having only the GL_EXT_COMPRESSION_s3tc extensionsion
+#   ```
+#   glad_add_library(glad_gl_compat_10 MODULE API gl:compatibility=1.0 EXTENSIONS GL_EXT_COMPRESSION_s3tc)
+#   ```
+# - create  a static glad library with the vulkan=1.1
+
 cmake_minimum_required(VERSION 3.1)
 project(glad C)
 
@@ -130,10 +174,10 @@ endfunction()
 
 # Create a glad library named "${TARGET}"
 function(glad_add_library TARGET)
-    cmake_parse_arguments(GG "MERGE;QUIET;EXCLUDE_FROM_ALL;KEEP_SOURCES" "LOCATION;LANGUAGE" "API;EXTENSIONS" ${ARGN})
+    cmake_parse_arguments(GG "MERGE;QUIET;KEEP_SOURCES;STATIC;SHARED;MODULE;EXCLUDE_FROM_ALL" "LOCATION;LANGUAGE" "API;EXTENSIONS" ${ARGN})
 
     if(NOT GG_LOCATION)
-        message(FATAL_ERROR "Need LOCATION")
+        set(GG_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/gladsources/${TARGET}")
     endif()
     set(GLAD_DIR "${GG_LOCATION}")
     if(NOT IS_DIRECTORY "${GLAD_DIR}")
@@ -148,7 +192,12 @@ function(glad_add_library TARGET)
     list(APPEND GLAD_ARGS  --api "${GLAD_API}")
 
     if(GG_EXTENSIONS)
-        string(REPLACE ";" "," GLAD_EXTENSIONS ${GG_EXTENSIONS})
+        list(FIND GG_EXTENSIONS NONE GG_EXT_NONE)
+        if(GG_EXT_NONE EQUAL -1)
+            set(GLAD_EXTENSIONS "")
+        else()
+            string(REPLACE ";" "," GLAD_EXTENSIONS ${GG_EXTENSIONS})
+        endif()
         list(APPEND GLAD_ARGS --extensions "${GLAD_EXTENSIONS}")
     endif()
 
@@ -217,11 +266,20 @@ function(glad_add_library TARGET)
         )
 
     set(GLAD_ADD_LIBRARY_ARGS "")
+
+    if(GG_SHARED)
+        list(APPEND GLAD_ADD_LIBRARY_ARGS SHARED)
+    elseif(GG_STATIC)
+        list(APPEND GLAD_ADD_LIBRARY_ARGS STATIC)
+    elseif(GG_MODULE)
+        list(APPEND GLAD_ADD_LIBRARY_ARGS MODULE)
+    endif()
+
     if(GG_EXCLUDE_FROM_ALL)
         list(APPEND GLAD_ADD_LIBRARY_ARGS EXCLUDE_FROM_ALL)
     endif()
 
-    add_library("${TARGET}" ${GLAD_ADD_LIBRARY_ARGS}
+    add_library("${TARGET}" ${LIBTYPE} ${GLAD_ADD_LIBRARY_ARGS}
         ${GLAD_FILES}
         )
 
