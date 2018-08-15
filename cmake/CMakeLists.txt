@@ -5,6 +5,7 @@ find_package(PythonInterp REQUIRED)
 
 set(GLAD_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE STRING "Directory containing glad generator CMakeLists.txt")
 set(GLAD_SOURCES_DIR "${GLAD_CMAKE_DIR}/../" CACHE STRING "Directory containing glad sources (python modules), used as working directory")
+mark_as_advanced(GLAD_CMAKE_DIR)
 
 # Extract specification, profile and version from a string
 # examples:
@@ -210,7 +211,6 @@ function(glad_add_library TARGET)
     add_custom_target("regenerate_${TARGET}"
         COMMAND "${CMAKE_COMMAND}" -E remove_directory "${GLAD_DIR}"
         COMMAND "${PYTHON_EXECUTABLE}" -m glad ${GLAD_ARGS}
-        COMMAND "${CMAKE_COMMAND}" "-DPATH=${GLAD_ARGS_PATH}" "-DTEXT=\"${GLAD_ARGS_UNIVERSAL}\"" -P "${GLAD_CMAKE_DIR}/WriteFile.cmake"
         ${GLAD_EXTRA_COMMANDS}
         WORKING_DIRECTORY "${GLAD_SOURCES_DIR}"
         COMMENT "Regenerating glad source files for ${TARGET}..."
