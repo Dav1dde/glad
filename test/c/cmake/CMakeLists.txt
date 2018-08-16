@@ -17,6 +17,15 @@ set(wgl_VERSIONS 1.0)
 
 set(gl_PROFILES core compatibility)
 
+set(egl_SYSTEMS Linux Windows Darwin)
+set(gl_SYSTEMS Linux Windows Darwin)
+set(gles1_SYSTEMS Linux Windows Darwin)
+set(gles2_SYSTEMS Linux Windows Darwin)
+set(glsc2_SYSTEMS Linux Windows Darwin)
+set(glx_SYSTEMS Linux)
+set(vulkan_SYSTEMS Linux Windows Darwin)
+set(wgl_SYSTEMS Windows)
+
 set(APIS egl gl gles1 gles2 glsc2 glx vulkan wgl)
 
 macro(merge_version RESULT VERSION)
@@ -45,11 +54,13 @@ foreach(API ${APIS})
                 API ${APISTR}=${VERSION}
                 KEEP_SOURCES
                 )
-            add_test(
-                NAME "${TARGET}"
-                COMMAND "${CMAKE_MAKE_PROGRAM}" "${TARGET}" VERBOSE=ON
-                WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-                )
+            if(CMAKE_SYSTEM_NAME IN_LIST "${API}_SYSTEMS")
+                add_test(
+                    NAME "${TARGET}"
+                    COMMAND "${CMAKE_MAKE_PROGRAM}" "${TARGET}" VERBOSE=ON
+                    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+                    )
+            endif()
         endforeach()
     endforeach()
 endforeach()
