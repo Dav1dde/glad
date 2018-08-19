@@ -13,11 +13,9 @@ static GLADapiproc glad_gl_get_proc(const char *name, void *vuserptr) {
     struct _glad_gl_userptr userptr = *(struct _glad_gl_userptr*) vuserptr;
     GLADapiproc result = NULL;
 
-#ifndef __APPLE__
     if(userptr.gl_get_proc_address_ptr != NULL) {
         result = GLAD_GNUC_EXTENSION (GLADapiproc) userptr.gl_get_proc_address_ptr(name);
     }
-#endif
     if(result == NULL) {
         result = glad_dlsym_handle(userptr.gl_handle, name);
     }
@@ -37,9 +35,9 @@ int gladLoaderLoadGL{{ 'Context' if options.mx }}({{ template_utils.context_arg(
     static const char *NAMES[] = {"opengl32.dll"};
 #else
     static const char *NAMES[] = {
-#if defined __CYGWIN__
+  #if defined(__CYGWIN__)
         "libGL-1.so",
-#endif
+  #endif
         "libGL.so.1",
         "libGL.so"
     };
@@ -52,7 +50,7 @@ int gladLoaderLoadGL{{ 'Context' if options.mx }}({{ template_utils.context_arg(
     handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
     if (handle) {
         userptr.gl_handle = handle;
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__HAIKU__)
         userptr.gl_get_proc_address_ptr = NULL;
 #elif GLAD_PLATFORM_WIN32
         userptr.gl_get_proc_address_ptr =
