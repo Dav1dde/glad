@@ -36,6 +36,9 @@ int main(void) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch(event.type) {
+                case SDL_QUIT:
+                    exit = 1;
+                    break;
                 case SDL_KEYUP:
                     if (event.key.keysym.sym == SDLK_ESCAPE) {
                         exit = 1;
