@@ -37,7 +37,7 @@ end
 start "egl_x11.c"
 ${GLAD} --out-path="${TMP}" --api="gles2" c --loader
 ${GLAD} --out-path="${TMP}" --api="egl" c --loader
-${GCC} example/c/egl_x11.c -o ${TMP}/run -Ibuild/include ${TMP}/src/*.c -ldl -lX11 && ${TMP}/run
+${GCC} example/c/egl_x11/egl_x11.c -o ${TMP}/run -Ibuild/include ${TMP}/src/*.c -ldl -lX11 && ${TMP}/run
 end
 
 start "gl_glfw.c"
@@ -69,7 +69,7 @@ end
 
 start "vulkan_tri_glfw.c"
 ${GLAD} --out-path="${TMP}" --api="vulkan" c --loader
-${GCC} example/c/vulkan_tri_glfw.c -o ${TMP}/run -Ibuild/include ${TMP}/src/*.c -ldl -lglfw && ${TMP}/run
+${GCC} example/c/vulkan_tri_glfw/vulkan_tri_glfw.c -o ${TMP}/run -Ibuild/include ${TMP}/src/*.c -ldl -lglfw && ${TMP}/run
 end
 
 start "wgl.c"
@@ -95,6 +95,6 @@ end
 
 start "multiwin_mx.c"
 ${GLAD} --out-path="${TMP}" --api="gl:core" c --loader --mx
-${GPP} example/c++/multiwin_mx.cpp -o ${TMP}/run -Ibuild/include ${TMP}/src/*.c -ldl -lglfw && ${TMP}/run
+${GPP} example/c++/multiwin_mx/multiwin_mx.cpp -o ${TMP}/run -Ibuild/include ${TMP}/src/*.c -ldl -lglfw && ${TMP}/run
 end
 
