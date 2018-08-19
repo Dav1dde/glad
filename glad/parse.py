@@ -705,7 +705,20 @@ class Type(IdentifiedByName):
 
     def enums_for(self, feature_set):
         relevant = set(feature_set.features) | set(feature_set.extensions)
-        return [e for e in self.enums if len(e.extended_by) == 0 or e.extended_by & relevant]
+
+        required_names = set()
+        result = list()
+        # assume order, an alias must be after the enum it is aliased to
+        # reverse here so we add the alias first then we can check if the
+        # value that is referenced needs to be added as well
+        for enum in reversed(self.enums):
+            if len(enum.extended_by) == 0 or enum.extended_by & relevant:
+                result.insert(0, enum) # restore order
+                required_names.add(enum.alias)
+            elif enum.name in required_names:
+                result.insert(0, enum) # restore order
+
+        return result
 
     @classmethod
     def from_element(cls, element):
