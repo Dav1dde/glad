@@ -73,7 +73,7 @@ def load_specifications(specification_names, opener, specification_classes=None)
 
         if os.path.isfile(xml_name):
             logger.info('using local specification: %s', xml_name)
-            specification = Specification.from_file(xml_name)
+            specification = Specification.from_file(xml_name, opener=opener)
         else:
             logger.info('getting %r specification from remote location', name)
             specification = Specification.from_remote(opener=opener)
@@ -83,12 +83,17 @@ def load_specifications(specification_names, opener, specification_classes=None)
     return specifications
 
 
-def main():
+def apis_by_specification(api_info, specifications):
+    return groupby(api_info.items(),
+                   key=lambda api_info: specifications[api_info[1].specification])
+
+
+def main(args=None):
     from argparse import ArgumentParser
     import sys
 
     # Initialize logging as early as possible
-    if not '--quiet' in sys.argv:
+    if not '--quiet' in (args or sys.argv):
         logging.basicConfig(
             format='[%(asctime)s][%(levelname)s\t][%(name)-7s\t]: %(message)s',
             datefmt='%d.%m.%Y %H:%M:%S', level=logging.DEBUG
@@ -117,14 +122,14 @@ def main():
 
         configs[lang] = config
 
-    ns = parser.parse_args()
+    ns = parser.parse_args(args=args)
 
     global_config.update_from_object(ns, convert=False, ignore_additional=True)
     config = configs[ns.subparser_name]
     config.update_from_object(ns, convert=False, ignore_additional=True)
 
     # This should never throw if Config.init_parser is working correctly
-    global_config.validate() # Done before, but doesn't hurt
+    global_config.validate()  # Done before, but doesn't hurt
     config.validate()
 
     opener = URLOpener()
@@ -134,10 +139,17 @@ def main():
         opener=opener
     )
 
-    apis_by_spec = groupby(global_config['API'].items(),
-                           key=lambda api_info: specifications[api_info[1].specification])
-
     generator = generators[ns.subparser_name](global_config['OUT_PATH'], opener=opener)
+
+    invalid_extensions = set(global_config['EXTENSIONS'] or [])
+    for specification, apis in apis_by_specification(global_config['API'], specifications):
+        for api in apis:
+            invalid_extensions = invalid_extensions.difference(specification.extensions[api[0]])
+
+    if not len(invalid_extensions) == 0:
+        message = 'invalid extensions or extensions not present in one of the selected APIs: {}\n' \
+            .format(', '.join(invalid_extensions))
+        parser.exit(11, message)
 
     def select(specification, api, info):
         logging_sink.info('generating {}:{}/{}={}'.format(api, info.profile, info.specification, info.version))
@@ -148,7 +160,7 @@ def main():
 
         return generator.select(specification, api, info.version, info.profile, extensions, config, sink=logging_sink)
 
-    for specification, apis in apis_by_spec:
+    for specification, apis in apis_by_specification(global_config['API'], specifications):
         feature_sets = list(select(specification, api, info) for api, info in apis)
 
         if global_config['MERGE']:
@@ -157,6 +169,7 @@ def main():
             logging_sink.info('merged into {}'.format(feature_sets[0]))
 
         for feature_set in feature_sets:
+            logging_sink.info('generating feature set {}'.format(feature_set))
             generator.generate(specification, feature_set, config, sink=logging_sink)
 
 

@@ -6,9 +6,6 @@ try:
 
     def xml_fromstring(argument):
         return etree.fromstring(argument, parser=parser())
-
-    def xml_frompath(path):
-        return etree.parse(path, parser=parser()).getroot()
 except ImportError:
     try:
         import xml.etree.cElementTree as etree
@@ -17,9 +14,6 @@ except ImportError:
 
     def xml_fromstring(argument):
         return etree.fromstring(argument)
-
-    def xml_frompath(path):
-        return etree.parse(path).getroot()
 
 import re
 import copy
@@ -224,12 +218,12 @@ class Specification(object):
         return cls.from_url(cls.API + cls.NAME + '.xml', opener=opener)
 
     @classmethod
-    def fromstring(cls, string):
+    def from_string(cls, string):
         return cls(xml_fromstring(string))
 
     @classmethod
-    def from_file(cls, path):
-        return cls(xml_frompath(path))
+    def from_file(cls, path, opener=None):
+        return cls.from_url('file:' + path, opener=opener)
 
     @property
     def comment(self):
@@ -569,8 +563,8 @@ class Specification(object):
         # make sure the version is valid
         if version not in self.features[api]:
             raise ValueError(
-                'Unknown version {!r} for API {}/{}'
-                .format(version, api, self.name)
+                'Unknown version {}.{} for API {} (specification: {})'
+                .format(version[0], version[1], api, self.name)
             )
 
         all_extensions = list(self.extensions[api].keys())
