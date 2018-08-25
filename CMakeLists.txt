@@ -25,6 +25,7 @@ set(GLAD_GENERATOR "c" CACHE STRING "Language to generate the binding for")
 set(GLAD_EXTENSIONS "" CACHE STRING "Path to extensions file or comma separated list of extensions, if missing all extensions are included")
 set(GLAD_SPEC "gl" CACHE STRING "Name of the spec")
 option(GLAD_NO_LOADER "No loader" OFF)
+option(GLAD_REPRODUCIBLE "Reproducible build" OFF)
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   option(GLAD_EXPORT "Set export variables for external project" OFF)
 else()
@@ -63,6 +64,9 @@ endif()
 if(GLAD_NO_LOADER)
    set(GLAD_NO_LOADER_ARG "--no-loader")
 endif()
+if(GLAD_REPRODUCIBLE)
+   set(GLAD_REPRODUCIBLE_ARG "--reproducible")
+endif()
 
 add_custom_command(
   OUTPUT ${GLAD_SOURCES}
@@ -74,6 +78,7 @@ add_custom_command(
     --extensions=${GLAD_EXTENSIONS}
     --spec=${GLAD_SPEC}
     ${GLAD_NO_LOADER_ARG}
+    ${GLAD_REPRODUCIBLE_ARG}
   WORKING_DIRECTORY ${GLAD_DIR}
   COMMENT "Generating GLAD"
 )
@@ -81,7 +86,7 @@ add_custom_target(glad-generate-files DEPENDS ${GLAD_SOURCES})
 set_source_files_properties(${GLAD_SOURCES} PROPERTIES GENERATED TRUE)
 add_library(glad ${GLAD_SOURCES})
 add_dependencies(glad glad-generate-files)
-target_include_directories(glad 
+target_include_directories(glad
     PUBLIC
         $<BUILD_INTERFACE:${GLAD_INCLUDE_DIRS}>
     INTERFACE
@@ -142,7 +147,7 @@ if(GLAD_INSTALL)
       DESTINATION ${CMAKE_INSTALL_PREFIX})
   endif()
 
-  # Install gladConfig.cmake, gladConfigVersion.cmake 
+  # Install gladConfig.cmake, gladConfigVersion.cmake
   install(
     FILES "${project_config}" "${version_config}"
     DESTINATION "${config_install_dir}")
