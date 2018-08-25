@@ -4,7 +4,8 @@ EXIT_ON_FAILURE=${EXIT_ON_FAILURE:=0}
 PRINT_MESSAGE=${PRINT_MESSAGE:=0}
 
 PYTHON=${PYTHON:="python"}
-GLAD=${GLAD:="$PYTHON -m glad"}
+GLAD_ARGS=${GLAD_ARGS:="--reproducible"}
+GLAD=${GLAD:="$PYTHON -m glad ${GLAD_ARGS}"}
 
 _GCC=${_GCC:="gcc"}
 _MINGW_GCC=${_MINGW_GCC:="x86_64-w64-mingw32-gcc"}

@@ -6,7 +6,7 @@ find_package(glfw3 REQUIRED)
 set(GLAD_SOURCES_DIR "${PROJECT_SOURCE_DIR}/../../..")
 add_subdirectory("${GLAD_SOURCES_DIR}/cmake" glad_cmake)
 
-glad_add_library(glad_gl_core_mx_33 MX API gl:core=3.3)
+glad_add_library(glad_gl_core_mx_33 REPRODUCIBLE MX API gl:core=3.3)
 
 add_executable(multiwin_mx
     multiwin_mx.cpp

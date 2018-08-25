@@ -9,6 +9,7 @@ from itertools import groupby
 import logging
 import os
 
+import glad.files
 from glad.config import Config, ConfigOption
 from glad.sink import LoggingSink
 from glad.opener import URLOpener
@@ -48,7 +49,7 @@ class GlobalConfig(Config):
         default=None,
         description='Path to a file containing a list of extensions or '
                     'a comma separated list of extensions, if missing '
-                    'all possible extensions are included'
+                    'all possible extensions are included.'
     )
     MERGE = ConfigOption(
         converter=bool,
@@ -57,11 +58,17 @@ class GlobalConfig(Config):
     )
     QUIET = ConfigOption(
         converter=bool,
-        description='Disable logging'
+        description='Disable logging.'
+    )
+    REPRODUCIBLE = ConfigOption(
+        converter=bool,
+        default=False,
+        description='Makes the build reproducible by not fetching the latest '
+                    'specification from Khronos.'
     )
 
 
-def load_specifications(specification_names, opener, specification_classes=None):
+def load_specifications(specification_names, opener, specification_classes=None, reproducible=False):
     specifications = dict()
 
     if specification_classes is None:
@@ -71,7 +78,10 @@ def load_specifications(specification_names, opener, specification_classes=None)
         Specification = specification_classes[name]
         xml_name = name + '.xml'
 
-        if os.path.isfile(xml_name):
+        if reproducible and False:
+            logger.info('reproducible build, using packaged specification: %s', xml_name)
+            specification = Specification.from_file(glad.files.open_local(xml_name))
+        elif os.path.isfile(xml_name):
             logger.info('using local specification: %s', xml_name)
             specification = Specification.from_file(xml_name, opener=opener)
         else:
@@ -132,11 +142,15 @@ def main(args=None):
     global_config.validate()  # Done before, but doesn't hurt
     config.validate()
 
-    opener = URLOpener()
+    if global_config['REPRODUCIBLE']:
+        opener = glad.files.StaticFileOpener()
+    else:
+        opener = URLOpener()
 
     specifications = load_specifications(
         [value[0] for value in global_config['API'].values()],
-        opener=opener
+        opener=opener,
+        reproducible=global_config['REPRODUCIBLE']
     )
 
     generator = generators[ns.subparser_name](global_config['OUT_PATH'], opener=opener)

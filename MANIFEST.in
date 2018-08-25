@@ -1,1 +1,1 @@
-recursive-include glad *.c *.h *.d *.volt *.rs *.toml
+recursive-include glad *.c *.h *.d *.volt *.rs *.toml *.xml

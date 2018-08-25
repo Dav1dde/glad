@@ -174,7 +174,7 @@ endfunction()
 
 # Create a glad library named "${TARGET}"
 function(glad_add_library TARGET)
-    cmake_parse_arguments(GG "MERGE;QUIET;KEEP_SOURCES;STATIC;SHARED;MODULE;EXCLUDE_FROM_ALL" "LOCATION;LANGUAGE" "API;EXTENSIONS" ${ARGN})
+    cmake_parse_arguments(GG "MERGE;QUIET;REPRODUCIBLE;KEEP_SOURCES;STATIC;SHARED;MODULE;EXCLUDE_FROM_ALL" "LOCATION;LANGUAGE" "API;EXTENSIONS" ${ARGN})
 
     if(NOT GG_LOCATION)
         set(GG_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/gladsources/${TARGET}")
@@ -207,6 +207,10 @@ function(glad_add_library TARGET)
 
     if(GG_MERGE)
         list(APPEND GLAD_ARGS --merge)
+    endif()
+
+    if(GG_REPRODUCIBLE)
+        list(APPEND GLAD_ARGS --reproducible)
     endif()
 
     set(GLAD_LANGUAGE "c")

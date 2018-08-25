@@ -6,6 +6,8 @@ try:
 
     def xml_fromstring(argument):
         return etree.fromstring(argument, parser=parser())
+    def xml_parse(path):
+        return etree.parse(path, parser=parser()).getroot()
 except ImportError:
     try:
         import xml.etree.cElementTree as etree
@@ -14,6 +16,8 @@ except ImportError:
 
     def xml_fromstring(argument):
         return etree.fromstring(argument)
+    def xml_parse(path):
+        return etree.parse(path).getroot()
 
 import re
 import copy
@@ -81,7 +85,7 @@ class FeatureSet(object):
         self.commands = commands
 
     def __str__(self):
-        return 'FeatureSet@(name={self.name}, info={self.info}, extensions={extensions})' \
+        return 'FeatureSet(name={self.name}, info={self.info}, extensions={extensions})' \
             .format(self=self, extensions=len(self.extensions))
     __repr__ = __str__
 
@@ -261,8 +265,11 @@ class Specification(object):
         return cls(xml_fromstring(string))
 
     @classmethod
-    def from_file(cls, path, opener=None):
-        return cls.from_url('file:' + path, opener=opener)
+    def from_file(cls, path_or_file_like, opener=None):
+        try:
+            return cls.from_url('file:' + path_or_file_like, opener=opener)
+        except TypeError:
+            return cls(xml_parse(path_or_file_like))
 
     @property
     def comment(self):
@@ -280,7 +287,10 @@ class Specification(object):
     def platforms(self):
         platforms = dict()
 
-        pe = self.root.find('platforms') or []
+        pe = self.root.find('platforms')
+        if pe is None:
+            pe = []
+
         for element in pe:
             platform = Platform.from_element(element)
             platforms[platform.name] = platform
