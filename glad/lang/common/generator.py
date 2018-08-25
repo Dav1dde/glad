@@ -28,6 +28,7 @@ HEADER_TEMPLATE = '''
     Loader: {loader}
     Local files: {local_files}
     Omit khrplatform: {omit_khrplatform}
+    Reproducible: {reproducible}
 
     Commandline:
         {commandline}
@@ -43,7 +44,7 @@ class Generator(object):
 
     def __init__(self, path, spec, api, extension_names=None, loader=None,
                  opener=None, local_files=False, omit_khrplatform=False,
-                 header_template=HEADER_TEMPLATE):
+                 header_template=HEADER_TEMPLATE, **options):
         self.path = os.path.abspath(path)
 
         self.spec = spec
@@ -67,6 +68,8 @@ class Generator(object):
 
         self.local_files = local_files
         self.omit_khrplatform = omit_khrplatform
+
+        self.options = options
 
         self._header_template = header_template
 
@@ -152,10 +155,13 @@ class Generator(object):
         specification = self.spec.NAME
         apis = ', '.join('{}={}'.format(api, '.'.join(map(str, version))) for api, version in self.api.items())
         profile = getattr(self.spec, 'profile', '-')
-        extensions = ',\n        '.join(self.extension_names)
+        extensions = ',\n        '.join(sorted(self.extension_names))
         online = self.online
         if len(online) > 2000:
             online = 'Too many extensions'
+
+        if self.options.get('reproducible', False):
+            date = '-'
 
         return self._header_template.format(
             apis_named=apis_named,
@@ -169,6 +175,7 @@ class Generator(object):
             loader=self.has_loader,
             local_files=self.local_files,
             omit_khrplatform=self.omit_khrplatform,
+            reproducible=self.options.get('reproducible', False),
             commandline=self.commandline,
             online=online
         )
@@ -185,9 +192,10 @@ class Generator(object):
         generator = '--generator="{}"'.format(self.NAME)
         specification = '--spec="{}"'.format(self.spec.NAME)
         loader = '' if self.has_loader else '--no-loader'
-        extensions = '--extensions="{}"'.format(','.join(self.extension_names))
+        extensions = '--extensions="{}"'.format(','.join(sorted(self.extension_names)))
         local_files = '--local-files' if self.local_files else ''
         omit_khrplatform = '--omit-khrplatform' if self.omit_khrplatform else ''
+        reproducible = '--reproducible' if self.options.get('reproducible', False) else ''
 
         return ' '.join(filter(None, [
             profile, api, generator, specification,

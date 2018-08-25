@@ -83,6 +83,8 @@ Possible commandline options:
                             extensions, if missing all extensions are included
       --spec {gl,egl,glx,wgl}
                             Name of the spec
+      --reproducible        Makes the build reproducible by not fetching 
+                            the latest specification from Khronos
       --no-loader
       --omit-khrplatform    Omits inclusion of the khrplatform.h file which is
                             often unnecessary. Only has an effect if used
@@ -97,7 +99,10 @@ To generate a loader for C with two extensions, it could look like this:
     python main.py --generator=c --extensions=GL_EXT_framebuffer_multisample,GL_EXT_texture_filter_anisotropic --out-path=GL
 
 `--out-path` and `--generator` are required!
-If the `--extensions` option is missing, glad adds support for all extensions found in the OpenGL spec.
+If the `--extensions` option is missing, glad adds support for all extensions found in the specification.
+
+When integrating glad into your build system the `--reproducible` option is highly recommended,
+it prevents the build from failing in case Khronos made incompatible changes to the specification.
 
 
 ## Generators ##

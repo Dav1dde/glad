@@ -15,6 +15,9 @@ fi
 GCC_FLAGS="-o build/tmp.o -O3 -Wall -Wextra -Wsign-conversion -Wcast-qual -Wstringop-overflow=3 -Wstrict-prototypes -Werror -ansi -c"
 GPP_FLAGS="-o build/tmp.o -O3 -Wall -Wextra -Wsign-conversion -Wcast-qual -Wstringop-overflow=3 -Werror -c"
 
+function glad {
+    ${PYTHON} -m glad $@
+}
 
 function mingwc_compile {
     i686-w64-mingw32-gcc $@
@@ -54,7 +57,7 @@ echo -e "====================== Generating and compiling C/C++: ================
 
 function c_egl {
     rm -rf build
-    ${PYTHON} -m glad --spec=egl --out-path=build $@
+    glad --spec=egl --out-path=build $@
     download_if_required build/include/EGL/eglplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/EGL/eglplatform.h"
     download_if_required build/include/KHR/khrplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h"
     c_compile -Ibuild/include build/src/glad_egl.c ${GCC_FLAGS}
@@ -63,29 +66,29 @@ function c_egl {
 
 function c_gl {
     rm -rf build
-    ${PYTHON} -m glad --spec=gl --out-path=build $@
+    glad --spec=gl --out-path=build $@
     c_compile -Ibuild/include build/src/glad.c ${GCC_FLAGS}
     cpp_compile -Ibuild/include build/src/glad.c ${GPP_FLAGS}
 }
 
 function c_glx {
     rm -rf build
-    ${PYTHON} -m glad --spec=gl --out-path=build $@
-    ${PYTHON} -m glad --spec=glx --out-path=build $@
+    glad --spec=gl --out-path=build $@
+    glad --spec=glx --out-path=build $@
     gcc -Ibuild/include build/src/glad_glx.c ${GCC_FLAGS}
     g++ -Ibuild/include build/src/glad_glx.c ${GPP_FLAGS}
 }
 
 function c_wgl {
     rm -rf build
-    ${PYTHON} -m glad --spec=gl --out-path=build $1
-    ${PYTHON} -m glad --spec=wgl --out-path=build $@
+    glad --spec=gl --out-path=build $1
+    glad --spec=wgl --out-path=build $@
     mingwc_compile -Ibuild/include build/src/glad_wgl.c ${GCC_FLAGS}
     mingwcpp_compile -Ibuild/include build/src/glad_wgl.c ${GPP_FLAGS}
 }
 
 function c_example {
-    ${PYTHON} -m glad --spec=gl --out-path=build $@
+    glad --spec=gl --out-path=build $@
     gcc example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lglut -ldl
     #mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/glad.c -lfreeglut
     g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/glad.c -lglfw -ldl

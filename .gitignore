@@ -1,5 +1,5 @@
 *.pyc
-*.xml
+/*.xml
 *.kdev4
 build/
 *.o
@@ -11,8 +11,8 @@ main.c
 .idea
 dist/
 *.egg-info
-khrplatform.h
-eglplatform.h
-vk_platform.h
+/khrplatform.h
+/eglplatform.h
+/vk_platform.h
 rust/
 glad-rs/

@@ -4,6 +4,7 @@ import os
 
 from glad.lang.common.generator import Generator
 from glad.lang.common.util import makefiledir
+import glad.files
 
 
 KHRPLATFORM = 'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h'
@@ -59,7 +60,13 @@ class CGenerator(Generator):
             if not os.path.exists(khrplatform):
                 if not os.path.exists(khr):
                     os.makedirs(khr)
-                self.opener.urlretrieve(khr_url, khrplatform)
+
+                if self.options.get('reproducible', False):
+                    with glad.files.open_local('khrplatform.h') as src:
+                        with open(khrplatform, 'wb') as dst:
+                            dst.write(src.read())
+                else:
+                    self.opener.urlretrieve(khr_url, khrplatform)
 
         return self
 

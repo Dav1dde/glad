@@ -58,6 +58,11 @@ class Spec(object):
 
     @classmethod
     def from_svn(cls, opener=None):
+        """deprecated"""
+        return cls.from_remote(opener=opener)
+
+    @classmethod
+    def from_remote(cls, opener=None):
         return cls.from_url(cls.API + cls.NAME + '.xml', opener=opener)
 
     @classmethod
