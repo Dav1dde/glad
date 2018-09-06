@@ -37,7 +37,8 @@ if __name__ == '__main__':
                 'glad = glad.__main__:main'
             ],
             'glad.generator': [
-                'c = glad.generator.c.__init__:CGenerator'
+                'c = glad.generator.c.__init__:CGenerator',
+                'rust = glad.generator.rust.__init__:RustGenerator'
                 # TODO re-enable other languages
             ],
             'glad.specification': [
