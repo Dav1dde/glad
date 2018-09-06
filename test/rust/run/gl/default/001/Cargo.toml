@@ -1,0 +1,11 @@
+[package]
+name = "run-gl-default-001"
+version = "0.1.0"
+
+[[bin]]
+path = "test.rs"
+name = "test"
+
+[dependencies]
+glad-gl = { path = "./glad-gl/" }
+glfw = { version = "0.23.0", default-features = false }

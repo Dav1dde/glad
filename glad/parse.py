@@ -30,7 +30,7 @@ import glad.util
 logger = logging.getLogger(__name__)
 
 
-_ARRAY_RE = re.compile(r'\[\d+\]')
+_ARRAY_RE = re.compile(r'\[(\d+)\]')
 
 _FeatureExtensionCommands = namedtuple('_FeatureExtensionCommands', ['features', 'commands'])
 
@@ -99,6 +99,43 @@ class FeatureSet(object):
             self.info,
             len(self.features), len(self.extensions), len(self.types), len(self.enums), len(self.commands)
         ))
+
+    @property
+    @memoize()
+    def _all_enums(self):
+        """
+        Vulkan introduced grouping of enumerations, they turned from
+        basic `#define`'s into actual enumerations `enum Foo { ... }`.
+
+        Glad interprets the "actual" enumerations as types, it's
+        an enumeration type with values. But sometimes it is necessary
+        to just have all enumerations without grouping information
+        available (e.g. for quickly looking up a value). This lives
+        under the assumption that enum names are unique.
+
+        :return: a dictionary of name:enum pairs.
+        """
+        result = dict()
+        for enum in self.enums:
+            result[enum.name] = enum
+
+        for type_ in self.types:
+            if type_.category == 'enum':
+                for enum in type_.enums:
+                    result[enum.name] = enum
+
+        return result
+
+    def find_enum(self, name, default=None):
+        """
+        Finds any enum, this includes enums that are part of
+        types, by its name.
+
+        :param enum_name: name of the enum
+        :param default: default value to return if not found
+        :return: the enum if found or else the default
+        """
+        return self._all_enums.get(name, default)
 
     @classmethod
     def merge(cls, feature_sets, sink=LoggingSink()):
@@ -241,7 +278,8 @@ class Specification(object):
     def platforms(self):
         platforms = dict()
 
-        for element in self.root.find('platforms'):
+        pe = self.root.find('platforms') or []
+        for element in pe:
             platform = Platform.from_element(element)
             platforms[platform.name] = platform
 
@@ -271,7 +309,7 @@ class Specification(object):
                               comment=enums_element.get('comment', ''))
 
                 enums = OrderedDict()
-                for e in (Enum.from_element(e, **kwargs) for e in enums_element.findall('enum')):
+                for e in (Enum.from_element(e, parent_type=t.name, **kwargs) for e in enums_element.findall('enum')):
                     enums[e.name] = e
 
                 for extension in self.root.findall('.//require/enum[@extends="{}"]/../..'.format(t.name)):
@@ -283,7 +321,7 @@ class Specification(object):
                         extnumber = None
 
                     for extending_enum in extension.findall('.//require/enum[@extends="{}"]'.format(t.name)):
-                        enum = Enum.from_element(extending_enum, extnumber=extnumber)
+                        enum = Enum.from_element(extending_enum, extnumber=extnumber, parent_type=t.name)
 
                         if enum.name not in enums:
                             enums[enum.name] = enum
@@ -295,10 +333,7 @@ class Specification(object):
                                                  'with different values'.format(e.name))
 
                         enums[enum.name].also_extended_by(extension.attrib['name'])
-
                 t.enums = list(enums.values())
-            elif t.category in ('struct', 'union'):
-                t.members = [Member.from_element(e) for e in element.findall('member')]
 
             if t.name not in types:
                 types[t.name] = list()
@@ -358,6 +393,7 @@ class Specification(object):
 
         # add enums added through a <require>
         for element in self.root.findall('.//require/enum'):
+            # TODO element can be an alias (defined in value) to an extending enum
             if element.get('extends'):
                 continue
 
@@ -684,7 +720,13 @@ class Platform(object):
 
 
 class Type(IdentifiedByName):
-    def __init__(self, name, api=None, category=None, alias=None, requires=None, enums=None, members=None, raw=None):
+    _FACTORIES = dict()
+
+    @staticmethod
+    def register(category, type_factory):
+        Type._FACTORIES[category] = type_factory
+
+    def __init__(self, name, api=None, category=None, alias=None, requires=None, raw=None):
         self.name = name
         self.api = api
         self.category = category
@@ -692,10 +734,102 @@ class Type(IdentifiedByName):
         self.alias = alias
         self.requires = requires or []
 
-        self.enums = enums
-        self.members = members
-
         self._raw = raw
+
+    @classmethod
+    def factory(cls, element, name, data):
+        return cls(name, **data)
+
+    @staticmethod
+    def from_element(element):
+        raw = ''.join(element.itertext())
+        api = element.get('api')
+        category = element.get('category')
+        name = element.get('name') or element.find('name').text
+
+        alias = element.get('alias')
+
+        # a type referenced by a struct/funcptr is required by this type
+        requires = set(t.text for t in element.iter('type') if t is not element)
+        requires.update(e.text for e in element.iter('enum'))
+        if element.get('requires'):
+            requires.add(element.get('requires'))
+
+        data = dict(api=api, category=category, alias=alias, requires=requires, raw=raw)
+
+        factory = Type._FACTORIES.get(category, Type.factory)
+        return factory(element, name, data)
+
+    def is_equivalent(self, other):
+        return self._raw == other._raw
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return 'Type(raw={self._raw!r})'.format(self=self)
+
+
+class FuncPointerType(Type):
+    _Parameters = namedtuple('Parameters', ['type', 'name'])
+
+    def __init__(self, name, ret=None, parameters=None, **kwargs):
+        Type.__init__(self, name, **kwargs)
+
+        self.ret = ret
+        self.parameters = parameters or []
+
+    @classmethod
+    def factory(cls, element, name, data):
+        raw = data['raw'].strip().replace('\r', '').replace('\n', '')
+
+        # typedef {RETURN} (VKAPI_PTR *{NAME})({PARAMS...});
+
+        # extract {RETURN}, split the typedef away,
+        # then take everything up to the first (
+        ret = raw.split(None, 1)[1].split('(', 1)[0].strip()
+        # split to the 2nd (, take everything after,
+        # then split to the next ). Leaving {PARAMS...} behind
+        parameters = [p for p in raw.split('(', 2)[2].split(')')[0].strip().split(',') if p.strip()]
+
+        # when {PARAMS...} is void
+        if len(parameters) == 1 and parameters[0] == 'void':
+            parameters = []
+
+        for i, parameter in enumerate(parameters):
+            type_, pname = parameter.rsplit(None, 1)
+            parameters[i] = FuncPointerType._Parameters(
+                type_.replace(' ', ''), pname.strip()
+            )
+
+        return cls(name, ret=ret, parameters=parameters, **data)
+
+
+class MemberType(Type):
+    def __init__(self, name, members=None, **kwargs):
+        Type.__init__(self, name, **kwargs)
+
+        self.members = members or []
+
+    @classmethod
+    def factory(cls, element, name, data):
+        members = [Member.from_element(e) for e in element.findall('member')]
+        return cls(name, members=members, **data)
+
+
+class UnionType(MemberType):
+    pass
+
+
+class StructType(MemberType):
+    pass
+
+
+class EnumType(Type):
+    def __init__(self, name, enums=None, **kwargs):
+        Type.__init__(self, name, **kwargs)
+
+        self.enums = enums or []
 
     def enums_for(self, feature_set):
         relevant = set(feature_set.features) | set(feature_set.extensions)
@@ -714,35 +848,40 @@ class Type(IdentifiedByName):
 
         return result
 
+
+class TypedType(Type):
+    def __init__(self, name, type=None, **kwargs):
+        Type.__init__(self, name, **kwargs)
+
+        self.type = type
+
     @classmethod
-    def from_element(cls, element):
-        apientry = element.find('apientry')
-        if apientry is not None:
-            apientry.text = 'APIENTRY'
+    def factory(cls, element, name, data):
+        # may be none if the handle is just aliased
+        type_element = element.find('type')
+        type_ = type_element.text if type_element is not None else None
+        return cls(name, type=type_, **data)
 
-        raw = ''.join(element.itertext())
-        api = element.get('api')
-        category = element.get('category')
-        name = element.get('name') or element.find('name').text
 
-        alias = element.get('alias')
+class HandleType(TypedType):
+    pass
 
-        # a type referenced by a struct/funcptr is required by this type
-        requires = set(t.text for t in element.iter('type') if not t is element)
-        requires.update(e.text for e in element.iter('enum'))
-        if element.get('requires'):
-            requires.add(element.get('requires'))
 
-        return cls(name, api=api, category=category, alias=alias, requires=requires, raw=raw)
+class BasetypeType(TypedType):
+    pass
 
-    def is_equivalent(self, other):
-        return self._raw == other._raw
 
-    def __str__(self):
-        return self.name
+class BitmaskType(TypedType):
+    pass
 
-    def __repr__(self):
-        return 'Type(raw={self._raw!r})'.format(self=self)
+
+Type.register('funcpointer', FuncPointerType.factory)
+Type.register('union', UnionType.factory)
+Type.register('struct', StructType.factory)
+Type.register('enum', EnumType.factory)
+Type.register('handle', HandleType.factory)
+Type.register('basetype', BasetypeType.factory)
+Type.register('bitmask', BitmaskType.factory)
 
 
 class Member(IdentifiedByName):
@@ -756,6 +895,10 @@ class Member(IdentifiedByName):
 
         return Member(type_.name, type_)
 
+    def __str__(self):
+        return 'Member(name={self.name}, type={self.type})'.format(self=self)
+    __repr__ = __str__
+
 
 class Enum(IdentifiedByName):
     BASE_EXTENSION_OFFSET = 1000000000
@@ -764,11 +907,11 @@ class Enum(IdentifiedByName):
 
     def __init__(self, name, value, bitpos, api, type_,
                  alias=None, namespace=None, group=None, vendor=None,
-                 comment='', extended_by=None):
+                 comment='', parent_type=None, extended_by=None):
         self.name = name
         self.value = value
         if self.value is None and bitpos is not None:
-            self.value = 1 << int(bitpos)
+            self.value = str(1 << int(bitpos))
         self.bitpos = bitpos
         self.api = api
         self.type = type_
@@ -779,6 +922,9 @@ class Enum(IdentifiedByName):
         self.group = group
         self.vendor = vendor
         self.comment = comment
+
+        # name of the type this enum is a part of
+        self.parent_type = parent_type
 
         self.extended_by = set(extended_by) if extended_by else set()
 
@@ -816,6 +962,9 @@ class Enum(IdentifiedByName):
 
             if element.get('dir') == '-':
                 value = -value
+
+        if value is not None:
+            value = str(value)
 
         return cls(name, value, bitpos, api, type_, alias=alias, **kwargs)
 
@@ -898,13 +1047,15 @@ class Param(object):
 
 class ParsedType(object):
     def __init__(self, name, type_, original_type,
-                 is_pointer=0, is_const=False, is_unsigned=False,
-                 comment='', raw=None, element=None):
+                 is_pointer=0, is_array=0, is_struct=False, is_const=False,
+                 is_unsigned=False, comment='', raw=None, element=None):
         self.name = name
-        self.type = type_
         self.original_type = original_type
+        self.type = type_
 
         self.is_pointer = is_pointer
+        self.is_array = is_array
+        self.is_struct = is_struct
         self.is_const = is_const
         self.is_unsigned = is_unsigned
 
@@ -915,6 +1066,27 @@ class ParsedType(object):
 
     def is_equivalent(self, other):
         return self._raw == other._raw
+
+    @classmethod
+    def from_string(cls, raw):
+        type_ = raw.replace('const', '') \
+            .replace('unsigned', '') \
+            .replace('struct', '') \
+            .replace('*', '') \
+            .strip().split(None, 1)[0]
+
+        # 0 if no pointer, 1 if *, 2 if **
+        is_pointer = 0 if raw is None else raw.count('*')
+        array_match = _ARRAY_RE.search(raw)
+        is_array = 0 if array_match is None else int(array_match.group(1))
+        is_const = False if raw is None else 'const' in raw
+        is_unsigned = False if raw is None else 'unsigned' in raw
+        is_struct = 'struct' in raw
+
+        return cls(None, type_, raw,
+                   is_pointer=is_pointer, is_struct=is_struct,
+                   is_const=is_const, is_unsigned=is_unsigned,
+                   raw=raw)
 
     @classmethod
     @memoize(key=lambda cls, element: tuple(element.itertext()))
@@ -930,25 +1102,25 @@ class ParsedType(object):
         ptype = element.find('ptype')
         if ptype is not None:
             ptype = ptype.text if ptype is not None else None
-            type_ = ptype
+            type_ = ptype.replace('struct', '')
         else:
             type_ = raw.replace('const', '') \
                        .replace('unsigned', '') \
                        .replace('struct', '') \
+                       .replace('*', '') \
                        .strip().split(None, 1)[0]
 
         # 0 if no pointer, 1 if *, 2 if **
         is_pointer = 0 if raw is None else raw.count('*')
-        # it can be a pointer to an array, or just an array
-        is_pointer += len(_ARRAY_RE.findall(raw))
+        array_match = _ARRAY_RE.search(raw)
+        is_array = 0 if array_match is None else int(array_match.group(1))
         is_const = False if raw is None else 'const' in raw
         is_unsigned = False if raw is None else 'unsigned' in raw
+        is_struct = 'struct' in raw
 
-        if 'struct' in raw and 'struct' not in type_:
-            type_ = 'struct {}'.format(type_)
-
-        return cls(name, type_, original_type, is_pointer=is_pointer,
-                   is_const=is_const, is_unsigned=is_unsigned,
+        return cls(name, type_, original_type,
+                   is_pointer=is_pointer, is_array=is_array,
+                   is_struct=is_struct, is_const=is_const, is_unsigned=is_unsigned,
                    comment=comment, raw=raw, element=element)
 
 

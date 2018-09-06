@@ -1,0 +1,10 @@
+[package]
+name = "glad-{{ feature_set.name }}"
+version = "{{ version }}"
+authors = ["David Herberth <github@dav1d.de>"]
+
+[features]
+{% for platform in spec.platforms.values() %}
+{{ platform.protect }} = []
+{{ platform.name }} = ["{{ platform.protect }}"]
+{% endfor %}
