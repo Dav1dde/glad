@@ -135,6 +135,8 @@ class FeatureSet(object):
         :param default: default value to return if not found
         :return: the enum if found or else the default
         """
+        if name is None:
+            return default
         return self._all_enums.get(name, default)
 
     @classmethod

@@ -69,7 +69,7 @@ typedef {{ type.category }} {{ type.name }} {% if type.members %}{
 {% macro write_enumerations(enumerations) %}
 {% for enum in enumerations %}
 {% call protect(enum) %}
-#define {{ enum.name }} {{ enum.alias if enum.alias else enum.value }}
+#define {{ enum.name }} {{ feature_set.find_enum(enum.alias, enum).value }}
 {% endcall %}
 {% endfor %}
 {% endmacro %}
