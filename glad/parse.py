@@ -496,7 +496,7 @@ class Specification(object):
         """
         if not ((require.profile is None or require.profile == profile) and
                 (require.api is None or require.api == api)):
-            raise StopIteration
+            return
 
         if self._combined is None:
             self._combined = dict()
