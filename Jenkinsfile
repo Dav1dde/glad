@@ -13,7 +13,7 @@ pipeline {
                     steps {
                         withPythonEnv('python2') {
                             pysh 'python -m pip install -r requirements.txt'
-                            pysh 'python -m pip install nose mock'
+                            pysh 'python -m pip install -r requirements-test.txt'
                             pysh 'python -m nose --with-xunit || true'
                             junit 'nosetests.xml'
                         }
