@@ -106,6 +106,10 @@ class JinjaGenerator(BaseGenerator):
             api=_api_filter
         )
 
+    @property
+    def id(self):
+        raise NotImplementedError
+
     def get_templates(self, spec, feature_set, config):
         """
         Return a list of destination and template tuples for the

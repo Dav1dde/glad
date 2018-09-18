@@ -43,7 +43,7 @@ def open_local(name, *args, **kwargs):
 
 class StaticFileOpener(object):
     def urlopen(self, url, data=None, *args, **kwargs):
-        logger.debug('intercepted attempt to retrieve remote resource %r', url)
+        logger.debug('intercepted attempt to retrieve resource: %r', url)
         if data is not None:
             raise GladFileException('can not resolve requests with payload')
 

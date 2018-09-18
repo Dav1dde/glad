@@ -11,6 +11,7 @@ import os
 
 import glad.files
 from glad.config import Config, ConfigOption
+from glad.generator import GenerationInfo
 from glad.sink import LoggingSink
 from glad.opener import URLOpener
 from glad.parse import FeatureSet
@@ -68,7 +69,7 @@ class GlobalConfig(Config):
     )
 
 
-def load_specifications(specification_names, opener, specification_classes=None, reproducible=False):
+def load_specifications(specification_names, opener, specification_classes=None):
     specifications = dict()
 
     if specification_classes is None:
@@ -78,10 +79,7 @@ def load_specifications(specification_names, opener, specification_classes=None,
         Specification = specification_classes[name]
         xml_name = name + '.xml'
 
-        if reproducible and False:
-            logger.info('reproducible build, using packaged specification: %s', xml_name)
-            specification = Specification.from_file(glad.files.open_local(xml_name))
-        elif os.path.isfile(xml_name):
+        if os.path.isfile(xml_name):
             logger.info('using local specification: %s', xml_name)
             specification = Specification.from_file(xml_name, opener=opener)
         else:
@@ -144,16 +142,18 @@ def main(args=None):
 
     if global_config['REPRODUCIBLE']:
         opener = glad.files.StaticFileOpener()
+        gen_info_factory = lambda *a, **kw: GenerationInfo.create(when='-', *a, **kw)
     else:
         opener = URLOpener()
+        gen_info_factory = GenerationInfo.create
 
     specifications = load_specifications(
-        [value[0] for value in global_config['API'].values()],
-        opener=opener,
-        reproducible=global_config['REPRODUCIBLE']
+        [value[0] for value in global_config['API'].values()], opener=opener
     )
 
-    generator = generators[ns.subparser_name](global_config['OUT_PATH'], opener=opener)
+    generator = generators[ns.subparser_name](
+        global_config['OUT_PATH'], opener=opener, gen_info_factory=gen_info_factory
+    )
 
     invalid_extensions = set(global_config['EXTENSIONS'] or [])
     for specification, apis in apis_by_specification(global_config['API'], specifications):
