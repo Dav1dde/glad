@@ -12,9 +12,9 @@ pipeline {
                 stage('Unit') {
                     steps {
                         withPythonEnv('python2') {
-                            pysh 'python -m pip install -r requirements.txt'
-                            pysh 'python -m pip install -r requirements-test.txt'
-                            pysh 'python -m nose --with-xunit || true'
+                            sh 'python -m pip install -r requirements.txt'
+                            sh 'python -m pip install -r requirements-test.txt'
+                            sh 'python -m nose --with-xunit || true'
                             junit 'nosetests.xml'
                         }
                     }
