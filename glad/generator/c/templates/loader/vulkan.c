@@ -60,7 +60,7 @@ static void* _vulkan_handle;
 
 int gladLoaderLoadVulkan{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} VkInstance instance, VkPhysicalDevice physical_device, VkDevice device) {
     static const char *NAMES[] = {
-#ifdef __APPLE__
+#if GLAD_PLATFORM_APPLE
         "libvulkan.1.dylib",
 #elif GLAD_PLATFORM_WIN32
         "vulkan-1.dll",

@@ -27,7 +27,7 @@ static GLADapiproc glad_gles1_get_proc(const char* name, void *vuserptr) {
 static void* _gles1_handle = NULL;
 
 int gladLoaderLoadGLES1{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
-#ifdef __APPLE__
+#if GLAD_PLATFORM_APPLE
     static const char *NAMES[] = {"libGLESv1_CM.dylib"};
 #elif GLAD_PLATFORM_WIN32
     static const char *NAMES[] = {"GLESv1_CM.dll", "libGLESv1_CM", "libGLES_CM.dll"};

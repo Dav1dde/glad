@@ -3,7 +3,13 @@
 
 {% include 'loader/library.c' %}
 
-#include <glad/egl.h>
+#if GLAD_PLATFORM_EMSCRIPTEN
+  typedef void* (GLAD_API_PTR *PFNEGLGETPROCADDRESSPROC)(const char *name);
+  extern void* emscripten_GetProcAddress(const char *name);
+#else
+  #include <glad/egl.h>
+#endif
+
 
 struct _glad_gles2_userptr {
     void *handle;
@@ -15,8 +21,10 @@ static GLADapiproc glad_gles2_get_proc(const char* name, void *vuserptr) {
     struct _glad_gles2_userptr userptr = *(struct _glad_gles2_userptr*) vuserptr;
     GLADapiproc result = NULL;
 
+#if !GLAD_PLATFORM_EMSCRIPTEN
     {# /* dlsym first, since some implementations don't return function pointers for core functions */ #}
     result = glad_dlsym_handle(userptr.handle, name);
+#endif
     if (result == NULL) {
         result = userptr.get_proc_address_ptr(name);
     }
@@ -27,7 +35,8 @@ static GLADapiproc glad_gles2_get_proc(const char* name, void *vuserptr) {
 static void* _gles2_handle = NULL;
 
 int gladLoaderLoadGLES2{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
-#ifdef __APPLE__
+#if GLAD_PLATFORM_EMSCRIPTEN
+#elif GLAD_PLATFORM_APPLE
     static const char *NAMES[] = {"libGLESv2.dylib"};
 #elif GLAD_PLATFORM_WIN32
     static const char *NAMES[] = {"GLESv2.dll", "libGLESv2.dll"};
@@ -39,6 +48,10 @@ int gladLoaderLoadGLES2{{ 'Context' if options.mx }}({{ template_utils.context_a
     int did_load = 0;
     struct _glad_gles2_userptr userptr;
 
+#if GLAD_PLATFORM_EMSCRIPTEN
+    userptr.get_proc_address_ptr = emscripten_GetProcAddress;
+    version = gladLoadGLES2{{ 'Context' if options.mx }}UserPtr({{ 'context, ' if options.mx }}glad_gles2_get_proc, &userptr);
+#else
     if (eglGetProcAddress == NULL) {
         return 0;
     }
@@ -59,6 +72,7 @@ int gladLoaderLoadGLES2{{ 'Context' if options.mx }}({{ template_utils.context_a
             _gles2_handle = NULL;
         }
     }
+#endif
 
     return version;
 }

@@ -24,7 +24,7 @@ static GLADapiproc glad_gl_get_proc(const char *name, void *vuserptr) {
 }
 
 int gladLoaderLoadGL{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
-#ifdef __APPLE__
+#if GLAD_PLATFORM_APPLE
     static const char *NAMES[] = {
         "../Frameworks/OpenGL.framework/OpenGL",
         "/Library/Frameworks/OpenGL.framework/OpenGL",
@@ -50,7 +50,7 @@ int gladLoaderLoadGL{{ 'Context' if options.mx }}({{ template_utils.context_arg(
     handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
     if (handle) {
         userptr.gl_handle = handle;
-#if defined(__APPLE__) || defined(__HAIKU__)
+#if GLAD_PLATFORM_APPLE || defined(__HAIKU__)
         userptr.gl_get_proc_address_ptr = NULL;
 #elif GLAD_PLATFORM_WIN32
         userptr.gl_get_proc_address_ptr =

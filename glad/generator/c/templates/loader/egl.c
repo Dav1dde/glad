@@ -22,7 +22,7 @@ static GLADapiproc glad_egl_get_proc(const char* name, void *vuserptr) {
 static void* _egl_handle = NULL;
 
 int gladLoaderLoadEGL(EGLDisplay display) {
-#ifdef __APPLE__
+#if GLAD_PLATFORM_APPLE
     static const char *NAMES[] = {"libEGL.dylib"};
 #elif GLAD_PLATFORM_WIN32
     static const char *NAMES[] = {"libEGL.dll", "EGL.dll"};

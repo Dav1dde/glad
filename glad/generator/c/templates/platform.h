@@ -1,12 +1,29 @@
 #ifndef GLAD_PLATFORM_H_
 #define GLAD_PLATFORM_H_
 
-#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__MINGW32__)
-  #define GLAD_PLATFORM_WIN32 1
-#else
-  #define GLAD_PLATFORM_WIN32 0
+#ifndef GLAD_PLATFORM_WIN32
+  #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__MINGW32__)
+    #define GLAD_PLATFORM_WIN32 1
+  #else
+    #define GLAD_PLATFORM_WIN32 0
+  #endif
 #endif
 
+#ifndef GLAD_PLATFORM_APPLE
+  #ifdef __APPLE__
+    #define GLAD_PLATFORM_APPLE 1
+  #else
+    #define GLAD_PLATFORM_APPLE 0
+  #endif
+#endif
+
+#ifndef GLAD_PLATFORM_EMSCRIPTEN
+  #ifdef __EMSCRIPTEN__
+    #define GLAD_PLATFORM_EMSCRIPTEN 1
+  #else
+    #define GLAD_PLATFORM_EMSCRIPTEN 0
+  #endif
+#endif
 
 #ifndef GLAD_PLATFORM_UWP
   #if defined(_MSC_VER) && !defined(GLAD_INTERNAL_HAVE_WINAPIFAMILY)
