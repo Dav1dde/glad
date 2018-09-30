@@ -11,10 +11,15 @@ static int glad_glx_has_extension(Display *display, int screen, const char *ext)
     const char *loc;
     const char *extensions;
 
+    if (glXQueryExtensionsString == NULL) {
+        return 0;
+    }
+
     extensions = glXQueryExtensionsString(display, screen);
 
-    if(extensions == NULL || ext == NULL)
+    if(extensions == NULL || ext == NULL) {
         return 0;
+    }
 
     while(1) {
         loc = strstr(extensions, ext);
@@ -23,8 +28,7 @@ static int glad_glx_has_extension(Display *display, int screen, const char *ext)
 
         terminator = loc + strlen(ext);
         if((loc == extensions || *(loc - 1) == ' ') &&
-            (*terminator == ' ' || *terminator == '\0'))
-        {
+            (*terminator == ' ' || *terminator == '\0')) {
             return 1;
         }
         extensions = terminator;
