@@ -2,7 +2,7 @@
 
 {% block loader %}
 static int glad_glx_has_extension(Display *display, int screen, const char *ext) {
-#ifndef GLAD_GLX_VERSION_1_1
+#ifndef GLX_VERSION_1_1
     (void) display;
     (void) screen;
     (void) ext;
