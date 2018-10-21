@@ -772,7 +772,8 @@
         <enum value="0x3339" name="EGL_COLOR_COMPONENT_TYPE_EXT"/>
         <enum value="0x333A" name="EGL_COLOR_COMPONENT_TYPE_FIXED_EXT"/>
         <enum value="0x333B" name="EGL_COLOR_COMPONENT_TYPE_FLOAT_EXT"/>
-            <unused start="0x333C" end="0x333E"/>
+        <enum value="0x333C" name="EGL_DRM_MASTER_FD_EXT"/>
+            <unused start="0x333D" end="0x333E"/>
         <enum value="0x333F" name="EGL_GL_COLORSPACE_BT2020_LINEAR_EXT"/>
         <enum value="0x3340" name="EGL_GL_COLORSPACE_BT2020_PQ_EXT"/>
         <enum value="0x3341" name="EGL_SMPTE2086_DISPLAY_PRIMARY_RX_EXT"/>
@@ -2197,6 +2198,7 @@
         <extension name="EGL_EXT_device_drm" supported="egl">
             <require>
                 <enum name="EGL_DRM_DEVICE_FILE_EXT"/>
+                <enum name="EGL_DRM_MASTER_FD_EXT"/>
             </require>
         </extension>
         <extension name="EGL_EXT_device_enumeration" supported="egl">

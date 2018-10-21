@@ -427,6 +427,7 @@ Registry at
         <enum value="0x21A3"        name="WGL_GPU_RAM_AMD"/>
         <enum value="0x21A4"        name="WGL_GPU_CLOCK_AMD"/>
         <enum value="0x21A5"        name="WGL_GPU_NUM_PIPES_AMD"/>
+        <enum value="0x21A5"        name="WGL_TEXTURE_RECTANGLE_ATI" comment="Duplicates unrelated WGL_GPU_NUM_PIPES_AMD"/>
         <enum value="0x21A6"        name="WGL_GPU_NUM_SIMD_AMD"/>
         <enum value="0x21A7"        name="WGL_GPU_NUM_RB_AMD"/>
         <enum value="0x21A8"        name="WGL_GPU_NUM_SPI_AMD"/>
@@ -451,7 +452,7 @@ Registry at
     </enums>
 
     <enums namespace="EGL" start="0x3080" end="0x30AF" vendor="KHR" comment="Values shared with EGL. Do not allocate additional values in this range.">
-        <enum value="0x3087" name="WGL_COLORSPACE_EXT"/>
+        <enum value="0x309D" name="WGL_COLORSPACE_EXT"/>
         <enum value="0x3089" name="WGL_COLORSPACE_SRGB_EXT"/>
         <enum value="0x308A" name="WGL_COLORSPACE_LINEAR_EXT"/>
     </enums>
@@ -1625,6 +1626,11 @@ Registry at
         <extension name="WGL_ATI_pixel_format_float" supported="wgl">
             <require>
                 <enum name="WGL_TYPE_RGBA_FLOAT_ATI"/>
+            </require>
+        </extension>
+        <extension name="WGL_ATI_render_texture_rectangle" supported="wgl">
+            <require>
+                <enum name="WGL_TEXTURE_RECTANGLE_ATI"/>
             </require>
         </extension>
         <extension name="WGL_EXT_colorspace" supported="wgl">
