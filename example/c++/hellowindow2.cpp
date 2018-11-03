@@ -20,8 +20,8 @@
 #include <GLFW/glfw3.h>
 
 
-// This example is taken from http://learnopengl.com/
-// http://learnopengl.com/code_viewer.php?code=getting-started/hellowindow2
+// This example is taken from https://learnopengl.com/
+// https://learnopengl.com/code_viewer.php?code=getting-started/hellowindow2
 // The code originally used GLEW, I replaced it with Glad
 
 // Compile:

@@ -40,7 +40,7 @@ HEADER_TEMPLATE = '''
 class Generator(object):
     NAME = None
     NAME_LONG = None
-    URL = 'http://glad.dav1d.de'
+    URL = 'https://glad.dav1d.de'
 
     def __init__(self, path, spec, api, extension_names=None, loader=None,
                  opener=None, local_files=False, omit_khrplatform=False,
