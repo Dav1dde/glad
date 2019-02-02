@@ -62,7 +62,7 @@ class CGenerator(Generator):
                     os.makedirs(khr)
 
                 if self.options.get('reproducible', False):
-                    with glad.files.open_local('khrplatform.h') as src:
+                    with glad.files.open_local('khrplatform.h', 'rb') as src:
                         with open(khrplatform, 'wb') as dst:
                             dst.write(src.read())
                 else:
