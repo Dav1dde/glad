@@ -259,7 +259,7 @@ But make sure you have the correct definition of `APIENTRY` for platforms which 
 
 ### What's the license of glad generated code? [#101](https://github.com/Dav1dde/glad/issues/101)
 
-Any of Public Domain, WTFPL or CC0.
+[MIT](LICENSE).
 
 
 ## Contribute ##
