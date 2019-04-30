@@ -92,7 +92,7 @@ void gladSet{{ feature_set.name }}PostCallback(GLADpostcallback cb) {
 static void glad_{{ spec.name }}_load_{{ extension.name }}({{ template_utils.context_arg(',') }} GLADuserptrloadfunc load, void* userptr) {
     if(!{{ ('GLAD_' + extension.name)|ctx }}) return;
 {% for command in commands %}
-    {{ command.name|ctx }} = ({{ command.name|pfn }}) load("{{ command.name }}", userptr);
+    {{ command.name|ctx }} = ({{ command.name|pfn }}) load(userptr, "{{ command.name }}");
 {% endfor %}
 }
 {% endcall %}

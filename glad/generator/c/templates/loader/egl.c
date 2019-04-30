@@ -7,7 +7,7 @@ struct _glad_egl_userptr {
     PFNEGLGETPROCADDRESSPROC get_proc_address_ptr;
 };
 
-static GLADapiproc glad_egl_get_proc(const char* name, void *vuserptr) {
+static GLADapiproc glad_egl_get_proc(void *vuserptr, const char* name) {
     struct _glad_egl_userptr userptr = *(struct _glad_egl_userptr*) vuserptr;
     GLADapiproc result = NULL;
 

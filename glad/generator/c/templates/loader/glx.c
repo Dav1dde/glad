@@ -4,7 +4,7 @@
 
 typedef void* (GLAD_API_PTR *GLADglxprocaddrfunc)(const char*);
 
-static GLADapiproc glad_glx_get_proc(const char *name, void *userptr) {
+static GLADapiproc glad_glx_get_proc(void *userptr, const char *name) {
     return GLAD_GNUC_EXTENSION ((GLADapiproc (*)(const char *name)) userptr)(name);
 }
 

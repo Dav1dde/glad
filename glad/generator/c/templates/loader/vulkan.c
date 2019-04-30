@@ -36,7 +36,7 @@ struct _glad_vulkan_userptr {
     PFN_vkGetDeviceProcAddr get_device_proc_addr;
 };
 
-static GLADapiproc glad_vulkan_get_proc(const char *name, void *vuserptr) {
+static GLADapiproc glad_vulkan_get_proc(void *vuserptr, const char *name) {
     struct _glad_vulkan_userptr userptr = *(struct _glad_vulkan_userptr*) vuserptr;
     PFN_vkVoidFunction result = NULL;
 

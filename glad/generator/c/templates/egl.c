@@ -27,7 +27,7 @@ static int glad_egl_has_extension(const char *extensions, const char *ext) {
     }
 }
 
-static GLADapiproc glad_egl_get_proc_from_userptr(const char *name, void *userptr) {
+static GLADapiproc glad_egl_get_proc_from_userptr(void *userptr, const char *name) {
     return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
 }
 
@@ -83,10 +83,10 @@ static int glad_egl_find_core_{{ api|lower }}(EGLDisplay display) {
 
 int gladLoad{{ api|api }}UserPtr(EGLDisplay display, GLADuserptrloadfunc load, void* userptr) {
     int version;
-    eglGetDisplay = (PFNEGLGETDISPLAYPROC) load("eglGetDisplay", userptr);
-    eglGetCurrentDisplay = (PFNEGLGETCURRENTDISPLAYPROC) load("eglGetCurrentDisplay", userptr);
-    eglQueryString = (PFNEGLQUERYSTRINGPROC) load("eglQueryString", userptr);
-    eglGetError = (PFNEGLGETERRORPROC) load("eglGetError", userptr);
+    eglGetDisplay = (PFNEGLGETDISPLAYPROC) load(userptr, "eglGetDisplay");
+    eglGetCurrentDisplay = (PFNEGLGETCURRENTDISPLAYPROC) load(userptr, "eglGetCurrentDisplay");
+    eglQueryString = (PFNEGLQUERYSTRINGPROC) load(userptr, "eglQueryString");
+    eglGetError = (PFNEGLGETERRORPROC) load(userptr, "eglGetError");
     if (eglGetDisplay == NULL || eglGetCurrentDisplay == NULL || eglQueryString == NULL || eglGetError == NULL) return 0;
 
     version = glad_egl_find_core_{{ api|lower }}(display);

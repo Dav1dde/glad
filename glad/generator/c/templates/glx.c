@@ -38,7 +38,7 @@ static int glad_glx_has_extension(Display *display, int screen, const char *ext)
     return 0;
 }
 
-static GLADapiproc glad_glx_get_proc_from_userptr(const char* name, void *userptr) {
+static GLADapiproc glad_glx_get_proc_from_userptr(void *userptr, const char* name) {
     return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
 }
 
@@ -75,7 +75,7 @@ static int glad_glx_find_core_{{ api|lower }}(Display **display, int *screen) {
 
 int gladLoad{{ api|api }}UserPtr(Display *display, int screen, GLADuserptrloadfunc load, void *userptr) {
     int version;
-    glXQueryVersion = (PFNGLXQUERYVERSIONPROC) load("glXQueryVersion", userptr);
+    glXQueryVersion = (PFNGLXQUERYVERSIONPROC) load(userptr, "glXQueryVersion");
     if(glXQueryVersion == NULL) return 0;
     version = glad_glx_find_core_{{ api|lower }}(&display, &screen);
 

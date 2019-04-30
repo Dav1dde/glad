@@ -9,7 +9,7 @@
 #include <glad/vulkan.h>
 
 typedef void (*VOID_FUNCPTR)(void);
-VOID_FUNCPTR loader_userptr(const char *name, void *userptr) { (void) name; (void) userptr; return NULL; }
+VOID_FUNCPTR loader_userptr(void *userptr, const char *name) { (void) name; (void) userptr; return NULL; }
 VOID_FUNCPTR loader(const char *name) { (void) name; return NULL; }
 
 int main(void) {

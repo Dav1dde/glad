@@ -10,7 +10,7 @@
 
 typedef void (*VOID_FUNCPTR)(void);
 
-VOID_FUNCPTR loader_userptr(const char *name, void *userptr) {
+VOID_FUNCPTR loader_userptr(void *userptr, const char *name) {
     (void) name;
     (void) userptr;
     return NULL;

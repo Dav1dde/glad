@@ -106,7 +106,7 @@ static int glad_vk_has_extension(const char *name, uint32_t extension_count, cha
     return 0;
 }
 
-static GLADapiproc glad_vk_get_proc_from_userptr(const char* name, void *userptr) {
+static GLADapiproc glad_vk_get_proc_from_userptr(void *userptr, const char* name) {
     return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
 }
 
@@ -165,7 +165,7 @@ int gladLoad{{ api|api }}{{ 'Context' if options.mx }}UserPtr({{ template_utils.
     int version;
 
 #ifdef VK_VERSION_1_1
-    {{ 'vkEnumerateInstanceVersion '|ctx }} = (PFN_vkEnumerateInstanceVersion) load("vkEnumerateInstanceVersion", userptr);
+    {{ 'vkEnumerateInstanceVersion '|ctx }} = (PFN_vkEnumerateInstanceVersion) load(userptr, "vkEnumerateInstanceVersion");
 #endif
     version = glad_vk_find_core_{{ api|lower }}({{ 'context,' if options.mx }} physical_device);
     if (!version) {

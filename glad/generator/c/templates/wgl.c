@@ -13,7 +13,7 @@
 static void glad_wgl_load_{{ extension.name }}(GLADuserptrloadfunc load, void *userptr) {
     if(!GLAD_{{ extension.name }}) return;
 {% for command in commands %}
-    glad_{{ command.name }} = ({{ command.name|pfn }}) load("{{ command.name }}", userptr);
+    glad_{{ command.name }} = ({{ command.name|pfn }}) load(userptr, "{{ command.name }}");
 {% endfor %}
 }
 {% endfor %}
@@ -53,7 +53,7 @@ static int glad_wgl_has_extension(HDC hdc, const char *ext) {
     return 0;
 }
 
-static GLADapiproc glad_wgl_get_proc_from_userptr(const char* name, void *userptr) {
+static GLADapiproc glad_wgl_get_proc_from_userptr(void *userptr, const char* name) {
     return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
 }
 
@@ -78,8 +78,8 @@ static int glad_wgl_find_core_{{ api|lower }}(void) {
 
 int gladLoad{{ api|api }}UserPtr(HDC hdc, GLADuserptrloadfunc load, void *userptr) {
     int version;
-    wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC) load("wglGetExtensionsStringARB", userptr);
-    wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC) load("wglGetExtensionsStringEXT", userptr);
+    wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC) load(userptr, "wglGetExtensionsStringARB");
+    wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC) load(userptr, "wglGetExtensionsStringEXT");
     if(wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return 0;
     version = glad_wgl_find_core_{{ api|lower }}();
 

@@ -130,7 +130,7 @@ static int glad_gl_has_extension(int version, const char *exts, unsigned int num
     return 0;
 }
 
-static GLADapiproc glad_gl_get_proc_from_userptr(const char* name, void *userptr) {
+static GLADapiproc glad_gl_get_proc_from_userptr(void *userptr, const char* name) {
     return (GLAD_GNUC_EXTENSION (GLADapiproc (*)(const char *name)) userptr)(name);
 }
 
@@ -183,7 +183,7 @@ static int glad_gl_find_core_{{ api|lower }}({{ template_utils.context_arg(def='
 int gladLoad{{ api|api }}{{ 'Context' if options.mx }}UserPtr({{ template_utils.context_arg(',') }} GLADuserptrloadfunc load, void *userptr) {
     int version;
 
-    {{ 'glGetString'|ctx }} = (PFNGLGETSTRINGPROC) load("glGetString", userptr);
+    {{ 'glGetString'|ctx }} = (PFNGLGETSTRINGPROC) load(userptr, "glGetString");
     if({{ 'glGetString'|ctx }} == NULL) return 0;
     if({{ 'glGetString'|ctx }}(GL_VERSION) == NULL) return 0;
     version = glad_gl_find_core_{{ api|lower }}({{ 'context' if options.mx }});

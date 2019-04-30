@@ -11,7 +11,7 @@ struct _glad_gles1_userptr {
 };
 
 
-static GLADapiproc glad_gles1_get_proc(const char* name, void *vuserptr) {
+static GLADapiproc glad_gles1_get_proc(void *vuserptr, const char* name) {
     struct _glad_gles1_userptr userptr = *(struct _glad_gles1_userptr*) vuserptr;
     GLADapiproc result = NULL;
 

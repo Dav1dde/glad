@@ -9,7 +9,7 @@ struct _glad_gl_userptr {
     GLADglprocaddrfunc gl_get_proc_address_ptr;
 };
 
-static GLADapiproc glad_gl_get_proc(const char *name, void *vuserptr) {
+static GLADapiproc glad_gl_get_proc(void *vuserptr, const char *name) {
     struct _glad_gl_userptr userptr = *(struct _glad_gl_userptr*) vuserptr;
     GLADapiproc result = NULL;
 
