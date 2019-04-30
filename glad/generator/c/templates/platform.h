@@ -96,10 +96,11 @@
 #define GLAPIENTRY GLAD_API_PTR
 #endif
 
-
 #define GLAD_MAKE_VERSION(major, minor) (major * 10000 + minor)
 #define GLAD_VERSION_MAJOR(version) (version / 10000)
 #define GLAD_VERSION_MINOR(version) (version % 10000)
+
+#define GLAD_GENERATOR_VERSION "{{ gen_info.version }}"
 
 typedef void (*GLADapiproc)(void);
 
