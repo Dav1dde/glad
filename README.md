@@ -243,8 +243,11 @@ Alternatively glad integrates with:
 
 Thanks for all the help and support maintaining those!
 
-### glad includes windows.h which breaks my code! [#42](https://github.com/Dav1dde/glad/issues/42)
+### glad includes windows.h [#42](https://github.com/Dav1dde/glad/issues/42)
 
+**Since 0.1.30:** glad does not include `windows.h` anymore.
+
+**Before 0.1.30:**
 Defining `APIENTRY` before including `glad.h` solves this problem:
 
 ```c

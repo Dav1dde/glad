@@ -18,13 +18,7 @@ _EGL_HEADER = '''
 #define __egl_h_
 
 #if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-#ifndef NOMINMAX
-#define NOMINMAX 1
-#endif
-#include <windows.h>
+#define APIENTRY __stdcall
 #endif
 
 #ifndef APIENTRY
