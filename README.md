@@ -1,15 +1,16 @@
 glad
 ====
 
-Vulkan/GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.
+Vulkan/GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specifications
+for multiple languages, including C/C++/Rust/D/Nim/Volt/Pascal.
 
-Check out the [webservice](http://glad.sh) to generate the files you need!
-
+Check out the [webservice for glad2](https://glad.sh) to generate the files you need!
 
 
 **NOTE:** The 2.0 branch is currently a beta version, the beta version number will
 not be updated and refers to the git *HEAD*.
 
+Some languages are only available in the [glad1 generator](https://glad.dav1d.de).
 
 ## Examples
 
@@ -45,6 +46,21 @@ More examples in the [examples directory](example/) of this repository.
 
 ## Documentation
 
-* Documentation can be found in the [wiki](https://github.com/Dav1dde/glad/wiki).
-* Examples can be found [in the example directory](/example).
+The documentation can be found in the [wiki](https://github.com/Dav1dde/glad/wiki).
+
+
+Examples can be found [in the example directory](/example). Some examples:
+
+* C/C++
+    * [GL GLFW](example/c/gl_glfw.c)
+    * [GL GLFW Multiple Windows](example/c++/multiwin_mx/)
+    * [GL SDL2](example/c/gl_sdl2.c)
+    * [Vulkan GLFW](example/c/vulkan_tri_glfw/)
+    * [GLX](example/c/glx.c)
+    * [GLX Modern](example/c/glx_modern.c)
+    * [WGL](example/c/wgl.c)
+    * [EGL X11](example/c/egl_x11/)
+* Rust
+    * [GL GLFW](example/rust/gl-glfw/)
+
 
