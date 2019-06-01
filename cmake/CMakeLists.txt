@@ -6,7 +6,7 @@
 #    GLAD_SOURCES_DIR: path to the sources of glad (=python module)
 #
 #
-#  gladd_add_library(<TARGET> [SHARED|STATIC|MODULE] [EXCLUDE_FROM_ALL] [MERGE] [QUIET] [KEEP_SOURCES] [LOCATION <PATH>]
+#  glad_add_library(<TARGET> [SHARED|STATIC|MODULE] [EXCLUDE_FROM_ALL] [MERGE] [QUIET] [KEEP_SOURCES] [LOCATION <PATH>]
 #                       [LANGUAGE <LANG>] [API <API1> [<API2> ...]] [EXTENSIONS [<EXT1> [<EXT2> ...]]])
 #  - <TARGET>
 #       Name of the TARGET
@@ -232,14 +232,14 @@ function(glad_add_library TARGET)
 
     if(GG_KEEP_SOURCES)
         string(REPLACE "${GLAD_DIR}" GLAD_DIRECTORY GLAD_ARGS_UNIVERSAL "${GLAD_ARGS}")
-        set(GLADD_ADD_CUSTOM_COMMAND OFF)
+        set(GLAD_ADD_CUSTOM_COMMAND OFF)
         set(GLAD_ARGS_PATH "${GLAD_DIR}/args.txt")
         if(NOT EXISTS "${GLAD_ARGS_PATH}")
-            set(GLADD_ADD_CUSTOM_COMMAND ON)
+            set(GLAD_ADD_CUSTOM_COMMAND ON)
         else()
             file(READ "${GLAD_ARGS_PATH}" GLAD_ARGS_FILE)
             if(NOT GLAD_ARGS_UNIVERSAL STREQUAL GLAD_ARGS_FILE)
-                set(GLADD_ADD_CUSTOM_COMMAND ON)
+                set(GLAD_ADD_CUSTOM_COMMAND ON)
             endif()
         endif()
         list(APPEND GLAD_EXTRA_COMMANDS
@@ -248,10 +248,10 @@ function(glad_add_library TARGET)
             COMMAND "${CMAKE_COMMAND}" -E touch "${GLAD_CMAKE_DIR}/CMakeLists.txt"
             )
     else()
-        set(GLADD_ADD_CUSTOM_COMMAND ON)
+        set(GLAD_ADD_CUSTOM_COMMAND ON)
     endif()
 
-    if(GLADD_ADD_CUSTOM_COMMAND)
+    if(GLAD_ADD_CUSTOM_COMMAND)
         add_custom_command(OUTPUT ${GLAD_FILES} ${GLAD_ARGS_PATH}
             COMMAND "${CMAKE_COMMAND}" -E remove_directory "${GLAD_DIR}"
             COMMAND "${PYTHON_EXECUTABLE}" -m glad ${GLAD_ARGS}
