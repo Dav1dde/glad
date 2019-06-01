@@ -6,9 +6,6 @@ GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.
 Use the [webservice](https://glad.dav1d.de) to generate the files you need!
 
 
-**IMPORTANT:** If you're experiencing errors like `identifier "GLintptr" is undefined`,
-*update* to the latest glad version!
-
 ```c
 #include <glad/glad.h>
 
