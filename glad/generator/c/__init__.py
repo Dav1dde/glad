@@ -185,7 +185,7 @@ class CGenerator(JinjaGenerator):
         Header(
             'eglplatform',
             'EGL/eglplatform.h',
-            'https://cgit.freedesktop.org/mesa/mesa/plain/include/EGL/eglplatform.h'
+            'https://www.khronos.org/registry/EGL/api/EGL/eglplatform.h'
         ),
         Header(
             'vk_platform',
