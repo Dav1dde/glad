@@ -25,7 +25,7 @@ rm -f "${TARGET}/khrplatform.h"
 wget -O "${TARGET}/khrplatform.h" https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h
 
 rm -f "${TARGET}/eglplatform.h"
-wget -O "${TARGET}/eglplatform.h" https://cgit.freedesktop.org/mesa/mesa/plain/include/EGL/eglplatform.h
+wget -O "${TARGET}/eglplatform.h" https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/EGL/eglplatform.h
 
 rm -f "${TARGET}/vk_platform.h"
 wget -O "${TARGET}/vk_platform.h" https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/master/include/vulkan/vk_platform.h

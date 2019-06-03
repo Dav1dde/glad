@@ -58,7 +58,7 @@ function download_if_required {
 echo -e "====================== Generating and compiling C/C++: ======================"
 
 rm -rf build
-download_if_required build/include/EGL/eglplatform.h "https://cgit.freedesktop.org/mesa/mesa/plain/include/EGL/eglplatform.h"
+download_if_required build/include/EGL/eglplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/EGL/eglplatform.h"
 download_if_required build/include/KHR/khrplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h"
 ${PYTHON} -m glad --api="egl" --out-path=build c
 c_compile -Ibuild/include build/src/egl.c ${GCC_FLAGS}
@@ -86,10 +86,10 @@ echorun gcc -Ibuild/include build/src/glx.c ${GCC_FLAGS}
 echorun g++ -Ibuild/include build/src/glx.c ${GPP_FLAGS}
 
 # Example
-echorun gcc example/c/simple.c -o build/simple -Ibuild/include build/src/gl.c -lglut -ldl
-mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/gl.c -lfreeglut
-echorun g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/gl.c -lglfw -ldl
-mingwcpp_compile example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/gl.c -lglfw3 -lgdi32
+# echorun gcc example/c/simple.c -o build/simple -Ibuild/include build/src/gl.c -lglut -ldl
+# mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/gl.c -lfreeglut
+# echorun g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/gl.c -lglfw -ldl
+# mingwcpp_compile example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/gl.c -lglfw3 -lgdi32
 
 rm -rf build
 ${PYTHON} -m glad --api="gl:core" --out-path=build c
@@ -102,7 +102,7 @@ mingwcpp_compile -Ibuild/include build/src/wgl.c ${GPP_FLAGS}
 echo -e "====================== Generating and compiling C/C++ Debug: ======================"
 
 rm -rf build
-download_if_required build/include/EGL/eglplatform.h "https://cgit.freedesktop.org/mesa/mesa/plain/include/EGL/eglplatform.h"
+download_if_required build/include/EGL/eglplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/EGL/eglplatform.h"
 download_if_required build/include/KHR/khrplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h"
 ${PYTHON} -m glad --api="egl" --out-path=build c --debug
 c_compile -Ibuild/include build/src/egl.c ${GCC_FLAGS}
@@ -130,10 +130,10 @@ echorun gcc -Ibuild/include build/src/glx.c ${GCC_FLAGS}
 echorun g++ -Ibuild/include build/src/glx.c ${GPP_FLAGS}
 
 # Example
-echorun gcc example/c/simple.c -o build/simple -Ibuild/include build/src/gl.c -lglut -ldl
-mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/gl.c -lfreeglut
-echorun g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/gl.c -lglfw -ldl
-mingwcpp_compile example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/gl.c -lglfw3 -lgdi32
+# echorun gcc example/c/simple.c -o build/simple -Ibuild/include build/src/gl.c -lglut -ldl
+# mingwc_compile example/c/simple.c -o build/simple -Ibuild/include build/src/gl.c -lfreeglut
+# echorun g++ example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/gl.c -lglfw -ldl
+# mingwcpp_compile example/c++/hellowindow2.cpp -o build/hellowindow2 -Ibuild/include build/src/gl.c -lglfw3 -lgdi32
 
 rm -rf build
 ${PYTHON} -m glad --api="gl:core" --out-path=build c --debug
