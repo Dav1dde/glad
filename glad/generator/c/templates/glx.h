@@ -11,11 +11,9 @@
 {% endblock %}
 
 
-{% block declarations %}
+{% block custom_declarations %}
 {% for api in feature_set.info.apis %}
 GLAD_API_CALL int gladLoad{{ api|api }}UserPtr(Display *display, int screen, GLADuserptrloadfunc load, void *userptr);
 GLAD_API_CALL int gladLoad{{ api|api }}(Display *display, int screen, GLADloadfunc load);
 {% endfor %}
-
-{{ super() }}
 {% endblock %}

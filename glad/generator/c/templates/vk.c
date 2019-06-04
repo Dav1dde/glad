@@ -134,7 +134,7 @@ static int glad_vk_find_core_{{ api|lower }}({{ template_utils.context_arg(',') 
     int minor = 0;
 
 #ifdef VK_VERSION_1_1
-    if ({{ 'vkEnumerateInstanceVersion '|ctx }} != NULL) {
+    if ({{ 'vkEnumerateInstanceVersion'|ctx }} != NULL) {
         uint32_t version;
         VkResult result;
 
@@ -146,7 +146,7 @@ static int glad_vk_find_core_{{ api|lower }}({{ template_utils.context_arg(',') 
     }
 #endif
 
-    if (physical_device != NULL && {{ 'vkGetPhysicalDeviceProperties '|ctx }} != NULL) {
+    if (physical_device != NULL && {{ 'vkGetPhysicalDeviceProperties'|ctx }} != NULL) {
         VkPhysicalDeviceProperties properties;
         {{ 'vkGetPhysicalDeviceProperties'|ctx }}(physical_device, &properties);
 

@@ -42,7 +42,13 @@ def type_to_c(parsed_type):
 
 
 def params_to_c(params):
-    return ', '.join(param.type._raw for param in params) if params else 'void'
+    result = ', '.join(param.type._raw for param in params) if params else 'void'
+    result = ' '.join(result.split())
+    return result
+
+
+def param_names(params):
+    return ', '.join(param.name for param in params)
 
 
 @jinja2.contextfunction
@@ -66,15 +72,17 @@ def loadable(context, extensions=None, api=None):
                 yield extension, commands
 
 
+def is_void(t):
+    # lower because of win API having VOID
+    return type_to_c(t).lower() == 'void'
+
+
 def get_debug_impl(command, command_code_name=None):
     command_code_name = command_code_name or command.name
 
-    impl = ', '.join(
-        '{type} arg{i}'.format(type=type_to_c(param.type), i=i)
-        for i, param in enumerate(command.params)
-    ) or 'void'
+    impl = params_to_c(command.params)
+    func = param_names(command.params)
 
-    func = ', '.join('arg{}'.format(i) for i, _ in enumerate(command.params))
     pre_callback = ', '.join(filter(None, [
         '"{}"'.format(command.name),
         '(GLADapiproc) {}'.format(command_code_name),
@@ -82,8 +90,7 @@ def get_debug_impl(command, command_code_name=None):
         func
     ]))
 
-    # lower because of win API having VOID
-    is_void_ret = type_to_c(command.proto.ret).lower() == 'void'
+    is_void_ret = is_void(command.proto.ret)
 
     post_callback = ('NULL, ' if is_void_ret else '(void*) &ret, ') + pre_callback
 
@@ -162,11 +169,17 @@ class CConfig(Config):
         default=False,
         description='Include internal loaders for APIs'
     )
+    ON_DEMAND = ConfigOption(
+        converter=bool,
+        default=False,
+        description='On-demand function pointer loading, initialize on use (experimental)'
+    )
 
     __constraints__ = [
         RequirementConstraint(['MX_GLOBAL'], 'MX'),
-        UnsupportedConstraint(['MX'], 'DEBUG')
-        #RequirementConstraint(['MX', 'DEBUG'], 'MX_GLOBAL')
+        UnsupportedConstraint(['MX'], 'DEBUG'),
+        # RequirementConstraint(['MX', 'DEBUG'], 'MX_GLOBAL')
+        UnsupportedConstraint(['MX'], 'ON_DEMAND')
     ]
 
 
@@ -209,13 +222,15 @@ class CGenerator(JinjaGenerator):
             defined=lambda x: 'defined({})'.format(x),
             type_to_c=type_to_c,
             params_to_c=params_to_c,
+            param_names=param_names,
             pfn=pfn,
             ctx=ctx,
             no_prefix=jinja2.contextfilter(lambda ctx, value: strip_specification_prefix(value, ctx['spec']))
         )
 
         self.environment.tests.update(
-            supports=lambda x, arg: x.supports(arg)
+            supports=lambda x, arg: x.supports(arg),
+            void=is_void,
         )
 
     @property

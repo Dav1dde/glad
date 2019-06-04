@@ -7,7 +7,7 @@
 {% endblock %}
 
 
-{% block declarations %}
+{% block custom_declarations %}
 {% for api in feature_set.info.apis %}
 GLAD_API_CALL int gladLoad{{ api|api }}{{ 'Context' if options.mx }}UserPtr({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADuserptrloadfunc load, void *userptr);
 GLAD_API_CALL int gladLoad{{ api|api }}{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} VkPhysicalDevice physical_device, GLADloadfunc load);
@@ -17,6 +17,4 @@ GLAD_API_CALL int gladLoad{{ api|api }}{{ 'Context' if options.mx }}({{ template
 GLAD_API_CALL int gladLoad{{ feature_set.name|api }}UserPtr(VkPhysicalDevice physical_device, GLADuserptrloadfunc load, void *userptr);
 GLAD_API_CALL int gladLoad{{ feature_set.name|api }}(VkPhysicalDevice physical_device, GLADloadfunc load);
 {% endif %}
-
-{{ super() }}
 {% endblock %}

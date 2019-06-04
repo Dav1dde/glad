@@ -2,7 +2,7 @@
 
 
 {% block debug_default_pre %}
-void _pre_call_{{ feature_set.name }}_callback_default(const char *name, GLADapiproc apiproc, int len_args, ...) {
+static void _pre_call_{{ feature_set.name }}_callback_default(const char *name, GLADapiproc apiproc, int len_args, ...) {
     (void) len_args;
 
     if (apiproc == NULL) {
@@ -19,7 +19,7 @@ void _pre_call_{{ feature_set.name }}_callback_default(const char *name, GLADapi
 {% endblock %}
 
 {% block debug_default_post %}
-void _post_call_{{ feature_set.name }}_callback_default(void *ret, const char *name, GLADapiproc apiproc, int len_args, ...) {
+static void _post_call_{{ feature_set.name }}_callback_default(void *ret, const char *name, GLADapiproc apiproc, int len_args, ...) {
     GLenum error_code;
 
     (void) ret;

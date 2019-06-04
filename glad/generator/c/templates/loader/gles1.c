@@ -26,7 +26,7 @@ static GLADapiproc glad_gles1_get_proc(void *vuserptr, const char* name) {
 
 static void* _gles1_handle = NULL;
 
-int gladLoaderLoadGLES1{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
+static void* glad_gles1_dlopen_handle(void) {
 #if GLAD_PLATFORM_APPLE
     static const char *NAMES[] = {"libGLESv1_CM.dylib"};
 #elif GLAD_PLATFORM_WIN32
@@ -35,7 +35,24 @@ int gladLoaderLoadGLES1{{ 'Context' if options.mx }}({{ template_utils.context_a
     static const char *NAMES[] = {"libGLESv1_CM.so.1", "libGLESv1_CM.so", "libGLES_CM.so.1"};
 #endif
 
+    if (_gles1_handle == NULL) {
+        _gles1_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
+    }
+
+    return _gles1_handle;
+}
+
+static struct _glad_gles1_userptr glad_gles1_build_userptr(void *handle) {
+    struct _glad_gles1_userptr userptr;
+    userptr.handle = handle;
+    userptr.get_proc_address_ptr = eglGetProcAddress;
+    return userptr;
+}
+
+{% if not options.on_demand %}
+int gladLoaderLoadGLES1{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
     int version = 0;
+    void *handle = NULL;
     int did_load = 0;
     struct _glad_gles1_userptr userptr;
 
@@ -43,25 +60,32 @@ int gladLoaderLoadGLES1{{ 'Context' if options.mx }}({{ template_utils.context_a
         return 0;
     }
 
-    if (_gles1_handle == NULL) {
-        _gles1_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
-        did_load = _gles1_handle != NULL;
-    }
-
-    if (_gles1_handle != NULL) {
-        userptr.handle = _gles1_handle;
-        userptr.get_proc_address_ptr = eglGetProcAddress;
+    did_load = _gles1_handle == NULL;
+    handle = glad_gles1_dlopen_handle();
+    if (handle != NULL) {
+        userptr = glad_gles1_build_userptr(handle);
 
         version = gladLoadGLES1{{ 'Context' if options.mx }}UserPtr({{ 'context, ' if options.mx }}glad_gles1_get_proc, &userptr);
 
         if (!version && did_load) {
-            glad_close_dlopen_handle(_gles1_handle);
-            _gles1_handle = NULL;
+            gladLoaderUnloadGLES1();
         }
     }
 
     return version;
 }
+{% endif %}
+
+{% if options.on_demand %}
+static struct _glad_gles1_userptr glad_gles1_internal_loader_global_userptr = {0};
+static GLADapiproc glad_gles1_internal_loader_get_proc(const char *name) {
+    if (glad_gles1_internal_loader_global_userptr.handle == NULL) {
+        glad_gles1_internal_loader_global_userptr = glad_gles1_build_userptr(glad_gles1_dlopen_handle());
+    }
+
+    return glad_gles1_get_proc((void *) &glad_gles1_internal_loader_global_userptr, name);
+}
+{% endif %}
 
 {% if options.mx_global %}
 int gladLoaderLoadGLES1(void) {
@@ -73,6 +97,9 @@ void gladLoaderUnloadGLES1(void) {
     if (_gles1_handle != NULL) {
         glad_close_dlopen_handle(_gles1_handle);
         _gles1_handle = NULL;
+{% if options.on_demand %}
+        glad_gles1_internal_loader_global_userptr.handle = NULL;
+{% endif %}
     }
 }
 

@@ -9,5 +9,7 @@
 #include <glad/gl.h>
 
 int main(void) {
+    gladSetGLPreCallback(NULL);
+    gladSetGLPostCallback(NULL);
     return 0;
 }

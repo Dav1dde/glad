@@ -6,7 +6,9 @@
 #endif
 #}
 
+{% if not options.on_demand %}
 GLAD_API_CALL int gladLoaderLoadGLES1{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }});
+{% endif %}
 {% if options.mx_global %}
 GLAD_API_CALL int gladLoaderLoadGLES1(void);
 {% endif %}

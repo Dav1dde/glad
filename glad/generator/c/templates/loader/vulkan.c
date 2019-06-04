@@ -58,7 +58,7 @@ static GLADapiproc glad_vulkan_get_proc(void *vuserptr, const char *name) {
 
 static void* _vulkan_handle;
 
-int gladLoaderLoadVulkan{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} VkInstance instance, VkPhysicalDevice physical_device, VkDevice device) {
+static void* glad_vulkan_dlopen_handle(void) {
     static const char *NAMES[] = {
 #if GLAD_PLATFORM_APPLE
         "libvulkan.1.dylib",
@@ -71,34 +71,67 @@ int gladLoaderLoadVulkan{{ 'Context' if options.mx }}({{ template_utils.context_
 #endif
     };
 
+    if (_vulkan_handle == NULL) {
+        _vulkan_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
+    }
+
+    return _vulkan_handle;
+}
+
+static struct _glad_vulkan_userptr glad_vulkan_build_userptr(void *handle, VkInstance instance, VkDevice device) {
+    struct _glad_vulkan_userptr userptr;
+    userptr.vk_handle = handle;
+    userptr.vk_instance = instance;
+    userptr.vk_device = device;
+    userptr.get_instance_proc_addr = (PFN_vkGetInstanceProcAddr) glad_dlsym_handle(handle, "vkGetInstanceProcAddr");
+    userptr.get_device_proc_addr = (PFN_vkGetDeviceProcAddr) glad_dlsym_handle(handle, "vkGetDeviceProcAddr");
+    return userptr;
+}
+
+{% if not options.on_demand %}
+int gladLoaderLoadVulkan{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} VkInstance instance, VkPhysicalDevice physical_device, VkDevice device) {
     int version = 0;
+    void *handle = NULL;
     int did_load = 0;
     struct _glad_vulkan_userptr userptr;
 
-    if (_vulkan_handle == NULL) {
-        _vulkan_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
-        did_load = _vulkan_handle != NULL;
-    }
-
-    if (_vulkan_handle != NULL) {
-        userptr.vk_handle = _vulkan_handle;
-        userptr.vk_instance = instance;
-        userptr.vk_device = device;
-        userptr.get_instance_proc_addr = (PFN_vkGetInstanceProcAddr) glad_dlsym_handle(_vulkan_handle, "vkGetInstanceProcAddr");
-        userptr.get_device_proc_addr = (PFN_vkGetDeviceProcAddr) glad_dlsym_handle(_vulkan_handle, "vkGetDeviceProcAddr");
+    did_load = _vulkan_handle == NULL;
+    handle = glad_vulkan_dlopen_handle();
+    if (handle != NULL) {
+        userptr = glad_vulkan_build_userptr(handle, instance, device);
 
         if (userptr.get_instance_proc_addr != NULL && userptr.get_device_proc_addr != NULL) {
             version = gladLoadVulkan{{ 'Context' if options.mx }}UserPtr({{ 'context,' if options.mx }} physical_device, glad_vulkan_get_proc, &userptr);
         }
 
         if (!version && did_load) {
-            glad_close_dlopen_handle(_vulkan_handle);
-            _vulkan_handle = NULL;
+            gladLoaderUnloadVulkan();
         }
     }
 
     return version;
 }
+{% endif %}
+
+{% if options.on_demand %}
+static struct _glad_vulkan_userptr glad_vulkan_internal_loader_global_userptr = {0};
+
+void gladLoaderSetVulkanInstance(VkInstance instance) {
+    glad_vulkan_internal_loader_global_userptr.vk_instance = instance;
+}
+
+void gladLoaderSetVulkanDevice(VkDevice device) {
+    glad_vulkan_internal_loader_global_userptr.vk_device = device;
+}
+
+static GLADapiproc glad_vulkan_internal_loader_get_proc(const char *name) {
+    if (glad_vulkan_internal_loader_global_userptr.vk_handle == NULL) {
+        glad_vulkan_internal_loader_global_userptr = glad_vulkan_build_userptr(glad_vulkan_dlopen_handle(), NULL, NULL);
+    }
+
+    return glad_vulkan_get_proc((void *) &glad_vulkan_internal_loader_global_userptr, name);
+}
+{% endif %}
 
 {% if options.mx_global %}
 int gladLoaderLoadVulkan(VkInstance instance, VkPhysicalDevice physical_device, VkDevice device) {
@@ -110,6 +143,9 @@ void gladLoaderUnloadVulkan(void) {
     if (_vulkan_handle != NULL) {
         glad_close_dlopen_handle(_vulkan_handle);
         _vulkan_handle = NULL;
+{% if options.on_demand %}
+        glad_vulkan_internal_loader_global_userptr.vk_handle = NULL;
+{% endif %}
     }
 }
 
