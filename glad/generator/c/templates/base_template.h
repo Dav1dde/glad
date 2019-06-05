@@ -68,12 +68,12 @@ typedef struct Glad{{ feature_set.name|api }}Context {
     void* userptr;
 
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
-    int {{ extension.name|ctx(name_only=True) }};
+    int {{ extension.name|ctx(member=True) }};
 {% endfor %}
 
 {% for command in feature_set.commands %}
 {% call template_utils.protect(command) %}
-    {{ command.name|pfn }} {{ command.name|ctx(name_only=True) }};
+    {{ command.name|pfn }} {{ command.name|ctx(member=True) }};
 {% endcall %}
 {% endfor %}
 } Glad{{ feature_set.name|api }}Context;

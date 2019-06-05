@@ -142,7 +142,7 @@ static int glad_gl_find_extensions_{{ api|lower }}({{ template_utils.context_arg
     if (!glad_gl_get_extensions({{ 'context, ' if options.mx }}version, &exts, &num_exts_i, &exts_i)) return 0;
 
 {% for extension in feature_set.extensions|select('supports', api) %}
-    {{ ('GLAD_' + extension.name)|ctx }} = glad_gl_has_extension(version, exts, num_exts_i, exts_i, "{{ extension.name }}");
+    {{ ('GLAD_' + extension.name)|ctx(name_only=True) }} = glad_gl_has_extension(version, exts, num_exts_i, exts_i, "{{ extension.name }}");
 {% else %}
     (void) glad_gl_has_extension;
 {% endfor %}
@@ -174,7 +174,7 @@ static int glad_gl_find_core_{{ api|lower }}({{ template_utils.context_arg(def='
     GLAD_IMPL_UTIL_SSCANF(version, "%d.%d", &major, &minor);
 
 {% for feature in feature_set.features|select('supports', api) %}
-    {{ ('GLAD_' + feature.name)|ctx }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
+    {{ ('GLAD_' + feature.name)|ctx(name_only=True) }} = (major == {{ feature.version.major }} && minor >= {{ feature.version.minor }}) || major > {{ feature.version.major }};
 {% endfor %}
 
     return GLAD_MAKE_VERSION(major, minor);

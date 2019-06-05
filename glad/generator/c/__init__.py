@@ -106,10 +106,10 @@ def get_debug_impl(command, command_code_name=None):
 
 
 @jinja2.contextfilter
-def ctx(jinja_context, name, context='context', raw=False, name_only=False):
+def ctx(jinja_context, name, context='context', raw=False, name_only=False, member=False):
     options = jinja_context['options']
 
-    prefix = ''
+    prefix = 'glad_'
     if options['mx']:
         prefix = context + '->'
         if name.startswith('GLAD_'):
@@ -118,8 +118,14 @@ def ctx(jinja_context, name, context='context', raw=False, name_only=False):
         if not raw:
             name = strip_specification_prefix(name, jinja_context['spec'])
 
-    if name_only:
+    # it's a mx struct member
+    if member:
         return name
+
+    # you won't the name, only when we're not mx
+    if name_only and not options['mx']:
+        return name
+
     return prefix + name
 
 

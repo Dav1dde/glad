@@ -94,6 +94,7 @@ void gladSet{{ feature_set.name|api }}PostCallback(GLADpostcallback cb) {
 {% endif %}
 {% endblock %}
 
+{% if not options.mx %}
 {% block commands %}
 {% for command in feature_set.commands %}
 {% call template_utils.protect(command) %}
@@ -123,6 +124,7 @@ static {{ command.proto.ret|type_to_c }} GLAD_API_PTR glad_debug_impl_{{ command
 {% endcall %}
 {% endfor %}
 {% endblock %}
+{% endif %}
 
 
 {% if not options.on_demand %}
@@ -130,7 +132,7 @@ static {{ command.proto.ret|type_to_c }} GLAD_API_PTR glad_debug_impl_{{ command
 {% for extension, commands in loadable() %}
 {% call template_utils.protect(extension) %}
 static void glad_{{ spec.name }}_load_{{ extension.name }}({{ template_utils.context_arg(',') }} GLADuserptrloadfunc load, void* userptr) {
-    if(!{{ ('GLAD_' + extension.name)|ctx }}) return;
+    if(!{{ ('GLAD_' + extension.name)|ctx(name_only=True) }}) return;
 {% for command in commands %}
     {{ command.name|ctx }} = ({{ command.name|pfn }}) load(userptr, "{{ command.name }}");
 {% endfor %}
