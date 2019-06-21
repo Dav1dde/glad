@@ -17,11 +17,11 @@ bool gladLoadGL()
 '''
 
 _OPENGL_HAS_EXT_LT3 = '''proc hasExt(extname: string): bool =
-  if extname == nil:
+  if extname.len == 0:
     return false
 
   var extensions = $cast[cstring](glGetString(GL_EXTENSIONS))
-  if extensions == nil:
+  if extensions.len == 0:
     return false
 
   var
@@ -46,12 +46,12 @@ _OPENGL_HAS_EXT_LT3 = '''proc hasExt(extname: string): bool =
 '''
 
 _OPENGL_HAS_EXT_GTE3 = '''proc hasExt(extname: string): bool =
-  if extname == nil:
+  if extname.len == 0:
     return false
 
   if glVersionMajor < 3:
     var extensions = $cast[cstring](glGetString(GL_EXTENSIONS))
-    if extensions == nil:
+    if extensions.len == 0:
       return false
 
     var
