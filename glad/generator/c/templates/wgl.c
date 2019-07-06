@@ -1,13 +1,5 @@
 {% extends 'base_template.c' %}
 
-{% set blacklist = feature_set.features[0].get_requirements(spec, feature_set=feature_set).commands %}
-
-{% block commands %}
-{% for command in feature_set.commands|reject('existsin', blacklist) %}
-{{ command.name|pfn }} glad_{{ command.name }};
-{% endfor %}
-{% endblock %}
-
 {% block extension_loaders %}
 {% for extension, commands in loadable((feature_set.features[1:], feature_set.extensions)) %}
 static void glad_wgl_load_{{ extension.name }}(GLADuserptrloadfunc load, void *userptr) {

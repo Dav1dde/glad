@@ -17,7 +17,7 @@ from glad.generator.util import (
     find_extensions_with_aliases
 )
 from glad.parse import Type
-from glad.specification import VK, GL
+from glad.specification import VK, GL, WGL
 import glad.util
 
 _ARRAY_RE = re.compile(r'\[[\d\w]*\]')
@@ -137,6 +137,29 @@ def pfn(context, value):
     return 'PFN' + value.upper() + 'PROC'
 
 
+@jinja2.contextfilter
+def c_commands(context, commands):
+    """
+    The c in c_commands refers to the c file.
+
+    This function filters a list of commands for the generated .c file.
+    WGL core functions are not dynamically loaded but need to be linked,
+    this functions filters out wgl core functions for the .c file.
+
+    :param context: jinja context
+    :param commands: list of commands
+    :return: commands filtered
+    """
+    spec = context['spec']
+    if not spec.name == WGL.NAME:
+        return commands
+
+    feature_set = context['feature_set']
+    core = feature_set.features[0].get_requirements(spec, feature_set=feature_set)
+
+    return [command for command in commands if not command in core]
+
+
 _CPP_STYLE_COMMENT_RE = re.compile(r'(^|\s|\))//(?P<comment>.*)$', flags=re.MULTILINE)
 
 
@@ -231,7 +254,8 @@ class CGenerator(JinjaGenerator):
             param_names=param_names,
             pfn=pfn,
             ctx=ctx,
-            no_prefix=jinja2.contextfilter(lambda ctx, value: strip_specification_prefix(value, ctx['spec']))
+            no_prefix=jinja2.contextfilter(lambda ctx, value: strip_specification_prefix(value, ctx['spec'])),
+            c_commands=c_commands
         )
 
         self.environment.tests.update(

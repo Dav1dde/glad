@@ -96,7 +96,7 @@ void gladSet{{ feature_set.name|api }}PostCallback(GLADpostcallback cb) {
 
 {% if not options.mx %}
 {% block commands %}
-{% for command in feature_set.commands %}
+{% for command in feature_set.commands|c_commands %}
 {% call template_utils.protect(command) %}
 {% if options.on_demand %}
 static {{ command.proto.ret|type_to_c }} GLAD_API_PTR glad_on_demand_impl_{{ command.name }}({{ command.params|params_to_c }}) {
