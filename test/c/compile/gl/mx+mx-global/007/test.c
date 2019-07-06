@@ -7,6 +7,7 @@
  */
 
 #include <glad/gl.h>
+#include <stddef.h>
 
 typedef void (*VOID_FUNCPTR)(void);
 

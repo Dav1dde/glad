@@ -7,6 +7,7 @@
  */
 
 #include <glad/vulkan.h>
+#include <stddef.h>
 
 int main(void) {
     (void) gladLoaderLoadVulkan(NULL, NULL, NULL);
