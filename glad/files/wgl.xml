@@ -427,6 +427,7 @@ Registry at
         <enum value="0x21A3"        name="WGL_GPU_RAM_AMD"/>
         <enum value="0x21A4"        name="WGL_GPU_CLOCK_AMD"/>
         <enum value="0x21A5"        name="WGL_GPU_NUM_PIPES_AMD"/>
+        <enum value="0x21A5"        name="WGL_TEXTURE_RECTANGLE_ATI" comment="Duplicates unrelated WGL_GPU_NUM_PIPES_AMD"/>
         <enum value="0x21A6"        name="WGL_GPU_NUM_SIMD_AMD"/>
         <enum value="0x21A7"        name="WGL_GPU_NUM_RB_AMD"/>
         <enum value="0x21A8"        name="WGL_GPU_NUM_SPI_AMD"/>
@@ -537,7 +538,7 @@ Registry at
         </command>
         <command>
             <proto><ptype>BOOL</ptype> <name>wglBindVideoDeviceNV</name></proto>
-            <param><ptype>HDC</ptype> <name>hDC</name></param>
+            <param><ptype>HDC</ptype> <name>hDc</name></param>
             <param>unsigned int <name>uVideoSlot</name></param>
             <param><ptype>HVIDEOOUTPUTDEVICENV</ptype> <name>hVideoDevice</name></param>
             <param>const int *<name>piAttribList</name></param>
@@ -780,7 +781,7 @@ Registry at
         </command>
         <command>
             <proto>int <name>wglEnumerateVideoDevicesNV</name></proto>
-            <param><ptype>HDC</ptype> <name>hDC</name></param>
+            <param><ptype>HDC</ptype> <name>hDc</name></param>
             <param><ptype>HVIDEOOUTPUTDEVICENV</ptype> *<name>phDeviceList</name></param>
         </command>
         <command>
@@ -911,7 +912,7 @@ Registry at
         <command>
             <proto><ptype>INT</ptype> <name>wglGetGPUInfoAMD</name></proto>
             <param><ptype>UINT</ptype> <name>id</name></param>
-            <param>int <name>property</name></param>
+            <param><ptype>INT</ptype> <name>property</name></param>
             <param><ptype>GLenum</ptype> <name>dataType</name></param>
             <param><ptype>UINT</ptype> <name>size</name></param>
             <param>void *<name>data</name></param>
@@ -1234,7 +1235,7 @@ Registry at
         <command>
             <proto><ptype>INT64</ptype> <name>wglSwapLayerBuffersMscOML</name></proto>
             <param><ptype>HDC</ptype> <name>hdc</name></param>
-            <param>int <name>fuPlanes</name></param>
+            <param><ptype>INT</ptype> <name>fuPlanes</name></param>
             <param><ptype>INT64</ptype> <name>target_msc</name></param>
             <param><ptype>INT64</ptype> <name>divisor</name></param>
             <param><ptype>INT64</ptype> <name>remainder</name></param>
@@ -1625,6 +1626,11 @@ Registry at
         <extension name="WGL_ATI_pixel_format_float" supported="wgl">
             <require>
                 <enum name="WGL_TYPE_RGBA_FLOAT_ATI"/>
+            </require>
+        </extension>
+        <extension name="WGL_ATI_render_texture_rectangle" supported="wgl">
+            <require>
+                <enum name="WGL_TEXTURE_RECTANGLE_ATI"/>
             </require>
         </extension>
         <extension name="WGL_EXT_colorspace" supported="wgl">

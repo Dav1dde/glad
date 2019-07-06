@@ -462,6 +462,13 @@ typedef unsigned __int64 uint64_t;
             <unused start="0x21A9" end="0x21AF"/>
     </enums>
 
+    <enums namespace="GLX" start="0x3100" end="0x3103" vendor="EXT" comment="Shared with EGL_IMG_context_priority">
+        <enum value="0x3100"        name="GLX_CONTEXT_PRIORITY_LEVEL_EXT"/>
+        <enum value="0x3101"        name="GLX_CONTEXT_PRIORITY_HIGH_EXT"/>
+        <enum value="0x3102"        name="GLX_CONTEXT_PRIORITY_MEDIUM_EXT"/>
+        <enum value="0x3103"        name="GLX_CONTEXT_PRIORITY_LOW_EXT"/>
+    </enums>
+
     <enums namespace="GLX" start="0x31B3" end="0x31B3" vendor="ARB" comment="Shared with WGL.">
         <enum value="0x31B3" name="GLX_CONTEXT_OPENGL_NO_ERROR_ARB"/>
     </enums>
@@ -583,8 +590,7 @@ typedef unsigned __int64 uint64_t;
         <enum value="0x818B"        name="GLX_RENDERER_OPENGL_COMPATIBILITY_PROFILE_VERSION_MESA"/>
         <enum value="0x818C"        name="GLX_RENDERER_OPENGL_ES_PROFILE_VERSION_MESA"/>
         <enum value="0x818D"        name="GLX_RENDERER_OPENGL_ES2_PROFILE_VERSION_MESA"/>
-        <enum value="0x818E"        name="GLX_RENDERER_ID_MESA"/>
-            <unused start="0x818F"/>
+            <unused start="0x818E" end="0x818F"/>
     </enums>
 
 <!-- Please remember that new enumerant allocations must be obtained by
@@ -1087,7 +1093,7 @@ typedef unsigned __int64 uint64_t;
             <param><ptype>Display</ptype> *<name>dpy</name></param>
             <param><ptype>Window</ptype> <name>overlay</name></param>
             <param><ptype>Window</ptype> <name>underlay</name></param>
-            <param>long *<name>pTransparentIndex</name></param>
+            <param>unsigned long *<name>pTransparentIndex</name></param>
         </command>
         <command>
             <proto>int <name>glXGetVideoDeviceNV</name></proto>
@@ -1253,7 +1259,7 @@ typedef unsigned __int64 uint64_t;
             <param><ptype>GLuint</ptype> *<name>count</name></param>
         </command>
         <command>
-            <proto>int <name>glXQueryGLXPbufferSGIX</name></proto>
+            <proto>void <name>glXQueryGLXPbufferSGIX</name></proto>
             <param><ptype>Display</ptype> *<name>dpy</name></param>
             <param><ptype>GLXPbufferSGIX</ptype> <name>pbuf</name></param>
             <param>int <name>attribute</name></param>
@@ -1394,8 +1400,8 @@ typedef unsigned __int64 uint64_t;
             <param><ptype>GLboolean</ptype> <name>bBlock</name></param>
         </command>
         <command>
-            <proto><ptype>Bool</ptype> <name>glXSet3DfxModeMESA</name></proto>
-            <param>int <name>mode</name></param>
+            <proto><ptype>GLboolean</ptype> <name>glXSet3DfxModeMESA</name></proto>
+            <param>GLint <name>mode</name></param>
         </command>
         <command>
             <proto>void <name>glXSwapBuffers</name></proto>
@@ -1735,6 +1741,14 @@ typedef unsigned __int64 uint64_t;
                 <enum name="GLX_BACK_BUFFER_AGE_EXT"/>
             </require>
         </extension>
+        <extension name="GLX_EXT_context_priority" supported="glx">
+            <require>
+                <enum name="GLX_CONTEXT_PRIORITY_LEVEL_EXT"/>
+                <enum name="GLX_CONTEXT_PRIORITY_HIGH_EXT"/>
+                <enum name="GLX_CONTEXT_PRIORITY_MEDIUM_EXT"/>
+                <enum name="GLX_CONTEXT_PRIORITY_LOW_EXT"/>
+            </require>
+        </extension>
         <extension name="GLX_EXT_create_context_es_profile" supported="glx">
             <require>
                 <enum name="GLX_CONTEXT_ES_PROFILE_BIT_EXT"/>
@@ -1898,7 +1912,6 @@ typedef unsigned __int64 uint64_t;
                 <enum name="GLX_RENDERER_OPENGL_COMPATIBILITY_PROFILE_VERSION_MESA"/>
                 <enum name="GLX_RENDERER_OPENGL_ES_PROFILE_VERSION_MESA"/>
                 <enum name="GLX_RENDERER_OPENGL_ES2_PROFILE_VERSION_MESA"/>
-                <enum name="GLX_RENDERER_ID_MESA"/>
                 <command name="glXQueryCurrentRendererIntegerMESA"/>
                 <command name="glXQueryCurrentRendererStringMESA"/>
                 <command name="glXQueryRendererIntegerMESA"/>

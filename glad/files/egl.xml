@@ -468,8 +468,20 @@
             <unused start="0x3111" end="0x311F"/>
     </enums>
 
-    <enums namespace="EGL" start="0x3120" end="0x312F" vendor="AMD" comment="Reserved for David Garcia (Khronos bug 5149)">
-            <unused start="0x3120" end="0x312F"/>
+    <enums namespace="EGL" start="0x3120" end="0x312F" vendor="QCOM" comment="EGL_QCOM_create_image">
+        <enum value="0x3120" name="EGL_NEW_IMAGE_QCOM"/>
+        <enum value="0x3121" name="EGL_IMAGE_FORMAT_QCOM"/>
+        <enum value="0x3122" name="EGL_FORMAT_RGBA_8888_QCOM"/>
+        <enum value="0x3123" name="EGL_FORMAT_RGB_565_QCOM"/>
+        <enum value="0x3124" name="EGL_FORMAT_YUYV_QCOM"/>
+        <enum value="0x3125" name="EGL_FORMAT_UYVY_QCOM"/>
+        <enum value="0x3126" name="EGL_FORMAT_YV12_QCOM"/>
+        <enum value="0x3127" name="EGL_FORMAT_NV21_QCOM"/>
+        <enum value="0x3128" name="EGL_FORMAT_NV12_TILED_QCOM"/>
+        <enum value="0x3129" name="EGL_FORMAT_BGRA_8888_QCOM"/>
+        <enum value="0x312A" name="EGL_FORMAT_BGRX_8888_QCOM"/>
+            <unused start="0x312B" end="0x312E"/>
+        <enum value="0x312F" name="EGL_FORMAT_RGBX_8888_QCOM"/>
     </enums>
 
     <enums namespace="EGL" start="0x3130" end="0x313F" vendor="NV" comment="Reserved for Greg Prisament (Khronos bug 5166)">
@@ -536,8 +548,23 @@
         <enum value="0x31BF" name="EGL_LOSE_CONTEXT_ON_RESET_EXT" alias="EGL_LOSE_CONTEXT_ON_RESET"/>
     </enums>
 
-    <enums namespace="EGL" start="0x31C0" end="0x31CF" vendor="QCOM" comment="Reserved for Maurice Ribble (Khronos bug 6644) - EGL_QCOM_create_image spec TBD">
-            <unused start="0x31C0" end="0x31CF"/>
+    <enums namespace="EGL" start="0x31C0" end="0x31CF" vendor="QCOM" comment="Reserved for Maurice Ribble (Khronos bug 6644) - EGL_QCOM_create_image spec">
+        <enum value="0x31C0" name="EGL_FORMAT_R8_QCOM"/>
+        <enum value="0x31C1" name="EGL_FORMAT_RG88_QCOM"/>
+        <enum value="0x31C2" name="EGL_FORMAT_NV12_QCOM"/>
+        <enum value="0x31C3" name="EGL_FORMAT_SRGBX_8888_QCOM"/>
+        <enum value="0x31C4" name="EGL_FORMAT_SRGBA_8888_QCOM"/>
+        <enum value="0x31C5" name="EGL_FORMAT_YVYU_QCOM"/>
+        <enum value="0x31C6" name="EGL_FORMAT_VYUY_QCOM"/>
+        <enum value="0x31C7" name="EGL_FORMAT_IYUV_QCOM"/>
+        <enum value="0x31C8" name="EGL_FORMAT_RGB_888_QCOM"/>
+        <enum value="0x31C9" name="EGL_FORMAT_RGBA_5551_QCOM"/>
+        <enum value="0x31CA" name="EGL_FORMAT_RGBA_4444_QCOM"/>
+        <enum value="0x31CB" name="EGL_FORMAT_R_16_FLOAT_QCOM"/>
+        <enum value="0x31CC" name="EGL_FORMAT_RG_1616_FLOAT_QCOM"/>
+        <enum value="0x31CD" name="EGL_FORMAT_RGBA_16_FLOAT_QCOM"/>
+        <enum value="0x31CE" name="EGL_FORMAT_RGBA_1010102_QCOM"/>
+        <enum value="0x31CF" name="EGL_FORMAT_FLAG_QCOM"/>
     </enums>
 
     <enums namespace="EGL" start="0x31D0" end="0x31DF" vendor="MESA" comment="Reserved for Kristian H&#248;gsberg (Khronos bug 6757)">
@@ -617,7 +644,9 @@
         <enum value="0x322D" name="EGL_BAD_OUTPUT_LAYER_EXT"/>
         <enum value="0x322E" name="EGL_BAD_OUTPUT_PORT_EXT"/>
         <enum value="0x322F" name="EGL_SWAP_INTERVAL_EXT"/>
-            <unused start="0x3230" end="0x3232"/>
+        <enum value="0x3230" name="EGL_TRIPLE_BUFFER_NV"/>
+        <enum value="0x3231" name="EGL_QUADRUPLE_BUFFER_NV"/>
+            <unused start="0x3232"/>
         <enum value="0x3233" name="EGL_DRM_DEVICE_FILE_EXT"/>
         <enum value="0x3234" name="EGL_DRM_CRTC_EXT"/>
         <enum value="0x3235" name="EGL_DRM_PLANE_EXT"/>
@@ -705,8 +734,23 @@
             <unused start="0x32A2" end="0x32AF"/>
     </enums>
 
-    <enums namespace="EGL" start="0x32B0" end="0x32BF" vendor="QCOM" comment="Reserved for Jeff Vigil (Bug 10663) - EGL_QCOM_lock_image spec TBD">
-            <unused start="0x32B0" end="0x32BF"/>
+    <enums namespace="EGL" start="0x32B0" end="0x32BF" vendor="QCOM" comment="Reserved for Jeff Vigil (Bug 10663) - EGL_QCOM_lock_image2 spec">
+        <enum value="0x32B0" name="EGL_IMAGE_NUM_PLANES_QCOM"/>
+        <enum value="0x32B1" name="EGL_IMAGE_PLANE_PITCH_0_QCOM"/>
+        <enum value="0x32B2" name="EGL_IMAGE_PLANE_PITCH_1_QCOM"/>
+        <enum value="0x32B3" name="EGL_IMAGE_PLANE_PITCH_2_QCOM"/>
+        <enum value="0x32B4" name="EGL_IMAGE_PLANE_DEPTH_0_QCOM"/>
+        <enum value="0x32B5" name="EGL_IMAGE_PLANE_DEPTH_1_QCOM"/>
+        <enum value="0x32B6" name="EGL_IMAGE_PLANE_DEPTH_2_QCOM"/>
+        <enum value="0x32B7" name="EGL_IMAGE_PLANE_WIDTH_0_QCOM"/>
+        <enum value="0x32B8" name="EGL_IMAGE_PLANE_WIDTH_1_QCOM"/>
+        <enum value="0x32B9" name="EGL_IMAGE_PLANE_WIDTH_2_QCOM"/>
+        <enum value="0x32BA" name="EGL_IMAGE_PLANE_HEIGHT_0_QCOM"/>
+        <enum value="0x32BB" name="EGL_IMAGE_PLANE_HEIGHT_1_QCOM"/>
+        <enum value="0x32BC" name="EGL_IMAGE_PLANE_HEIGHT_2_QCOM"/>
+        <enum value="0x32BD" name="EGL_IMAGE_PLANE_POINTER_0_QCOM"/>
+        <enum value="0x32BE" name="EGL_IMAGE_PLANE_POINTER_1_QCOM"/>
+        <enum value="0x32BF" name="EGL_IMAGE_PLANE_POINTER_2_QCOM"/>
     </enums>
 
     <enums namespace="EGL" start="0x32C0" end="0x32CF" vendor="Vivante" comment="Reserved for Yanjun Zhang (Bug 11498)">
@@ -714,8 +758,10 @@
             <unused start="0x32C1" end="0x32CF"/>
     </enums>
 
-    <enums namespace="EGL" start="0x32D0" end="0x32EF" vendor="QCOM" comment="Reserved for Jeff Vigil (Bug 11735) - EGL_QCOM_gpu_perf spec TBD + Bug 12286 - EGL_QCOM_content_protection spec TBD">
-            <unused start="0x32D0" end="0x32EF"/>
+    <enums namespace="EGL" start="0x32D0" end="0x32EF" vendor="QCOM" comment="Reserved for Jeff Vigil (Bug 11735) - EGL_QCOM_gpu_perf spec">
+        <enum value="0x32D0" name="EGL_GPU_PERF_HINT_QCOM"/>
+        <enum value="0x32D1" name="EGL_HINT_PERSISTENT_QCOM"/>
+            <unused start="0x32D2" end="0x32EF"/>
     </enums>
 
     <enums namespace="EGL" start="0x32F0" end="0x32FF" vendor="BCOM" comment="Reserved for Gary Sweet, Broadcom (Bug 12870)">
@@ -772,7 +818,8 @@
         <enum value="0x3339" name="EGL_COLOR_COMPONENT_TYPE_EXT"/>
         <enum value="0x333A" name="EGL_COLOR_COMPONENT_TYPE_FIXED_EXT"/>
         <enum value="0x333B" name="EGL_COLOR_COMPONENT_TYPE_FLOAT_EXT"/>
-            <unused start="0x333C" end="0x333E"/>
+        <enum value="0x333C" name="EGL_DRM_MASTER_FD_EXT"/>
+            <unused start="0x333D" end="0x333E"/>
         <enum value="0x333F" name="EGL_GL_COLORSPACE_BT2020_LINEAR_EXT"/>
         <enum value="0x3340" name="EGL_GL_COLORSPACE_BT2020_PQ_EXT"/>
         <enum value="0x3341" name="EGL_SMPTE2086_DISPLAY_PRIMARY_RX_EXT"/>
@@ -803,7 +850,18 @@
         <enum value="0x3363" name="EGL_GL_COLORSPACE_DISPLAY_P3_EXT"/>
         <enum value="0x3364" name="EGL_SYNC_CLIENT_EXT"/>
         <enum value="0x3365" name="EGL_SYNC_CLIENT_SIGNAL_EXT"/>
-            <unused start="0x3366" end="0x339F"/>
+        <enum value="0x3366" name="EGL_STREAM_FRAME_ORIGIN_X_NV"/>
+        <enum value="0x3367" name="EGL_STREAM_FRAME_ORIGIN_Y_NV"/>
+        <enum value="0x3368" name="EGL_STREAM_FRAME_MAJOR_AXIS_NV"/>
+        <enum value="0x3369" name="EGL_CONSUMER_AUTO_ORIENTATION_NV"/>
+        <enum value="0x336A" name="EGL_PRODUCER_AUTO_ORIENTATION_NV"/>
+        <enum value="0x336B" name="EGL_LEFT_NV"/>
+        <enum value="0x336C" name="EGL_RIGHT_NV"/>
+        <enum value="0x336D" name="EGL_TOP_NV"/>
+        <enum value="0x336E" name="EGL_BOTTOM_NV"/>
+        <enum value="0x336F" name="EGL_X_AXIS_NV"/>
+        <enum value="0x3370" name="EGL_Y_AXIS_NV"/>
+            <unused start="0x3371" end="0x339F"/>
     </enums>
 
     <enums namespace="EGL" start="0x33A0" end="0x33AF" vendor="ANGLE" comment="Reserved for Shannon Woods (Bug 13175)">
@@ -833,8 +891,54 @@
             <unused start="0x33C0" end="0x33DF"/>
     </enums>
 
-    <enums namespace="EGL" start="0x33E0" end="0x342F" vendor="QCOM" comment="Reserved for Jeff Vigil (Bugs 10663,13364)">
-            <unused start="0x33E0" end="0x342F"/>
+    <enums namespace="EGL" start="0x33E0" end="0x342F" vendor="QCOM" comment="EGL_QCOM_create_image and EGL_QCOM_lock_image2">
+        <enum value="0x33E0" name="EGL_FORMAT_FLAG_UBWC_QCOM"/>
+        <enum value="0x33E1" name="EGL_FORMAT_FLAG_MACROTILE_QCOM"/>
+        <enum value="0x33E2" name="EGL_FORMAT_ASTC_4X4_QCOM"/>
+        <enum value="0x33E3" name="EGL_FORMAT_ASTC_5X4_QCOM"/>
+        <enum value="0x33E4" name="EGL_FORMAT_ASTC_5X5_QCOM"/>
+        <enum value="0x33E5" name="EGL_FORMAT_ASTC_6X5_QCOM"/>
+        <enum value="0x33E6" name="EGL_FORMAT_ASTC_6X6_QCOM"/>
+        <enum value="0x33E7" name="EGL_FORMAT_ASTC_8X5_QCOM"/>
+        <enum value="0x33E8" name="EGL_FORMAT_ASTC_8X6_QCOM"/>
+        <enum value="0x33E9" name="EGL_FORMAT_ASTC_8X8_QCOM"/>
+        <enum value="0x33EA" name="EGL_FORMAT_ASTC_10X5_QCOM"/>
+        <enum value="0x33EB" name="EGL_FORMAT_ASTC_10X6_QCOM"/>
+        <enum value="0x33EC" name="EGL_FORMAT_ASTC_10X8_QCOM"/>
+        <enum value="0x33ED" name="EGL_FORMAT_ASTC_10X10_QCOM"/>
+        <enum value="0x33EE" name="EGL_FORMAT_ASTC_12X10_QCOM"/>
+        <enum value="0x33EF" name="EGL_FORMAT_ASTC_12X12_QCOM"/>
+        <enum value="0x3400" name="EGL_FORMAT_ASTC_4X4_SRGB_QCOM"/>
+        <enum value="0x3401" name="EGL_FORMAT_ASTC_5X4_SRGB_QCOM"/>
+        <enum value="0x3402" name="EGL_FORMAT_ASTC_5X5_SRGB_QCOM"/>
+        <enum value="0x3403" name="EGL_FORMAT_ASTC_6X5_SRGB_QCOM"/>
+        <enum value="0x3404" name="EGL_FORMAT_ASTC_6X6_SRGB_QCOM"/>
+        <enum value="0x3405" name="EGL_FORMAT_ASTC_8X5_SRGB_QCOM"/>
+        <enum value="0x3406" name="EGL_FORMAT_ASTC_8X6_SRGB_QCOM"/>
+        <enum value="0x3407" name="EGL_FORMAT_ASTC_8X8_SRGB_QCOM"/>
+        <enum value="0x3408" name="EGL_FORMAT_ASTC_10X5_SRGB_QCOM"/>
+        <enum value="0x3409" name="EGL_FORMAT_ASTC_10X6_SRGB_QCOM"/>
+        <enum value="0x340A" name="EGL_FORMAT_ASTC_10X8_SRGB_QCOM"/>
+        <enum value="0x340B" name="EGL_FORMAT_ASTC_10X10_SRGB_QCOM"/>
+        <enum value="0x340C" name="EGL_FORMAT_ASTC_12X10_SRGB_QCOM"/>
+        <enum value="0x340D" name="EGL_FORMAT_ASTC_12X12_SRGB_QCOM"/>
+        <enum value="0x340E" name="EGL_FORMAT_TP10_QCOM"/>
+        <enum value="0x340F" name="EGL_FORMAT_NV12_Y_QCOM"/>
+        <enum value="0x3410" name="EGL_FORMAT_NV12_UV_QCOM"/>
+        <enum value="0x3411" name="EGL_FORMAT_NV21_VU_QCOM"/>
+        <enum value="0x3412" name="EGL_FORMAT_NV12_4R_QCOM"/>
+        <enum value="0x3413" name="EGL_FORMAT_NV12_4R_Y_QCOM"/>
+        <enum value="0x3414" name="EGL_FORMAT_NV12_4R_UV_QCOM"/>
+        <enum value="0x3415" name="EGL_FORMAT_P010_QCOM"/>
+        <enum value="0x3416" name="EGL_FORMAT_P010_Y_QCOM"/>
+        <enum value="0x3417" name="EGL_FORMAT_P010_UV_QCOM"/>
+        <enum value="0x3418" name="EGL_FORMAT_TP10_Y_QCOM"/>
+        <enum value="0x3419" name="EGL_FORMAT_TP10_UV_QCOM"/>
+            <unused start="0x341A" end="0x341F"/>
+        <enum value="0x3420" name="EGL_GENERIC_TOKEN_1_QCOM"/>
+        <enum value="0x3421" name="EGL_GENERIC_TOKEN_2_QCOM"/>
+        <enum value="0x3422" name="EGL_GENERIC_TOKEN_3_QCOM"/>
+            <unused start="0x3423" end="0x342F"/>
     </enums>
 
     <enums namespace="EGL" start="0x3430" end="0x343F" vendor="ANDROID" comment="Reserved for Pablo Ceballos (Bug 15874)">
@@ -892,6 +996,10 @@
     <enums namespace="EGL" start="0x3480" end="0x348F" vendor="ANGLE" comment="Reserved for Courtney Goeltzenleuchter - ANGLE (gitlab EGL bug 7)">
             <unused start="0x3480" end="0x348F"/>
     </enums>
+    <enums namespace="EGL" start="0x3490" end="0x349F" vendor="EXT" comment="Reserved for Courtney Goeltzenleuchter - Android (gitlab EGL bug 69)">
+        <enum value="0x3490" name="EGL_GL_COLORSPACE_DISPLAY_P3_PASSTHROUGH_EXT"/>
+            <unused start="0x3491" end="0x349F"/>
+    </enums>
 
 <!-- Please remember that new enumerant allocations must be obtained by
      request to the Khronos API registrar (see comments at the top of this
@@ -902,8 +1010,8 @@
 
 <!-- Reservable for future use. To generate a new range, allocate multiples
      of 16 starting at the lowest available point in this block. -->
-    <enums namespace="EGL" start="0x3490" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
-            <unused start="0x3490" end="0x3FFF"/>
+    <enums namespace="EGL" start="0x34A0" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
+            <unused start="0x34A0" end="0x3FFF"/>
     </enums>
 
     <enums namespace="EGL" start="0x8F70" end="0x8F7F" vendor="HI" comment="For Mark Callow, Khronos bug 4055. Shared with GL.">
@@ -1221,6 +1329,14 @@
         <command>
             <proto><ptype>EGLDisplay</ptype> <name>eglGetDisplay</name></proto>
             <param><ptype>EGLNativeDisplayType</ptype> <name>display_id</name></param>
+        </command>
+        <command>
+            <proto>char *<name>eglGetDisplayDriverConfig</name></proto>
+            <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+        </command>
+        <command>
+            <proto>const char *<name>eglGetDisplayDriverName</name></proto>
+            <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
         </command>
         <command>
             <proto><ptype>EGLint</ptype> <name>eglGetError</name></proto>
@@ -2126,6 +2242,7 @@
                 <enum name="EGL_RECORDABLE_ANDROID"/>
             </require>
         </extension>
+        <extension name="EGL_ANDROID_GLES_layers" supported="egl"/>
         <extension name="EGL_ANGLE_d3d_share_handle_client_buffer" supported="egl">
             <require>
                 <enum name="EGL_D3D_TEXTURE_2D_SHARE_HANDLE_ANGLE"/>
@@ -2197,6 +2314,7 @@
         <extension name="EGL_EXT_device_drm" supported="egl">
             <require>
                 <enum name="EGL_DRM_DEVICE_FILE_EXT"/>
+                <enum name="EGL_DRM_MASTER_FD_EXT"/>
             </require>
         </extension>
         <extension name="EGL_EXT_device_enumeration" supported="egl">
@@ -2247,6 +2365,11 @@
         <extension name="EGL_EXT_gl_colorspace_display_p3" supported="egl">
             <require>
                 <enum name="EGL_GL_COLORSPACE_DISPLAY_P3_EXT"/>
+            </require>
+        </extension>
+        <extension name="EGL_EXT_gl_colorspace_display_p3_passthrough" supported="egl">
+            <require>
+                <enum name="EGL_GL_COLORSPACE_DISPLAY_P3_PASSTHROUGH_EXT"/>
             </require>
         </extension>
         <extension name="EGL_EXT_image_dma_buf_import" supported="egl">
@@ -2841,6 +2964,12 @@
                 <enum name="EGL_PLATFORM_SURFACELESS_MESA"/>
             </require>
         </extension>
+        <extension name="EGL_MESA_query_driver" supported="egl">
+            <require>
+                <command name="eglGetDisplayDriverConfig"/>
+                <command name="eglGetDisplayDriverName"/>
+            </require>
+        </extension>
         <extension name="EGL_NOK_swap_region" supported="egl">
             <require>
                 <command name="eglSwapBuffersRegionNOK"/>
@@ -2913,6 +3042,11 @@
             <require>
                 <enum name="EGL_POST_SUB_BUFFER_SUPPORTED_NV"/>
                 <command name="eglPostSubBufferNV"/>
+            </require>
+        </extension>
+        <extension name="EGL_NV_quadruple_buffer" supported="egl">
+            <require>
+                <enum name="EGL_QUADRUPLE_BUFFER_NV"/>
             </require>
         </extension>
         <extension name="EGL_NV_robustness_video_memory_purge" supported="egl">
@@ -3072,6 +3206,11 @@
                 <command name="eglGetSystemTimeNV"/>
             </require>
         </extension>
+        <extension name="EGL_NV_triple_buffer" supported="egl">
+            <require>
+                <enum name="EGL_TRIPLE_BUFFER_NV"/>
+            </require>
+        </extension>
         <extension name="EGL_TIZEN_image_native_buffer" supported="egl">
             <require>
                 <enum name="EGL_NATIVE_BUFFER_TIZEN"/>
@@ -3114,6 +3253,21 @@
         <extension name="EGL_EXT_bind_to_front" supported="egl">
             <require>
                 <enum name="EGL_FRONT_BUFFER_EXT"/>
+            </require>
+        </extension>
+        <extension name="EGL_NV_stream_origin" supported="egl">
+            <require>
+                <enum name="EGL_STREAM_FRAME_ORIGIN_X_NV"/>
+                <enum name="EGL_STREAM_FRAME_ORIGIN_Y_NV"/>
+                <enum name="EGL_STREAM_FRAME_MAJOR_AXIS_NV"/>
+                <enum name="EGL_CONSUMER_AUTO_ORIENTATION_NV"/>
+                <enum name="EGL_PRODUCER_AUTO_ORIENTATION_NV"/>
+                <enum name="EGL_LEFT_NV"/>
+                <enum name="EGL_RIGHT_NV"/>
+                <enum name="EGL_TOP_NV"/>
+                <enum name="EGL_BOTTOM_NV"/>
+                <enum name="EGL_X_AXIS_NV"/>
+                <enum name="EGL_Y_AXIS_NV"/>
             </require>
         </extension>
     </extensions>
