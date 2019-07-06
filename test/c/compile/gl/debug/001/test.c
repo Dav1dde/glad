@@ -12,5 +12,7 @@
 int main(void) {
     gladSetGLPreCallback(NULL);
     gladSetGLPostCallback(NULL);
+    gladInstallGLDebug();
+    gladUninstallGLDebug();
     return 0;
 }

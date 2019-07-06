@@ -1,4 +1,4 @@
-// This example requires you to generate glad with the --on-demand option and optionally --loader.
+// This example requires you to generate glad with the --on-demand option and optionally --loader and --debug.
 // gcc -o gl_glfw_on_demand example/c/gl_glfw_on_demand.c build/src/gl.c -Ibuild/include -ldl -lglfw
 #include <stdlib.h>
 #include <stdio.h>
@@ -10,9 +10,27 @@
 
 const GLuint WIDTH = 800, HEIGHT = 600;
 
+
+static void pre_call_gl_callback(const char *name, GLADapiproc apiproc, int len_args, ...) {
+    printf("about to call gl func: %s\n", name);
+}
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    if (action != GLFW_PRESS) {
+        return;
+    }
+
+    if (key == GLFW_KEY_ESCAPE) {
         glfwSetWindowShouldClose(window, GL_TRUE);
+#ifdef GLAD_OPTION_GL_DEBUG
+    } else if (key == GLFW_KEY_H) {
+        printf("Installing glad debug function pointers\n");
+        gladInstallGLDebug();
+    } else if (key == GLFW_KEY_J) {
+        printf("Uninstalling glad debug function pointers\n");
+        gladUninstallGLDebug();
+#endif
+    }
 }
 
 int main(void) {
@@ -33,6 +51,11 @@ int main(void) {
     // instead of the glad loader.
 #ifndef GLAD_GL_LOADER
     gladSetGLOnDemandLoader(glfwGetProcAddress);
+#endif
+
+#ifdef GLAD_OPTION_GL_DEBUG
+    gladUninstallGLDebug();
+    gladSetGLPreCallback(pre_call_gl_callback);
 #endif
 
     while (!glfwWindowShouldClose(window)) {

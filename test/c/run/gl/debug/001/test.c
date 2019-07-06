@@ -79,6 +79,13 @@ int main(void) {
     gladSetGLPostCallback(post_call_gl_callback);
 
     glClear(GL_COLOR_BUFFER_BIT);
+
+    /* make sure install/uninstall is working as expected */
+    gladUninstallGLDebug();
+    glViewport(0, 0, WIDTH, HEIGHT);
+    glClear(GL_COLOR_BUFFER_BIT);
+    gladInstallGLDebug();
+
     glClear(GL_DEPTH_BUFFER_BIT);
 
     ASSERT(pre == 2, "pre callback called %d times, expected twice", pre);

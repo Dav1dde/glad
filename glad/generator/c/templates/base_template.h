@@ -108,6 +108,9 @@ GLAD_API_CALL void gladSet{{ feature_set.name|api }}Context(Glad{{ feature_set.n
 {% if options.debug %}
 GLAD_API_CALL void gladSet{{ feature_set.name|api }}PreCallback(GLADprecallback cb);
 GLAD_API_CALL void gladSet{{ feature_set.name|api }}PostCallback(GLADpostcallback cb);
+
+GLAD_API_CALL void gladInstall{{ feature_set.name|api }}Debug(void);
+GLAD_API_CALL void gladUninstall{{ feature_set.name|api }}Debug(void);
 {% endif %}
 {% endblock %}
 
