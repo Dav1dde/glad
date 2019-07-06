@@ -7,7 +7,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    https://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -538,7 +538,7 @@ Registry at
         </command>
         <command>
             <proto><ptype>BOOL</ptype> <name>wglBindVideoDeviceNV</name></proto>
-            <param><ptype>HDC</ptype> <name>hDC</name></param>
+            <param><ptype>HDC</ptype> <name>hDc</name></param>
             <param>unsigned int <name>uVideoSlot</name></param>
             <param><ptype>HVIDEOOUTPUTDEVICENV</ptype> <name>hVideoDevice</name></param>
             <param>const int *<name>piAttribList</name></param>
@@ -781,7 +781,7 @@ Registry at
         </command>
         <command>
             <proto>int <name>wglEnumerateVideoDevicesNV</name></proto>
-            <param><ptype>HDC</ptype> <name>hDC</name></param>
+            <param><ptype>HDC</ptype> <name>hDc</name></param>
             <param><ptype>HVIDEOOUTPUTDEVICENV</ptype> *<name>phDeviceList</name></param>
         </command>
         <command>
@@ -912,7 +912,7 @@ Registry at
         <command>
             <proto><ptype>INT</ptype> <name>wglGetGPUInfoAMD</name></proto>
             <param><ptype>UINT</ptype> <name>id</name></param>
-            <param>int <name>property</name></param>
+            <param><ptype>INT</ptype> <name>property</name></param>
             <param><ptype>GLenum</ptype> <name>dataType</name></param>
             <param><ptype>UINT</ptype> <name>size</name></param>
             <param>void *<name>data</name></param>
@@ -1235,7 +1235,7 @@ Registry at
         <command>
             <proto><ptype>INT64</ptype> <name>wglSwapLayerBuffersMscOML</name></proto>
             <param><ptype>HDC</ptype> <name>hdc</name></param>
-            <param>int <name>fuPlanes</name></param>
+            <param><ptype>INT</ptype> <name>fuPlanes</name></param>
             <param><ptype>INT64</ptype> <name>target_msc</name></param>
             <param><ptype>INT64</ptype> <name>divisor</name></param>
             <param><ptype>INT64</ptype> <name>remainder</name></param>
