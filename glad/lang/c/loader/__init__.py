@@ -3,6 +3,7 @@ LOAD_OPENGL_DLL = '''
 %(pre)s void* %(proc)s(const char *namez);
 
 #if defined(_WIN32) || defined(__CYGWIN__)
+#undef APIENTRY
 #include <windows.h>
 static HMODULE libGL;
 
