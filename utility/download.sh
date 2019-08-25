@@ -29,3 +29,13 @@ wget -O "${TARGET}/eglplatform.h" https://raw.githubusercontent.com/KhronosGroup
 
 rm -f "${TARGET}/vk_platform.h"
 wget -O "${TARGET}/vk_platform.h" https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/master/include/vulkan/vk_platform.h
+
+rm -f "${TARGET}/cl.xml"
+wget -O "${TARGET}/cl.xml" https://raw.githubusercontent.com/KhronosGroup/OpenCL-Docs/master/xml/cl.xml
+rm -f "${TARGET}/cl_platform.h"
+wget -O "${TARGET}/cl_platform.h" https://raw.githubusercontent.com/KhronosGroup/OpenCL-Headers/master/CL/cl_platform.h
+rm -f "${TARGET}/cl_version.h"
+wget -O "${TARGET}/cl_version.h" https://raw.githubusercontent.com/KhronosGroup/OpenCL-Headers/master/CL/cl_version.h
+rm -f "${TARGET}/cl_gl.h"
+wget -O "${TARGET}/cl_gl.h" https://raw.githubusercontent.com/KhronosGroup/OpenCL-Headers/master/CL/cl_gl.h
+

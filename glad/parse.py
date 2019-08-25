@@ -221,6 +221,9 @@ class Specification(object):
         the requirement system (like khrplatform). If this is the case
         this method should be overwritten.
 
+        Simply return `None` if the requirement system is properly
+        used for types.
+
         :param api: requested api
         :param profile: requested profile
         :return: a requirement or None
@@ -1071,7 +1074,8 @@ class Command(IdentifiedByName):
         proto = element.find('proto')
         if proto is not None:
             self.proto = Proto.from_element(proto)
-            self.params = [Param(ele) for ele in filter(lambda e: e.tag == 'param', iter(element))]
+            params = (Param(ele) for ele in filter(lambda e: e.tag == 'param', iter(element)))
+            self.params = [param for param in params if not param.is_void]
 
         self.alias = element.get('alias')
         self._name = element.get('name')
@@ -1129,11 +1133,19 @@ class Proto(object):
 class Param(object):
     def __init__(self, element):
         self.group = element.get('group')
-        self.type = ParsedType.from_element(element)
-        self.name = element.find('name').text.strip('*')
+
+        self.type = None
+        self.name = None
+        if not ParsedType.raw(element) == 'void':
+            self.type = ParsedType.from_element(element)
+            self.name = self.type.name
 
     def is_equivalent(self, other):
         return self.type == other.type
+
+    @property
+    def is_void(self):
+        return self.type is None and self.name is None
 
     def __str__(self):
         return '{0!r} {1}'.format(self.type, self.name)
@@ -1182,12 +1194,20 @@ class ParsedType(object):
                    is_const=is_const, is_unsigned=is_unsigned,
                    raw=raw)
 
+    @staticmethod
+    def raw(element):
+        return ' '.join(glad.util.itertext(element, ignore=('comment',))).strip()
+
     @classmethod
     def from_element(cls, element):
         # assume just one comment element
         comment = ' '.join(c.text for c in element.iter('comment'))
 
-        raw = ' '.join(glad.util.itertext(element, ignore=('comment',)))
+        raw = cls.raw(element)
+        if 'union' in raw:
+            logger.warn('union type at line %s, TODO: %s', element.sourceline, raw)
+            return cls('unprocessed', 'void', 'void', is_pointer=1)
+
         name = element.find('name').text
 
         original_type = None if element.find('type') is None else element.find('type').text

@@ -1,6 +1,16 @@
 from glad.parse import Specification, Require
 
 
+class CL(Specification):
+    DISPLAY_NAME = 'OpenCL'
+
+    API = 'https://raw.githubusercontent.com/KhronosGroup/OpenCL-Docs/master/xml/'
+    NAME = 'cl'
+
+    def _magic_require(self, api, profile):
+        return None
+
+
 class EGL(Specification):
     DISPLAY_NAME = 'EGL'
 

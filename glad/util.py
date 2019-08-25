@@ -36,6 +36,7 @@ def makefiledir(path):
 
 ApiInformation = namedtuple('ApiInformation', ('specification', 'version', 'profile'))
 _API_SPEC_MAPPING = {
+    'opencl': 'cl',
     'gl': 'gl',
     'gles1': 'gl',
     'gles2': 'gl',
