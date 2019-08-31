@@ -72,6 +72,8 @@ class BaseGenerator(object):
 
 
 def _api_filter(api):
+    if api.lower().startswith('open'):
+        return 'Open' + api[4:].upper()
     if len(api) > 5:
         return api.capitalize()
     return api.upper()

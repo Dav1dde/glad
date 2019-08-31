@@ -17,7 +17,7 @@ from glad.generator.util import (
     find_extensions_with_aliases
 )
 from glad.parse import Type
-from glad.specification import VK, GL, WGL
+from glad.specification import VK, GL, WGL, CL
 import glad.util
 
 _ARRAY_RE = re.compile(r'\[[\d\w]*\]')
@@ -376,6 +376,7 @@ class CGenerator(JinjaGenerator):
         self._fix_issue_70(feature_set)
         self._fix_cpp_style_comments(feature_set)
         self._replace_included_headers(feature_set, config)
+        self._remove_cl_h_header(feature_set, spec)
 
         return feature_set
 
@@ -425,6 +426,20 @@ class CGenerator(JinjaGenerator):
                 content = re.sub('^#include\\s*<' + pheader.include + '>', r'/* \0 */', content, flags=re.MULTILINE)
 
             types[type_index] = Type(header.name, raw=content)
+
+    def _remove_cl_h_header(self, feature_set, spec):
+        """
+        Removes the `CL/cl.h` header include, this include is referenced/required
+        by most/all extensions. Since glad generates only one file this include is not required
+        and actually just breaks things.
+        """
+        if spec.name == CL.NAME:
+            try:
+                feature_set.types.remove('CL/cl.h')
+            except ValueError:
+                # maybe in the future this include doesn't exist anymore,
+                # make sure nothing breaks
+                pass
 
     def _add_additional_headers(self, feature_set, config):
         if config['HEADER_ONLY']:
