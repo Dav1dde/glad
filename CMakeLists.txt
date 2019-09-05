@@ -23,6 +23,7 @@ set(GLAD_API "" CACHE STRING "API type/version pairs, like \"gl=3.2,gles=\", no 
 set(GLAD_GENERATOR "c" CACHE STRING "Language to generate the binding for")
 set(GLAD_EXTENSIONS "" CACHE STRING "Path to extensions file or comma separated list of extensions, if missing all extensions are included")
 set(GLAD_SPEC "gl" CACHE STRING "Name of the spec")
+option(GLAD_ALL_EXTENSIONS "Include all extensions instead of those specified by GLAD_EXTENSIONS" OFF)
 option(GLAD_NO_LOADER "No loader" OFF)
 option(GLAD_REPRODUCIBLE "Reproducible build" OFF)
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -64,6 +65,9 @@ else()
   )
 endif()
 
+if(NOT GLAD_ALL_EXTENSIONS)
+  set(GLAD_EXTENSIONS_ARG "--extensions=${GLAD_EXTENSIONS}")
+endif()
 if(GLAD_NO_LOADER)
    set(GLAD_NO_LOADER_ARG "--no-loader")
 endif()
@@ -78,7 +82,7 @@ add_custom_command(
     --out-path=${GLAD_OUT_DIR}
     --api=${GLAD_API}
     --generator=${GLAD_GENERATOR}
-    --extensions=${GLAD_EXTENSIONS}
+    ${GLAD_EXTENSIONS_ARG}
     --spec=${GLAD_SPEC}
     ${GLAD_NO_LOADER_ARG}
     ${GLAD_REPRODUCIBLE_ARG}
