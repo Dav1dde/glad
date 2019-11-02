@@ -100,6 +100,8 @@ NIMTYPES = {
         'GLvdpauSurfaceNV': 'int32',
         'GLvoid': 'pointer',
         'GLsync': 'distinct pointer',
+        'GLeglClientBufferEXT': 'pointer',  # GL_EXT_external_buffer
+        'GLVULKANPROCNV': 'pointer',  # GL_NV_draw_vulkan_image
         'ClContext': 'distinct pointer',
         'ClEvent': 'distinct pointer'
     },
@@ -482,15 +484,13 @@ class NimGenerator(Generator):
 #        fobj.write(' {.cdecl.}]')
 #        fobj.write(' (getProcAddress("{}"))\n'.format(func.proto.name))
 
-
-    NIM_KEYWORDS = [   # as of Nim 0.13.0
-      'addr', 'and', 'as', 'asm', 'atomic',
+    NIM_KEYWORDS = [   # as of Nim 1.0.2
+      'addr', 'and', 'as', 'asm',
       'bind', 'block', 'break',
       'case', 'cast', 'concept', 'const', 'continue', 'converter',
       'defer', 'discard', 'distinct', 'div', 'do',
       'elif', 'else', 'end', 'enum', 'except', 'export',
       'finally', 'for', 'from', 'func',
-      'generic',
       'if', 'import', 'in', 'include', 'interface', 'is', 'isnot', 'iterator',
       'let',
       'macro', 'method', 'mixin', 'mod',
@@ -502,7 +502,7 @@ class NimGenerator(Generator):
       'template', 'try', 'tuple', 'type',
       'using',
       'var',
-      'when', 'while', 'with', 'without',
+      'when', 'while',
       'xor',
       'yield'
     ]
@@ -522,7 +522,10 @@ class NimGenerator(Generator):
     def write_enum(self, fobj, name, value, type='GLenum'):
         fobj.write('  {}*'.format(self.map_enum_name(name)))
         if type:
-          fobj.write(': {0} = {0}({1})'.format(type, value))
+          if type == 'uint64':  # bit hacky...
+            fobj.write(": {0} = {1}'u64".format(type, value))
+          else:
+            fobj.write(': {0} = {0}({1})'.format(type, value))
         else:
           fobj.write(' = {}'.format(value))
         fobj.write('\n')
