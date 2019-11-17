@@ -467,7 +467,7 @@ class NimGenerator(Generator):
         if (ret != 'void'):
           fobj.write(': {}'.format(ret))
 
-        fobj.write(' {.cdecl.}')
+        fobj.write(' {.cdecl, gcsafe.}')
 
 # TODO
 #    def write_function_var(self, fobj, func):
