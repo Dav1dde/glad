@@ -738,13 +738,14 @@ class Type(IdentifiedByName):
     def register(category, type_factory):
         Type._FACTORIES[category] = type_factory
 
-    def __init__(self, name, api=None, category=None, alias=None, requires=None, raw=None):
+    def __init__(self, name, api=None, category=None, alias=None, requires=None, apientry=False, raw=None):
         self.name = name
         self.api = api
         self.category = category
 
         self.alias = alias
         self.requires = requires or []
+        self.apientry = apientry
 
         self._raw = raw
 
@@ -754,6 +755,11 @@ class Type(IdentifiedByName):
 
     @staticmethod
     def from_element(element):
+        apientry = element.find('apientry')
+        if apientry is not None:
+            # not so great workaround to get APIENTRY included in the raw output
+            apientry.text = 'APIENTRY'
+
         raw = ''.join(element.itertext())
         api = element.get('api')
         category = element.get('category')
@@ -767,7 +773,14 @@ class Type(IdentifiedByName):
         if element.get('requires'):
             requires.add(element.get('requires'))
 
-        data = dict(api=api, category=category, alias=alias, requires=requires, raw=raw)
+        data = dict(
+            api=api,
+            category=category,
+            alias=alias,
+            requires=requires,
+            apientry=apientry is not None,
+            raw=raw
+        )
 
         factory = Type._FACTORIES.get(category, Type.factory)
         return factory(element, name, data)
