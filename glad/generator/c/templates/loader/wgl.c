@@ -1,8 +1,13 @@
 #ifdef GLAD_WGL
 
 {% if not options.on_demand %}
+static GLADapiproc glad_wgl_get_proc(void *vuserptr, const char* name) {
+    (void) vuserptr;
+    return GLAD_GNUC_EXTENSION (GLADapiproc) wglGetProcAddress(name);
+}
+
 int gladLoaderLoadWGL(HDC hdc) {
-    return gladLoadWGLUserPtr(hdc, glad_wgl_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) wglGetProcAddress);
+    return gladLoadWGLUserPtr(hdc, glad_wgl_get_proc, NULL);
 }
 {% endif %}
 
