@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registry>
     <comment>
-Copyright (c) 2013-2018 The Khronos Group Inc.
+Copyright (c) 2013-2019 The Khronos Group Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -387,6 +387,11 @@ typedef unsigned __int64 uint64_t;
     </enums>
 
     <enums namespace="GLX" start="0x20A0" end="0x219F" vendor="NV" comment="Shared with WGL">
+        <enum value="0x20AA"        name="GLX_CONTEXT_MULTIGPU_ATTRIB_NV"/>
+        <enum value="0x20AB"        name="GLX_CONTEXT_MULTIGPU_ATTRIB_SINGLE_NV"/>
+        <enum value="0x20AC"        name="GLX_CONTEXT_MULTIGPU_ATTRIB_AFR_NV"/>
+        <enum value="0x20AD"        name="GLX_CONTEXT_MULTIGPU_ATTRIB_MULTICAST_NV"/>
+        <enum value="0x20AE"        name="GLX_CONTEXT_MULTIGPU_ATTRIB_MULTI_DISPLAY_MULTICAST_NV"/>
         <enum value="0x20B0"        name="GLX_FLOAT_COMPONENTS_NV"/>
         <enum value="0x20B1"        name="GLX_RGBA_UNSIGNED_FLOAT_TYPE_EXT"/>
         <enum value="0x20B2"        name="GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB"/>
@@ -2196,6 +2201,15 @@ typedef unsigned __int64 uint64_t;
         <extension name="GLX_SUN_get_transparent_index" supported="glx">
             <require>
                 <command name="glXGetTransparentIndexSUN"/>
+            </require>
+        </extension>
+        <extension name="GLX_NV_multigpu_context" supported="glx">
+            <require>
+                <enum name="GLX_CONTEXT_MULTIGPU_ATTRIB_NV"/>
+                <enum name="GLX_CONTEXT_MULTIGPU_ATTRIB_SINGLE_NV"/>
+                <enum name="GLX_CONTEXT_MULTIGPU_ATTRIB_AFR_NV"/>
+                <enum name="GLX_CONTEXT_MULTIGPU_ATTRIB_MULTICAST_NV"/>
+                <enum name="GLX_CONTEXT_MULTIGPU_ATTRIB_MULTI_DISPLAY_MULTICAST_NV"/>
             </require>
         </extension>
     </extensions>

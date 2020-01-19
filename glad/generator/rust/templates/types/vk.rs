@@ -18,6 +18,7 @@ pub type BOOL = std::os::raw::c_int;
 pub type DWORD = std::os::raw::c_ulong;
 pub type LPVOID = *mut std::os::raw::c_void;
 pub type HANDLE = *mut std::os::raw::c_void;
+pub type HMONITOR = *mut std::os::raw::c_void;
 pub type WCHAR = u16;
 pub type LPCWSTR = *const WCHAR;
 pub type HINSTANCE = *mut std::os::raw::c_void;

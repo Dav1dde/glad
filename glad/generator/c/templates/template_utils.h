@@ -48,7 +48,7 @@ GLAD_API_CALL int GLAD_{{ extension.name }};
 {%- if type.enums_for(feature_set) -%}
 typedef enum {{ type.name }} {
 {% for member in type.enums_for(feature_set) %}
-    {{ member.name }} = {{ member.alias if member.alias else member.value }}{{ ',' if not loop.last }}
+    {{ member.name }} = {{ enum_member(type, member) }}{{ ',' if not loop.last }}
 {% endfor %}
 } {{ type.name }};
 {%- endif -%}

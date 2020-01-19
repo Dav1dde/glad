@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registry>
     <comment>
-Copyright (c) 2013-2018 The Khronos Group Inc.
+Copyright (c) 2013-2019 The Khronos Group Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -79,9 +79,247 @@ typedef unsigned int GLhandleARB;
         <type>typedef void (<apientry/> *<name>GLVULKANPROCNV</name>)(void);</type>
     </types>
 
-    <!-- SECTION: GL parameter class type definitions. -->
+    <!-- SECTION: GL parameter class type definitions.
+         The groups are intended to contain all the possible legal values
+         for corresponding function parameters, but it is likely that many
+         of the groups are out of date relative to current OpenGL and OpenGL
+         ES specifications, and the many extensions to those specifications.
+         As such, they may not be a reliable source for enumeration info.
+
+         We welcome assistance from the community in achieving and
+         maintaining the completeness of the enum groups. Khronos does not
+         use the enum group information, and the OpenGL Working Group does
+         not have internal resources to bring it up to date.
+    -->
 
     <groups>
+        <group name="EvalMapsModeNV">
+            <enum name="GL_FILL_NV"/>
+        </group>
+
+        <group name="ProgramTarget">
+            <enum name="GL_FRAGMENT_PROGRAM_ARB"/>
+            <enum name="GL_VERTEX_PROGRAM_ARB"/>
+            <enum name="GL_TEXT_FRAGMENT_SHADER_ATI"/>
+            <enum name="GL_COMPUTE_PROGRAM_NV"/>
+            <enum name="GL_GEOMETRY_PROGRAM_NV"/>
+            <enum name="GL_TESS_CONTROL_PROGRAM_NV"/>
+            <enum name="GL_TESS_EVALUATION_PROGRAM_NV"/>
+        </group>
+
+        <group name="CombinerStageNV">
+            <enum name="GL_COMBINER0_NV"/>
+            <enum name="GL_COMBINER1_NV"/>
+            <enum name="GL_COMBINER2_NV"/>
+            <enum name="GL_COMBINER3_NV"/>
+            <enum name="GL_COMBINER4_NV"/>
+            <enum name="GL_COMBINER5_NV"/>
+            <enum name="GL_COMBINER6_NV"/>
+            <enum name="GL_COMBINER7_NV"/>
+        </group>
+
+        <group name="CombinerPortionNV">
+            <enum name="GL_RGB"/>
+            <enum name="GL_ALPHA"/>
+        </group>
+
+        <group name="MapTypeNV">
+            <enum name="GL_FLOAT"/>
+            <enum name="GL_DOUBLE"/>
+        </group>
+
+        <group name="ScalarType">
+            <enum name="GL_UNSIGNED_BYTE"/>
+            <enum name="GL_UNSIGNED_SHORT"/>
+            <enum name="GL_UNSIGNED_INT"/>
+        </group>
+
+        <group name="VertexShaderTextureUnitParameter">
+            <enum name="GL_CURRENT_TEXTURE_COORDS"/>
+            <enum name="GL_TEXTURE_MATRIX"/>
+        </group>
+
+        <group name="ProgramStringProperty">
+            <enum name="GL_PROGRAM_STRING_ARB"/>
+        </group>
+
+        <group name="ProgramFormat">
+            <enum name="GL_PROGRAM_FORMAT_ASCII_ARB"/>
+        </group>
+
+        <group name="PathColorFormat">
+            <enum name="GL_NONE"/>
+            <enum name="GL_LUMINANCE"/>
+            <enum name="GL_ALPHA"/>
+            <enum name="GL_INTENSITY"/>
+            <enum name="GL_LUMINANCE_ALPHA"/>
+            <enum name="GL_RGB"/>
+            <enum name="GL_RGBA"/>
+        </group>
+
+        <group name="ReplacementCodeTypeSUN">
+            <enum name="GL_UNSIGNED_BYTE"/>
+            <enum name="GL_UNSIGNED_SHORT"/>
+            <enum name="GL_UNSIGNED_INT"/>
+        </group>
+
+        <group name="SecondaryColorPointerTypeIBM">
+            <enum name="GL_SHORT"/>
+            <enum name="GL_INT"/>
+            <enum name="GL_FLOAT"/>
+            <enum name="GL_DOUBLE"/>
+        </group>
+
+        <group name="FragmentLightNameSGIX">
+            <enum name="GL_FRAGMENT_LIGHT0_SGIX"/>
+            <enum name="GL_FRAGMENT_LIGHT1_SGIX"/>
+            <enum name="GL_FRAGMENT_LIGHT2_SGIX"/>
+            <enum name="GL_FRAGMENT_LIGHT3_SGIX"/>
+            <enum name="GL_FRAGMENT_LIGHT4_SGIX"/>
+            <enum name="GL_FRAGMENT_LIGHT5_SGIX"/>
+            <enum name="GL_FRAGMENT_LIGHT6_SGIX"/>
+            <enum name="GL_FRAGMENT_LIGHT7_SGIX"/>
+        </group>
+
+        <group name="FragmentLightParameterSGIX">
+            <!--<enum name="GL_SPOT_EXPONENT_SGIX"/>
+            <enum name="GL_SPOT_CUTOFF_SGIX"/>
+            <enum name="GL_CONSTANT_ATTENUATION_SGIX"/>
+            <enum name="GL_LINEAR_ATTENUATION_SGIX"/>
+            <enum name="GL_QUADRATIC_ATTENUATION_SGIX"/>
+            <enum name="GL_AMBIENT_SGIX"/>
+            <enum name="GL_DIFFUSE_SGIX"/>
+            <enum name="GL_SPECULAR_SGIX"/>
+            <enum name="GL_POSITION_SGIX"/>
+            <enum name="GL_SPOT_DIRECTION_SGIX"/>
+            <enum name="GL_SPOT_EXPONENT_SGIX"/>
+            <enum name="GL_SPOT_CUTOFF_SGIX"/>
+            <enum name="GL_CONSTANT_ATTENUATION_SGIX"/>
+            <enum name="GL_LINEAR_ATTENUATION_SGIX"/>
+            <enum name="GL_QUADRATIC_ATTENUATION_SGIX"/>-->
+            <enum name="GL_SPOT_EXPONENT"/>
+            <enum name="GL_SPOT_CUTOFF"/>
+            <enum name="GL_CONSTANT_ATTENUATION"/>
+            <enum name="GL_LINEAR_ATTENUATION"/>
+            <enum name="GL_QUADRATIC_ATTENUATION"/>
+            <enum name="GL_AMBIENT"/>
+            <enum name="GL_DIFFUSE"/>
+            <enum name="GL_SPECULAR"/>
+            <enum name="GL_POSITION"/>
+            <enum name="GL_SPOT_DIRECTION"/>
+        </group>
+
+        <group name="ElementPointerTypeATI">
+            <enum name="GL_UNSIGNED_BYTE"/>
+            <enum name="GL_UNSIGNED_SHORT"/>
+            <enum name="GL_UNSIGNED_INT"/>
+        </group>
+
+        <group name="MatrixIndexPointerTypeARB">
+            <enum name="GL_UNSIGNED_BYTE"/>
+            <enum name="GL_UNSIGNED_SHORT"/>
+            <enum name="GL_UNSIGNED_INT"/>
+        </group>
+
+        <group name="WeightPointerTypeARB">
+            <enum name="GL_BYTE"/>
+            <enum name="GL_UNSIGNED_BYTE"/>
+            <enum name="GL_SHORT"/>
+            <enum name="GL_UNSIGNED_SHORT"/>
+            <enum name="GL_INT"/>
+            <enum name="GL_UNSIGNED_INT"/>
+            <enum name="GL_FLOAT"/>
+            <enum name="GL_DOUBLE"/>
+        </group>
+
+        <group name="CullParameterEXT">
+            <enum name="GL_CULL_VERTEX_EYE_POSITION_EXT"/>
+            <enum name="GL_CULL_VERTEX_OBJECT_POSITION_EXT"/>
+        </group>
+
+        <group name="DataTypeEXT">
+            <enum name="GL_SCALAR_EXT"/>
+            <enum name="GL_VECTOR_EXT"/>
+            <enum name="GL_MATRIX_EXT"/>
+        </group>
+
+        <group name="ParameterRangeEXT">
+            <enum name="GL_NORMALIZED_RANGE_EXT"/>
+            <enum name="GL_FULL_RANGE_EXT"/>
+        </group>
+
+        <group name="GetVariantValueEXT">
+            <enum name="GL_VARIANT_VALUE_EXT"/>
+            <enum name="GL_VARIANT_DATATYPE_EXT"/>
+            <enum name="GL_VARIANT_ARRAY_STRIDE_EXT"/>
+            <enum name="GL_VARIANT_ARRAY_TYPE_EXT"/>
+        </group>
+
+        <group name="IndexFunctionEXT">
+            <enum name="GL_NEVER"/>
+            <enum name="GL_ALWAYS"/>
+            <enum name="GL_LESS"/>
+            <enum name="GL_LEQUAL"/>
+            <enum name="GL_EQUAL"/>
+            <enum name="GL_GEQUAL"/>
+            <enum name="GL_GREATER"/>
+            <enum name="GL_NOTEQUAL"/>
+        </group>
+
+        <group name="IndexMaterialParameterEXT">
+            <enum name="GL_INDEX_OFFSET"/>
+        </group>
+
+        <group name="VariantCapEXT">
+            <enum name="GL_VARIANT_ARRAY_EXT"/>
+        </group>
+
+        <group name="PixelTransformTargetEXT">
+            <enum name="GL_PIXEL_TRANSFORM_2D_EXT"/>
+        </group>
+
+        <group name="PixelTransformPNameEXT">
+            <enum name="GL_PIXEL_MAG_FILTER_EXT"/>
+            <enum name="GL_PIXEL_MIN_FILTER_EXT"/>
+            <enum name="GL_PIXEL_CUBIC_WEIGHT_EXT"/>
+        </group>
+
+        <group name="VertexWeightPointerTypeEXT">
+            <enum name="GL_FLOAT"/>
+        </group>
+
+        <group name="VertexShaderWriteMaskEXT">
+            <enum name="GL_TRUE"/>
+            <enum name="GL_FALSE"/>
+        </group>
+
+        <group name="CombinerComponentUsageNV">
+            <enum name="GL_RGB"/>
+            <enum name="GL_ALPHA"/>
+            <enum name="GL_BLUE"/>
+        </group>
+
+        <group name="TangentPointerTypeEXT">
+            <enum name="GL_BYTE"/>
+            <enum name="GL_SHORT"/>
+            <enum name="GL_INT"/>
+            <enum name="GL_FLOAT"/>
+            <enum name="GL_DOUBLE"/>
+            <enum name="GL_DOUBLE_EXT"/>
+        </group>
+
+        <group name="BinormalPointerTypeEXT">
+            <!--<enum name="GL_BYTE_EXT"/>
+            <enum name="GL_SHORT_EXT"/>
+            <enum name="GL_FLOAT_EXT"/>-->
+            <enum name="GL_BYTE"/>
+            <enum name="GL_SHORT"/>
+            <enum name="GL_INT"/>
+            <enum name="GL_FLOAT"/>
+            <enum name="GL_DOUBLE"/>
+            <enum name="GL_DOUBLE_EXT"/>
+        </group>
+
         <group name="TextureNormalModeEXT">
             <enum name="GL_PERTURB_EXT"/>
         </group>
@@ -161,10 +399,6 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_OP_MOV_EXT"/>
         </group>
 
-        <group name="ProgramFormatARB">
-            <enum name="GL_PROGRAM_FORMAT_ASCII_ARB"/>
-        </group>
-
         <group name="PointParameterNameARB">
             <enum name="GL_POINT_SIZE_MIN_EXT"/>
             <enum name="GL_POINT_SIZE_MAX_EXT"/>
@@ -191,10 +425,6 @@ typedef unsigned int GLhandleARB;
         <group name="VertexAttribPointerPropertyARB">
             <enum name="GL_VERTEX_ATTRIB_ARRAY_POINTER_ARB"/>
             <enum name="GL_VERTEX_ATTRIB_ARRAY_POINTER"/>
-        </group>
-
-        <group name="ProgramStringPropertyARB">
-            <enum name="GL_PROGRAM_STRING_ARB"/>
         </group>
 
         <group name="BufferPointerNameARB">
@@ -232,10 +462,6 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_CLAMP_FRAGMENT_COLOR_ARB"/>
             <enum name="GL_CLAMP_READ_COLOR_ARB"/>
             <enum name="GL_CLAMP_READ_COLOR"/>
-        </group>
-
-        <group name="ProgramTargetARB">
-            <enum name="GL_TEXT_FRAGMENT_SHADER_ATI"/>
         </group>
 
         <group name="VertexArrayPNameAPPLE">
@@ -330,14 +556,14 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_PIXEL_TEX_GEN_ALPHA_MS_SGIX"/>
         </group>
 
-        <group name="IglooFunctionSelectSGIX">
-            <enum name="GL_IGLOO_FULLSCREEN_SGIX"/>
-            <enum name="GL_IGLOO_VIEWPORT_OFFSET_SGIX"/>
-            <enum name="GL_IGLOO_SWAPTMESH_SGIX"/>
-            <enum name="GL_IGLOO_COLORNORMAL_SGIX"/>
-            <enum name="GL_IGLOO_IRISGL_MODE_SGIX"/>
-            <enum name="GL_IGLOO_LMC_COLOR_SGIX"/>
-            <enum name="GL_IGLOO_TMESHMODE_SGIX"/>
+        <group name="IglooFunctionSelectSGIX" comment="Private (internal) extension SGIX_igloo_interface">
+            <!--<enum name="GL_IGLOO_FULLSCREEN_SGIX"/>-->
+            <!--<enum name="GL_IGLOO_VIEWPORT_OFFSET_SGIX"/>-->
+            <!--<enum name="GL_IGLOO_SWAPTMESH_SGIX"/>-->
+            <!--<enum name="GL_IGLOO_COLORNORMAL_SGIX"/>-->
+            <!--<enum name="GL_IGLOO_IRISGL_MODE_SGIX"/>-->
+            <!--<enum name="GL_IGLOO_LMC_COLOR_SGIX"/>-->
+            <!--<enum name="GL_IGLOO_TMESHMODE_SGIX"/>-->
         </group>
 
         <group name="HintTargetPGI">
@@ -662,6 +888,7 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_SPARSE_STORAGE_BIT_ARB"/>
             <enum name="GL_LGPU_SEPARATE_STORAGE_BIT_NVX"/>
             <enum name="GL_PER_GPU_STORAGE_BIT_NV"/>
+            <enum name="GL_EXTERNAL_STORAGE_BIT_NVX"/>
         </group>
 
         <group name="ClearBufferMask">
@@ -832,6 +1059,22 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_COLOR_ATTACHMENT13"/>
             <enum name="GL_COLOR_ATTACHMENT14"/>
             <enum name="GL_COLOR_ATTACHMENT15"/>
+            <enum name="GL_COLOR_ATTACHMENT16"/>
+            <enum name="GL_COLOR_ATTACHMENT17"/>
+            <enum name="GL_COLOR_ATTACHMENT18"/>
+            <enum name="GL_COLOR_ATTACHMENT19"/>
+            <enum name="GL_COLOR_ATTACHMENT20"/>
+            <enum name="GL_COLOR_ATTACHMENT21"/>
+            <enum name="GL_COLOR_ATTACHMENT22"/>
+            <enum name="GL_COLOR_ATTACHMENT23"/>
+            <enum name="GL_COLOR_ATTACHMENT24"/>
+            <enum name="GL_COLOR_ATTACHMENT25"/>
+            <enum name="GL_COLOR_ATTACHMENT26"/>
+            <enum name="GL_COLOR_ATTACHMENT27"/>
+            <enum name="GL_COLOR_ATTACHMENT28"/>
+            <enum name="GL_COLOR_ATTACHMENT29"/>
+            <enum name="GL_COLOR_ATTACHMENT30"/>
+            <enum name="GL_COLOR_ATTACHMENT31"/>
         </group>
 
         <group name="DrawElementsType">
@@ -2286,6 +2529,7 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_RGB16F_EXT"/>
             <enum name="GL_RGB16_SNORM"/>
             <enum name="GL_RGB16_SNORM_EXT"/>
+            <enum name="GL_RGB32F"/>
             <enum name="GL_RGB8I"/>
             <enum name="GL_RGB16I"/>
             <enum name="GL_RGB32I"/>
@@ -2364,6 +2608,20 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_DEPTH24_STENCIL8_OES"/>
             <enum name="GL_DEPTH32F_STENCIL8"/>
             <enum name="GL_DEPTH32F_STENCIL8_NV"/>
+            <!-- Base internal format: GL_STENCIL_INDEX -->
+            <enum name="GL_STENCIL_INDEX"/>
+            <enum name="GL_STENCIL_INDEX_OES"/>
+            <enum name="GL_STENCIL_INDEX1"/>
+            <enum name="GL_STENCIL_INDEX1_OES"/>
+            <enum name="GL_STENCIL_INDEX1_EXT"/>
+            <enum name="GL_STENCIL_INDEX4"/>
+            <enum name="GL_STENCIL_INDEX4_OES"/>
+            <enum name="GL_STENCIL_INDEX4_EXT"/>
+            <enum name="GL_STENCIL_INDEX8"/>
+            <enum name="GL_STENCIL_INDEX8_OES"/>
+            <enum name="GL_STENCIL_INDEX8_EXT"/>
+            <enum name="GL_STENCIL_INDEX16"/>
+            <enum name="GL_STENCIL_INDEX16_EXT"/>
             <!-- Compressed base internal formats -->
             <enum name="GL_COMPRESSED_RED"/>
             <enum name="GL_COMPRESSED_RG"/>
@@ -2399,6 +2657,83 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT"/>
             <enum name="GL_COMPRESSED_RGBA_S3TC_DXT5_EXT"/>
             <enum name="GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT"/>
+            <!-- Compressed ASTC internal formats -->
+            <enum name="GL_COMPRESSED_RGBA_ASTC_3x3x3_OES"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_4x3x3_OES"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_4x4"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_4x4_KHR"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_4x4x3_OES"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_4x4x4_OES"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_5x4"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_5x4_KHR"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_5x4x4_OES"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_5x5"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_5x5_KHR"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_5x5x4_OES"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_5x5x5_OES"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_6x5"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_6x5_KHR"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_6x5x5_OES"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_6x6"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_6x6_KHR"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_6x6x5_OES"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_6x6x6_OES"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_8x5"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_8x5_KHR"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_8x6"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_8x6_KHR"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_8x8"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_8x8_KHR"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_10x10"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_10x10_KHR"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_10x5"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_10x5_KHR"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_10x6"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_10x6_KHR"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_10x8"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_10x8_KHR"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_12x10"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_12x10_KHR"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_12x12"/>
+            <enum name="GL_COMPRESSED_RGBA_ASTC_12x12_KHR"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_3x3x3_OES"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x3x3_OES"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x3_OES"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x4_OES"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4x4_OES"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x4_OES"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x5_OES"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5x5_OES"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x5_OES"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x6_OES"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12"/>
+            <enum name="GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR"/>
         </group>
 
         <group name="PixelMap">
@@ -2617,6 +2952,8 @@ typedef unsigned int GLhandleARB;
         </group>
 
         <group name="ReadBufferMode">
+            <enum name="GL_NONE"/>
+            <enum name="GL_NONE_OES"/>
             <enum name="GL_AUX0"/>
             <enum name="GL_AUX1"/>
             <enum name="GL_AUX2"/>
@@ -2973,6 +3310,18 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_ALL_SHADER_BITS_EXT"/>
         </group>
 
+        <group name="SubgroupSupportedFeatures">
+            <enum name="GL_SUBGROUP_FEATURE_BASIC_BIT_KHR"/>
+            <enum name="GL_SUBGROUP_FEATURE_VOTE_BIT_KHR"/>
+            <enum name="GL_SUBGROUP_FEATURE_ARITHMETIC_BIT_KHR"/>
+            <enum name="GL_SUBGROUP_FEATURE_BALLOT_BIT_KHR"/>
+            <enum name="GL_SUBGROUP_FEATURE_SHUFFLE_BIT_KHR"/>
+            <enum name="GL_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT_KHR"/>
+            <enum name="GL_SUBGROUP_FEATURE_CLUSTERED_BIT_KHR"/>
+            <enum name="GL_SUBGROUP_FEATURE_QUAD_BIT_KHR"/>
+            <enum name="GL_SUBGROUP_FEATURE_PARTITIONED_BIT_NV"/>
+        </group>
+
         <group name="VertexPointerType">
             <enum name="GL_DOUBLE"/>
             <enum name="GL_FLOAT"/>
@@ -2981,9 +3330,6 @@ typedef unsigned int GLhandleARB;
         </group>
 
         <group name="FramebufferAttachment">
-            <enum name="GL_MAX_COLOR_ATTACHMENTS"/>
-            <enum name="GL_MAX_COLOR_ATTACHMENTS_EXT"/>
-            <enum name="GL_MAX_COLOR_ATTACHMENTS_NV"/>
             <enum name="GL_COLOR_ATTACHMENT0"/>
             <enum name="GL_COLOR_ATTACHMENT0_EXT"/>
             <enum name="GL_COLOR_ATTACHMENT0_NV"/>
@@ -3053,14 +3399,97 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_DEPTH_STENCIL_ATTACHMENT"/>
             <enum name="GL_DEPTH_ATTACHMENT_EXT"/>
             <enum name="GL_DEPTH_ATTACHMENT_OES"/>
+            <enum name="GL_STENCIL_ATTACHMENT"/>
+            <enum name="GL_STENCIL_ATTACHMENT_EXT"/>
+            <enum name="GL_STENCIL_ATTACHMENT_OES"/>
+        </group>
+
+        <group name="InvalidateFramebufferAttachment">
+            <enum name="GL_COLOR_ATTACHMENT0"/>
+            <enum name="GL_COLOR_ATTACHMENT0_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT0_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT0_OES"/>
+            <enum name="GL_COLOR_ATTACHMENT1"/>
+            <enum name="GL_COLOR_ATTACHMENT1_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT1_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT2"/>
+            <enum name="GL_COLOR_ATTACHMENT2_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT2_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT3"/>
+            <enum name="GL_COLOR_ATTACHMENT3_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT3_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT4"/>
+            <enum name="GL_COLOR_ATTACHMENT4_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT4_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT5"/>
+            <enum name="GL_COLOR_ATTACHMENT5_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT5_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT6"/>
+            <enum name="GL_COLOR_ATTACHMENT6_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT6_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT7"/>
+            <enum name="GL_COLOR_ATTACHMENT7_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT7_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT8"/>
+            <enum name="GL_COLOR_ATTACHMENT8_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT8_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT9"/>
+            <enum name="GL_COLOR_ATTACHMENT9_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT9_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT10"/>
+            <enum name="GL_COLOR_ATTACHMENT10_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT10_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT11"/>
+            <enum name="GL_COLOR_ATTACHMENT11_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT11_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT12"/>
+            <enum name="GL_COLOR_ATTACHMENT12_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT12_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT13"/>
+            <enum name="GL_COLOR_ATTACHMENT13_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT13_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT14"/>
+            <enum name="GL_COLOR_ATTACHMENT14_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT14_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT15"/>
+            <enum name="GL_COLOR_ATTACHMENT15_EXT"/>
+            <enum name="GL_COLOR_ATTACHMENT15_NV"/>
+            <enum name="GL_COLOR_ATTACHMENT16"/>
+            <enum name="GL_COLOR_ATTACHMENT17"/>
+            <enum name="GL_COLOR_ATTACHMENT18"/>
+            <enum name="GL_COLOR_ATTACHMENT19"/>
+            <enum name="GL_COLOR_ATTACHMENT20"/>
+            <enum name="GL_COLOR_ATTACHMENT21"/>
+            <enum name="GL_COLOR_ATTACHMENT22"/>
+            <enum name="GL_COLOR_ATTACHMENT23"/>
+            <enum name="GL_COLOR_ATTACHMENT24"/>
+            <enum name="GL_COLOR_ATTACHMENT25"/>
+            <enum name="GL_COLOR_ATTACHMENT26"/>
+            <enum name="GL_COLOR_ATTACHMENT27"/>
+            <enum name="GL_COLOR_ATTACHMENT28"/>
+            <enum name="GL_COLOR_ATTACHMENT29"/>
+            <enum name="GL_COLOR_ATTACHMENT30"/>
+            <enum name="GL_COLOR_ATTACHMENT31"/>
+            <enum name="GL_DEPTH_ATTACHMENT"/>
+            <enum name="GL_DEPTH_STENCIL_ATTACHMENT"/>
+            <enum name="GL_DEPTH_ATTACHMENT_EXT"/>
+            <enum name="GL_DEPTH_ATTACHMENT_OES"/>
+            <enum name="GL_STENCIL"/>
+            <enum name="GL_STENCIL_ATTACHMENT_EXT"/>
+            <enum name="GL_STENCIL_ATTACHMENT_OES"/>
+            <enum name="GL_COLOR"/>
+            <enum name="GL_DEPTH"/>
+            <enum name="GL_STENCIL"/>
         </group>
 
         <group name="RenderbufferTarget">
             <enum name="GL_RENDERBUFFER" />
+            <enum name="GL_RENDERBUFFER_OES" />
         </group>
 
         <group name="FramebufferTarget">
             <enum name="GL_FRAMEBUFFER" />
+            <enum name="GL_FRAMEBUFFER_OES" />
             <enum name="GL_DRAW_FRAMEBUFFER" />
             <enum name="GL_READ_FRAMEBUFFER" />
         </group>
@@ -3201,15 +3630,41 @@ typedef unsigned int GLhandleARB;
 
         <group name="RenderbufferParameterName">
             <enum name="GL_RENDERBUFFER_WIDTH"/>
+            <enum name="GL_RENDERBUFFER_WIDTH_EXT"/>
+            <enum name="GL_RENDERBUFFER_WIDTH_OES"/>
             <enum name="GL_RENDERBUFFER_HEIGHT"/>
+            <enum name="GL_RENDERBUFFER_HEIGHT_EXT"/>
+            <enum name="GL_RENDERBUFFER_HEIGHT_OES"/>
             <enum name="GL_RENDERBUFFER_INTERNAL_FORMAT"/>
+            <enum name="GL_RENDERBUFFER_INTERNAL_FORMAT_EXT"/>
+            <enum name="GL_RENDERBUFFER_INTERNAL_FORMAT_OES"/>
             <enum name="GL_RENDERBUFFER_SAMPLES"/>
+            <enum name="GL_RENDERBUFFER_SAMPLES_ANGLE"/>
+            <enum name="GL_RENDERBUFFER_SAMPLES_APPLE"/>
+            <enum name="GL_RENDERBUFFER_SAMPLES_EXT"/>
+            <enum name="GL_RENDERBUFFER_SAMPLES_IMG"/>
+            <enum name="GL_RENDERBUFFER_SAMPLES_NV"/>
             <enum name="GL_RENDERBUFFER_RED_SIZE"/>
+            <enum name="GL_RENDERBUFFER_RED_SIZE_EXT"/>
+            <enum name="GL_RENDERBUFFER_RED_SIZE_OES"/>
             <enum name="GL_RENDERBUFFER_GREEN_SIZE"/>
+            <enum name="GL_RENDERBUFFER_GREEN_SIZE_EXT"/>
+            <enum name="GL_RENDERBUFFER_GREEN_SIZE_OES"/>
             <enum name="GL_RENDERBUFFER_BLUE_SIZE"/>
+            <enum name="GL_RENDERBUFFER_BLUE_SIZE_EXT"/>
+            <enum name="GL_RENDERBUFFER_BLUE_SIZE_OES"/>
             <enum name="GL_RENDERBUFFER_ALPHA_SIZE"/>
+            <enum name="GL_RENDERBUFFER_ALPHA_SIZE_EXT"/>
+            <enum name="GL_RENDERBUFFER_ALPHA_SIZE_OES"/>
             <enum name="GL_RENDERBUFFER_DEPTH_SIZE"/>
+            <enum name="GL_RENDERBUFFER_DEPTH_SIZE_EXT"/>
+            <enum name="GL_RENDERBUFFER_DEPTH_SIZE_OES"/>
             <enum name="GL_RENDERBUFFER_STENCIL_SIZE"/>
+            <enum name="GL_RENDERBUFFER_STENCIL_SIZE_EXT"/>
+            <enum name="GL_RENDERBUFFER_STENCIL_SIZE_OES"/>
+            <enum name="GL_RENDERBUFFER_STORAGE_SAMPLES_AMD"/>
+            <enum name="GL_RENDERBUFFER_COVERAGE_SAMPLES_NV"/>
+            <enum name="GL_RENDERBUFFER_COLOR_SAMPLES_NV"/>
         </group>
 
         <group name="VertexBufferObjectUsage">
@@ -3322,6 +3777,20 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_TEXTURE_BUFFER"/>
             <enum name="GL_TRANSFORM_FEEDBACK_BUFFER"/>
             <enum name="GL_UNIFORM_BUFFER"/>
+        </group>
+
+        <group name="CopyImageSubDataTarget">
+            <enum name="GL_RENDERBUFFER"/>
+            <enum name="GL_TEXTURE_1D"/>
+            <enum name="GL_TEXTURE_2D"/>
+            <enum name="GL_TEXTURE_3D"/>
+            <enum name="GL_TEXTURE_RECTANGLE"/>
+            <enum name="GL_TEXTURE_CUBE_MAP"/>
+            <enum name="GL_TEXTURE_CUBE_MAP_ARRAY"/>
+            <enum name="GL_TEXTURE_1D_ARRAY"/>
+            <enum name="GL_TEXTURE_2D_ARRAY"/>
+            <enum name="GL_TEXTURE_2D_MULTISAMPLE"/>
+            <enum name="GL_TEXTURE_2D_MULTISAMPLE_ARRAY"/>
         </group>
 
         <group name="ShaderType">
@@ -3628,18 +4097,28 @@ typedef unsigned int GLhandleARB;
         </group>
 
         <group name="AttributeType">
+            <enum name="GL_FLOAT"/>
             <enum name="GL_FLOAT_VEC2"/>
             <enum name="GL_FLOAT_VEC2_ARB"/>
             <enum name="GL_FLOAT_VEC3"/>
             <enum name="GL_FLOAT_VEC3_ARB"/>
             <enum name="GL_FLOAT_VEC4"/>
             <enum name="GL_FLOAT_VEC4_ARB"/>
+            <enum name="GL_DOUBLE"/>
+            <enum name="GL_DOUBLE_VEC2"/>
+            <enum name="GL_DOUBLE_VEC3"/>
+            <enum name="GL_DOUBLE_VEC4"/>
+            <enum name="GL_INT"/>
             <enum name="GL_INT_VEC2"/>
             <enum name="GL_INT_VEC2_ARB"/>
             <enum name="GL_INT_VEC3"/>
             <enum name="GL_INT_VEC3_ARB"/>
             <enum name="GL_INT_VEC4"/>
             <enum name="GL_INT_VEC4_ARB"/>
+            <enum name="GL_UNSIGNED_INT"/>
+            <enum name="GL_UNSIGNED_INT_VEC2"/>
+            <enum name="GL_UNSIGNED_INT_VEC3"/>
+            <enum name="GL_UNSIGNED_INT_VEC4"/>
             <enum name="GL_BOOL"/>
             <enum name="GL_BOOL_ARB"/>
             <enum name="GL_BOOL_VEC2"/>
@@ -3666,6 +4145,106 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_FLOAT_MAT4x2_NV"/>
             <enum name="GL_FLOAT_MAT4x3"/>
             <enum name="GL_FLOAT_MAT4x3_NV"/>
+            <enum name="GL_DOUBLE_MAT2"/>
+            <enum name="GL_DOUBLE_MAT3"/>
+            <enum name="GL_DOUBLE_MAT4"/>
+            <enum name="GL_DOUBLE_MAT2x3"/>
+            <enum name="GL_DOUBLE_MAT2x4"/>
+            <enum name="GL_DOUBLE_MAT3x2"/>
+            <enum name="GL_DOUBLE_MAT3x4"/>
+            <enum name="GL_DOUBLE_MAT4x2"/>
+            <enum name="GL_DOUBLE_MAT4x3"/>
+            <enum name="GL_SAMPLER_1D"/>
+            <enum name="GL_SAMPLER_1D_ARB"/>
+            <enum name="GL_SAMPLER_2D"/>
+            <enum name="GL_SAMPLER_2D_ARB"/>
+            <enum name="GL_SAMPLER_3D"/>
+            <enum name="GL_SAMPLER_3D_ARB"/>
+            <enum name="GL_SAMPLER_3D_OES"/>
+            <enum name="GL_SAMPLER_CUBE"/>
+            <enum name="GL_SAMPLER_CUBE_ARB"/>
+            <enum name="GL_SAMPLER_1D_SHADOW"/>
+            <enum name="GL_SAMPLER_1D_SHADOW_ARB"/>
+            <enum name="GL_SAMPLER_2D_SHADOW"/>
+            <enum name="GL_SAMPLER_2D_SHADOW_ARB"/>
+            <enum name="GL_SAMPLER_2D_SHADOW_EXT"/>
+            <enum name="GL_SAMPLER_CUBE_MAP_ARRAY"/>
+            <enum name="GL_SAMPLER_1D_ARRAY_SHADOW"/>
+            <enum name="GL_SAMPLER_2D_ARRAY_SHADOW"/>
+            <enum name="GL_SAMPLER_2D_MULTISAMPLE"/>
+            <enum name="GL_SAMPLER_2D_MULTISAMPLE_ARRAY"/>
+            <enum name="GL_SAMPLER_CUBE_SHADOW"/>
+            <enum name="GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW"/>
+            <enum name="GL_SAMPLER_BUFFER"/>
+            <enum name="GL_SAMPLER_2D_RECT"/>
+            <enum name="GL_SAMPLER_2D_RECT_ARB"/>
+            <enum name="GL_SAMPLER_2D_RECT_SHADOW"/>
+            <enum name="GL_SAMPLER_2D_RECT_SHADOW_ARB"/>
+            <enum name="GL_INT_SAMPLER_1D"/>
+            <enum name="GL_INT_SAMPLER_2D"/>
+            <enum name="GL_INT_SAMPLER_3D"/>
+            <enum name="GL_INT_SAMPLER_CUBE"/>
+            <enum name="GL_INT_SAMPLER_1D_ARRAY"/>
+            <enum name="GL_INT_SAMPLER_2D_ARRAY"/>
+            <enum name="GL_INT_SAMPLER_CUBE_MAP_ARRAY"/>
+            <enum name="GL_INT_SAMPLER_2D_MULTISAMPLE"/>
+            <enum name="GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY"/>
+            <enum name="GL_INT_SAMPLER_BUFFER"/>
+            <enum name="GL_INT_SAMPLER_2D_RECT"/>
+            <enum name="GL_UNSIGNED_INT_SAMPLER_1D"/>
+            <enum name="GL_UNSIGNED_INT_SAMPLER_2D"/>
+            <enum name="GL_UNSIGNED_INT_SAMPLER_3D"/>
+            <enum name="GL_UNSIGNED_INT_SAMPLER_CUBE"/>
+            <enum name="GL_UNSIGNED_INT_SAMPLER_1D_ARRAY"/>
+            <enum name="GL_UNSIGNED_INT_SAMPLER_2D_ARRAY"/>
+            <enum name="GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY"/>
+            <enum name="GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE"/>
+            <enum name="GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY"/>
+            <enum name="GL_UNSIGNED_INT_SAMPLER_BUFFER"/>
+            <enum name="GL_UNSIGNED_INT_SAMPLER_2D_RECT"/>
+            <enum name="GL_IMAGE_1D"/>
+            <enum name="GL_IMAGE_2D"/>
+            <enum name="GL_IMAGE_3D"/>
+            <enum name="GL_IMAGE_2D_RECT"/>
+            <enum name="GL_IMAGE_CUBE"/>
+            <enum name="GL_IMAGE_BUFFER"/>
+            <enum name="GL_IMAGE_1D_ARRAY"/>
+            <enum name="GL_IMAGE_2D_ARRAY"/>
+            <enum name="GL_IMAGE_CUBE_MAP_ARRAY"/>
+            <enum name="GL_IMAGE_2D_MULTISAMPLE"/>
+            <enum name="GL_IMAGE_2D_MULTISAMPLE_ARRAY"/>
+            <enum name="GL_INT_IMAGE_1D"/>
+            <enum name="GL_INT_IMAGE_2D"/>
+            <enum name="GL_INT_IMAGE_3D"/>
+            <enum name="GL_INT_IMAGE_2D_RECT"/>
+            <enum name="GL_INT_IMAGE_CUBE"/>
+            <enum name="GL_INT_IMAGE_BUFFER"/>
+            <enum name="GL_INT_IMAGE_1D_ARRAY"/>
+            <enum name="GL_INT_IMAGE_2D_ARRAY"/>
+            <enum name="GL_INT_IMAGE_CUBE_MAP_ARRAY"/>
+            <enum name="GL_INT_IMAGE_2D_MULTISAMPLE"/>
+            <enum name="GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY"/>
+            <enum name="GL_UNSIGNED_INT_IMAGE_1D"/>
+            <enum name="GL_UNSIGNED_INT_IMAGE_2D"/>
+            <enum name="GL_UNSIGNED_INT_IMAGE_3D"/>
+            <enum name="GL_UNSIGNED_INT_IMAGE_2D_RECT"/>
+            <enum name="GL_UNSIGNED_INT_IMAGE_CUBE"/>
+            <enum name="GL_UNSIGNED_INT_IMAGE_BUFFER"/>
+            <enum name="GL_UNSIGNED_INT_IMAGE_1D_ARRAY"/>
+            <enum name="GL_UNSIGNED_INT_IMAGE_2D_ARRAY"/>
+            <enum name="GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY"/>
+            <enum name="GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE"/>
+            <enum name="GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY"/>
+            <enum name="GL_INT64_ARB"/>
+            <enum name="GL_INT64_NV"/>
+            <enum name="GL_INT64_VEC2_ARB"/>
+            <enum name="GL_INT64_VEC3_ARB"/>
+            <enum name="GL_INT64_VEC4_ARB"/>
+            <enum name="GL_UNSIGNED_INT64_ARB"/>
+            <enum name="GL_UNSIGNED_INT64_NV"/>
+            <enum name="GL_UNSIGNED_INT64_VEC2_ARB"/>
+            <enum name="GL_UNSIGNED_INT64_VEC3_ARB"/>
+            <enum name="GL_UNSIGNED_INT64_VEC4_ARB"/>
         </group>
 
         <group name="UniformType">
@@ -3694,12 +4273,12 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_SAMPLER_2D_SHADOW"/>
             <enum name="GL_SAMPLER_2D_RECT"/>
             <enum name="GL_SAMPLER_2D_RECT_SHADOW"/>
-            <enum name="GL_FLOAT_MAT_2X3"/>
-            <enum name="GL_FLOAT_MAT_2X4"/>
-            <enum name="GL_FLOAT_MAT_3X2"/>
-            <enum name="GL_FLOAT_MAT_3X4"/>
-            <enum name="GL_FLOAT_MAT_4X2"/>
-            <enum name="GL_FLOAT_MAT_4X3"/>
+            <enum name="GL_FLOAT_MAT2x3"/>
+            <enum name="GL_FLOAT_MAT2x4"/>
+            <enum name="GL_FLOAT_MAT3x2"/>
+            <enum name="GL_FLOAT_MAT3x4"/>
+            <enum name="GL_FLOAT_MAT4x2"/>
+            <enum name="GL_FLOAT_MAT4x3"/>
             <enum name="GL_SAMPLER_1D_ARRAY"/>
             <enum name="GL_SAMPLER_2D_ARRAY"/>
             <enum name="GL_SAMPLER_BUFFER"/>
@@ -3725,22 +4304,22 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_UNSIGNED_INT_SAMPLER_1D_ARRAY"/>
             <enum name="GL_UNSIGNED_INT_SAMPLER_2D_ARRAY"/>
             <enum name="GL_UNSIGNED_INT_SAMPLER_BUFFER"/>
-            <enum name="GL_DOUBLE_MAT_2"/>
-            <enum name="GL_DOUBLE_MAT_3"/>
-            <enum name="GL_DOUBLE_MAT_4"/>
-            <enum name="GL_DOUBLE_MAT_2x3"/>
-            <enum name="GL_DOUBLE_MAT_2x4"/>
-            <enum name="GL_DOUBLE_MAT_3x2"/>
-            <enum name="GL_DOUBLE_MAT_3x4"/>
-            <enum name="GL_DOUBLE_MAT_4x2"/>
-            <enum name="GL_DOUBLE_MAT_4x3"/>
+            <enum name="GL_DOUBLE_MAT2"/>
+            <enum name="GL_DOUBLE_MAT3"/>
+            <enum name="GL_DOUBLE_MAT4"/>
+            <enum name="GL_DOUBLE_MAT2x3"/>
+            <enum name="GL_DOUBLE_MAT2x4"/>
+            <enum name="GL_DOUBLE_MAT3x2"/>
+            <enum name="GL_DOUBLE_MAT3x4"/>
+            <enum name="GL_DOUBLE_MAT4x2"/>
+            <enum name="GL_DOUBLE_MAT4x3"/>
             <enum name="GL_DOUBLE_VEC2"/>
             <enum name="GL_DOUBLE_VEC3"/>
             <enum name="GL_DOUBLE_VEC4"/>
-            <enum name="GL_SAMPLER_CUBEMAP_ARRAY"/>
-            <enum name="GL_SAMPLER_CUBEMAP_ARRAY_SHADOW"/>
-            <enum name="GL_INT_SAMPLER_CUBEMAP_ARRAY"/>
-            <enum name="GL_UNSIGNED_INT_SAMPLER_CUBEMAP_ARRAY"/>
+            <enum name="GL_SAMPLER_CUBE_MAP_ARRAY"/>
+            <enum name="GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW"/>
+            <enum name="GL_INT_SAMPLER_CUBE_MAP_ARRAY"/>
+            <enum name="GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY"/>
             <enum name="GL_SAMPLER_2D_MULTISAMPLE"/>
             <enum name="GL_INT_SAMPLER_2D_MULTISAMPLE"/>
             <enum name="GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE"/>
@@ -3831,13 +4410,33 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE"/>
             <enum name="GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE"/>
             <enum name="GL_FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT"/>
             <enum name="GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING_EXT"/>
             <enum name="GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME"/>
-            <enum name="GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME_EXT"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME_OES"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE_EXT"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE_OES"/>
             <enum name="GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL_EXT"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL_OES"/>
             <enum name="GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE"/>
-            <enum name="GL_FRAMEBUFFER_ATTACHMENT_LAYERED"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE_EXT"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE_OES"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_3D_ZOFFSET_EXT"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_3D_ZOFFSET_OES"/>
             <enum name="GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER_EXT"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_NUM_VIEWS_OVR"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_BASE_VIEW_INDEX_OVR"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_SAMPLES_EXT"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_SCALE_IMG"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_LAYERED"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_LAYERED_ARB"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_LAYERED_EXT"/>
+            <enum name="GL_FRAMEBUFFER_ATTACHMENT_LAYERED_OES"/>
         </group>
 
         <group name="ProgramInterfacePName">
@@ -3870,6 +4469,10 @@ typedef unsigned int GLhandleARB;
             <enum name="GL_INT_2_10_10_10_REV"/>
             <enum name="GL_UNSIGNED_INT_2_10_10_10_REV"/>
             <enum name="GL_UNSIGNED_INT_10F_11F_11F_REV"/>
+            <enum name="GL_INT64_ARB"/>
+            <enum name="GL_INT64_NV"/>
+            <enum name="GL_UNSIGNED_INT64_ARB"/>
+            <enum name="GL_UNSIGNED_INT64_NV"/>
         </group>
 
         <group name="SubroutineParameterName">
@@ -4383,6 +4986,18 @@ typedef unsigned int GLhandleARB;
         <enum value="0x00000080" name="GL_TASK_SHADER_BIT_NV"/>
         <enum value="0xFFFFFFFF" name="GL_ALL_SHADER_BITS"/>
         <enum value="0xFFFFFFFF" name="GL_ALL_SHADER_BITS_EXT"/>
+    </enums>
+
+    <enums namespace="GL" group="SubgroupSupportedFeatures" type="bitmask">
+        <enum value="0x00000001" name="GL_SUBGROUP_FEATURE_BASIC_BIT_KHR"/>
+        <enum value="0x00000002" name="GL_SUBGROUP_FEATURE_VOTE_BIT_KHR"/>
+        <enum value="0x00000004" name="GL_SUBGROUP_FEATURE_ARITHMETIC_BIT_KHR"/>
+        <enum value="0x00000008" name="GL_SUBGROUP_FEATURE_BALLOT_BIT_KHR"/>
+        <enum value="0x00000010" name="GL_SUBGROUP_FEATURE_SHUFFLE_BIT_KHR"/>
+        <enum value="0x00000020" name="GL_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT_KHR"/>
+        <enum value="0x00000040" name="GL_SUBGROUP_FEATURE_CLUSTERED_BIT_KHR"/>
+        <enum value="0x00000080" name="GL_SUBGROUP_FEATURE_QUAD_BIT_KHR"/>
+        <enum value="0x00000100" name="GL_SUBGROUP_FEATURE_PARTITIONED_BIT_NV"/>
     </enums>
 
     <!-- Bitmasks defined by vendor extensions -->
@@ -10862,7 +11477,10 @@ typedef unsigned int GLhandleARB;
     <enums namespace="GL" start="0x9530" end="0x962F" vendor="NV" comment="Khronos bug 12977">
         <enum value="0x9530" name="GL_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_EXT"/>
         <enum value="0x9531" name="GL_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_EXT"/>
-            <unused start="0x9532" end="0x9535" vendor="NV"/>
+        <enum value="0x9532" name="GL_SUBGROUP_SIZE_KHR"/>
+        <enum value="0x9533" name="GL_SUBGROUP_SUPPORTED_STAGES_KHR"/>
+        <enum value="0x9534" name="GL_SUBGROUP_SUPPORTED_FEATURES_KHR"/>
+        <enum value="0x9535" name="GL_SUBGROUP_QUAD_ALL_STAGES_KHR"/>
         <enum value="0x9536" name="GL_MAX_MESH_TOTAL_MEMORY_SIZE_NV"/>
         <enum value="0x9537" name="GL_MAX_TASK_TOTAL_MEMORY_SIZE_NV"/>
         <enum value="0x9538" name="GL_MAX_MESH_OUTPUT_VERTICES_NV"/>
@@ -10883,7 +11501,8 @@ typedef unsigned int GLhandleARB;
         <enum value="0x9547" name="GL_QUERY_RESOURCE_BUFFEROBJECT_NV"/>
         <enum value="0x9548" name="GL_PER_GPU_STORAGE_NV"/>
         <enum value="0x9549" name="GL_MULTICAST_PROGRAMMABLE_SAMPLE_LOCATION_NV"/>
-            <unused start="0x954A" end="0x954C" vendor="NV"/>
+        <enum value="0x954A" name="GL_UPLOAD_GPU_MASK_NVX"/>
+            <unused start="0x954B" end="0x954C" vendor="NV"/>
         <enum value="0x954D" name="GL_CONSERVATIVE_RASTER_MODE_NV"/>
         <enum value="0x954E" name="GL_CONSERVATIVE_RASTER_MODE_POST_SNAP_NV"/>
         <enum value="0x954F" name="GL_CONSERVATIVE_RASTER_MODE_PRE_SNAP_TRIANGLES_NV"/>
@@ -11011,6 +11630,10 @@ typedef unsigned int GLhandleARB;
             <unused start="0x96A4" end="0x96AF" vendor="Qualcomm"/>
     </enums>
 
+    <enums namespace="GL" start="0x96B0" end="0x96BF" vendor="ANGLE" comment="github pull request">
+            <unused start="0x96B0" end="0x96BF" vendor="ANGLE"/>
+    </enums>
+
 <!-- Enums reservable for future use. To reserve a new range, allocate one
      or more multiples of 16 starting at the lowest available point in this
      block and note it in a new <enums> block immediately above.
@@ -11020,8 +11643,8 @@ typedef unsigned int GLhandleARB;
      file) File requests in the Khronos Bugzilla, OpenGL project, Registry
      component. -->
 
-    <enums namespace="GL" start="0x96B0" end="99999" vendor="ARB" comment="RESERVED FOR FUTURE ALLOCATIONS BY KHRONOS">
-        <unused start="0x96B0" end="99999" comment="RESERVED"/>
+    <enums namespace="GL" start="0x96C0" end="99999" vendor="ARB" comment="RESERVED FOR FUTURE ALLOCATIONS BY KHRONOS">
+        <unused start="0x96C0" end="99999" comment="RESERVED"/>
     </enums>
 
 <!-- Historical large block allocations, all unused except (in older days) by IBM -->
@@ -11202,7 +11825,7 @@ typedef unsigned int GLhandleARB;
             <param group="LightTextureModeEXT"><ptype>GLenum</ptype> <name>mode</name></param>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glAcquireKeyedMutexWin32EXT</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glAcquireKeyedMutexWin32EXT</name></proto>
             <param><ptype>GLuint</ptype> <name>memory</name></param>
             <param><ptype>GLuint64</ptype> <name>key</name></param>
             <param><ptype>GLuint</ptype> <name>timeout</name></param>
@@ -11245,6 +11868,48 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLsizei</ptype> <name>stride</name></param>
             <param><ptype>GLuint</ptype> <name>buffer</name></param>
             <param><ptype>GLuint</ptype> <name>offset</name></param>
+        </command>
+        <command>
+            <proto><ptype>GLuint</ptype> <name>glAsyncCopyBufferSubDataNVX</name></proto>
+            <param><ptype>GLsizei</ptype> <name>waitSemaphoreCount</name></param>
+            <param len="waitSemaphoreCount">const <ptype>GLuint</ptype> *<name>waitSemaphoreArray</name></param>
+            <param len="waitSemaphoreCount">const <ptype>GLuint64</ptype> *<name>fenceValueArray</name></param>
+            <param><ptype>GLuint</ptype> <name>readGpu</name></param>
+            <param><ptype>GLbitfield</ptype> <name>writeGpuMask</name></param>
+            <param><ptype>GLuint</ptype> <name>readBuffer</name></param>
+            <param><ptype>GLuint</ptype> <name>writeBuffer</name></param>
+            <param><ptype>GLintptr</ptype> <name>readOffset</name></param>
+            <param><ptype>GLintptr</ptype> <name>writeOffset</name></param>
+            <param><ptype>GLsizeiptr</ptype> <name>size</name></param>
+            <param><ptype>GLsizei</ptype> <name>signalSemaphoreCount</name></param>
+            <param len="signalSemaphoreCount">const <ptype>GLuint</ptype> *<name>signalSemaphoreArray</name></param>
+            <param len="signalSemaphoreCount">const <ptype>GLuint64</ptype> *<name>signalValueArray</name></param>
+        </command>
+        <command>
+            <proto><ptype>GLuint</ptype> <name>glAsyncCopyImageSubDataNVX</name></proto>
+            <param><ptype>GLsizei</ptype> <name>waitSemaphoreCount</name></param>
+            <param len="waitSemaphoreCount">const <ptype>GLuint</ptype> *<name>waitSemaphoreArray</name></param>
+            <param len="waitSemaphoreCount">const <ptype>GLuint64</ptype> *<name>waitValueArray</name></param>
+            <param><ptype>GLuint</ptype> <name>srcGpu</name></param>
+            <param><ptype>GLbitfield</ptype> <name>dstGpuMask</name></param>
+            <param><ptype>GLuint</ptype> <name>srcName</name></param>
+            <param><ptype>GLenum</ptype> <name>srcTarget</name></param>
+            <param><ptype>GLint</ptype> <name>srcLevel</name></param>
+            <param><ptype>GLint</ptype> <name>srcX</name></param>
+            <param><ptype>GLint</ptype> <name>srcY</name></param>
+            <param><ptype>GLint</ptype> <name>srcZ</name></param>
+            <param><ptype>GLuint</ptype> <name>dstName</name></param>
+            <param><ptype>GLenum</ptype> <name>dstTarget</name></param>
+            <param><ptype>GLint</ptype> <name>dstLevel</name></param>
+            <param><ptype>GLint</ptype> <name>dstX</name></param>
+            <param><ptype>GLint</ptype> <name>dstY</name></param>
+            <param><ptype>GLint</ptype> <name>dstZ</name></param>
+            <param><ptype>GLsizei</ptype> <name>srcWidth</name></param>
+            <param><ptype>GLsizei</ptype> <name>srcHeight</name></param>
+            <param><ptype>GLsizei</ptype> <name>srcDepth</name></param>
+            <param><ptype>GLsizei</ptype> <name>signalSemaphoreCount</name></param>
+            <param len="signalSemaphoreCount">const <ptype>GLuint</ptype> *<name>signalSemaphoreArray</name></param>
+            <param len="signalSemaphoreCount">const <ptype>GLuint64</ptype> *<name>signalValueArray</name></param>
         </command>
         <command>
             <proto>void <name>glAsyncMarkerSGIX</name></proto>
@@ -11542,7 +12207,7 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glBindProgramARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>program</name></param>
             <glx type="render" opcode="4180"/>
         </command>
@@ -12126,7 +12791,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLintptr</ptype> <name>offset</name></param>
             <param><ptype>GLsizeiptr</ptype> <name>size</name></param>
-            <param><ptype>GLboolean</ptype> <name>commit</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>commit</name></param>
         </command>
         <command>
             <proto>void <name>glBufferParameteriAPPLE</name></proto>
@@ -12509,6 +13174,12 @@ typedef unsigned int GLhandleARB;
         <command>
             <proto>void <name>glClientAttribDefaultEXT</name></proto>
             <param group="ClientAttribMask"><ptype>GLbitfield</ptype> <name>mask</name></param>
+        </command>
+        <command>
+            <proto>void <name>glClientWaitSemaphoreui64NVX</name></proto>
+            <param><ptype>GLsizei</ptype> <name>fenceObjectCount</name></param>
+            <param len="fenceObjectCount">const <ptype>GLuint</ptype> *<name>semaphoreArray</name></param>
+            <param len="fenceObjectCount">const <ptype>GLuint64</ptype> *<name>fenceValueArray</name></param>
         </command>
         <command>
             <proto group="SyncStatus"><ptype>GLenum</ptype> <name>glClientWaitSync</name></proto>
@@ -13792,13 +14463,13 @@ typedef unsigned int GLhandleARB;
         <command>
             <proto>void <name>glCopyImageSubData</name></proto>
             <param><ptype>GLuint</ptype> <name>srcName</name></param>
-            <param group="CopyBufferSubDataTarget"><ptype>GLenum</ptype> <name>srcTarget</name></param>
+            <param group="CopyImageSubDataTarget"><ptype>GLenum</ptype> <name>srcTarget</name></param>
             <param><ptype>GLint</ptype> <name>srcLevel</name></param>
             <param><ptype>GLint</ptype> <name>srcX</name></param>
             <param><ptype>GLint</ptype> <name>srcY</name></param>
             <param><ptype>GLint</ptype> <name>srcZ</name></param>
             <param><ptype>GLuint</ptype> <name>dstName</name></param>
-            <param group="CopyBufferSubDataTarget"><ptype>GLenum</ptype> <name>dstTarget</name></param>
+            <param group="CopyImageSubDataTarget"><ptype>GLenum</ptype> <name>dstTarget</name></param>
             <param><ptype>GLint</ptype> <name>dstLevel</name></param>
             <param><ptype>GLint</ptype> <name>dstX</name></param>
             <param><ptype>GLint</ptype> <name>dstY</name></param>
@@ -14206,7 +14877,7 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glCoverageMaskNV</name></proto>
-            <param><ptype>GLboolean</ptype> <name>mask</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>mask</name></param>
         </command>
         <command>
             <proto>void <name>glCoverageModulationNV</name></proto>
@@ -14257,6 +14928,9 @@ typedef unsigned int GLhandleARB;
             <proto>void <name>glCreateProgramPipelines</name></proto>
             <param><ptype>GLsizei</ptype> <name>n</name></param>
             <param len="n"><ptype>GLuint</ptype> *<name>pipelines</name></param>
+        </command>
+        <command>
+            <proto><ptype>GLuint</ptype> <name>glCreateProgressFenceNVX</name></proto>
         </command>
         <command>
             <proto>void <name>glCreateQueries</name></proto>
@@ -14399,7 +15073,7 @@ typedef unsigned int GLhandleARB;
             <param group="DebugSeverity"><ptype>GLenum</ptype> <name>severity</name></param>
             <param><ptype>GLsizei</ptype> <name>count</name></param>
             <param>const <ptype>GLuint</ptype> *<name>ids</name></param>
-            <param><ptype>GLboolean</ptype> <name>enabled</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>enabled</name></param>
             <alias name="glDebugMessageControl"/>
         </command>
         <command>
@@ -14927,9 +15601,9 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glDiscardFramebufferEXT</name></proto>
-            <param><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="FramebufferTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLsizei</ptype> <name>numAttachments</name></param>
-            <param len="numAttachments">const <ptype>GLenum</ptype> *<name>attachments</name></param>
+            <param group="InvalidateFramebufferAttachment" len="numAttachments">const <ptype>GLenum</ptype> *<name>attachments</name></param>
         </command>
         <command>
             <proto>void <name>glDispatchCompute</name></proto>
@@ -15860,7 +16534,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLint</ptype> *<name>numTextures</name></param>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glExtIsProgramBinaryQCOM</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glExtIsProgramBinaryQCOM</name></proto>
             <param><ptype>GLuint</ptype> <name>program</name></param>
         </command>
         <command>
@@ -16823,18 +17497,18 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLuint</ptype> <name>program</name></param>
             <param group="ShaderType"><ptype>GLenum</ptype> <name>shadertype</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
-            <param><ptype>GLsizei</ptype> <name>bufsize</name></param>
+            <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
             <param len="1"><ptype>GLsizei</ptype> *<name>length</name></param>
-            <param len="bufsize"><ptype>GLchar</ptype> *<name>name</name></param>
+            <param len="bufSize"><ptype>GLchar</ptype> *<name>name</name></param>
         </command>
         <command>
             <proto>void <name>glGetActiveSubroutineUniformName</name></proto>
             <param><ptype>GLuint</ptype> <name>program</name></param>
             <param group="ShaderType"><ptype>GLenum</ptype> <name>shadertype</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
-            <param><ptype>GLsizei</ptype> <name>bufsize</name></param>
+            <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
             <param len="1"><ptype>GLsizei</ptype> *<name>length</name></param>
-            <param len="bufsize"><ptype>GLchar</ptype> *<name>name</name></param>
+            <param len="bufSize"><ptype>GLchar</ptype> *<name>name</name></param>
         </command>
         <command>
             <proto>void <name>glGetActiveSubroutineUniformiv</name></proto>
@@ -17269,7 +17943,7 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glGetCoverageModulationTableNV</name></proto>
-            <param><ptype>GLsizei</ptype> <name>bufsize</name></param>
+            <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
             <param><ptype>GLfloat</ptype> *<name>v</name></param>
         </command>
         <command>
@@ -17286,12 +17960,12 @@ typedef unsigned int GLhandleARB;
         <command>
             <proto><ptype>GLuint</ptype> <name>glGetDebugMessageLogAMD</name></proto>
             <param><ptype>GLuint</ptype> <name>count</name></param>
-            <param><ptype>GLsizei</ptype> <name>bufsize</name></param>
+            <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
             <param len="count"><ptype>GLenum</ptype> *<name>categories</name></param>
             <param len="count" group="DebugSeverity"><ptype>GLuint</ptype> *<name>severities</name></param>
             <param len="count"><ptype>GLuint</ptype> *<name>ids</name></param>
             <param len="count"><ptype>GLsizei</ptype> *<name>lengths</name></param>
-            <param len="bufsize"><ptype>GLchar</ptype> *<name>message</name></param>
+            <param len="bufSize"><ptype>GLchar</ptype> *<name>message</name></param>
         </command>
         <command>
             <proto><ptype>GLuint</ptype> <name>glGetDebugMessageLogARB</name></proto>
@@ -17615,7 +18289,7 @@ typedef unsigned int GLhandleARB;
             <proto><ptype>GLuint64</ptype> <name>glGetImageHandleARB</name></proto>
             <param><ptype>GLuint</ptype> <name>texture</name></param>
             <param><ptype>GLint</ptype> <name>level</name></param>
-            <param><ptype>GLboolean</ptype> <name>layered</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>layered</name></param>
             <param><ptype>GLint</ptype> <name>layer</name></param>
             <param group="PixelFormat"><ptype>GLenum</ptype> <name>format</name></param>
         </command>
@@ -17668,6 +18342,12 @@ typedef unsigned int GLhandleARB;
             <alias name="glGetInteger64v"/>
         </command>
         <command>
+            <proto>void <name>glGetInteger64vEXT</name></proto>
+            <param group="GetPName"><ptype>GLenum</ptype> <name>pname</name></param>
+            <param len="COMPSIZE(pname)"><ptype>GLint64</ptype> *<name>data</name></param>
+            <alias name="glGetInteger64v"/>
+        </command>
+        <command>
             <proto>void <name>glGetIntegerIndexedvEXT</name></proto>
             <param><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
@@ -17710,24 +18390,24 @@ typedef unsigned int GLhandleARB;
             <param group="InternalFormat"><ptype>GLenum</ptype> <name>internalformat</name></param>
             <param><ptype>GLsizei</ptype> <name>samples</name></param>
             <param group="InternalFormatPName"><ptype>GLenum</ptype> <name>pname</name></param>
-            <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
-            <param len="bufSize"><ptype>GLint</ptype> *<name>params</name></param>
+            <param><ptype>GLsizei</ptype> <name>count</name></param>
+            <param len="count"><ptype>GLint</ptype> *<name>params</name></param>
         </command>
         <command>
             <proto>void <name>glGetInternalformati64v</name></proto>
             <param group="TextureTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param group="InternalFormat"><ptype>GLenum</ptype> <name>internalformat</name></param>
             <param group="InternalFormatPName"><ptype>GLenum</ptype> <name>pname</name></param>
-            <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
-            <param len="bufSize"><ptype>GLint64</ptype> *<name>params</name></param>
+            <param><ptype>GLsizei</ptype> <name>count</name></param>
+            <param len="count"><ptype>GLint64</ptype> *<name>params</name></param>
         </command>
         <command>
             <proto>void <name>glGetInternalformativ</name></proto>
             <param group="TextureTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param group="InternalFormat"><ptype>GLenum</ptype> <name>internalformat</name></param>
             <param group="InternalFormatPName"><ptype>GLenum</ptype> <name>pname</name></param>
-            <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
-            <param len="bufSize"><ptype>GLint</ptype> *<name>params</name></param>
+            <param><ptype>GLsizei</ptype> <name>count</name></param>
+            <param len="count"><ptype>GLint</ptype> *<name>params</name></param>
         </command>
         <command>
             <proto>void <name>glGetInvariantBooleanvEXT</name></proto>
@@ -18594,13 +19274,13 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glGetProgramEnvParameterdvARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param len="4"><ptype>GLdouble</ptype> *<name>params</name></param>
         </command>
         <command>
             <proto>void <name>glGetProgramEnvParameterfvARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param len="4"><ptype>GLfloat</ptype> *<name>params</name></param>
         </command>
@@ -18633,13 +19313,13 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glGetProgramLocalParameterdvARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param len="4"><ptype>GLdouble</ptype> *<name>params</name></param>
         </command>
         <command>
             <proto>void <name>glGetProgramLocalParameterfvARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param len="4"><ptype>GLfloat</ptype> *<name>params</name></param>
         </command>
@@ -18741,9 +19421,9 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param><ptype>GLsizei</ptype> <name>propCount</name></param>
             <param>const <ptype>GLenum</ptype> *<name>props</name></param>
-            <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
-            <param><ptype>GLsizei</ptype> *<name>length</name></param>
-            <param><ptype>GLfloat</ptype> *<name>params</name></param>
+            <param><ptype>GLsizei</ptype> <name>count</name></param>
+            <param len="1"><ptype>GLsizei</ptype> *<name>length</name></param>
+            <param len="count"><ptype>GLfloat</ptype> *<name>params</name></param>
         </command>
         <command>
             <proto>void <name>glGetProgramResourceiv</name></proto>
@@ -18752,9 +19432,9 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param><ptype>GLsizei</ptype> <name>propCount</name></param>
             <param group="ProgramResourceProperty" len="propCount">const <ptype>GLenum</ptype> *<name>props</name></param>
-            <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
+            <param><ptype>GLsizei</ptype> <name>count</name></param>
             <param len="1"><ptype>GLsizei</ptype> *<name>length</name></param>
-            <param len="bufSize"><ptype>GLint</ptype> *<name>params</name></param>
+            <param len="count"><ptype>GLint</ptype> *<name>params</name></param>
         </command>
         <command>
             <proto>void <name>glGetProgramStageiv</name></proto>
@@ -18765,8 +19445,8 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glGetProgramStringARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
-            <param group="ProgramStringPropertyARB"><ptype>GLenum</ptype> <name>pname</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramStringProperty"><ptype>GLenum</ptype> <name>pname</name></param>
             <param len="COMPSIZE(target,pname)">void *<name>string</name></param>
         </command>
         <command>
@@ -18791,7 +19471,7 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glGetProgramivARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param group="ProgramPropertyARB"><ptype>GLenum</ptype> <name>pname</name></param>
             <param len="1"><ptype>GLint</ptype> *<name>params</name></param>
         </command>
@@ -19113,17 +19793,17 @@ typedef unsigned int GLhandleARB;
             <proto>void <name>glGetSynciv</name></proto>
             <param group="sync"><ptype>GLsync</ptype> <name>sync</name></param>
             <param group="SyncParameterName"><ptype>GLenum</ptype> <name>pname</name></param>
-            <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
+            <param><ptype>GLsizei</ptype> <name>count</name></param>
             <param len="1"><ptype>GLsizei</ptype> *<name>length</name></param>
-            <param len="bufSize"><ptype>GLint</ptype> *<name>values</name></param>
+            <param len="count"><ptype>GLint</ptype> *<name>values</name></param>
         </command>
         <command>
             <proto>void <name>glGetSyncivAPPLE</name></proto>
             <param><ptype>GLsync</ptype> <name>sync</name></param>
             <param group="SyncParameterName"><ptype>GLenum</ptype> <name>pname</name></param>
-            <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
+            <param><ptype>GLsizei</ptype> <name>count</name></param>
             <param><ptype>GLsizei</ptype> *<name>length</name></param>
-            <param len="bufSize"><ptype>GLint</ptype> *<name>values</name></param>
+            <param len="count"><ptype>GLint</ptype> *<name>values</name></param>
             <alias name="glGetSynciv"/>
         </command>
         <command>
@@ -19518,7 +20198,7 @@ typedef unsigned int GLhandleARB;
         <command>
             <proto>void <name>glGetTranslatedShaderSourceANGLE</name></proto>
             <param><ptype>GLuint</ptype> <name>shader</name></param>
-            <param><ptype>GLsizei</ptype> <name>bufsize</name></param>
+            <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
             <param len="1"><ptype>GLsizei</ptype> *<name>length</name></param>
             <param><ptype>GLchar</ptype> *<name>source</name></param>
         </command>
@@ -19989,7 +20669,7 @@ typedef unsigned int GLhandleARB;
         <command>
             <proto>void <name>glGetnHistogram</name></proto>
             <param group="HistogramTargetEXT"><ptype>GLenum</ptype> <name>target</name></param>
-            <param><ptype>GLboolean</ptype> <name>reset</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>reset</name></param>
             <param group="PixelFormat"><ptype>GLenum</ptype> <name>format</name></param>
             <param group="PixelType"><ptype>GLenum</ptype> <name>type</name></param>
             <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
@@ -20049,7 +20729,7 @@ typedef unsigned int GLhandleARB;
         <command>
             <proto>void <name>glGetnMinmax</name></proto>
             <param group="MinmaxTargetEXT"><ptype>GLenum</ptype> <name>target</name></param>
-            <param><ptype>GLboolean</ptype> <name>reset</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>reset</name></param>
             <param group="PixelFormat"><ptype>GLenum</ptype> <name>format</name></param>
             <param group="PixelType"><ptype>GLenum</ptype> <name>type</name></param>
             <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
@@ -20541,7 +21221,7 @@ typedef unsigned int GLhandleARB;
             <proto>void <name>glInvalidateFramebuffer</name></proto>
             <param group="FramebufferTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLsizei</ptype> <name>numAttachments</name></param>
-            <param group="FramebufferAttachment" len="numAttachments">const <ptype>GLenum</ptype> *<name>attachments</name></param>
+            <param group="InvalidateFramebufferAttachment" len="numAttachments">const <ptype>GLenum</ptype> *<name>attachments</name></param>
         </command>
         <command>
             <proto>void <name>glInvalidateNamedFramebufferData</name></proto>
@@ -20563,7 +21243,7 @@ typedef unsigned int GLhandleARB;
             <proto>void <name>glInvalidateSubFramebuffer</name></proto>
             <param group="FramebufferTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLsizei</ptype> <name>numAttachments</name></param>
-            <param len="numAttachments" group="FramebufferAttachment">const <ptype>GLenum</ptype> *<name>attachments</name></param>
+            <param len="numAttachments" group="InvalidateFramebufferAttachment">const <ptype>GLenum</ptype> *<name>attachments</name></param>
             <param><ptype>GLint</ptype> <name>x</name></param>
             <param><ptype>GLint</ptype> <name>y</name></param>
             <param><ptype>GLsizei</ptype> <name>width</name></param>
@@ -20603,7 +21283,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLenum</ptype> <name>target</name></param>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glIsCommandListNV</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glIsCommandListNV</name></proto>
             <param><ptype>GLuint</ptype> <name>list</name></param>
         </command>
         <command>
@@ -20662,11 +21342,11 @@ typedef unsigned int GLhandleARB;
             <glx type="vendor" opcode="1425"/>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glIsFramebufferOES</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glIsFramebufferOES</name></proto>
             <param><ptype>GLuint</ptype> <name>framebuffer</name></param>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glIsImageHandleResidentARB</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glIsImageHandleResidentARB</name></proto>
             <param><ptype>GLuint64</ptype> <name>handle</name></param>
         </command>
         <command>
@@ -20742,7 +21422,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLuint</ptype> <name>pipeline</name></param>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glIsProgramPipelineEXT</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glIsProgramPipelineEXT</name></proto>
             <param><ptype>GLuint</ptype> <name>pipeline</name></param>
         </command>
         <command>
@@ -20756,7 +21436,7 @@ typedef unsigned int GLhandleARB;
             <alias name="glIsQuery"/>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glIsQueryEXT</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glIsQueryEXT</name></proto>
             <param><ptype>GLuint</ptype> <name>id</name></param>
         </command>
         <command>
@@ -20771,7 +21451,7 @@ typedef unsigned int GLhandleARB;
             <glx type="vendor" opcode="1422"/>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glIsRenderbufferOES</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glIsRenderbufferOES</name></proto>
             <param><ptype>GLuint</ptype> <name>renderbuffer</name></param>
         </command>
         <command>
@@ -20788,7 +21468,7 @@ typedef unsigned int GLhandleARB;
             <glx type="single" opcode="196"/>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glIsStateNV</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glIsStateNV</name></proto>
             <param><ptype>GLuint</ptype> <name>state</name></param>
         </command>
         <command>
@@ -20796,7 +21476,7 @@ typedef unsigned int GLhandleARB;
             <param group="sync"><ptype>GLsync</ptype> <name>sync</name></param>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glIsSyncAPPLE</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glIsSyncAPPLE</name></proto>
             <param><ptype>GLsync</ptype> <name>sync</name></param>
             <alias name="glIsSync"/>
         </command>
@@ -20811,7 +21491,7 @@ typedef unsigned int GLhandleARB;
             <glx type="vendor" opcode="14"/>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glIsTextureHandleResidentARB</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glIsTextureHandleResidentARB</name></proto>
             <param><ptype>GLuint64</ptype> <name>handle</name></param>
         </command>
         <command>
@@ -20843,7 +21523,7 @@ typedef unsigned int GLhandleARB;
             <alias name="glIsVertexArray"/>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glIsVertexArrayOES</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glIsVertexArrayOES</name></proto>
             <param><ptype>GLuint</ptype> <name>array</name></param>
             <alias name="glIsVertexArray"/>
         </command>
@@ -21783,7 +22463,7 @@ typedef unsigned int GLhandleARB;
         <command>
             <proto>void <name>glMultiDrawArrays</name></proto>
             <param group="PrimitiveType"><ptype>GLenum</ptype> <name>mode</name></param>
-            <param len="COMPSIZE(count)">const <ptype>GLint</ptype> *<name>first</name></param>
+            <param len="COMPSIZE(drawcount)">const <ptype>GLint</ptype> *<name>first</name></param>
             <param len="COMPSIZE(drawcount)">const <ptype>GLsizei</ptype> *<name>count</name></param>
             <param><ptype>GLsizei</ptype> <name>drawcount</name></param>
         </command>
@@ -22975,6 +23655,27 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLuint</ptype> *<name>params</name></param>
         </command>
         <command>
+            <proto>void <name>glMulticastScissorArrayvNVX</name></proto>
+            <param><ptype>GLuint</ptype> <name>gpu</name></param>
+            <param><ptype>GLuint</ptype> <name>first</name></param>
+            <param><ptype>GLsizei</ptype> <name>count</name></param>
+            <param len="COMPSIZE(count)">const <ptype>GLint</ptype> *<name>v</name></param>
+        </command>
+        <command>
+            <proto>void <name>glMulticastViewportArrayvNVX</name></proto>
+            <param><ptype>GLuint</ptype> <name>gpu</name></param>
+            <param><ptype>GLuint</ptype> <name>first</name></param>
+            <param><ptype>GLsizei</ptype> <name>count</name></param>
+            <param len="COMPSIZE(count)">const <ptype>GLfloat</ptype> *<name>v</name></param>
+        </command>
+        <command>
+            <proto>void <name>glMulticastViewportPositionWScaleNVX</name></proto>
+            <param><ptype>GLuint</ptype> <name>gpu</name></param>
+            <param><ptype>GLuint</ptype> <name>index</name></param>
+            <param><ptype>GLfloat</ptype> <name>xcoeff</name></param>
+            <param><ptype>GLfloat</ptype> <name>ycoeff</name></param>
+        </command>
+        <command>
             <proto>void <name>glMulticastWaitSyncNV</name></proto>
             <param><ptype>GLuint</ptype> <name>signalGpu</name></param>
             <param><ptype>GLbitfield</ptype> <name>waitGpuMask</name></param>
@@ -23004,14 +23705,14 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLuint</ptype> <name>buffer</name></param>
             <param><ptype>GLintptr</ptype> <name>offset</name></param>
             <param><ptype>GLsizeiptr</ptype> <name>size</name></param>
-            <param><ptype>GLboolean</ptype> <name>commit</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>commit</name></param>
         </command>
         <command>
             <proto>void <name>glNamedBufferPageCommitmentEXT</name></proto>
             <param><ptype>GLuint</ptype> <name>buffer</name></param>
             <param><ptype>GLintptr</ptype> <name>offset</name></param>
             <param><ptype>GLsizeiptr</ptype> <name>size</name></param>
-            <param><ptype>GLboolean</ptype> <name>commit</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>commit</name></param>
         </command>
         <command>
             <proto>void <name>glNamedBufferStorage</name></proto>
@@ -24367,7 +25068,7 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glProgramEnvParameter4dARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param><ptype>GLdouble</ptype> <name>x</name></param>
             <param><ptype>GLdouble</ptype> <name>y</name></param>
@@ -24377,13 +25078,13 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glProgramEnvParameter4dvARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param len="4">const <ptype>GLdouble</ptype> *<name>params</name></param>
         </command>
         <command>
             <proto>void <name>glProgramEnvParameter4fARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param><ptype>GLfloat</ptype> <name>x</name></param>
             <param><ptype>GLfloat</ptype> <name>y</name></param>
@@ -24393,7 +25094,7 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glProgramEnvParameter4fvARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param len="4">const <ptype>GLfloat</ptype> *<name>params</name></param>
         </command>
@@ -24431,7 +25132,7 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glProgramEnvParameters4fvEXT</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param><ptype>GLsizei</ptype> <name>count</name></param>
             <param len="count*4">const <ptype>GLfloat</ptype> *<name>params</name></param>
@@ -24453,7 +25154,7 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glProgramLocalParameter4dARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param><ptype>GLdouble</ptype> <name>x</name></param>
             <param><ptype>GLdouble</ptype> <name>y</name></param>
@@ -24463,13 +25164,13 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glProgramLocalParameter4dvARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param len="4">const <ptype>GLdouble</ptype> *<name>params</name></param>
         </command>
         <command>
             <proto>void <name>glProgramLocalParameter4fARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param><ptype>GLfloat</ptype> <name>x</name></param>
             <param><ptype>GLfloat</ptype> <name>y</name></param>
@@ -24479,7 +25180,7 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glProgramLocalParameter4fvARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param len="4">const <ptype>GLfloat</ptype> *<name>params</name></param>
         </command>
@@ -24517,7 +25218,7 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glProgramLocalParameters4fvEXT</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param><ptype>GLsizei</ptype> <name>count</name></param>
             <param len="count*4">const <ptype>GLfloat</ptype> *<name>params</name></param>
@@ -24655,8 +25356,8 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glProgramStringARB</name></proto>
-            <param group="ProgramTargetARB"><ptype>GLenum</ptype> <name>target</name></param>
-            <param group="ProgramFormatARB"><ptype>GLenum</ptype> <name>format</name></param>
+            <param group="ProgramTarget"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="ProgramFormat"><ptype>GLenum</ptype> <name>format</name></param>
             <param><ptype>GLsizei</ptype> <name>len</name></param>
             <param len="len">const void *<name>string</name></param>
         </command>
@@ -25820,8 +26521,8 @@ typedef unsigned int GLhandleARB;
             <proto><ptype>GLint</ptype> <name>glQueryResourceNV</name></proto>
             <param><ptype>GLenum</ptype> <name>queryType</name></param>
             <param><ptype>GLint</ptype> <name>tagId</name></param>
-            <param><ptype>GLuint</ptype> <name>bufSize</name></param>
-            <param><ptype>GLint</ptype> *<name>buffer</name></param>
+            <param><ptype>GLuint</ptype> <name>count</name></param>
+            <param len="count"><ptype>GLint</ptype> *<name>buffer</name></param>
         </command>
         <command>
             <proto>void <name>glQueryResourceTagNV</name></proto>
@@ -26005,7 +26706,7 @@ typedef unsigned int GLhandleARB;
         <command>
             <proto>void <name>glRasterSamplesEXT</name></proto>
             <param><ptype>GLuint</ptype> <name>samples</name></param>
-            <param><ptype>GLboolean</ptype> <name>fixedsamplelocations</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>fixedsamplelocations</name></param>
         </command>
         <command>
             <proto>void <name>glReadBuffer</name></proto>
@@ -26086,7 +26787,7 @@ typedef unsigned int GLhandleARB;
             <alias name="glReadnPixels"/>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glReleaseKeyedMutexWin32EXT</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glReleaseKeyedMutexWin32EXT</name></proto>
             <param><ptype>GLuint</ptype> <name>memory</name></param>
             <param><ptype>GLuint64</ptype> <name>key</name></param>
         </command>
@@ -26533,12 +27234,12 @@ typedef unsigned int GLhandleARB;
         <command>
             <proto>void <name>glSampleCoveragex</name></proto>
             <param><ptype>GLclampx</ptype> <name>value</name></param>
-            <param><ptype>GLboolean</ptype> <name>invert</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>invert</name></param>
         </command>
         <command>
             <proto>void <name>glSampleCoveragexOES</name></proto>
             <param><ptype>GLclampx</ptype> <name>value</name></param>
-            <param><ptype>GLboolean</ptype> <name>invert</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>invert</name></param>
         </command>
         <command>
             <proto>void <name>glSampleMapATI</name></proto>
@@ -27146,7 +27847,7 @@ typedef unsigned int GLhandleARB;
         </command>
         <command>
             <proto>void <name>glShadingRateImageBarrierNV</name></proto>
-            <param><ptype>GLboolean</ptype> <name>synchronize</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>synchronize</name></param>
         </command>
         <command>
             <proto>void <name>glShadingRateImagePaletteNV</name></proto>
@@ -27180,6 +27881,13 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLuint</ptype> <name>numTextureBarriers</name></param>
             <param len="COMPSIZE(numTextureBarriers)">const <ptype>GLuint</ptype> *<name>textures</name></param>
             <param group="TextureLayout" len="COMPSIZE(numTextureBarriers)">const <ptype>GLenum</ptype> *<name>dstLayouts</name></param>
+        </command>
+        <command>
+            <proto>void <name>glSignalSemaphoreui64NVX</name></proto>
+            <param><ptype>GLuint</ptype> <name>signalGpu</name></param>
+            <param><ptype>GLsizei</ptype> <name>fenceObjectCount</name></param>
+            <param len="fenceObjectCount">const <ptype>GLuint</ptype> *<name>semaphoreArray</name></param>
+            <param len="fenceObjectCount">const <ptype>GLuint64</ptype> *<name>fenceValueArray</name></param>
         </command>
         <command>
             <proto>void <name>glSpecializeShader</name></proto>
@@ -28346,7 +29054,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLsizei</ptype> <name>width</name></param>
             <param><ptype>GLsizei</ptype> <name>height</name></param>
             <param><ptype>GLsizei</ptype> <name>depth</name></param>
-            <param><ptype>GLboolean</ptype> <name>commit</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>commit</name></param>
         </command>
         <command>
             <proto>void <name>glTexPageCommitmentEXT</name></proto>
@@ -28358,7 +29066,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLsizei</ptype> <name>width</name></param>
             <param><ptype>GLsizei</ptype> <name>height</name></param>
             <param><ptype>GLsizei</ptype> <name>depth</name></param>
-            <param><ptype>GLboolean</ptype> <name>commit</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>commit</name></param>
             <alias name="glTexPageCommitmentARB"/>
         </command>
         <command>
@@ -28567,7 +29275,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLenum</ptype> <name>internalFormat</name></param>
             <param><ptype>GLsizei</ptype> <name>width</name></param>
             <param><ptype>GLsizei</ptype> <name>height</name></param>
-            <param><ptype>GLboolean</ptype> <name>fixedSampleLocations</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>fixedSampleLocations</name></param>
             <param><ptype>GLuint</ptype> <name>memory</name></param>
             <param><ptype>GLuint64</ptype> <name>offset</name></param>
         </command>
@@ -28590,7 +29298,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLsizei</ptype> <name>width</name></param>
             <param><ptype>GLsizei</ptype> <name>height</name></param>
             <param><ptype>GLsizei</ptype> <name>depth</name></param>
-            <param><ptype>GLboolean</ptype> <name>fixedSampleLocations</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>fixedSampleLocations</name></param>
             <param><ptype>GLuint</ptype> <name>memory</name></param>
             <param><ptype>GLuint64</ptype> <name>offset</name></param>
         </command>
@@ -28887,7 +29595,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLsizei</ptype> <name>width</name></param>
             <param><ptype>GLsizei</ptype> <name>height</name></param>
             <param><ptype>GLsizei</ptype> <name>depth</name></param>
-            <param><ptype>GLboolean</ptype> <name>commit</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>commit</name></param>
         </command>
         <command>
             <proto>void <name>glTextureParameterIiv</name></proto>
@@ -29020,7 +29728,7 @@ typedef unsigned int GLhandleARB;
             <param group="InternalFormat"><ptype>GLenum</ptype> <name>internalformat</name></param>
             <param><ptype>GLsizei</ptype> <name>width</name></param>
             <param><ptype>GLsizei</ptype> <name>height</name></param>
-            <param><ptype>GLboolean</ptype> <name>fixedsamplelocations</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>fixedsamplelocations</name></param>
         </command>
         <command>
             <proto>void <name>glTextureStorage2DMultisampleEXT</name></proto>
@@ -29059,7 +29767,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLsizei</ptype> <name>width</name></param>
             <param><ptype>GLsizei</ptype> <name>height</name></param>
             <param><ptype>GLsizei</ptype> <name>depth</name></param>
-            <param><ptype>GLboolean</ptype> <name>fixedsamplelocations</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>fixedsamplelocations</name></param>
         </command>
         <command>
             <proto>void <name>glTextureStorage3DMultisampleEXT</name></proto>
@@ -29098,7 +29806,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLenum</ptype> <name>internalFormat</name></param>
             <param><ptype>GLsizei</ptype> <name>width</name></param>
             <param><ptype>GLsizei</ptype> <name>height</name></param>
-            <param><ptype>GLboolean</ptype> <name>fixedSampleLocations</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>fixedSampleLocations</name></param>
             <param><ptype>GLuint</ptype> <name>memory</name></param>
             <param><ptype>GLuint64</ptype> <name>offset</name></param>
         </command>
@@ -29121,7 +29829,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLsizei</ptype> <name>width</name></param>
             <param><ptype>GLsizei</ptype> <name>height</name></param>
             <param><ptype>GLsizei</ptype> <name>depth</name></param>
-            <param><ptype>GLboolean</ptype> <name>fixedSampleLocations</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>fixedSampleLocations</name></param>
             <param><ptype>GLuint</ptype> <name>memory</name></param>
             <param><ptype>GLuint64</ptype> <name>offset</name></param>
         </command>
@@ -30194,12 +30902,12 @@ typedef unsigned int GLhandleARB;
             <alias name="glUnmapBuffer"/>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glUnmapBufferOES</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glUnmapBufferOES</name></proto>
             <param><ptype>GLenum</ptype> <name>target</name></param>
             <alias name="glUnmapBuffer"/>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glUnmapNamedBuffer</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glUnmapNamedBuffer</name></proto>
             <param><ptype>GLuint</ptype> <name>buffer</name></param>
         </command>
         <command>
@@ -30222,6 +30930,10 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLsizei</ptype> <name>size</name></param>
             <param len="size">const void *<name>pointer</name></param>
             <param group="PreserveModeATI"><ptype>GLenum</ptype> <name>preserve</name></param>
+        </command>
+        <command>
+            <proto>void <name>glUploadGpuMaskNVX</name></proto>
+            <param><ptype>GLbitfield</ptype> <name>mask</name></param>
         </command>
         <command>
             <proto>void <name>glUseProgram</name></proto>
@@ -30256,9 +30968,9 @@ typedef unsigned int GLhandleARB;
             <proto>void <name>glVDPAUGetSurfaceivNV</name></proto>
             <param group="vdpauSurfaceNV"><ptype>GLvdpauSurfaceNV</ptype> <name>surface</name></param>
             <param><ptype>GLenum</ptype> <name>pname</name></param>
-            <param><ptype>GLsizei</ptype> <name>bufSize</name></param>
+            <param><ptype>GLsizei</ptype> <name>count</name></param>
             <param><ptype>GLsizei</ptype> *<name>length</name></param>
-            <param len="bufSize"><ptype>GLint</ptype> *<name>values</name></param>
+            <param len="count"><ptype>GLint</ptype> *<name>values</name></param>
         </command>
         <command>
             <proto>void <name>glVDPAUInitNV</name></proto>
@@ -30266,7 +30978,7 @@ typedef unsigned int GLhandleARB;
             <param>const void *<name>getProcAddress</name></param>
         </command>
         <command>
-            <proto><ptype>GLboolean</ptype> <name>glVDPAUIsSurfaceNV</name></proto>
+            <proto group="Boolean"><ptype>GLboolean</ptype> <name>glVDPAUIsSurfaceNV</name></proto>
             <param group="vdpauSurfaceNV"><ptype>GLvdpauSurfaceNV</ptype> <name>surface</name></param>
         </command>
         <command>
@@ -30631,7 +31343,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLuint</ptype> <name>attribindex</name></param>
             <param><ptype>GLint</ptype> <name>size</name></param>
             <param group="VertexAttribType"><ptype>GLenum</ptype> <name>type</name></param>
-            <param><ptype>GLboolean</ptype> <name>normalized</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>normalized</name></param>
             <param><ptype>GLuint</ptype> <name>relativeoffset</name></param>
         </command>
         <command>
@@ -30816,7 +31528,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLuint</ptype> <name>index</name></param>
             <param><ptype>GLint</ptype> <name>size</name></param>
             <param group="VertexAttribPointerType"><ptype>GLenum</ptype> <name>type</name></param>
-            <param><ptype>GLboolean</ptype> <name>normalized</name></param>
+            <param group="Boolean"><ptype>GLboolean</ptype> <name>normalized</name></param>
             <param><ptype>GLsizei</ptype> <name>stride</name></param>
             <param><ptype>GLintptr</ptype> <name>offset</name></param>
         </command>
@@ -32807,6 +33519,13 @@ typedef unsigned int GLhandleARB;
             <param group="TextureLayout" len="COMPSIZE(numTextureBarriers)">const <ptype>GLenum</ptype> *<name>srcLayouts</name></param>
         </command>
         <command>
+            <proto>void <name>glWaitSemaphoreui64NVX</name></proto>
+            <param><ptype>GLuint</ptype> <name>waitGpu</name></param>
+            <param><ptype>GLsizei</ptype> <name>fenceObjectCount</name></param>
+            <param len="fenceObjectCount">const <ptype>GLuint</ptype> *<name>semaphoreArray</name></param>
+            <param len="fenceObjectCount">const <ptype>GLuint64</ptype> *<name>fenceValueArray</name></param>
+        </command>
+        <command>
             <proto>void <name>glWaitSync</name></proto>
             <param group="sync"><ptype>GLsync</ptype> <name>sync</name></param>
             <param><ptype>GLbitfield</ptype> <name>flags</name></param>
@@ -33280,6 +33999,18 @@ typedef unsigned int GLhandleARB;
         <command>
             <proto>void <name>glSignalVkFenceNV</name></proto>
             <param><ptype>GLuint64</ptype> <name>vkFence</name></param>
+        </command>
+         <command>
+            <proto>void <name>glFramebufferParameteriMESA</name></proto>
+            <param group="FramebufferTarget"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="FramebufferParameterName"><ptype>GLenum</ptype> <name>pname</name></param>
+            <param><ptype>GLint</ptype> <name>param</name></param>
+        </command>
+        <command>
+            <proto>void <name>glGetFramebufferParameterivMESA</name></proto>
+            <param group="FramebufferTarget"><ptype>GLenum</ptype> <name>target</name></param>
+            <param group="FramebufferAttachmentParameterName"><ptype>GLenum</ptype> <name>pname</name></param>
+            <param len="COMPSIZE(pname)"><ptype>GLint</ptype> *<name>params</name></param>
         </command>
 
     </commands>
@@ -43702,6 +44433,7 @@ typedef unsigned int GLhandleARB;
                 <command name="glEGLImageTargetTextureStorageEXT"/>
             </require>
         </extension>
+        <extension name="GL_EXT_EGL_sync" supported="gl|glcore"/>
         <extension name="GL_EXT_YUV_target" supported="gles2">
             <require>
                 <enum name="GL_SAMPLER_EXTERNAL_2D_Y2Y_EXT"/>
@@ -44403,6 +45135,7 @@ typedef unsigned int GLhandleARB;
                 <command name="glGetQueryObjectuivEXT"/>
                 <command name="glGetQueryObjecti64vEXT"/>
                 <command name="glGetQueryObjectui64vEXT"/>
+                <command name="glGetInteger64vEXT"/>
             </require>
         </extension>
         <extension name="GL_EXT_draw_buffers" supported="gles2">
@@ -46853,6 +47586,22 @@ typedef unsigned int GLhandleARB;
                 <command name="glGetnUniformuivKHR"/>
             </require>
         </extension>
+        <extension name="GL_KHR_shader_subgroup" supported="gl|glcore|gles2">
+            <require>
+                <enum name="GL_SUBGROUP_SIZE_KHR"/>
+                <enum name="GL_SUBGROUP_SUPPORTED_STAGES_KHR"/>
+                <enum name="GL_SUBGROUP_SUPPORTED_FEATURES_KHR"/>
+                <enum name="GL_SUBGROUP_QUAD_ALL_STAGES_KHR"/>
+                <enum name="GL_SUBGROUP_FEATURE_BASIC_BIT_KHR"/>
+                <enum name="GL_SUBGROUP_FEATURE_VOTE_BIT_KHR"/>
+                <enum name="GL_SUBGROUP_FEATURE_ARITHMETIC_BIT_KHR"/>
+                <enum name="GL_SUBGROUP_FEATURE_BALLOT_BIT_KHR"/>
+                <enum name="GL_SUBGROUP_FEATURE_SHUFFLE_BIT_KHR"/>
+                <enum name="GL_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT_KHR"/>
+                <enum name="GL_SUBGROUP_FEATURE_CLUSTERED_BIT_KHR"/>
+                <enum name="GL_SUBGROUP_FEATURE_QUAD_BIT_KHR"/>
+            </require>
+        </extension>
         <extension name="GL_KHR_texture_compression_astc_hdr" supported="gl|glcore|gles2">
             <require>
                 <enum name="GL_COMPRESSED_RGBA_ASTC_4x4_KHR"/>
@@ -46935,9 +47684,11 @@ typedef unsigned int GLhandleARB;
                 <enum name="GL_TEXTURE_2D_STACK_BINDING_MESAX"/>
             </require>
         </extension>
-        <extension name="GL_MESA_framebuffer_flip_y" supported="gles2">
+        <extension name="GL_MESA_framebuffer_flip_y" supported="gl|glcore|gles2">
             <require>
                 <enum name="GL_FRAMEBUFFER_FLIP_Y_MESA"/>
+                <command name="glFramebufferParameteriMESA"/>
+                <command name="glGetFramebufferParameterivMESA"/>
             </require>
         </extension>
         <extension name="GL_MESA_pack_invert" supported="gl">
@@ -47793,6 +48544,25 @@ typedef unsigned int GLhandleARB;
                 <command name="glMulticastGetQueryObjectui64vNV"/>
             </require>
         </extension>
+        <extension name="GL_NVX_gpu_multicast2" supported="gl">
+            <require>
+                <enum name="GL_UPLOAD_GPU_MASK_NVX"/>
+                <command name="glUploadGpuMaskNVX"/>
+                <command name="glMulticastViewportArrayvNVX"/>
+                <command name="glMulticastViewportPositionWScaleNVX"/>
+                <command name="glMulticastScissorArrayvNVX"/>
+                <command name="glAsyncCopyBufferSubDataNVX"/>
+                <command name="glAsyncCopyImageSubDataNVX"/>
+            </require>
+        </extension>
+        <extension name="GL_NVX_progress_fence" supported="gl">
+            <require>
+                <command name="glCreateProgressFenceNVX"/>
+                <command name="glSignalSemaphoreui64NVX"/>
+                <command name="glWaitSemaphoreui64NVX"/>
+                <command name="glClientWaitSemaphoreui64NVX"/>
+            </require>
+        </extension>
         <extension name="GL_NV_memory_attachment" supported="gl|glcore|gles2">
             <require>
                 <enum name="GL_ATTACHED_MEMORY_OBJECT_NV"/>
@@ -48453,6 +49223,11 @@ typedef unsigned int GLhandleARB;
         </extension>
         <extension name="GL_NV_shader_noperspective_interpolation" supported="gles2"/>
         <extension name="GL_NV_shader_storage_buffer_object" supported="gl"/>
+        <extension name="GL_NV_shader_subgroup_partitioned" supported="gl|glcore|gles2">
+            <require>
+                <enum name="GL_SUBGROUP_FEATURE_PARTITIONED_BIT_NV"/>
+            </require>
+        </extension>
         <extension name="GL_NV_shader_texture_footprint" supported="gl|glcore|gles2"/>
         <extension name="GL_NV_shader_thread_group" supported="gl|glcore">
             <require>

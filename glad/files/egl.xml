@@ -49,6 +49,9 @@
         <type name="NativePixmapType" requires="eglplatform"/>
         <type name="NativeWindowType" requires="eglplatform"/>
         <type>struct <name>AHardwareBuffer</name>;</type>
+        <type>struct <name>wl_buffer</name>;</type>
+        <type>struct <name>wl_display</name>;</type>
+        <type>struct <name>wl_resource</name>;</type>
         <!-- Dummy placeholders for non-EGL types -->
         <type name="Bool"/>
             <!-- These are actual EGL types.  -->
@@ -89,7 +92,13 @@
     EGLint iHeight;
     EGLint iStride;
 };</type>
+        <!-- Backwards-compatibility hack: Downstream implementations shipped
+             incorrect function pointer names for some years. -->
         <type>typedef void (<apientry/> *<name>EGLDEBUGPROCKHR</name>)(EGLenum error,const char *command,EGLint messageType,EGLLabelKHR threadLabel,EGLLabelKHR objectLabel,const char* message);</type>
+	<type>#define <name>PFNEGLBINDWAYLANDDISPLAYWL</name> PFNEGLBINDWAYLANDDISPLAYWLPROC</type>
+	<type>#define <name>PFNEGLUNBINDWAYLANDDISPLAYWL</name> PFNEGLUNBINDWAYLANDDISPLAYWLPROC</type>
+	<type>#define <name>PFNEGLQUERYWAYLANDBUFFERWL</name> PFNEGLQUERYWAYLANDBUFFERWLPROC</type>
+	<type>#define <name>PFNEGLCREATEWAYLANDBUFFERFROMIMAGEWL</name> PFNEGLCREATEWAYLANDBUFFERFROMIMAGEWLPROC</type>
     </types>
 
     <!-- SECTION: EGL enumerant (token) definitions. -->
@@ -581,9 +590,25 @@
         <enum value="0x31D7" name="EGL_PLATFORM_GBM_MESA" alias="EGL_PLATFORM_GBM_KHR"/>
         <enum value="0x31D8" name="EGL_PLATFORM_WAYLAND_KHR"/>
         <enum value="0x31D8" name="EGL_PLATFORM_WAYLAND_EXT" alias="EGL_PLATFORM_WAYLAND_KHR"/>
-            <unused start="0x31D9" end="0x31DC"/>
+            <unused start="0x31DC" end="0x31DC"/>
         <enum value="0x31DD" name="EGL_PLATFORM_SURFACELESS_MESA"/>
             <unused start="0x31DE" end="0x31DF"/>
+    </enums>
+
+    <!-- Due to an oversight in development, these enums alias the above MESA
+         vendor range for EGL the X11/GBM/Wayland/surfaceless platforms.
+         They are both currently in wide use and cannot be changed, however
+         the tokens cannot be used in the same contexts and the aliasing is
+         therefore harmless. Future Wayland tokens should not create further
+         aliasing in this range.-->
+    <enums namespace="EGL" start="0x31D5" end="0x31DB" vendor="WL" comment="EGL_WL_bind_wayland_display">
+        <enum value="0x31D5" name="EGL_WAYLAND_BUFFER_WL"/>
+        <enum value="0x31D6" name="EGL_WAYLAND_PLANE_WL"/>
+        <enum value="0x31D7" name="EGL_TEXTURE_Y_U_V_WL"/>
+        <enum value="0x31D8" name="EGL_TEXTURE_Y_UV_WL"/>
+        <enum value="0x31D9" name="EGL_TEXTURE_Y_XUXV_WL"/>
+        <enum value="0x31DA" name="EGL_TEXTURE_EXTERNAL_WL"/>
+        <enum value="0x31DB" name="EGL_WAYLAND_Y_INVERTED_WL"/>
     </enums>
 
     <enums namespace="EGL" start="0x31E0" end="0x31EF" vendor="HI" comment="Reserved for Mark Callow (Khronos bug 6799)">
@@ -861,7 +886,9 @@
         <enum value="0x336E" name="EGL_BOTTOM_NV"/>
         <enum value="0x336F" name="EGL_X_AXIS_NV"/>
         <enum value="0x3370" name="EGL_Y_AXIS_NV"/>
-            <unused start="0x3371" end="0x339F"/>
+        <enum value="0x3371" name="EGL_STREAM_DMA_NV"/>
+        <enum value="0x3372" name="EGL_STREAM_DMA_SERVER_NV"/>
+            <unused start="0x3373" end="0x339F"/>
     </enums>
 
     <enums namespace="EGL" start="0x33A0" end="0x33AF" vendor="ANGLE" comment="Reserved for Shannon Woods (Bug 13175)">
@@ -1000,6 +1027,9 @@
         <enum value="0x3490" name="EGL_GL_COLORSPACE_DISPLAY_P3_PASSTHROUGH_EXT"/>
             <unused start="0x3491" end="0x349F"/>
     </enums>
+    <enums namespace="EGL" start="0x34A0" end="0x34AF" vendor="ANGLE" comment="Reserved for Ken Russell - ANGLE (via github pull request)">
+            <unused start="0x34A0" end="0x34AF"/>
+    </enums>
 
 <!-- Please remember that new enumerant allocations must be obtained by
      request to the Khronos API registrar (see comments at the top of this
@@ -1010,8 +1040,8 @@
 
 <!-- Reservable for future use. To generate a new range, allocate multiples
      of 16 starting at the lowest available point in this block. -->
-    <enums namespace="EGL" start="0x34A0" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
-            <unused start="0x34A0" end="0x3FFF"/>
+    <enums namespace="EGL" start="0x34B0" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
+            <unused start="0x34B0" end="0x3FFF"/>
     </enums>
 
     <enums namespace="EGL" start="0x8F70" end="0x8F7F" vendor="HI" comment="For Mark Callow, Khronos bug 4055. Shared with GL.">
@@ -1897,6 +1927,28 @@
             <proto><ptype>EGLBoolean</ptype> <name>eglCompositorSwapPolicyEXT</name></proto>
             <param><ptype>EGLint</ptype> <name>external_win_id</name></param>
             <param><ptype>EGLint</ptype> <name>policy</name></param>
+        </command>
+        <command>
+            <proto><ptype>EGLBoolean</ptype> <name>eglBindWaylandDisplayWL</name></proto>
+            <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+            <param>struct <ptype>wl_display</ptype> *<name>display</name></param>
+        </command>
+        <command>
+            <proto><ptype>EGLBoolean</ptype> <name>eglUnbindWaylandDisplayWL</name></proto>
+            <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+            <param>struct <ptype>wl_display</ptype> *<name>display</name></param>
+        </command>
+        <command>
+            <proto><ptype>EGLBoolean</ptype> <name>eglQueryWaylandBufferWL</name></proto>
+            <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+            <param>struct <ptype>wl_resource</ptype> *<name>buffer</name></param>
+            <param><ptype>EGLint</ptype> <name>attribute</name></param>
+            <param><ptype>EGLint</ptype> *<name>value</name></param>
+        </command>
+        <command>
+            <proto>struct <ptype>wl_buffer</ptype> *<name>eglCreateWaylandBufferFromImageWL</name></proto>
+            <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+            <param><ptype>EGLImageKHR</ptype> <name>image</name></param>
         </command>
     </commands>
 
@@ -3089,6 +3141,12 @@
                 <enum name="EGL_STREAM_CROSS_SYSTEM_NV"/>
             </require>
         </extension>
+        <extension name="EGL_NV_stream_dma" supported="egl">
+            <require>
+                <enum name="EGL_STREAM_DMA_NV"/>
+                <enum name="EGL_STREAM_DMA_SERVER_NV"/>
+            </require>
+        </extension>
         <extension name="EGL_NV_stream_fifo_next" supported="egl">
             <require>
                 <enum name="EGL_PENDING_FRAME_NV"/>
@@ -3268,6 +3326,30 @@
                 <enum name="EGL_BOTTOM_NV"/>
                 <enum name="EGL_X_AXIS_NV"/>
                 <enum name="EGL_Y_AXIS_NV"/>
+            </require>
+        </extension>
+        <extension name="EGL_WL_bind_wayland_display" supported="egl">
+            <require>
+                <enum name="EGL_WAYLAND_BUFFER_WL"/>
+                <enum name="EGL_WAYLAND_PLANE_WL"/>
+                <enum name="EGL_TEXTURE_Y_U_V_WL"/>
+                <enum name="EGL_TEXTURE_Y_UV_WL"/>
+                <enum name="EGL_TEXTURE_Y_XUXV_WL"/>
+                <enum name="EGL_TEXTURE_EXTERNAL_WL"/>
+                <enum name="EGL_WAYLAND_Y_INVERTED_WL"/>
+
+                <command name="eglBindWaylandDisplayWL"/>
+                <command name="eglUnbindWaylandDisplayWL"/>
+                <command name="eglQueryWaylandBufferWL"/>
+                <type name="PFNEGLBINDWAYLANDDISPLAYWL"/>
+                <type name="PFNEGLUNBINDWAYLANDDISPLAYWL"/>
+                <type name="PFNEGLQUERYWAYLANDBUFFERWL"/>
+            </require>
+        </extension>
+        <extension name="EGL_WL_create_wayland_buffer_from_image" supported="egl">
+            <require>
+                <command name="eglCreateWaylandBufferFromImageWL"/>
+                <type name="PFNEGLCREATEWAYLANDBUFFERFROMIMAGEWL"/>
             </require>
         </extension>
     </extensions>

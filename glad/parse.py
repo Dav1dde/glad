@@ -372,7 +372,9 @@ class Specification(object):
         # fixup aliases
         for command in chain.from_iterable(commands.values()):
             if command.alias is not None and command.proto is None:
-                aliased_command = next(c for c in commands[command.alias] if c.api == command.api)
+                aliased_command = command
+                while aliased_command.proto is None:
+                    aliased_command = next(c for c in commands[aliased_command.alias] if c.api == command.api)
 
                 command.proto = Proto(command.name, copy.deepcopy(aliased_command.proto.ret))
                 command.params = copy.deepcopy(aliased_command.params)
@@ -561,6 +563,44 @@ class Specification(object):
                         open_requirements.append(alias)
 
                 yield best_match
+
+    @property
+    @memoize()
+    def _all_enums(self):
+        """
+        Vulkan introduced grouping of enumerations, they turned from
+        basic `#define`'s into actual enumerations `enum Foo { ... }`.
+
+        Glad interprets the "actual" enumerations as types, it's
+        an enumeration type with values. But sometimes it is necessary
+        to just have all enumerations without grouping information
+        available (e.g. for quickly looking up a value). This lives
+        under the assumption that enum names are unique.
+
+        :return: a dictionary of name:enum pairs.
+        """
+        result = dict()
+
+        for type_ in self.types.values():
+            type_ = type_[0]
+            if type_.category == 'enum':
+                for enum in type_.enums:
+                    result[enum.name] = enum
+
+        return result
+
+    def find_enum(self, name, default=None):
+        """
+        Finds any enum, this includes enums that are part of
+        types, by its name.
+
+        :param name: name of the enum
+        :param default: default value to return if not found
+        :return: the enum if found or else the default
+        """
+        if name is None:
+            return default
+        return self._all_enums.get(name, default)
 
     @staticmethod
     def split_types(iterable, types):

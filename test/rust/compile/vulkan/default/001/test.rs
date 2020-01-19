@@ -20,7 +20,6 @@ fn main() {
     vk::CreateViSurfaceNN;
     vk::CreateIOSSurfaceMVK;
     vk::GetRandROutputDisplayEXT;
-    vk::CreateMirSurfaceKHR;
     vk::GetPhysicalDeviceXcbPresentationSupportKHR;
     vk::GetMemoryAndroidHardwareBufferANDROID;
 }

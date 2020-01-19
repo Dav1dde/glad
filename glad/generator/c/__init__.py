@@ -160,6 +160,39 @@ def c_commands(context, commands):
     return [command for command in commands if not command in core]
 
 
+@jinja2.contextfunction
+def enum_member(context, type_, member):
+    if member.alias is None:
+        return member.value
+
+    feature_set = context['feature_set']
+    enums_of_type = type_.enums_for(feature_set)
+
+    def is_enum_before(target, before):
+        for enum in enums_of_type:
+            if enum.name == target:
+                return True
+            if enum.name == before:
+                return False
+
+    if is_enum_before(member.alias, member.name):
+        return member.alias
+
+    # This is the part where the spec is annoying again
+    # an enum that has been moved into core in a later version
+    # loses its _KHR postfix, but in an earlier version this still requires an extension...
+    # Luckily glad automatically adds the necessary enum to the feature set,
+    # but it doesn't get generated, because it is not actually part of the selected feature set.
+    # Just have to get the actual value now
+    def resolve(target):
+        target = feature_set.find_enum(target)
+        if target.alias is None:
+            return target.value
+        return resolve(target.alias)
+
+    return resolve(member.alias)
+
+
 _CPP_STYLE_COMMENT_RE = re.compile(r'(^|\s|\))//(?P<comment>.*)$', flags=re.MULTILINE)
 
 
@@ -244,7 +277,8 @@ class CGenerator(JinjaGenerator):
         self.environment.globals.update(
             get_debug_impl=get_debug_impl,
             loadable=loadable,
-            chain=itertools.chain,
+            enum_member=enum_member,
+            chain=itertools.chain
         )
 
         self.environment.filters.update(

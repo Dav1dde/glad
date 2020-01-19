@@ -75,3 +75,8 @@ pub struct EGLClientPixmapHI {
     iStride: EGLint,
 }
 
+pub type wl_display = std::os::raw::c_void;
+pub type wl_surface = std::os::raw::c_void;
+pub type wl_buffer = std::os::raw::c_void;
+pub type wl_resource = std::os::raw::c_void;
+

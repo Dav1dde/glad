@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registry>
     <comment>
-Copyright (c) 2013-2018 The Khronos Group Inc.
+Copyright (c) 2013-2019 The Khronos Group Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -384,7 +384,12 @@ Registry at
         <enum value="0x20A8"        name="WGL_TYPE_RGBA_UNSIGNED_FLOAT_EXT"/>
         <enum value="0x20A9"        name="WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB"/>
         <enum value="0x20A9"        name="WGL_FRAMEBUFFER_SRGB_CAPABLE_EXT"/>
-            <unused start="0x20AA" end="0x20AF"/>
+        <enum value="0x20AA"        name="WGL_CONTEXT_MULTIGPU_ATTRIB_NV"/>
+        <enum value="0x20AB"        name="WGL_CONTEXT_MULTIGPU_ATTRIB_SINGLE_NV"/>
+        <enum value="0x20AC"        name="WGL_CONTEXT_MULTIGPU_ATTRIB_AFR_NV"/>
+        <enum value="0x20AD"        name="WGL_CONTEXT_MULTIGPU_ATTRIB_MULTICAST_NV"/>
+        <enum value="0x20AE"        name="WGL_CONTEXT_MULTIGPU_ATTRIB_MULTI_DISPLAY_MULTICAST_NV"/>
+            <unused start="0x20AF" end="0x20AF"/>
         <enum value="0x20B0"        name="WGL_FLOAT_COMPONENTS_NV"/>
         <enum value="0x20B1"        name="WGL_BIND_TO_TEXTURE_RECTANGLE_FLOAT_R_NV"/>
         <enum value="0x20B2"        name="WGL_BIND_TO_TEXTURE_RECTANGLE_FLOAT_RG_NV"/>
@@ -1983,6 +1988,15 @@ Registry at
                 <command name="wglSwapLayerBuffersMscOML"/>
                 <command name="wglWaitForMscOML"/>
                 <command name="wglWaitForSbcOML"/>
+            </require>
+        </extension>
+        <extension name="WGL_NV_multigpu_context" supported="wgl">
+            <require>
+                <enum name="WGL_CONTEXT_MULTIGPU_ATTRIB_NV"/>
+                <enum name="WGL_CONTEXT_MULTIGPU_ATTRIB_SINGLE_NV"/>
+                <enum name="WGL_CONTEXT_MULTIGPU_ATTRIB_AFR_NV"/>
+                <enum name="WGL_CONTEXT_MULTIGPU_ATTRIB_MULTICAST_NV"/>
+                <enum name="WGL_CONTEXT_MULTIGPU_ATTRIB_MULTI_DISPLAY_MULTICAST_NV"/>
             </require>
         </extension>
     </extensions>
