@@ -74,16 +74,16 @@ pub mod functions {
 
     {{ 'pub struct Gl {' if options.mx }}
     {% if options.mx %}
-    {% for command in feature_set.commands %}
-    {{ ' ' }}{{ template_utils.protect(command) }} pub(super) _{{ command.name|no_prefix }}: FnPtr,
-    {% endfor %}
+        {% for command in feature_set.commands %}
+        {{ template_utils.protect(command) }} pub(super) _{{ command.name|no_prefix }}: FnPtr,
+        {% endfor %}
     }
 
     impl Gl {
     {% endif %}
-    {% for command in feature_set.commands %}
-    {{ template_utils.protect(command) }}{{ '    ' if options.mx }} #[inline] pub unsafe fn {{ command.name|no_prefix }}({{ '&self, ' if options.mx }}{{ command|params }}) -> {{ command.proto.ret|type }} { mem::transmute::<_, extern "system" fn({{ command|params('types') }}) -> {{ command.proto.ret|type }}>({{ 'self._' if options.mx else 'storage::' }}{{ command.name|no_prefix }}.ptr)({{ command|params('names') }}) }
-    {% endfor %}
+        {% for command in feature_set.commands %}
+        {{ template_utils.protect(command) }} #[inline] pub unsafe fn {{ command.name|no_prefix }}({{ '&self, ' if options.mx }}{{ command|params }}) -> {{ command.proto.ret|type }} { mem::transmute::<_, extern "system" fn({{ command|params('types') }}) -> {{ command.proto.ret|type }}>({{ 'self._' if options.mx else 'storage::' }}{{ command.name|no_prefix }}.ptr)({{ command|params('names') }}) }
+        {% endfor %}
     {{ '}' if options.mx }}
 }
 
@@ -102,14 +102,10 @@ mod storage {
 
 {% if options.mx %}
 pub fn load<F>(mut loadfn: F) -> functions::Gl where F: FnMut(&'static str) -> *const raw::c_void {
-{% else %}
-pub fn load<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const raw::c_void {
-{% endif %}
-    {% if options.mx %}
     let mut gl = Gl {
-    {% for command in feature_set.commands %}
-    {{ '    ' }}{{ template_utils.protect(command.name) }} _{{ command.name|no_prefix }}: FnPtr::new(&mut loadfn, "{{ command.name }}"),
-    {% endfor %}
+        {% for command in feature_set.commands %}
+        {{ template_utils.protect(command.name) }} _{{ command.name|no_prefix }}: FnPtr::new(&mut loadfn, "{{ command.name }}"),
+        {% endfor %}
     };
 
     {% for command, caliases in aliases|dictsort %}
@@ -119,7 +115,9 @@ pub fn load<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const raw::c_void
     {% endfor %}
 
      gl
-    {% else %}
+}
+{% else %}
+pub fn load<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const raw::c_void {
     unsafe {
         {% for command in feature_set.commands %}
         {{ template_utils.protect(command) }} storage::{{ command.name | no_prefix }}.load(&mut loadfn, "{{ command.name }}");
@@ -131,6 +129,6 @@ pub fn load<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const raw::c_void
         {% endfor %}
         {% endfor %}
     }
-    {% endif %}
 }
+{% endif %}
 
