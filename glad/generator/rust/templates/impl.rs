@@ -1,5 +1,5 @@
 {% import 'template_utils.rs' as template_utils with context %}
-{{ '#![allow(non_snake_case)]' if options.mx }}
+#![allow(non_snake_case)]
 pub use self::types::*;
 pub use self::enumerations::*;
 pub use self::functions::*;
@@ -65,7 +65,7 @@ pub mod enumerations {
 }
 
 pub mod functions {
-    #![allow({{ 'non_snake_case, ' if not options.mx }}unused_variables, dead_code)]
+    #![allow(unused_variables, dead_code)]
 
     use std;
     use std::mem;
@@ -75,7 +75,7 @@ pub mod functions {
     {{ 'pub struct Gl {' if options.mx }}
     {% if options.mx %}
     {% for command in feature_set.commands %}
-    {{ '    ' }}{{ template_utils.protect(command) }} pub(super) _{{ command.name|no_prefix }}: FnPtr,
+    {{ ' ' }}{{ template_utils.protect(command) }} pub(super) _{{ command.name|no_prefix }}: FnPtr,
     {% endfor %}
     }
 
@@ -89,7 +89,7 @@ pub mod functions {
 
 {% if not options.mx %}
 mod storage {
-    #![allow({{ 'non_snake_case, ' if not options.mx }}non_upper_case_globals)]
+    #![allow(non_upper_case_globals)]
 
     use super::FnPtr;
     use std::os::raw;
@@ -100,29 +100,37 @@ mod storage {
 }
 {% endif %}
 
-pub fn load<F>(mut loadfn: F) {{ '-> functions::Gl' if options.mx }} where F: FnMut(&'static str) -> *const raw::c_void {
+{% if options.mx %}
+pub fn load<F>(mut loadfn: F) -> functions::Gl where F: FnMut(&'static str) -> *const raw::c_void {
+{% else %}
+pub fn load<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const raw::c_void {
+{% endif %}
     {% if options.mx %}
     let mut gl = Gl {
     {% for command in feature_set.commands %}
     {{ '    ' }}{{ template_utils.protect(command.name) }} _{{ command.name|no_prefix }}: FnPtr::new(&mut loadfn, "{{ command.name }}"),
     {% endfor %}
     };
+
+    {% for command, caliases in aliases|dictsort %}
+    {% for alias in caliases|reject('equalto', command) %}
+    {{ template_utils.protect(command) }} gl._{{ command|no_prefix }}.aliased(&gl._{{ alias|no_prefix }});
+    {% endfor %}
+    {% endfor %}
+
+     gl
     {% else %}
     unsafe {
         {% for command in feature_set.commands %}
         {{ template_utils.protect(command) }} storage::{{ command.name | no_prefix }}.load(&mut loadfn, "{{ command.name }}");
         {% endfor %}
-    }
-    {% endif %}
 
-    {% for command, caliases in aliases|dictsort %}
-    {% for alias in caliases|reject('equalto', command) %}
-    {{ template_utils.protect(command) }} {{ 'gl._' if options.mx else 'storage::' }}{{ command|no_prefix }}.aliased(&{{ 'gl._' if options.mx else 'storage::' }}{{ alias|no_prefix }});
-    {% endfor %}
-    {% endfor %}
-    {% if options.mx %}
-     
-     gl
+        {% for command, caliases in aliases|dictsort %}
+        {% for alias in caliases|reject('equalto', command) %}
+        {{ template_utils.protect(command) }} storage::{{ command|no_prefix }}.aliased(&storage::{{ alias|no_prefix }});
+        {% endfor %}
+        {% endfor %}
+    }
     {% endif %}
 }
 
