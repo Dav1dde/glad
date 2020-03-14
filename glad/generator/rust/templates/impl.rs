@@ -12,6 +12,16 @@ pub struct FnPtr {
 }
 
 impl FnPtr {
+    {% if options.mx %}
+    pub fn new<F>(loadfn: &mut F, name: &'static str) -> FnPtr where F: FnMut(&'static str) -> *const raw::c_void {
+        let loaded = loadfn(name);
+        if !loaded.is_null() {
+            FnPtr { ptr: loaded, is_loaded: true }
+        } else {
+            FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void, is_loaded: false }
+        }
+    }
+    {% else %}
     pub fn empty() -> FnPtr {
         FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void, is_loaded: false }
     }
@@ -26,26 +36,14 @@ impl FnPtr {
             self.is_loaded = false;
         };
     }
-
+    
+    {% endif %}
     pub fn aliased(&mut self, other: &FnPtr) {
         if !self.is_loaded && other.is_loaded {
             self.ptr = other.ptr;
             self.is_loaded = other.is_loaded;
         }
     }
-    {% if options.mx %}
-    pub fn init_load_aliased<F>(loadfn: &mut F, name: &'static str, others: &[&'static str]) -> Self where F: FnMut(&'static str) -> *const raw::c_void {
-        let mut ptr_a = Self::empty();
-        ptr_a.load(loadfn, name);
-        for other in others {
-            let mut ptr_b = Self::empty();
-            ptr_b.load(loadfn, other);
-            ptr_a.aliased(&ptr_b);
-        }
-
-        ptr_a
-    }
-    {% endif %}
 
     #[inline(never)]
     fn not_initialized() -> ! { panic!("{{ feature_set.name }}: function not initialized") }
@@ -77,7 +75,7 @@ pub mod functions {
     {{ 'pub struct Gl {' if options.mx }}
     {% if options.mx %}
     {% for command in feature_set.commands %}
-    {{ '    ' }}{{ template_utils.protect(command) }} pub _{{ command.name|no_prefix }}: FnPtr,
+    {{ '    ' }}{{ template_utils.protect(command) }} pub(super) _{{ command.name|no_prefix }}: FnPtr,
     {% endfor %}
     }
 
@@ -104,23 +102,27 @@ mod storage {
 
 pub fn load<F>(mut loadfn: F) {{ '-> functions::Gl' if options.mx }} where F: FnMut(&'static str) -> *const raw::c_void {
     {% if options.mx %}
-    Gl {
+    let mut gl = Gl {
     {% for command in feature_set.commands %}
-    {{ '    ' }}{{ template_utils.protect(command.name) }} _{{ command.name|no_prefix }}: FnPtr::init_load_aliased(&mut loadfn, "{{ command.name }}", &[{% for alias in aliases.get(command.name)|reject('equalto', command) %}"{{ alias }}", {% endfor %}]),
+    {{ '    ' }}{{ template_utils.protect(command.name) }} _{{ command.name|no_prefix }}: FnPtr::new(&mut loadfn, "{{ command.name }}"),
     {% endfor %}
-    }
+    };
     {% else %}
     unsafe {
         {% for command in feature_set.commands %}
         {{ template_utils.protect(command) }} storage::{{ command.name | no_prefix }}.load(&mut loadfn, "{{ command.name }}");
         {% endfor %}
-
-        {% for command, caliases in aliases|dictsort %}
-        {% for alias in caliases|reject('equalto', command) %}
-        {{ template_utils.protect(command) }} storage::{{ command|no_prefix }}.aliased(&storage::{{ alias|no_prefix }});
-        {% endfor %}
-        {% endfor %}
     }
+    {% endif %}
+
+    {% for command, caliases in aliases|dictsort %}
+    {% for alias in caliases|reject('equalto', command) %}
+    {{ template_utils.protect(command) }} {{ 'gl._' if options.mx else 'storage::' }}{{ command|no_prefix }}.aliased(&{{ 'gl._' if options.mx else 'storage::' }}{{ alias|no_prefix }});
+    {% endfor %}
+    {% endfor %}
+    {% if options.mx %}
+     
+     gl
     {% endif %}
 }
 
