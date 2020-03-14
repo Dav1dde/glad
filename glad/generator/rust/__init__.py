@@ -163,6 +163,11 @@ class RustConfig(Config):
         description='Automatically adds all extensions that ' +
                     'provide aliases for the current feature set.'
     )
+    MX = ConfigOption(
+        converter=bool,
+        default=False,
+        description='Enables support for multiple GL contexts'
+    )
 
 
 class RustGenerator(JinjaGenerator):
