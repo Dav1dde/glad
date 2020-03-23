@@ -5,11 +5,7 @@ pub use self::functions::*;
 
 use std::os::raw;
 
-{% if options.mx %}
 struct FnPtr {
-{% else %}
-pub struct FnPtr {
-{% endif %}
     ptr: *const raw::c_void,
     is_loaded: bool
 }
@@ -24,9 +20,6 @@ impl FnPtr {
         }
     }
     {% else %}
-    pub fn empty() -> FnPtr {
-        FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void, is_loaded: false }
-    }
 
     pub fn load<F>(&mut self, loadfn: &mut F, name: &'static str) where F: FnMut(&'static str) -> *const raw::c_void {
         let loaded = loadfn(name);
@@ -99,14 +92,14 @@ mod storage {
     use std::os::raw;
 
     {% for command in feature_set.commands %}
-    {{ template_utils.protect(command) }} pub static mut {{ command.name|no_prefix }}: FnPtr = FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void, is_loaded: false };
+    {{ template_utils.protect(command) }} pub(super) static mut {{ command.name|no_prefix }}: FnPtr = FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void, is_loaded: false };
     {% endfor %}
 }
 {% endif %}
 
 {% if options.mx %}
-#[allow(unused_mut)]
 pub fn load<F>(mut loadfn: F) -> functions::Gl where F: FnMut(&'static str) -> *const raw::c_void {
+    #[allow(unused_mut)]
     let mut gl = Gl {
         {% for command in feature_set.commands %}
         {{ template_utils.protect(command.name) }} _{{ command.name|no_prefix }}: FnPtr::new(loadfn("{{ command.name }}")),
