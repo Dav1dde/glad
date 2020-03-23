@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 
 def is_device_command(self):
     """
@@ -70,7 +72,10 @@ def collect_alias_information(commands):
         if len(alias[command.name]) == 1:
             del alias[command.name]
 
-    return alias
+    return OrderedDict(
+        (command.name, sorted(alias[command.name]))
+        for command in commands if command.name in alias
+    )
 
 
 def find_extensions_with_aliases(spec, api, version, profile, extensions):
