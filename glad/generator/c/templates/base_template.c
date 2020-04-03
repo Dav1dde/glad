@@ -12,17 +12,15 @@
 {% include 'impl_util.c' %}
 {% endblock %}
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-{%- set global_context = 'glad_' + feature_set.name + '_context' -%}
-
+{% set global_context = 'glad_' + feature_set.name + '_context' -%}
 
 {% block variables %}
 {% if options.mx_global %}
-#ifdef __cplusplus
-Glad{{ feature_set.name|api }}Context {{ global_context }} = {};
-#else
-Glad{{ feature_set.name|api }}Context {{ global_context }} = { 0 };
-#endif
+{% call template_utils.zero_initialized() %}Glad{{ feature_set.name|api }}Context {{ global_context }}{% endcall %}
 {% endif %}
 {% endblock %}
 
@@ -181,3 +179,7 @@ void gladUninstall{{ feature_set.name|api }}Debug() {
 {% endfor %}
 {% endblock %}
 {% endif %}
+
+#ifdef __cplusplus
+}
+#endif

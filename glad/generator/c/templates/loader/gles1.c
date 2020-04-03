@@ -77,7 +77,7 @@ int gladLoaderLoadGLES1{{ 'Context' if options.mx }}({{ template_utils.context_a
 {% endif %}
 
 {% if options.on_demand %}
-static struct _glad_gles1_userptr glad_gles1_internal_loader_global_userptr = {0};
+{% call template_utils.zero_initialized() %}static struct _glad_gles1_userptr glad_gles1_internal_loader_global_userptr{% endcall %}
 static GLADapiproc glad_gles1_internal_loader_get_proc(const char *name) {
     if (glad_gles1_internal_loader_global_userptr.handle == NULL) {
         glad_gles1_internal_loader_global_userptr = glad_gles1_build_userptr(glad_gles1_dlopen_handle());

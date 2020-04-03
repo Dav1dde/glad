@@ -1,3 +1,4 @@
+{% import "template_utils.h" as template_utils with context %}
 #ifdef GLAD_EGL
 
 {% include 'loader/library.c' %}
@@ -70,7 +71,7 @@ int gladLoaderLoadEGL(EGLDisplay display) {
 {% endif %}
 
 {% if options.on_demand %}
-static struct _glad_egl_userptr glad_egl_internal_loader_global_userptr = {0};
+{% call template_utils.zero_initialized() %}static struct _glad_egl_userptr glad_egl_internal_loader_global_userptr{% endcall %}
 static GLADapiproc glad_egl_internal_loader_get_proc(const char *name) {
     if (glad_egl_internal_loader_global_userptr.handle == NULL) {
         glad_egl_internal_loader_global_userptr = glad_egl_build_userptr(glad_egl_dlopen_handle());

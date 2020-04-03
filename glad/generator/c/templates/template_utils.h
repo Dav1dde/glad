@@ -103,3 +103,11 @@ GLAD_API_CALL {{ command.name|pfn }} glad_debug_{{ command.name }};
 {% endcall %}
 {% endfor %}
 {% endmacro %}
+
+{% macro zero_initialized(s) %}
+#ifdef __cplusplus
+{{ caller() }} = {};
+#else
+{{ caller() }} = { 0 };
+#endif
+{% endmacro %}

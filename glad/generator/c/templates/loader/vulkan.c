@@ -114,7 +114,7 @@ int gladLoaderLoadVulkan{{ 'Context' if options.mx }}({{ template_utils.context_
 {% endif %}
 
 {% if options.on_demand %}
-static struct _glad_vulkan_userptr glad_vulkan_internal_loader_global_userptr = {0};
+{% call template_utils.zero_initialized() %}static struct _glad_vulkan_userptr glad_vulkan_internal_loader_global_userptr{% endcall %}
 
 void gladLoaderSetVulkanInstance(VkInstance instance) {
     glad_vulkan_internal_loader_global_userptr.vk_instance = instance;

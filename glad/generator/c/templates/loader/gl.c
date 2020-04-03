@@ -93,7 +93,7 @@ int gladLoaderLoadGL{{ 'Context' if options.mx }}({{ template_utils.context_arg(
 {% endif %}
 
 {% if options.on_demand %}
-static struct _glad_gl_userptr glad_gl_internal_loader_global_userptr = {0};
+{% call template_utils.zero_initialized() %}static struct _glad_gl_userptr glad_gl_internal_loader_global_userptr{% endcall %}
 static GLADapiproc glad_gl_internal_loader_get_proc(const char *name) {
     if (glad_gl_internal_loader_global_userptr.handle == NULL) {
         glad_gl_internal_loader_global_userptr = glad_gl_build_userptr(glad_gl_dlopen_handle());

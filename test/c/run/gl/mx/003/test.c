@@ -28,7 +28,7 @@ GLFWwindow* create_window(void) {
 }
 
 void run(GLFWwindow *window) {
-    GladGLContext context = { 0 };
+    GladGLContext context;
     context.userptr = (void*) &context;
 
     glfwMakeContextCurrent(window);
