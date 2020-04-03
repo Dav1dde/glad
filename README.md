@@ -65,3 +65,13 @@ Examples can be found [in the example directory](/example). Some examples:
     * [GL GLFW](example/rust/gl-glfw/)
 
 
+
+## License
+
+For the source code and various Khronos files see [LICENSE](/LICENSE).
+
+The generated code from glad is any of Public Domain, WTFPL or CC0.
+Now Khronos has some of their specifications under Apache Version 2.0
+license which may have an impact on the generated code,
+[see this clarifying comment](https://github.com/KhronosGroup/OpenGL-Registry/issues/376#issuecomment-596187053)
+on the Khronos / OpenGL-Specification issue tracker.
