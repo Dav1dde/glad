@@ -6,7 +6,9 @@
 #pragma clang diagnostic ignored "-Wreserved-id-macro"
 #endif
 {% set header_data = [
-    ('gl', '__gl_h_', 'OpenGL'), ('gles1', '__gl_h_', 'OpenGL ES 1'),
+    ('gl', '__gl_h_', 'OpenGL (gl.h)'), ('gl', '__gl3_h_', 'OpenGL (gl3.h)'),
+    ('gl', '__glext_h_', 'OpenGL (glext.h)'), ('gl', '__gl3ext_h_', 'OpenGL (gl3ext.h)'),
+    ('gles1', '__gl_h_', 'OpenGL ES 1'),
     ('gles2', '__gl2_h_', 'OpenGL ES 2'), ('gles2', '__gl3_h_', 'OpenGL ES 3')
 ] %}
 {% set written = [] %}

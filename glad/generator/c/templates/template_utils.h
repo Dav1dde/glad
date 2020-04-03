@@ -1,6 +1,6 @@
 {% macro header_error(api, header_name, name) %}
 #ifdef {{ header_name }}
-    #error {{ name }} header already included (API: {{ api }}), remove previous include!
+  #error {{ name }} header already included (API: {{ api }}), remove previous include!
 #endif
 #define {{ header_name }} 1
 {% endmacro %}
