@@ -1,6 +1,10 @@
 {% extends 'base_template.h' %}
 
 {% block header %}
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreserved-id-macro"
+#endif
 {% set header_data = [
     ('gl', '__gl_h_', 'OpenGL'), ('gles1', '__gl_h_', 'OpenGL ES 1'),
     ('gles2', '__gl2_h_', 'OpenGL ES 2'), ('gles2', '__gl3_h_', 'OpenGL ES 3')
@@ -9,9 +13,12 @@
 {% for api, header_name, name in header_data %}
     {% if api in feature_set.info.apis and header_name not in written -%}
         {{ template_utils.header_error(api, header_name, name) }}
-        {% do written.append(header_name) %}
-    {%- endif %}
-{% endfor %}
+        {%- do written.append(header_name) -%}
+    {%- endif -%}
+{%- endfor -%}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 {% endblock %}
 
 
