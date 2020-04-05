@@ -23,6 +23,7 @@ import re
 import copy
 import logging
 import os.path
+import warnings
 from collections import defaultdict, OrderedDict, namedtuple, deque
 from contextlib import closing
 from itertools import chain
@@ -277,6 +278,7 @@ class Specification(object):
 
     @property
     def groups(self):
+        warnings.warn('the groups have been deprecated in the spec', DeprecationWarning)
         if self._groups is None:
             self._groups = dict((element.attrib['name'], Group(element))
                                 for element in self.root.find('groups'))
@@ -316,7 +318,7 @@ class Specification(object):
                 enums_element = enums_element[0]
 
                 kwargs = dict(namespace=enums_element.get('namespace'),
-                              group=enums_element.get('group'),
+                              parent_group=enums_element.get('group'),
                               vendor=enums_element.get('vendor'),
                               comment=enums_element.get('comment', ''))
 
@@ -402,7 +404,7 @@ class Specification(object):
 
                 name = enum.attrib['name']
                 enums.setdefault(name, []).append(
-                    Enum.from_element(enum, namespace=namespace, group=group, vendor=vendor, comment=comment)
+                    Enum.from_element(enum, namespace=namespace, parent_group=group, vendor=vendor, comment=comment)
                 )
 
         # add enums added through a <require>
@@ -971,8 +973,23 @@ class Enum(IdentifiedByName):
     EXTENSION_NUMBER_OFFSET = -1
 
     def __init__(self, name, value, bitpos, api, type_,
-                 alias=None, namespace=None, group=None, vendor=None,
-                 comment='', parent_type=None, extended_by=None):
+                 alias=None, namespace=None, group=None, parent_group=None,
+                 vendor=None, comment='', parent_type=None, extended_by=None):
+        """
+        :param name: name of the enum
+        :param value: value of the enum
+        :param bitpos: alternative way of specifying the value
+        :param api: api as specified on the enum
+        :param type_: type of the enum as specified on the element
+        :param alias: alias of the enum
+        :param namespace: namespace of the group e.g. GL
+        :param group: group specified in on the enum, comma separated for multiple
+        :param parent_group: if the enum was defined in an <enums> group
+        :param vendor: vendor specified on <enums> group
+        :param comment: comment specified on the <enums> group
+        :param parent_type: parent type if the enums is grouped and not just a global define (Foo.BAR)
+        :param extended_by: list of enums this is extended by
+        """
         self.name = name
         self.value = value
         if self.value is None and bitpos is not None:
@@ -985,6 +1002,7 @@ class Enum(IdentifiedByName):
 
         self.namespace = namespace
         self.group = group
+        self.parent_group = parent_group
         self.vendor = vendor
         self.comment = comment
 
@@ -999,6 +1017,16 @@ class Enum(IdentifiedByName):
     def is_equivalent(self, other):
         return self.name == other.name and self.value == other.value
 
+    @property
+    def groups(self):
+        """
+        Returns a list of parsed groups, group is a comma separated value
+        as used in the XML.
+
+        :return: empty list or list of groups
+        """
+        return [] if self.group is None else self.group.split(',')
+
     def __str__(self):
         return self.name
 
@@ -1012,6 +1040,7 @@ class Enum(IdentifiedByName):
         bitpos = element.get('bitpos')
         api = element.get('api')
         type_ = element.get('type')
+        group = element.get('group')
 
         alias = element.get('alias')
 
@@ -1031,7 +1060,7 @@ class Enum(IdentifiedByName):
         if value is not None:
             value = str(value)
 
-        return cls(name, value, bitpos, api, type_, alias=alias, **kwargs)
+        return cls(name, value, bitpos, api, type_, alias=alias, group=group, **kwargs)
 
 
 class Command(IdentifiedByName):
