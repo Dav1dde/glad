@@ -1205,8 +1205,10 @@ class ParsedType(object):
 
         raw = cls.raw(element)
         if 'union' in raw:
-            logger.warn('union type at line %s, TODO: %s', element.sourceline, raw)
-            return cls('unprocessed', 'void', 'void', is_pointer=1)
+            logger.warn('union type at line %s: %s', element.sourceline, raw)
+            # this is good enough for the C backend for now
+            # this has to be improved for other backends
+            return cls('<unknown>', 'union', 'union', raw=raw)
 
         name = element.find('name').text
 
