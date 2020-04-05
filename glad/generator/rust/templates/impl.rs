@@ -1,5 +1,4 @@
 {% import 'template_utils.rs' as template_utils with context %}
-#![allow(non_snake_case)]
 pub use self::types::*;
 pub use self::enumerations::*;
 pub use self::functions::*;
@@ -13,8 +12,7 @@ pub struct FnPtr {
 
 impl FnPtr {
     {% if options.mx %}
-    pub fn new<F>(loadfn: &mut F, name: &'static str) -> FnPtr where F: FnMut(&'static str) -> *const raw::c_void {
-        let loaded = loadfn(name);
+    pub fn new<F>(loaded: *const raw::c_void) -> FnPtr where F: FnMut(&'static str) -> *const raw::c_void {
         if !loaded.is_null() {
             FnPtr { ptr: loaded, is_loaded: true }
         } else {
@@ -65,31 +63,32 @@ pub mod enumerations {
 }
 
 pub mod functions {
-    #![allow(unused_variables, dead_code)]
+    #![allow(non_snake_case, unused_variables, dead_code)]
 
     use std;
     use std::mem;
     {{ 'use super::FnPtr;' if options.mx else 'use super::storage;' }}
     use super::types::*;
 
-    {{ 'pub struct Gl {' if options.mx }}
     {% if options.mx %}
+    pub struct Gl {
         {% for command in feature_set.commands %}
         {{ template_utils.protect(command) }} pub(super) _{{ command.name|no_prefix }}: FnPtr,
         {% endfor %}
     }
-
     impl Gl {
     {% endif %}
-        {% for command in feature_set.commands %}
-        {{ template_utils.protect(command) }} #[inline] pub unsafe fn {{ command.name|no_prefix }}({{ '&self, ' if options.mx }}{{ command|params }}) -> {{ command.proto.ret|type }} { mem::transmute::<_, extern "system" fn({{ command|params('types') }}) -> {{ command.proto.ret|type }}>({{ 'self._' if options.mx else 'storage::' }}{{ command.name|no_prefix }}.ptr)({{ command|params('names') }}) }
-        {% endfor %}
+
+    {% for command in feature_set.commands %}
+    {{ template_utils.protect(command) }} #[inline] pub unsafe fn {{ command.name|no_prefix }}({{ '&self, ' if options.mx }}{{ command|params }}) -> {{ command.proto.ret|type }} { mem::transmute::<_, extern "system" fn({{ command|params('types') }}) -> {{ command.proto.ret|type }}>({{ 'self._' if options.mx else 'storage::' }}{{ command.name|no_prefix }}.ptr)({{ command|params('names') }}) }
+    {% endfor %}
+
     {{ '}' if options.mx }}
 }
 
 {% if not options.mx %}
 mod storage {
-    #![allow(non_upper_case_globals)]
+    #![allow(non_snake_case, non_upper_case_globals)]
 
     use super::FnPtr;
     use std::os::raw;
@@ -102,9 +101,9 @@ mod storage {
 
 {% if options.mx %}
 pub fn load<F>(mut loadfn: F) -> functions::Gl where F: FnMut(&'static str) -> *const raw::c_void {
-    let mut gl = Gl {
+    let gl = Gl {
         {% for command in feature_set.commands %}
-        {{ template_utils.protect(command.name) }} _{{ command.name|no_prefix }}: FnPtr::new(&mut loadfn, "{{ command.name }}"),
+        {{ template_utils.protect(command.name) }} _{{ command.name|no_prefix }}: FnPtr::new(loadfn("{{ command.name }}")),
         {% endfor %}
     };
 
