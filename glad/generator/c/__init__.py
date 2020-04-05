@@ -193,11 +193,19 @@ def enum_member(context, type_, member):
     return resolve(member.alias)
 
 
-_CPP_STYLE_COMMENT_RE = re.compile(r'^\s*[^*](^|\s|\))//(?P<comment>.*)$', flags=re.MULTILINE)
+# Non greedy match the before to support comments like `// foo // bar`, the whole line is a comment not just `// bar`
+# Match before to have a chance to recognize comments in multiline comments (this is guessing work)
+_CPP_STYLE_COMMENT_RE = re.compile(r'^(?P<before>.*?(^|\s|\)))//(?P<comment>.*)$', flags=re.MULTILINE)
 
 
 def replace_cpp_style_comments(inp):
-    return _CPP_STYLE_COMMENT_RE.sub(r'\1/*\2 */', inp)
+    def repl(m):
+        full_match = m.group(0)
+        if full_match.lstrip().startswith('*'):
+            # don't replace comments within a multiline comment
+            return full_match
+        return '{0}/* {1} */'.format(m.group('before'), m.group('comment'))
+    return _CPP_STYLE_COMMENT_RE.sub(repl, inp)
 
 
 class CConfig(Config):
