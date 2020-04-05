@@ -1,3 +1,4 @@
+{% import "template_utils.h" as template_utils with context %}
 #ifdef GLAD_OPENCL
 {% include 'loader/library.c' %}
 
@@ -38,6 +39,7 @@ static struct _glad_opencl_userptr glad_opencl_build_userptr(void *handle) {
     return userptr;
 }
 
+{% if not options.on_demand %}
 int gladLoaderLoadOpenCL(cl_device_id device) {
     int version = 0;
     void *handle = NULL;
@@ -57,6 +59,18 @@ int gladLoaderLoadOpenCL(cl_device_id device) {
 
     return version;
 }
+{% endif %}
+
+{% if options.on_demand %}
+{% call template_utils.zero_initialized() %}static struct _glad_opencl_userptr glad_opencl_internal_loader_global_userptr{% endcall %}
+static GLADapiproc glad_opencl_internal_loader_get_proc(const char *name) {
+    if (glad_opencl_internal_loader_global_userptr.handle == NULL) {
+        glad_opencl_internal_loader_global_userptr = glad_opencl_build_userptr(glad_opencl_dlopen_handle());
+    }
+
+    return glad_opencl_get_proc((void *) &glad_opencl_internal_loader_global_userptr, name);
+}
+{% endif %}
 
 void gladLoaderUnloadOpenCL(void) {
     if (_opencl_handle != NULL) {
