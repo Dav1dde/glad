@@ -108,7 +108,7 @@ class Spec(object):
         for element in self.root.iter('enums'):
             namespace = element.attrib['namespace']
             type_ = element.get('type')
-            group = element.get('group')
+            parent_group = element.get('group')
             vendor = element.get('vendor')
             comment = element.get('comment', '')
 
@@ -118,8 +118,11 @@ class Spec(object):
                 assert enum.tag == 'enum'
 
                 name = enum.attrib['name']
-                self._enums[name] = Enum(name, enum.attrib['value'], namespace,
-                                         type_, group, vendor, comment)
+                self._enums[name] = Enum(
+                    name, enum.attrib['value'], namespace,
+                    type_=type_, group=enum.get('group'), parent_group=parent_group,
+                    vendor=vendor, comment=comment
+                )
 
         return self._enums
 
@@ -191,14 +194,19 @@ class Group(object):
 
 class Enum(object):
     def __init__(self, name, value, namespace, type_=None,
-                 group=None, vendor=None, comment=''):
+                 group=None, parent_group=None, vendor=None, comment=''):
         self.name = name
         self.value = value
         self.namespace = namespace
         self.type = type_
         self.group = group
+        self.parent_group = parent_group
         self.vendor = vendor
         self.comment = comment
+
+    @property
+    def groups(self):
+        return [] if self.group is None else self.group.split(',')
 
     def __hash__(self):
         return hash(self.name)
