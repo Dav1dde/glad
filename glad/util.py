@@ -2,7 +2,7 @@ import functools
 import os
 import re
 import sys
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 
 
 if sys.version_info >= (3, 0, 0):
@@ -110,18 +110,56 @@ def topological_sort(items, key, dependencies):
         emitted = next_emitted
 
 
-def memoize(key=None):
-    def _default_key_func(*args, **kwargs):
-        return tuple(args), tuple(kwargs.items())
+class _HashedSeq(list):
+    __slots__ = 'hashvalue'
 
-    key_func = _default_key_func if key is None else key
+    # noinspection PyMissingConstructor
+    def __init__(self, tup, hash=hash):
+        self[:] = tup
+        self.hashvalue = hash(tup)
+
+    def __hash__(self):
+        return self.hashvalue
+
+
+def _default_key_func(*args, **kwargs):
+    key = (tuple(args), tuple(kwargs.items()))
+    return _HashedSeq(key)
+
+
+def memoize(key=None, method=False):
+    """
+    Memoize decorator for functions and methods.
+
+    :param key: a cache-key transformation function
+    :param method: whether the cache should be attached to the `self` parameter
+    """
+    key_func = key or _default_key_func
 
     def memoize_decorator(func):
-        cache = dict()
+        _cache = dict()
 
         @functools.wraps(func)
         def memoized(*args, **kwargs):
-            key = key_func(*args, **kwargs)
+            cache_args = args
+            if method:
+                # This is an attempt to bind the cache to the instance of the currently
+                # executed method. The idea is to not hoard references to the instance
+                # and other values (arguments) to not prevent the GC from collecting those.
+                # If we don't attach it this leaks memory all over the place,
+                # especially since this implementation currently has an uncapped cache.
+                self = args[0]
+                cache_args = args[1:]
+                try:
+                    funcs_cache = self._memoize_cache
+                except AttributeError:
+                    funcs_cache = defaultdict(dict)
+                    self._memoize_cache = funcs_cache
+                cache = funcs_cache[func]
+            else:
+                cache = _cache
+
+            key = key_func(*cache_args, **kwargs)
             if key not in cache:
                 cache[key] = func(*args, **kwargs)
             return cache[key]

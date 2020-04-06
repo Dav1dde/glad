@@ -106,7 +106,7 @@ class FeatureSet(object):
         ))
 
     @property
-    @memoize()
+    @memoize(method=True)
     def _all_enums(self):
         """
         Vulkan introduced grouping of enumerations, they turned from
@@ -285,7 +285,7 @@ class Specification(object):
         return self._groups
 
     @property
-    @memoize()
+    @memoize(method=True)
     def platforms(self):
         platforms = dict()
 
@@ -300,7 +300,7 @@ class Specification(object):
         return platforms
 
     @property
-    @memoize()
+    @memoize(method=True)
     def types(self):
         types = OrderedDict()
         for element in filter(lambda e: e.tag == 'type', iter(self.root.find('types'))):
@@ -384,7 +384,7 @@ class Specification(object):
         return commands
 
     @property
-    @memoize()
+    @memoize(method=True)
     def enums(self):
         enums = dict()
         for element in self.root.iter('enums'):
@@ -419,7 +419,7 @@ class Specification(object):
         return enums
 
     @property
-    @memoize()
+    @memoize(method=True)
     def features(self):
         features = defaultdict(dict)
         for element in self.root.iter('feature'):
@@ -435,7 +435,7 @@ class Specification(object):
         return sorted(self.features[api].keys(), reverse=True)[0]
 
     @property
-    @memoize()
+    @memoize(method=True)
     def extensions(self):
         extensions = defaultdict(dict)
         for element in self.root.find('extensions'):
@@ -567,7 +567,7 @@ class Specification(object):
                 yield best_match
 
     @property
-    @memoize()
+    @memoize(method=True)
     def _all_enums(self):
         """
         Vulkan introduced grouping of enumerations, they turned from
@@ -1183,7 +1183,6 @@ class ParsedType(object):
                    raw=raw)
 
     @classmethod
-    @memoize(key=lambda cls, element: tuple(element.itertext()))
     def from_element(cls, element):
         # assume just one comment element
         comment = ' '.join(c.text for c in element.iter('comment'))
@@ -1281,7 +1280,7 @@ class Extension(IdentifiedByName):
     def is_equivalent(self, other):
         return self.requires == other.requires
 
-    @memoize()
+    @memoize(method=True)
     def get_requirements(self, spec, api=None, profile=None, feature_set=None):
         """
         Find all types, enums and commands/functions which are required
