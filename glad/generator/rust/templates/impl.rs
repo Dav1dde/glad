@@ -5,14 +5,18 @@ pub use self::functions::*;
 
 use std::os::raw;
 
+{% if options.mx %}
+struct FnPtr {
+{% else %}
 pub struct FnPtr {
+{% endif %}
     ptr: *const raw::c_void,
     is_loaded: bool
 }
 
 impl FnPtr {
     {% if options.mx %}
-    pub fn new<F>(loaded: *const raw::c_void) -> FnPtr where F: FnMut(&'static str) -> *const raw::c_void {
+    pub fn new(loaded: *const raw::c_void) -> FnPtr {
         if !loaded.is_null() {
             FnPtr { ptr: loaded, is_loaded: true }
         } else {
@@ -36,6 +40,7 @@ impl FnPtr {
     }
     
     {% endif %}
+    #[allow(dead_code)]
     pub fn aliased(&mut self, other: &FnPtr) {
         if !self.is_loaded && other.is_loaded {
             self.ptr = other.ptr;
@@ -100,8 +105,9 @@ mod storage {
 {% endif %}
 
 {% if options.mx %}
+#[allow(unused_mut)]
 pub fn load<F>(mut loadfn: F) -> functions::Gl where F: FnMut(&'static str) -> *const raw::c_void {
-    let gl = Gl {
+    let mut gl = Gl {
         {% for command in feature_set.commands %}
         {{ template_utils.protect(command.name) }} _{{ command.name|no_prefix }}: FnPtr::new(loadfn("{{ command.name }}")),
         {% endfor %}
