@@ -3,6 +3,9 @@
 """
 Uses the official Khronos-XML specs to generate a
 Vulkan/GL/GLES/EGL/GLX/WGL Loader made for your needs.
+
+
+Subcommands have additional help information, query with: `{subcommand} --help`
 """
 from itertools import groupby
 
