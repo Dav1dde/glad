@@ -6,7 +6,7 @@ pub use self::functions::*;
 use std::os::raw;
 
 struct FnPtr {
-    ptr: *const raw::c_void,
+    ptr: &raw::c_void,
     is_loaded: bool
 }
 
@@ -14,9 +14,9 @@ impl FnPtr {
     {% if options.mx %}
     pub fn new(loaded: *const raw::c_void) -> FnPtr {
         if !loaded.is_null() {
-            FnPtr { ptr: loaded, is_loaded: true }
+            FnPtr { ptr: &*loaded, is_loaded: true }
         } else {
-            FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void, is_loaded: false }
+            FnPtr { ptr: &*(FnPtr::not_initialized as *const raw::c_void), is_loaded: false }
         }
     }
     {% else %}
@@ -24,10 +24,10 @@ impl FnPtr {
     pub fn load<F>(&mut self, loadfn: &mut F, name: &'static str) where F: FnMut(&'static str) -> *const raw::c_void {
         let loaded = loadfn(name);
         if !loaded.is_null() {
-            self.ptr = loaded;
+            self.ptr = &*loaded;
             self.is_loaded = true;
         } else {
-            self.ptr = FnPtr::not_initialized as *const raw::c_void;
+            self.ptr = &*(FnPtr::not_initialized as *const raw::c_void);
             self.is_loaded = false;
         };
     }
@@ -92,7 +92,7 @@ mod storage {
     use std::os::raw;
 
     {% for command in feature_set.commands %}
-    {{ template_utils.protect(command) }} pub(super) static mut {{ command.name|no_prefix }}: FnPtr = FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void, is_loaded: false };
+    {{ template_utils.protect(command) }} pub(super) static mut {{ command.name|no_prefix }}: FnPtr = FnPtr { ptr: &*(FnPtr::not_initialized as *const raw::c_void), is_loaded: false };
     {% endfor %}
 }
 {% endif %}
