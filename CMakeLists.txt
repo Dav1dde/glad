@@ -14,7 +14,16 @@ endif()
 project(GLAD VERSION 0.1.33 LANGUAGES C)
 
 set(GLAD_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-find_package(PythonInterp REQUIRED)
+
+# Find the python interpreter, set the PYTHON_EXECUTABLE variable
+if (CMAKE_VERSION VERSION_LESS 3.12)
+    # this logic is deprecated in CMake after 3.12
+    find_package(PythonInterp REQUIRED)
+else()
+    # the new hotness.  This will preferentially find Python3 instead of Python2
+    find_package(Python)
+    set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
+endif()
 
 # Options
 set(GLAD_OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}" CACHE STRING "Output directory")
