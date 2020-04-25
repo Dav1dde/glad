@@ -15,6 +15,7 @@ fn requires_send<T: Send>(_x: &T) {}
 
 #[allow(path_statements)]
 fn main() {
+    #[allow(invalid_value)]
     let gl: gl::Gl = unsafe { MaybeUninit::uninit().assume_init() };
 
     requires_send(&gl);
