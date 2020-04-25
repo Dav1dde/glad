@@ -45,6 +45,9 @@ impl FnPtr {
     fn not_initialized() -> ! { panic!("{{ feature_set.name }}: function not initialized") }
 }
 
+unsafe impl Sync for FnPtr {}
+unsafe impl Send for FnPtr {}
+
 pub mod types {
     {% include 'types/' + spec.name + '.rs' ignore missing with context %}
 }

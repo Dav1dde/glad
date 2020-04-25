@@ -54,7 +54,7 @@ Examples can be found [in the example directory](/example). Some examples:
 * C/C++
     * [GL GLFW](example/c/gl_glfw.c)
     * [GL GLFW On-Demand loading](example/c/gl_glfw_on_demand.c)
-    * [GL GLFW Multiple Windows](example/c++/multiwin_mx/)
+    * [GL GLFW Multiple Windows/Contexts](example/c++/multiwin_mx/)
     * [GL SDL2](example/c/gl_sdl2.c)
     * [Vulkan GLFW](example/c/vulkan_tri_glfw/)
     * [GLX](example/c/glx.c)
@@ -63,6 +63,7 @@ Examples can be found [in the example directory](/example). Some examples:
     * [EGL X11](example/c/egl_x11/)
 * Rust
     * [GL GLFW](example/rust/gl-glfw/)
+    * [GL GLFW Multiple Windows/Contexts](example/rust/gl-glfw-mx/)
 
 
 

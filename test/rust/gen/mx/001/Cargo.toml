@@ -1,0 +1,10 @@
+[package]
+name = "gen-mx-001"
+version = "0.1.0"
+
+[[bin]]
+path = "test.rs"
+name = "test"
+
+[dependencies]
+glad-gl = { path = "./glad-gl/" }
