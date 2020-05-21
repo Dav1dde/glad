@@ -53,7 +53,7 @@ typedef enum {{ type.name }} {
 } {{ type.name }};
 {%- endif -%}
 {%- elif type.category in ('struct', 'union') -%}
-typedef {{ type.category }} {{ type.name }} {% if type.members %}{
+typedef {{ type.category }} {% if type.alias %}{{ type.alias }}{% else %}{{ type.name }}{% endif %} {% if type.members %}{
 {% for member in type.members %}
     {{ member.type._raw }};
 {% endfor %}
