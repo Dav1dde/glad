@@ -309,45 +309,47 @@ class Specification(object):
             if t.category == 'enum':
                 enums_element = self.root.findall('.//enums[@type][@name="{}"]'.format(t.name))
                 if len(enums_element) == 0:
-                    # yep the type exists but there is actually no enum for it...
-                    logger.debug('type {} with category enum but without <enums>'.format(t.name))
-                    continue
-                if not len(enums_element) == 1:
+                    if t.alias is None:
+                        # yep the type exists but there is actually no enum for it...
+                        logger.debug('type {} with category enum but without <enums>'.format(t.name))
+                        continue
+                elif len(enums_element) > 1:
                     # this should never happen, if it does ... well shit
                     raise ValueError('multiple enums with type attribute and name {}'.format(t.name))
-                enums_element = enums_element[0]
+                else:
+                    enums_element = enums_element[0]
 
-                kwargs = dict(namespace=enums_element.get('namespace'),
-                              parent_group=enums_element.get('group'),
-                              vendor=enums_element.get('vendor'),
-                              comment=enums_element.get('comment', ''))
+                    kwargs = dict(namespace=enums_element.get('namespace'),
+                                  parent_group=enums_element.get('group'),
+                                  vendor=enums_element.get('vendor'),
+                                  comment=enums_element.get('comment', ''))
 
-                enums = OrderedDict()
-                for e in (Enum.from_element(e, parent_type=t.name, **kwargs) for e in enums_element.findall('enum')):
-                    enums[e.name] = e
+                    enums = OrderedDict()
+                    for e in (Enum.from_element(e, parent_type=t.name, **kwargs) for e in enums_element.findall('enum')):
+                        enums[e.name] = e
 
-                for extension in self.root.findall('.//require/enum[@extends="{}"]/../..'.format(t.name)):
-                    try:
-                        extnumber = int(extension.attrib['number'])
-                    except ValueError:
-                        # Most likely a feature, if that happens every extending enum needs
-                        # to specify its own extnumber
-                        extnumber = None
+                    for extension in self.root.findall('.//require/enum[@extends="{}"]/../..'.format(t.name)):
+                        try:
+                            extnumber = int(extension.attrib['number'])
+                        except ValueError:
+                            # Most likely a feature, if that happens every extending enum needs
+                            # to specify its own extnumber
+                            extnumber = None
 
-                    for extending_enum in extension.findall('.//require/enum[@extends="{}"]'.format(t.name)):
-                        enum = Enum.from_element(extending_enum, extnumber=extnumber, parent_type=t.name)
+                        for extending_enum in extension.findall('.//require/enum[@extends="{}"]'.format(t.name)):
+                            enum = Enum.from_element(extending_enum, extnumber=extnumber, parent_type=t.name)
 
-                        if enum.name not in enums:
-                            enums[enum.name] = enum
-                        else:
-                            # technically not required, but better throw more
-                            # than generate broken code because of a broken specification
-                            if not enum.value == enums[enum.name].value:
-                                raise ValueError('extension enum {} required multiple times '
-                                                 'with different values'.format(e.name))
+                            if enum.name not in enums:
+                                enums[enum.name] = enum
+                            else:
+                                # technically not required, but better throw more
+                                # than generate broken code because of a broken specification
+                                if not enum.value == enums[enum.name].value:
+                                    raise ValueError('extension enum {} required multiple times '
+                                                     'with different values'.format(e.name))
 
-                        enums[enum.name].also_extended_by(extension.attrib['name'])
-                t.enums = list(enums.values())
+                            enums[enum.name].also_extended_by(extension.attrib['name'])
+                    t.enums = list(enums.values())
 
             if t.name not in types:
                 types[t.name] = list()

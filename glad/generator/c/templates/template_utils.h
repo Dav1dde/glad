@@ -51,6 +51,8 @@ typedef enum {{ type.name }} {
     {{ member.name }} = {{ enum_member(type, member) }}{{ ',' if not loop.last }}
 {% endfor %}
 } {{ type.name }};
+{%- elif type.alias -%}
+typedef enum {{ type.alias }} {{ type.name }};
 {%- endif -%}
 {%- elif type.category in ('struct', 'union') -%}
 typedef {{ type.category }} {% if type.alias %}{{ type.alias }}{% else %}{{ type.name }}{% endif %} {% if type.members %}{
