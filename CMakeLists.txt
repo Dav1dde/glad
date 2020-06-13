@@ -32,6 +32,7 @@ set(GLAD_API "" CACHE STRING "API type/version pairs, like \"gl=3.2,gles=\", no 
 set(GLAD_GENERATOR "c" CACHE STRING "Language to generate the binding for")
 set(GLAD_EXTENSIONS "" CACHE STRING "Path to extensions file or comma separated list of extensions, if missing all extensions are included")
 set(GLAD_SPEC "gl" CACHE STRING "Name of the spec")
+set(GLAD_ADDITIONAL_SPECS "" CACHE STRING "Additional specs to build")
 option(GLAD_ALL_EXTENSIONS "Include all extensions instead of those specified by GLAD_EXTENSIONS" OFF)
 option(GLAD_NO_LOADER "No loader" OFF)
 option(GLAD_REPRODUCIBLE "Reproducible build" OFF)
@@ -84,6 +85,8 @@ if(GLAD_REPRODUCIBLE)
    set(GLAD_REPRODUCIBLE_ARG "--reproducible")
 endif()
 
+set(GLAD_COMPLETE_SOURCES ${GLAD_SOURCES})
+
 add_custom_command(
   OUTPUT ${GLAD_SOURCES}
   COMMAND ${PYTHON_EXECUTABLE} -m glad
@@ -98,9 +101,30 @@ add_custom_command(
   WORKING_DIRECTORY ${GLAD_DIR}
   COMMENT "Generating GLAD"
 )
-add_custom_target(glad-generate-files DEPENDS ${GLAD_SOURCES})
-set_source_files_properties(${GLAD_SOURCES} PROPERTIES GENERATED TRUE)
-add_library(glad ${GLAD_SOURCES})
+
+foreach (S IN LISTS GLAD_ADDITIONAL_SPECS)
+  set(ADDITIONAL_SOURCES "${GLAD_OUT_DIR}/src/glad_${S}.c" "${GLAD_INCLUDE_DIRS}/glad/glad_${S}.h")
+  add_custom_command(
+    OUTPUT ${ADDITIONAL_SOURCES}
+    COMMAND ${PYTHON_EXECUTABLE} -m glad
+      --out-path=${GLAD_OUT_DIR}
+      --api=${GLAD_API}
+      --generator=${GLAD_GENERATOR}
+      ${GLAD_EXTENSIONS_ARG}
+      --spec=${S}
+      ${GLAD_NO_LOADER_ARG}
+      ${GLAD_REPRODUCIBLE_ARG}
+    WORKING_DIRECTORY ${GLAD_DIR}
+    COMMENT "Generating GLAD (${S})"
+  )
+  list(APPEND GLAD_COMPLETE_SOURCES ${ADDITIONAL_SOURCES})
+endforeach ()
+
+add_custom_target(glad-generate-files DEPENDS ${GLAD_COMPLETE_SOURCES})
+
+set_source_files_properties(${GLAD_COMPLETE_SOURCES} PROPERTIES GENERATED TRUE)
+add_library(glad ${GLAD_COMPLETE_SOURCES})
+
 add_dependencies(glad glad-generate-files)
 target_include_directories(glad
     PUBLIC
