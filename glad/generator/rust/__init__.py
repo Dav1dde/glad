@@ -116,6 +116,9 @@ def enum_value(enum, feature_set):
 
 
 def to_rust_type(type_):
+    if type_ is None:
+        return 'std::os::raw::c_void'
+
     parsed_type = type_ if isinstance(type_, ParsedType) else ParsedType.from_string(type_)
 
     if not parsed_type.is_pointer and parsed_type.type == 'void':

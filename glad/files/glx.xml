@@ -1406,7 +1406,7 @@ typedef unsigned __int64 uint64_t;
         </command>
         <command>
             <proto><ptype>GLboolean</ptype> <name>glXSet3DfxModeMESA</name></proto>
-            <param>GLint <name>mode</name></param>
+            <param><ptype>GLint</ptype> <name>mode</name></param>
         </command>
         <command>
             <proto>void <name>glXSwapBuffers</name></proto>

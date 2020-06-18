@@ -17,8 +17,7 @@
 #if {{ protections|map('defined')|join(' || ') }}
 {% endif %}
 {{ caller() }}
-{%- if protections %}
-
+{% if protections %}
 #endif
 {% endif %}
 {% endmacro %}

@@ -146,7 +146,9 @@ static void glad_{{ spec.name }}_resolve_aliases({{ template_utils.context_arg(d
 {% for command in feature_set.commands|sort(attribute='name') %}
 {% call template_utils.protect(command) %}
 {% for alias in aliases.get(command.name, [])|reject('equalto', command.name) %}
+{% call template_utils.protect(alias) %}
     if ({{ command.name|ctx }} == NULL && {{ alias|ctx }} != NULL) {{ command.name|ctx }} = ({{ command.name|pfn }}){{ alias|ctx }};
+{% endcall %}
 {% endfor %}
 {% endcall %}
 {% endfor %}

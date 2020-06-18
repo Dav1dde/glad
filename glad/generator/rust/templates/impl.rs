@@ -126,7 +126,7 @@ pub fn load<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const raw::c_void
 
         {% for command, caliases in aliases|dictsort %}
         {% for alias in caliases|reject('equalto', command) %}
-        {{ template_utils.protect(command) }} storage::{{ command|no_prefix }}.aliased(&storage::{{ alias|no_prefix }});
+        {{ template_utils.protect(command) }}{{ template_utils.protect(alias) }} storage::{{ command|no_prefix }}.aliased(&storage::{{ alias|no_prefix }});
         {% endfor %}
         {% endfor %}
     }

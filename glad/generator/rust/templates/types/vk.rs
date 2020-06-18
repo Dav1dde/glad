@@ -33,9 +33,6 @@ pub struct SECURITY_ATTRIBUTES {
 // types required for: wayland
 pub type wl_display = std::os::raw::c_void;
 pub type wl_surface = std::os::raw::c_void;
-// types required for: android
-pub type AHardwareBuffer = std::os::raw::c_void;
-pub type ANativeWindow = std::os::raw::c_void;
 // types required for: mir
 pub type MirConnection = std::os::raw::c_void;
 pub type MirSurface = std::os::raw::c_void;

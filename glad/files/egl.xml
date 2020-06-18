@@ -95,10 +95,10 @@
         <!-- Backwards-compatibility hack: Downstream implementations shipped
              incorrect function pointer names for some years. -->
         <type>typedef void (<apientry/> *<name>EGLDEBUGPROCKHR</name>)(EGLenum error,const char *command,EGLint messageType,EGLLabelKHR threadLabel,EGLLabelKHR objectLabel,const char* message);</type>
-	<type>#define <name>PFNEGLBINDWAYLANDDISPLAYWL</name> PFNEGLBINDWAYLANDDISPLAYWLPROC</type>
-	<type>#define <name>PFNEGLUNBINDWAYLANDDISPLAYWL</name> PFNEGLUNBINDWAYLANDDISPLAYWLPROC</type>
-	<type>#define <name>PFNEGLQUERYWAYLANDBUFFERWL</name> PFNEGLQUERYWAYLANDBUFFERWLPROC</type>
-	<type>#define <name>PFNEGLCREATEWAYLANDBUFFERFROMIMAGEWL</name> PFNEGLCREATEWAYLANDBUFFERFROMIMAGEWLPROC</type>
+        <type>#define <name>PFNEGLBINDWAYLANDDISPLAYWL</name> PFNEGLBINDWAYLANDDISPLAYWLPROC</type>
+        <type>#define <name>PFNEGLUNBINDWAYLANDDISPLAYWL</name> PFNEGLUNBINDWAYLANDDISPLAYWLPROC</type>
+        <type>#define <name>PFNEGLQUERYWAYLANDBUFFERWL</name> PFNEGLQUERYWAYLANDBUFFERWLPROC</type>
+        <type>#define <name>PFNEGLCREATEWAYLANDBUFFERFROMIMAGEWL</name> PFNEGLCREATEWAYLANDBUFFERFROMIMAGEWLPROC</type>
     </types>
 
     <!-- SECTION: EGL enumerant (token) definitions. -->
@@ -744,7 +744,9 @@
         <enum value="0x3284" name="EGL_YUV_CHROMA_SITING_0_EXT"/>
         <enum value="0x3285" name="EGL_YUV_CHROMA_SITING_0_5_EXT"/>
         <enum value="0x3286" name="EGL_DISCARD_SAMPLES_ARM"/>
-            <unused start="0x3287" end="0x3289"/>
+        <enum value="0x3287" name="EGL_COLOR_COMPONENT_TYPE_UNSIGNED_INTEGER_ARM"/>
+        <enum value="0x3288" name="EGL_COLOR_COMPONENT_TYPE_INTEGER_ARM"/>
+            <unused start="0x3289" end="0x3289"/>
         <enum value="0x328A" name="EGL_SYNC_PRIOR_COMMANDS_IMPLICIT_EXTERNAL_ARM"/>
             <unused start="0x328B" end="0x328F"/>
     </enums>
@@ -888,7 +890,11 @@
         <enum value="0x3370" name="EGL_Y_AXIS_NV"/>
         <enum value="0x3371" name="EGL_STREAM_DMA_NV"/>
         <enum value="0x3372" name="EGL_STREAM_DMA_SERVER_NV"/>
-            <unused start="0x3373" end="0x339F"/>
+        <enum value="0x3373" name="EGL_STREAM_CONSUMER_IMAGE_NV"/>
+        <enum value="0x3374" name="EGL_STREAM_IMAGE_ADD_NV"/>
+        <enum value="0x3375" name="EGL_STREAM_IMAGE_REMOVE_NV"/>
+        <enum value="0x3376" name="EGL_STREAM_IMAGE_AVAILABLE_NV"/>
+            <unused start="0x3377" end="0x339F"/>
     </enums>
 
     <enums namespace="EGL" start="0x33A0" end="0x33AF" vendor="ANGLE" comment="Reserved for Shannon Woods (Bug 13175)">
@@ -1031,6 +1037,10 @@
             <unused start="0x34A0" end="0x34AF"/>
     </enums>
 
+    <enums namespace="EGL" start="0x34B0" end="0x34BF" vendor="ARM" comment="Reserved for Jan-Harald Fredriksen (via github pull request)">
+        <unused start="0x34B0" end="0x34BF"/>
+    </enums>
+
 <!-- Please remember that new enumerant allocations must be obtained by
      request to the Khronos API registrar (see comments at the top of this
      file) File requests in the Khronos Bugzilla, EGL project, Registry
@@ -1040,8 +1050,8 @@
 
 <!-- Reservable for future use. To generate a new range, allocate multiples
      of 16 starting at the lowest available point in this block. -->
-    <enums namespace="EGL" start="0x34B0" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
-            <unused start="0x34B0" end="0x3FFF"/>
+    <enums namespace="EGL" start="0x34C0" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
+            <unused start="0x34C0" end="0x3FFF"/>
     </enums>
 
     <enums namespace="EGL" start="0x8F70" end="0x8F7F" vendor="HI" comment="For Mark Callow, Khronos bug 4055. Shared with GL.">
@@ -1824,14 +1834,14 @@
             <proto><ptype>EGLBoolean</ptype> <name>eglSwapBuffersWithDamageEXT</name></proto>
             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
             <param><ptype>EGLSurface</ptype> <name>surface</name></param>
-            <param><ptype>EGLint</ptype> *<name>rects</name></param>
+            <param>const <ptype>EGLint</ptype> *<name>rects</name></param>
             <param><ptype>EGLint</ptype> <name>n_rects</name></param>
         </command>
         <command>
             <proto><ptype>EGLBoolean</ptype> <name>eglSwapBuffersWithDamageKHR</name></proto>
             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
             <param><ptype>EGLSurface</ptype> <name>surface</name></param>
-            <param><ptype>EGLint</ptype> *<name>rects</name></param>
+            <param>const <ptype>EGLint</ptype> *<name>rects</name></param>
             <param><ptype>EGLint</ptype> <name>n_rects</name></param>
         </command>
         <command>
@@ -1949,6 +1959,36 @@
             <proto>struct <ptype>wl_buffer</ptype> *<name>eglCreateWaylandBufferFromImageWL</name></proto>
             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
             <param><ptype>EGLImageKHR</ptype> <name>image</name></param>
+        </command>
+        <command>
+             <proto><ptype>EGLBoolean</ptype> <name>eglStreamImageConsumerConnectNV</name></proto>
+             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+             <param><ptype>EGLStreamKHR</ptype> <name>stream</name></param>
+             <param><ptype>EGLint</ptype> <name>num_modifiers</name></param>
+             <param><ptype>EGLuint64KHR</ptype> *<name>modifiers</name></param>
+             <param><ptype>EGLAttrib</ptype> *<name>attrib_list</name></param>
+        </command>
+        <command>
+             <proto><ptype>EGLint</ptype> <name>eglQueryStreamConsumerEventNV</name></proto>
+             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+             <param><ptype>EGLStreamKHR</ptype> <name>stream</name></param>
+             <param><ptype>EGLTime</ptype> <name>timeout</name></param>
+             <param><ptype>EGLenum</ptype> *<name>event</name></param>
+             <param><ptype>EGLAttrib</ptype> *<name>aux</name></param>
+        </command>
+        <command>
+             <proto><ptype>EGLBoolean</ptype> <name>eglStreamAcquireImageNV</name></proto>
+             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+             <param><ptype>EGLStreamKHR</ptype> <name>stream</name></param>
+             <param><ptype>EGLImage</ptype> *<name>pImage</name></param>
+             <param><ptype>EGLSync</ptype> <name>sync</name></param>
+        </command>
+        <command>
+             <proto><ptype>EGLBoolean</ptype> <name>eglStreamReleaseImageNV</name></proto>
+             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+             <param><ptype>EGLStreamKHR</ptype> <name>stream</name></param>
+             <param><ptype>EGLImage</ptype> <name>image</name></param>
+             <param><ptype>EGLSync</ptype> <name>sync</name></param>
         </command>
     </commands>
 
@@ -3147,6 +3187,18 @@
                 <enum name="EGL_STREAM_DMA_SERVER_NV"/>
             </require>
         </extension>
+         <extension name="EGL_NV_stream_consumer_eglimage" supported="egl">
+            <require>
+                <enum name="EGL_STREAM_CONSUMER_IMAGE_NV"/>
+                <enum name="EGL_STREAM_IMAGE_ADD_NV"/>
+                <enum name="EGL_STREAM_IMAGE_REMOVE_NV"/>
+                <enum name="EGL_STREAM_IMAGE_AVAILABLE_NV"/>
+                <command name="eglStreamImageConsumerConnectNV"/>
+                <command name="eglQueryStreamConsumerEventNV"/>
+                <command name="eglStreamAcquireImageNV"/>
+                <command name="eglStreamReleaseImageNV"/>
+            </require>
+        </extension>
         <extension name="EGL_NV_stream_fifo_next" supported="egl">
             <require>
                 <enum name="EGL_PENDING_FRAME_NV"/>
@@ -3350,6 +3402,12 @@
             <require>
                 <command name="eglCreateWaylandBufferFromImageWL"/>
                 <type name="PFNEGLCREATEWAYLANDBUFFERFROMIMAGEWL"/>
+            </require>
+        </extension>
+        <extension name="EGL_ARM_image_format" supported="egl">
+            <require>
+                <enum name="EGL_COLOR_COMPONENT_TYPE_UNSIGNED_INTEGER_ARM"/>
+                <enum name="EGL_COLOR_COMPONENT_TYPE_INTEGER_ARM"/>
             </require>
         </extension>
     </extensions>
