@@ -560,11 +560,17 @@ class Specification(object):
                         requirements.update(new_requirements)
                         open_requirements.extend(new_requirements)
 
-                alias = getattr(best_match, 'alias', None)
-                if recursive and alias is not None:
-                    if alias not in requirements:
-                        requirements.add(alias)
-                        open_requirements.append(alias)
+                # Everything that is not a command alias is generated as a define, typedef etc.
+                # and not "copy-pasted", this means we have to resolve the alias of a type in order
+                # to be able to alias it properly.
+                # Commands are simply generated again instead of aliased.
+                # The `isinstance` check can be replaced with `if not alias in self.commands`.
+                if not isinstance(best_match, Command):
+                    alias = getattr(best_match, 'alias', None)
+                    if recursive and alias is not None:
+                        if alias not in requirements:
+                            requirements.add(alias)
+                            open_requirements.append(alias)
 
                 yield best_match
 
