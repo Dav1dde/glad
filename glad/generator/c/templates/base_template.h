@@ -114,8 +114,10 @@ GLAD_API_CALL void gladUninstall{{ feature_set.name|api }}Debug(void);
 {% endif %}
 {% endblock %}
 
+{% if not options.on_demand %}
 {% block custom_declarations %}
 {% endblock %}
+{% endif %}
 
 {% if options.loader %}
 {% block loader_impl %}
