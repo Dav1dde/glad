@@ -17,7 +17,7 @@
 #if {{ protections|map('defined')|join(' || ') }}
 {% endif %}
 {{ caller() }}
-{% if protections %}
+{%- if protections %}
 #endif
 {% endif %}
 {% endmacro %}
@@ -50,20 +50,20 @@ typedef enum {{ type.name }} {
     {{ member.name }} = {{ enum_member(type, member) }}{{ ',' if not loop.last }}
 {% endfor %}
 } {{ type.name }};
-{%- elif type.alias -%}
+{% elif type.alias -%}
 typedef enum {{ type.alias }} {{ type.name }};
-{%- endif -%}
-{%- elif type.category in ('struct', 'union') -%}
+{% endif -%}
+{% elif type.category in ('struct', 'union') -%}
 typedef {{ type.category }} {% if type.alias %}{{ type.alias }}{% else %}{{ type.name }}{% endif %} {% if type.members %}{
 {% for member in type.members %}
     {{ member.type._raw }};
 {% endfor %}
 }{% endif %} {{ type.name }};
-{%- elif type.alias %}
+{% elif type.alias %}
 #define {{ type.name }} {{ type.alias }}
-{%- elif type._raw|trim -%}
+{% elif type._raw|trim -%}
 {{ type._raw|trim|replace('APIENTRY', 'GLAD_API_PTR') }}
-{%- endif %}
+{% endif %}
 {% endcall %}
 {% endmacro %}
 
