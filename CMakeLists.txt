@@ -11,6 +11,11 @@ if(NOT CMAKE_VERSION VERSION_LESS 3.1)
   cmake_policy(SET CMP0054 NEW)
 endif()
 
+if(CMAKE_VERSION VERSION_GREATER 3.8)
+  # Enable IPO for CMake versions that support it
+  cmake_policy(SET CMP0069 NEW)
+endif()
+
 project(GLAD VERSION 0.1.33 LANGUAGES C)
 
 set(GLAD_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
