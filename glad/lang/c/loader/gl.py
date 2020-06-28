@@ -135,10 +135,12 @@ _OPENGL_HEADER_INCLUDE_ERROR = '''
 _OPENGL_HEADER = '''
 #if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
 #define APIENTRY __stdcall
+#define GLAD_DEFINED_APIENTRY
 #endif
 
 #ifndef APIENTRY
 #define APIENTRY
+#define GLAD_DEFINED_APIENTRY
 #endif
 #ifndef APIENTRYP
 #define APIENTRYP APIENTRY *
@@ -169,6 +171,11 @@ GLAPI int gladLoadGL(void);
 _OPENGL_HEADER_END = '''
 #ifdef __cplusplus
 }
+#endif
+
+#if defined(GLAD_DEFINED_APIENTRY)
+#undef APIENTRY
+#undef GLAD_DEFINED_APIENTRY
 #endif
 
 #endif
