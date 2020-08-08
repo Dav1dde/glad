@@ -186,24 +186,17 @@ class PascalGenerator(Generator):
         f.write('{\n')
         f.write(self.header)
         f.write('}\n')
-        f.write('''{$MODE objfpc}{$H+}
-{$MACRO ON}
-{$IFDEF Windows}
-  {$DEFINE extdecl := stdcall}
-{$ELSE}
-  {$DEFINE extdecl := cdecl}
-{$ENDIF}
-''')
         f.write('unit glad_gl;\n\n')
+        f.write('{$IF Defined(FPC)}{$MODE Delphi}{$ENDIF}{$H+}\n\n')        
         f.write('interface\n\n')
-        f.write('uses\n  sysutils;\n\n')
+        f.write('uses\n  SysUtils, StrUtils;\n\n')
         f.write('var\n  glVersionMajor, glVersionMinor: integer;\n\n')
 
     def generate_loader(self, features, extensions):
         f = self._f_gl
 
         # finish interface
-        f.write('type\n  TLoadProc = function(proc: Pchar): Pointer;\n\n')
+        f.write('type\n  TLoadProc = function(proc: PAnsiChar): Pointer;\n\n')
         loadername = 'Load' if self.LOAD_GL_PREFIX else 'load'
         loader_decl = 'function {}{}{}(load: TLoadProc): boolean;\n'
         for api, version in self.api.items():
@@ -277,7 +270,7 @@ class PascalGenerator(Generator):
 
     def write_func_definition(self, fobj, func):
         func_name = self.map_func_name(func)
-        fobj.write('  pointer( {0} ) := load(\'{0}\');\n'.format(func_name))
+        fobj.write('  {0} := load(\'{0}\');\n'.format(func_name))
 
     def map_func_name(self, func):
         name = func.proto.name
@@ -399,8 +392,7 @@ class PascalGenerator(Generator):
         fobj.write(')')
         if is_func:
             fobj.write(': {}'.format(ret))
-        fobj.write('; extdecl;')
-
+        fobj.write('; {$IF Defined(Windows) or Defined(MSWindows)}stdcall;{$ELSE}cdecl;{$ENDIF}');
     PASCAL_KEYWORDS = [  # conflicting keywords only
         'array', 'end', 'in', 'label', 'object', 'out', 'packed', 'program', 'string', 'type', 'unit'
     ]
