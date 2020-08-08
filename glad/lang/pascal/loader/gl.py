@@ -61,11 +61,11 @@ begin
 '''
 
 _BEGIN_LOAD = '''var
-  glVersion: pchar;
+  glVersion: PAnsiChar;
 begin
-  pointer( glGetString ) := load('glGetString');
-  if glGetString = nil then exit(false);
-  glVersion := PChar( glGetString(GL_VERSION) );
+  glGetString := load('glGetString');  
+  if not Assigned(glGetString) then exit(false);
+  glVersion := PAnsiChar( glGetString(GL_VERSION) );
   if glVersion = nil then exit(false);
 
 '''
