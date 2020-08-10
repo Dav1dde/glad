@@ -307,20 +307,22 @@ class PascalGenerator(Generator):
     def write_enums(self, features):
         f = self._f_gl
 
+        written = set()
+
         f.write('\n(* Enums *)\nconst\n')
         for v in sorted(self.TYPE_DICT['SpecialNumbers'][self.spec.NAME]):
+            written.add(v[0])
             self.write_enum(f, *v)
         f.write('\n')
 
-        written = set()
         for feature in features:
             for enum in feature.enums:
                 if enum.group == 'SpecialNumbers':
-                    written.add(enum)
+                    written.add(enum.name)
                     continue
-                if not enum in written:
+                if enum.name not in written:
                     self.write_enum(f, enum.name, enum.value)
-                written.add(enum)
+                written.add(enum.name)
         f.write('\n')
 
     def write_funcs(self, features):
