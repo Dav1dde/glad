@@ -29,7 +29,7 @@ static int glad_vk_get_extensions({{ template_utils.context_arg(',') }} VkPhysic
     }
 
     total_extension_count = instance_extension_count + device_extension_count;
-    if (!total_extension_count) {
+    if (total_extension_count <= 0) {
         return 0;
     }
 
@@ -38,17 +38,17 @@ static int glad_vk_get_extensions({{ template_utils.context_arg(',') }} VkPhysic
 
     ext_properties = (VkExtensionProperties*) malloc(max_extension_count * sizeof(VkExtensionProperties));
     if (ext_properties == NULL) {
-        goto error;
+        goto glad_vk_get_extensions_error;
     }
 
     result = {{ 'vkEnumerateInstanceExtensionProperties'|ctx }}(NULL, &instance_extension_count, ext_properties);
     if (result != VK_SUCCESS) {
-        goto error;
+        goto glad_vk_get_extensions_error;
     }
 
     extensions = (char**) calloc(total_extension_count, sizeof(char*));
     if (extensions == NULL) {
-        goto error;
+        goto glad_vk_get_extensions_error;
     }
 
     for (i = 0; i < instance_extension_count; ++i) {
@@ -57,7 +57,7 @@ static int glad_vk_get_extensions({{ template_utils.context_arg(',') }} VkPhysic
         size_t extension_name_length = strlen(ext.extensionName) + 1;
         extensions[i] = (char*) malloc(extension_name_length * sizeof(char));
         if (extensions[i] == NULL) {
-            goto error;
+            goto glad_vk_get_extensions_error;
         }
         memcpy(extensions[i], ext.extensionName, extension_name_length * sizeof(char));
     }
@@ -65,7 +65,7 @@ static int glad_vk_get_extensions({{ template_utils.context_arg(',') }} VkPhysic
     if (physical_device != NULL) {
         result = {{ 'vkEnumerateDeviceExtensionProperties'|ctx }}(physical_device, NULL, &device_extension_count, ext_properties);
         if (result != VK_SUCCESS) {
-            goto error;
+            goto glad_vk_get_extensions_error;
         }
 
         for (i = 0; i < device_extension_count; ++i) {
@@ -74,7 +74,7 @@ static int glad_vk_get_extensions({{ template_utils.context_arg(',') }} VkPhysic
             size_t extension_name_length = strlen(ext.extensionName) + 1;
             extensions[instance_extension_count + i] = (char*) malloc(extension_name_length * sizeof(char));
             if (extensions[instance_extension_count + i] == NULL) {
-                goto error;
+                goto glad_vk_get_extensions_error;
             }
             memcpy(extensions[instance_extension_count + i], ext.extensionName, extension_name_length * sizeof(char));
         }
@@ -87,15 +87,11 @@ static int glad_vk_get_extensions({{ template_utils.context_arg(',') }} VkPhysic
 
     return 1;
 
-error:
-    if (ext_properties != NULL) {
-        free((void*) ext_properties);
-    }
+glad_vk_get_extensions_error:
+    free((void*) ext_properties);
     if (extensions != NULL) {
         for (i = 0; i < total_extension_count; ++i) {
-            if (extensions[i] != NULL) {
-                free((void*) extensions[i]);
-            }
+            free((void*) extensions[i]);
         }
         free(extensions);
     }
