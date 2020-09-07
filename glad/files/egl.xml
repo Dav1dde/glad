@@ -1,27 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registry>
     <!--
-    Copyright (c) 2013-2017 The Khronos Group Inc.
-
-    Permission is hereby granted, free of charge, to any person obtaining a
-    copy of this software and/or associated documentation files (the
-    "Materials"), to deal in the Materials without restriction, including
-    without limitation the rights to use, copy, modify, merge, publish,
-    distribute, sublicense, and/or sell copies of the Materials, and to
-    permit persons to whom the Materials are furnished to do so, subject to
-    the following conditions:
-
-    The above copyright notice and this permission notice shall be included
-    in all copies or substantial portions of the Materials.
-
-    THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-    MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
-    -->
+    Copyright 2013-2020 The Khronos Group Inc.
+    SPDX-License-Identifier: Apache-2.0
+     -->
     <!--
     This file, egl.xml, is the EGL API Registry. The older ".spec" file
     format has been retired and will no longer be updated with new
@@ -49,6 +31,9 @@
         <type name="NativePixmapType" requires="eglplatform"/>
         <type name="NativeWindowType" requires="eglplatform"/>
         <type>struct <name>AHardwareBuffer</name>;</type>
+        <type>struct <name>wl_buffer</name>;</type>
+        <type>struct <name>wl_display</name>;</type>
+        <type>struct <name>wl_resource</name>;</type>
         <!-- Dummy placeholders for non-EGL types -->
         <type name="Bool"/>
             <!-- These are actual EGL types.  -->
@@ -89,7 +74,13 @@
     EGLint iHeight;
     EGLint iStride;
 };</type>
+        <!-- Backwards-compatibility hack: Downstream implementations shipped
+             incorrect function pointer names for some years. -->
         <type>typedef void (<apientry/> *<name>EGLDEBUGPROCKHR</name>)(EGLenum error,const char *command,EGLint messageType,EGLLabelKHR threadLabel,EGLLabelKHR objectLabel,const char* message);</type>
+        <type>#define <name>PFNEGLBINDWAYLANDDISPLAYWL</name> PFNEGLBINDWAYLANDDISPLAYWLPROC</type>
+        <type>#define <name>PFNEGLUNBINDWAYLANDDISPLAYWL</name> PFNEGLUNBINDWAYLANDDISPLAYWLPROC</type>
+        <type>#define <name>PFNEGLQUERYWAYLANDBUFFERWL</name> PFNEGLQUERYWAYLANDBUFFERWLPROC</type>
+        <type>#define <name>PFNEGLCREATEWAYLANDBUFFERFROMIMAGEWL</name> PFNEGLCREATEWAYLANDBUFFERFROMIMAGEWLPROC</type>
     </types>
 
     <!-- SECTION: EGL enumerant (token) definitions. -->
@@ -581,9 +572,25 @@
         <enum value="0x31D7" name="EGL_PLATFORM_GBM_MESA" alias="EGL_PLATFORM_GBM_KHR"/>
         <enum value="0x31D8" name="EGL_PLATFORM_WAYLAND_KHR"/>
         <enum value="0x31D8" name="EGL_PLATFORM_WAYLAND_EXT" alias="EGL_PLATFORM_WAYLAND_KHR"/>
-            <unused start="0x31D9" end="0x31DC"/>
+            <unused start="0x31DC" end="0x31DC"/>
         <enum value="0x31DD" name="EGL_PLATFORM_SURFACELESS_MESA"/>
             <unused start="0x31DE" end="0x31DF"/>
+    </enums>
+
+    <!-- Due to an oversight in development, these enums alias the above MESA
+         vendor range for EGL the X11/GBM/Wayland/surfaceless platforms.
+         They are both currently in wide use and cannot be changed, however
+         the tokens cannot be used in the same contexts and the aliasing is
+         therefore harmless. Future Wayland tokens should not create further
+         aliasing in this range.-->
+    <enums namespace="EGL" start="0x31D5" end="0x31DB" vendor="WL" comment="EGL_WL_bind_wayland_display">
+        <enum value="0x31D5" name="EGL_WAYLAND_BUFFER_WL"/>
+        <enum value="0x31D6" name="EGL_WAYLAND_PLANE_WL"/>
+        <enum value="0x31D7" name="EGL_TEXTURE_Y_U_V_WL"/>
+        <enum value="0x31D8" name="EGL_TEXTURE_Y_UV_WL"/>
+        <enum value="0x31D9" name="EGL_TEXTURE_Y_XUXV_WL"/>
+        <enum value="0x31DA" name="EGL_TEXTURE_EXTERNAL_WL"/>
+        <enum value="0x31DB" name="EGL_WAYLAND_Y_INVERTED_WL"/>
     </enums>
 
     <enums namespace="EGL" start="0x31E0" end="0x31EF" vendor="HI" comment="Reserved for Mark Callow (Khronos bug 6799)">
@@ -719,7 +726,9 @@
         <enum value="0x3284" name="EGL_YUV_CHROMA_SITING_0_EXT"/>
         <enum value="0x3285" name="EGL_YUV_CHROMA_SITING_0_5_EXT"/>
         <enum value="0x3286" name="EGL_DISCARD_SAMPLES_ARM"/>
-            <unused start="0x3287" end="0x3289"/>
+        <enum value="0x3287" name="EGL_COLOR_COMPONENT_TYPE_UNSIGNED_INTEGER_ARM"/>
+        <enum value="0x3288" name="EGL_COLOR_COMPONENT_TYPE_INTEGER_ARM"/>
+            <unused start="0x3289" end="0x3289"/>
         <enum value="0x328A" name="EGL_SYNC_PRIOR_COMMANDS_IMPLICIT_EXTERNAL_ARM"/>
             <unused start="0x328B" end="0x328F"/>
     </enums>
@@ -843,7 +852,8 @@
         <enum value="0x3352" name="EGL_TRACK_REFERENCES_KHR"/>
             <unused start="0x3353" end="0x3356"/>
         <enum value="0x3357" name="EGL_CONTEXT_PRIORITY_REALTIME_NV"/>
-            <unused start="0x3358" end="0x335F"/>
+            <unused start="0x3358" end="0x335E"/>
+        <enum value="0x335F" name="EGL_RENDERER_EXT"/>
         <enum value="0x3360" name="EGL_CTA861_3_MAX_CONTENT_LIGHT_LEVEL_EXT"/>
         <enum value="0x3361" name="EGL_CTA861_3_MAX_FRAME_AVERAGE_LEVEL_EXT"/>
         <enum value="0x3362" name="EGL_GL_COLORSPACE_DISPLAY_P3_LINEAR_EXT"/>
@@ -861,7 +871,13 @@
         <enum value="0x336E" name="EGL_BOTTOM_NV"/>
         <enum value="0x336F" name="EGL_X_AXIS_NV"/>
         <enum value="0x3370" name="EGL_Y_AXIS_NV"/>
-            <unused start="0x3371" end="0x339F"/>
+        <enum value="0x3371" name="EGL_STREAM_DMA_NV"/>
+        <enum value="0x3372" name="EGL_STREAM_DMA_SERVER_NV"/>
+        <enum value="0x3373" name="EGL_STREAM_CONSUMER_IMAGE_NV"/>
+        <enum value="0x3374" name="EGL_STREAM_IMAGE_ADD_NV"/>
+        <enum value="0x3375" name="EGL_STREAM_IMAGE_REMOVE_NV"/>
+        <enum value="0x3376" name="EGL_STREAM_IMAGE_AVAILABLE_NV"/>
+            <unused start="0x3377" end="0x339F"/>
     </enums>
 
     <enums namespace="EGL" start="0x33A0" end="0x33AF" vendor="ANGLE" comment="Reserved for Shannon Woods (Bug 13175)">
@@ -1000,6 +1016,13 @@
         <enum value="0x3490" name="EGL_GL_COLORSPACE_DISPLAY_P3_PASSTHROUGH_EXT"/>
             <unused start="0x3491" end="0x349F"/>
     </enums>
+    <enums namespace="EGL" start="0x34A0" end="0x34AF" vendor="ANGLE" comment="Reserved for Ken Russell - ANGLE (via github pull request)">
+            <unused start="0x34A0" end="0x34AF"/>
+    </enums>
+
+    <enums namespace="EGL" start="0x34B0" end="0x34BF" vendor="ARM" comment="Reserved for Jan-Harald Fredriksen (via github pull request)">
+        <unused start="0x34B0" end="0x34BF"/>
+    </enums>
 
 <!-- Please remember that new enumerant allocations must be obtained by
      request to the Khronos API registrar (see comments at the top of this
@@ -1010,8 +1033,8 @@
 
 <!-- Reservable for future use. To generate a new range, allocate multiples
      of 16 starting at the lowest available point in this block. -->
-    <enums namespace="EGL" start="0x34A0" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
-            <unused start="0x34A0" end="0x3FFF"/>
+    <enums namespace="EGL" start="0x34C0" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
+            <unused start="0x34C0" end="0x3FFF"/>
     </enums>
 
     <enums namespace="EGL" start="0x8F70" end="0x8F7F" vendor="HI" comment="For Mark Callow, Khronos bug 4055. Shared with GL.">
@@ -1794,14 +1817,14 @@
             <proto><ptype>EGLBoolean</ptype> <name>eglSwapBuffersWithDamageEXT</name></proto>
             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
             <param><ptype>EGLSurface</ptype> <name>surface</name></param>
-            <param><ptype>EGLint</ptype> *<name>rects</name></param>
+            <param>const <ptype>EGLint</ptype> *<name>rects</name></param>
             <param><ptype>EGLint</ptype> <name>n_rects</name></param>
         </command>
         <command>
             <proto><ptype>EGLBoolean</ptype> <name>eglSwapBuffersWithDamageKHR</name></proto>
             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
             <param><ptype>EGLSurface</ptype> <name>surface</name></param>
-            <param><ptype>EGLint</ptype> *<name>rects</name></param>
+            <param>const <ptype>EGLint</ptype> *<name>rects</name></param>
             <param><ptype>EGLint</ptype> <name>n_rects</name></param>
         </command>
         <command>
@@ -1897,6 +1920,58 @@
             <proto><ptype>EGLBoolean</ptype> <name>eglCompositorSwapPolicyEXT</name></proto>
             <param><ptype>EGLint</ptype> <name>external_win_id</name></param>
             <param><ptype>EGLint</ptype> <name>policy</name></param>
+        </command>
+        <command>
+            <proto><ptype>EGLBoolean</ptype> <name>eglBindWaylandDisplayWL</name></proto>
+            <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+            <param>struct <ptype>wl_display</ptype> *<name>display</name></param>
+        </command>
+        <command>
+            <proto><ptype>EGLBoolean</ptype> <name>eglUnbindWaylandDisplayWL</name></proto>
+            <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+            <param>struct <ptype>wl_display</ptype> *<name>display</name></param>
+        </command>
+        <command>
+            <proto><ptype>EGLBoolean</ptype> <name>eglQueryWaylandBufferWL</name></proto>
+            <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+            <param>struct <ptype>wl_resource</ptype> *<name>buffer</name></param>
+            <param><ptype>EGLint</ptype> <name>attribute</name></param>
+            <param><ptype>EGLint</ptype> *<name>value</name></param>
+        </command>
+        <command>
+            <proto>struct <ptype>wl_buffer</ptype> *<name>eglCreateWaylandBufferFromImageWL</name></proto>
+            <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+            <param><ptype>EGLImageKHR</ptype> <name>image</name></param>
+        </command>
+        <command>
+             <proto><ptype>EGLBoolean</ptype> <name>eglStreamImageConsumerConnectNV</name></proto>
+             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+             <param><ptype>EGLStreamKHR</ptype> <name>stream</name></param>
+             <param><ptype>EGLint</ptype> <name>num_modifiers</name></param>
+             <param><ptype>EGLuint64KHR</ptype> *<name>modifiers</name></param>
+             <param><ptype>EGLAttrib</ptype> *<name>attrib_list</name></param>
+        </command>
+        <command>
+             <proto><ptype>EGLint</ptype> <name>eglQueryStreamConsumerEventNV</name></proto>
+             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+             <param><ptype>EGLStreamKHR</ptype> <name>stream</name></param>
+             <param><ptype>EGLTime</ptype> <name>timeout</name></param>
+             <param><ptype>EGLenum</ptype> *<name>event</name></param>
+             <param><ptype>EGLAttrib</ptype> *<name>aux</name></param>
+        </command>
+        <command>
+             <proto><ptype>EGLBoolean</ptype> <name>eglStreamAcquireImageNV</name></proto>
+             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+             <param><ptype>EGLStreamKHR</ptype> <name>stream</name></param>
+             <param><ptype>EGLImage</ptype> *<name>pImage</name></param>
+             <param><ptype>EGLSync</ptype> <name>sync</name></param>
+        </command>
+        <command>
+             <proto><ptype>EGLBoolean</ptype> <name>eglStreamReleaseImageNV</name></proto>
+             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+             <param><ptype>EGLStreamKHR</ptype> <name>stream</name></param>
+             <param><ptype>EGLImage</ptype> <name>image</name></param>
+             <param><ptype>EGLSync</ptype> <name>sync</name></param>
         </command>
     </commands>
 
@@ -3089,6 +3164,24 @@
                 <enum name="EGL_STREAM_CROSS_SYSTEM_NV"/>
             </require>
         </extension>
+        <extension name="EGL_NV_stream_dma" supported="egl">
+            <require>
+                <enum name="EGL_STREAM_DMA_NV"/>
+                <enum name="EGL_STREAM_DMA_SERVER_NV"/>
+            </require>
+        </extension>
+         <extension name="EGL_NV_stream_consumer_eglimage" supported="egl">
+            <require>
+                <enum name="EGL_STREAM_CONSUMER_IMAGE_NV"/>
+                <enum name="EGL_STREAM_IMAGE_ADD_NV"/>
+                <enum name="EGL_STREAM_IMAGE_REMOVE_NV"/>
+                <enum name="EGL_STREAM_IMAGE_AVAILABLE_NV"/>
+                <command name="eglStreamImageConsumerConnectNV"/>
+                <command name="eglQueryStreamConsumerEventNV"/>
+                <command name="eglStreamAcquireImageNV"/>
+                <command name="eglStreamReleaseImageNV"/>
+            </require>
+        </extension>
         <extension name="EGL_NV_stream_fifo_next" supported="egl">
             <require>
                 <enum name="EGL_PENDING_FRAME_NV"/>
@@ -3268,6 +3361,41 @@
                 <enum name="EGL_BOTTOM_NV"/>
                 <enum name="EGL_X_AXIS_NV"/>
                 <enum name="EGL_Y_AXIS_NV"/>
+            </require>
+        </extension>
+        <extension name="EGL_WL_bind_wayland_display" supported="egl">
+            <require>
+                <enum name="EGL_WAYLAND_BUFFER_WL"/>
+                <enum name="EGL_WAYLAND_PLANE_WL"/>
+                <enum name="EGL_TEXTURE_Y_U_V_WL"/>
+                <enum name="EGL_TEXTURE_Y_UV_WL"/>
+                <enum name="EGL_TEXTURE_Y_XUXV_WL"/>
+                <enum name="EGL_TEXTURE_EXTERNAL_WL"/>
+                <enum name="EGL_WAYLAND_Y_INVERTED_WL"/>
+
+                <command name="eglBindWaylandDisplayWL"/>
+                <command name="eglUnbindWaylandDisplayWL"/>
+                <command name="eglQueryWaylandBufferWL"/>
+                <type name="PFNEGLBINDWAYLANDDISPLAYWL"/>
+                <type name="PFNEGLUNBINDWAYLANDDISPLAYWL"/>
+                <type name="PFNEGLQUERYWAYLANDBUFFERWL"/>
+            </require>
+        </extension>
+        <extension name="EGL_WL_create_wayland_buffer_from_image" supported="egl">
+            <require>
+                <command name="eglCreateWaylandBufferFromImageWL"/>
+                <type name="PFNEGLCREATEWAYLANDBUFFERFROMIMAGEWL"/>
+            </require>
+        </extension>
+        <extension name="EGL_ARM_image_format" supported="egl">
+            <require>
+                <enum name="EGL_COLOR_COMPONENT_TYPE_UNSIGNED_INTEGER_ARM"/>
+                <enum name="EGL_COLOR_COMPONENT_TYPE_INTEGER_ARM"/>
+            </require>
+        </extension>
+        <extension name="EGL_EXT_device_query_name" supported="egl">
+            <require>
+                <enum name="EGL_RENDERER_EXT"/>
             </require>
         </extension>
     </extensions>

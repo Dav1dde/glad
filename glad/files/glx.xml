@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registry>
     <comment>
-Copyright (c) 2013-2018 The Khronos Group Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-------------------------------------------------------------------------
+Copyright 2013-2020 The Khronos Group Inc.
+SPDX-License-Identifier: Apache-2.0
 
 This file, glx.xml, is the GLX API Registry. The canonical version of the
 registry, together with documentation, schema, and Python generator scripts
 used to generate C header files for GLX, can always be found in the Khronos
-Registry at
-        https://github.com/KhronosGroup/OpenGL-Registry
+Registry at https://github.com/KhronosGroup/OpenGL-Registry
     </comment>
 
     <!-- SECTION: GLX type definitions. Does not include X or GL types. -->
@@ -387,6 +373,11 @@ typedef unsigned __int64 uint64_t;
     </enums>
 
     <enums namespace="GLX" start="0x20A0" end="0x219F" vendor="NV" comment="Shared with WGL">
+        <enum value="0x20AA"        name="GLX_CONTEXT_MULTIGPU_ATTRIB_NV"/>
+        <enum value="0x20AB"        name="GLX_CONTEXT_MULTIGPU_ATTRIB_SINGLE_NV"/>
+        <enum value="0x20AC"        name="GLX_CONTEXT_MULTIGPU_ATTRIB_AFR_NV"/>
+        <enum value="0x20AD"        name="GLX_CONTEXT_MULTIGPU_ATTRIB_MULTICAST_NV"/>
+        <enum value="0x20AE"        name="GLX_CONTEXT_MULTIGPU_ATTRIB_MULTI_DISPLAY_MULTICAST_NV"/>
         <enum value="0x20B0"        name="GLX_FLOAT_COMPONENTS_NV"/>
         <enum value="0x20B1"        name="GLX_RGBA_UNSIGNED_FLOAT_TYPE_EXT"/>
         <enum value="0x20B2"        name="GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB"/>
@@ -1401,7 +1392,7 @@ typedef unsigned __int64 uint64_t;
         </command>
         <command>
             <proto><ptype>GLboolean</ptype> <name>glXSet3DfxModeMESA</name></proto>
-            <param>GLint <name>mode</name></param>
+            <param><ptype>GLint</ptype> <name>mode</name></param>
         </command>
         <command>
             <proto>void <name>glXSwapBuffers</name></proto>
@@ -2196,6 +2187,15 @@ typedef unsigned __int64 uint64_t;
         <extension name="GLX_SUN_get_transparent_index" supported="glx">
             <require>
                 <command name="glXGetTransparentIndexSUN"/>
+            </require>
+        </extension>
+        <extension name="GLX_NV_multigpu_context" supported="glx">
+            <require>
+                <enum name="GLX_CONTEXT_MULTIGPU_ATTRIB_NV"/>
+                <enum name="GLX_CONTEXT_MULTIGPU_ATTRIB_SINGLE_NV"/>
+                <enum name="GLX_CONTEXT_MULTIGPU_ATTRIB_AFR_NV"/>
+                <enum name="GLX_CONTEXT_MULTIGPU_ATTRIB_MULTICAST_NV"/>
+                <enum name="GLX_CONTEXT_MULTIGPU_ATTRIB_MULTI_DISPLAY_MULTICAST_NV"/>
             </require>
         </extension>
     </extensions>
