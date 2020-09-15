@@ -112,7 +112,7 @@ static int glad_vk_has_extension(const char *name, uint32_t extension_count, cha
     uint32_t i;
 
     for (i = 0; i < extension_count; ++i) {
-        if(strcmp(name, extensions[i]) == 0) {
+        if(extensions[i] != NULL && strcmp(name, extensions[i]) == 0) {
             return 1;
         }
     }
