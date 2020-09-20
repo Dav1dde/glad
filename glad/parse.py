@@ -35,7 +35,8 @@ import glad.util
 logger = logging.getLogger(__name__)
 
 
-_ARRAY_RE = re.compile(r'\[(\d+)\]')
+_ARRAY_RE = re.compile(r'\[(.+)\]')
+_ARRAY_DIMENSIONS_RE = re.compile(r'\[ *([_A-Z0-9]+) *\]+')
 
 _FeatureExtensionCommands = namedtuple('_FeatureExtensionCommands', ['features', 'commands'])
 
@@ -1169,6 +1170,18 @@ class ParsedType(object):
     def is_equivalent(self, other):
         return self._raw == other._raw
 
+    @property
+    def default_value(self):
+        return self._element.get('values', None)
+
+    @property
+    def optional(self):
+        return self._element.get('optional') == "true"
+
+    @property
+    def array_dimensions(self):
+        return tuple(d.group(1).strip() for d in _ARRAY_DIMENSIONS_RE.finditer(self._raw))
+
     @classmethod
     def from_string(cls, raw):
         type_ = raw.replace('const', '') \
@@ -1180,7 +1193,7 @@ class ParsedType(object):
         # 0 if no pointer, 1 if *, 2 if **
         is_pointer = 0 if raw is None else raw.count('*')
         array_match = _ARRAY_RE.search(raw)
-        is_array = 0 if array_match is None else int(array_match.group(1))
+        is_array = 0 if array_match is None else array_match.group(1)
         is_const = False if raw is None else 'const' in raw
         is_unsigned = False if raw is None else 'unsigned' in raw
         is_struct = 'struct' in raw
@@ -1214,7 +1227,7 @@ class ParsedType(object):
         # 0 if no pointer, 1 if *, 2 if **
         is_pointer = 0 if raw is None else raw.count('*')
         array_match = _ARRAY_RE.search(raw)
-        is_array = 0 if array_match is None else int(array_match.group(1))
+        is_array = 0 if array_match is None else array_match.group(1)
         is_const = False if raw is None else 'const' in raw
         is_unsigned = False if raw is None else 'unsigned' in raw
         is_struct = 'struct' in raw

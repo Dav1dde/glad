@@ -3,6 +3,7 @@ import pkg_resources
 
 import glad.specification
 from glad.generator.c import CGenerator
+from glad.generator.nim import NimGenerator
 from glad.generator.rust import RustGenerator
 from glad.parse import Specification
 
@@ -15,7 +16,8 @@ SPECIFICATION_ENTRY_POINT = 'glad.specification'
 
 DEFAULT_GENERATORS = dict(
     c=CGenerator,
-    rust=RustGenerator
+    nim=NimGenerator,
+    rust=RustGenerator,
     # TODO fix those
     # d=DGenerator,
     # volt=VoltGenerator
