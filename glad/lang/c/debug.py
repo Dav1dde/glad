@@ -11,14 +11,16 @@ DEFAULT_DEBUG_IMPL = '''
 
 
 DEBUG_HEADER = '''
-#define GLAD_DEBUG
+#if GLAD_DEBUG
 typedef void (* GLADcallback)(const char *name, void *funcptr, int len_args, ...);
 
 GLAPI void glad_set_pre_callback(GLADcallback cb);
 GLAPI void glad_set_post_callback(GLADcallback cb);
+#endif
 '''
 
 DEBUG_CODE = '''
+#if GLAD_DEBUG
 static GLADcallback _pre_call_callback = _pre_call_callback_default;
 void glad_set_pre_callback(GLADcallback cb) {
     _pre_call_callback = cb;
@@ -28,9 +30,11 @@ static GLADcallback _post_call_callback = _post_call_callback_default;
 void glad_set_post_callback(GLADcallback cb) {
     _post_call_callback = cb;
 }
+#endif
 '''
 
 DEFAULT_CALLBACK = '''
+#if GLAD_DEBUG
 void _pre_call_callback_default(const char *name, void *funcptr, int len_args, ...) {
     (void) name;
     (void) funcptr;
@@ -41,9 +45,11 @@ void _post_call_callback_default(const char *name, void *funcptr, int len_args, 
     (void) funcptr;
     (void) len_args;
 }
+#endif
 '''
 
 DEFAULT_CALLBACK_GL = '''
+#if GLAD_DEBUG
 void _pre_call_callback_default(const char *name, void *funcptr, int len_args, ...) {
     (void) name;
     (void) funcptr;
@@ -61,6 +67,7 @@ void _post_call_callback_default(const char *name, void *funcptr, int len_args, 
         fprintf(stderr, "ERROR %d in %s\\n", error_code, name);
     }
 }
+#endif
 '''
 
 
@@ -90,10 +97,14 @@ class CDebugGenerator(CGenerator):
         fobj.write('GLAPI PFN{}PROC glad_{};\n'.format(
             func.proto.name.upper(), func.proto.name
         ))
+        fobj.write('#if GLAD_DEBUG\n')
         fobj.write('GLAPI PFN{}PROC glad_debug_{};\n'.format(
             func.proto.name.upper(), func.proto.name
         ))
         fobj.write('#define {0} glad_debug_{0}\n'.format(func.proto.name))
+        fobj.write('#else\n')
+        fobj.write('#define {0} glad_{0}\n'.format(func.proto.name))
+        fobj.write('#endif\n')
 
     def write_function(self, fobj, func):
         fobj.write('PFN{}PROC glad_{};\n'.format(
@@ -105,6 +116,7 @@ class CDebugGenerator(CGenerator):
             '{type} arg{i}'.format(type=param.type.to_c(), i=i)
             for i, param in enumerate(func.params)
         ) or 'void'
+        fobj.write('#if GLAD_DEBUG\n')
         fobj.write('{} APIENTRY glad_debug_impl_{}({}) {{'.format(
             func.proto.ret.to_c(), func.proto.name, args_def
         ))
@@ -130,3 +142,4 @@ class CDebugGenerator(CGenerator):
         fobj.write('PFN{0}PROC glad_debug_{1} = glad_debug_impl_{1};\n'.format(
             func.proto.name.upper(), func.proto.name
         ))
+        fobj.write('#endif\n')
