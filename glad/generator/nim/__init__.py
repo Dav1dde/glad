@@ -60,7 +60,7 @@ def enum_type(enum, feature_set):
         return 'uint' if len(enum.value[2:]) > 8 else 'cuint'
 
     if enum.name in ('VK_TRUE', 'VK_FALSE'):
-        return 'VkBool32'
+        return 'Bool32'
     if enum.name in ('GL_TRUE', 'GL_FALSE'):
         return 'bool'
 
@@ -116,7 +116,7 @@ def enum_value(enum, feature_set):
 
     return value
 
-def type_zero(type_, feature_set):
+def type_zero(type_, feature_set, spec):
     parsed_type = type_ if isinstance(type_, ParsedType) else ParsedType.from_string(type_)
     if parsed_type.is_pointer:
         return '= nil'
@@ -132,17 +132,17 @@ def type_zero(type_, feature_set):
         if t.category == 'bitmask':
             return '= {}'
         if t.category == 'enum':
-            return '= 0.{}'.format(t)
+            return '= 0.{}'.format(strip_specification_prefix(t.name, spec))
         if 'DeviceAddress' in t.name:
-            return '= 0.{}'.format(t.name)
+            return '= 0.{}'.format(strip_specification_prefix(t.name, spec))
         if 'DeviceOrHost' in t.name:
-            return '= {}(deviceAddress: 0.VkDeviceAddress)'.format(t.name)
+            return '= {}(deviceAddress: 0.DeviceAddress)'.format(strip_specification_prefix(t.name, spec))
         if not 'int' in t.name and not 'size' in t.name and not 'VkBool' in t.name and not 'WORD' in t.name and not 'Size' in t.name:
             return '= nil'
-        return '= 0.{}'.format(to_nim_type(t.name))
+        return '= 0.{}'.format(to_nim_type(t.name, spec))
     return '= 0'
 
-def to_nim_type(type_):
+def to_nim_type(type_, spec):
     if type_ is None:
         return 'pointer'
 
@@ -164,26 +164,16 @@ def to_nim_type(type_):
     if parsed_type.is_array:
         dim = parsed_type.array_dimensions
         if len(dim) == 1:
-            type_ = 'array[{},{}]'.format(dim[0], type_)
+            type_ = 'array[{},{}]'.format(strip_specification_prefix(dim[0], spec), strip_specification_prefix(type_, spec))
         elif len(dim) == 2:
-            type_ = 'array[{},array[{}, {}]]'.format(dim[0], dim[1], type_)
+            type_ = 'array[{},array[{}, {}]]'.format(dim[0], dim[1], strip_specification_prefix(type_, spec))
         else:
             raise ValueError('Unimplemented dimensions ' + dim)
-    return ' '.join(e.strip() for e in (prefix, type_)).strip()
+    return ' '.join(e.strip() for e in (prefix, strip_specification_prefix(type_, spec))).strip()
 
 
-def to_nim_params(command, mode='full'):
-    if mode == 'names':
-        return ', '.join(identifier(param.name) for param in command.params)
-    elif mode == 'types':
-        return ', '.join(to_nim_type(param.type) for param in command.params)
-    elif mode == 'full':
-        return ', '.join(
-            '{name}: {type}'.format(name=identifier(param.name), type=to_nim_type(param.type))
-            for param in command.params
-        )
-
-    raise ValueError('invalid mode: ' + mode)
+def to_nim_params(command, spec):
+    return ', '.join('{name}: {type}'.format(name=identifier(param.name), type=to_nim_type(param.type, spec)) for param in command.params)
 
 
 def identifier(name):
@@ -215,14 +205,14 @@ class NimGenerator(JinjaGenerator):
         JinjaGenerator.__init__(self, *args, **kwargs)
 
         self.environment.filters.update(
-			are_bits=lambda members: len(list(filter(lambda x: x.bitpos, members)))>0,
-            zero=jinja2.contextfilter(lambda ctx, t: type_zero(t, ctx['feature_set'])),
+            are_bits=lambda members: len(list(filter(lambda x: x.bitpos, members)))>0,
+            zero=jinja2.contextfilter(lambda ctx, t: type_zero(t, ctx['feature_set'], ctx['spec'])),
             val_sort=lambda x: sorted(x, key=lambda y: int(y.value, 0)),
             feature=lambda x: 'feature = "{}"'.format(x),
             enum_type=jinja2.contextfilter(lambda ctx, enum: enum_type(enum, ctx['feature_set'])),
             enum_value=jinja2.contextfilter(lambda ctx, enum: enum_value(enum, ctx['feature_set'])),
-            type=to_nim_type,
-            params=to_nim_params,
+            type=jinja2.contextfilter(lambda ctx, name: to_nim_type(name, ctx['spec'])),
+            params=jinja2.contextfilter(lambda ctx, cmd: to_nim_params(cmd, ctx['spec'])),
             identifier=identifier,
             no_prefix=jinja2.contextfilter(lambda ctx, value: strip_specification_prefix(value, ctx['spec']))
         )

@@ -33,10 +33,9 @@ def strip_specification_prefix(name, spec_name=None):
 
     if name.lower().startswith(api_prefix):
         name = name[len(api_prefix):].lstrip('_')
-
-    # 3DFX_tbuffer -> _3DFX_tbuffer
-    if not name[0].isalpha():
-        name = '_' + name
+        # 3DFX_tbuffer -> _3DFX_tbuffer
+        if not name[0].isalpha():
+            name = '_' + name
 
     return name
 
@@ -115,4 +114,3 @@ def find_extensions_with_aliases(spec, api, version, profile, extensions):
                 break
 
     return new_extensions
-
