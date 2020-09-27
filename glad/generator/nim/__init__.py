@@ -130,7 +130,7 @@ def type_zero(type_, feature_set):
         if t.category == 'handle':
             return '= nil'
         if t.category == 'bitmask':
-            return '= 0.{}'.format(t)
+            return '= {}'
         if t.category == 'enum':
             return '= 0.{}'.format(t)
         if 'DeviceAddress' in t.name:
@@ -215,6 +215,7 @@ class NimGenerator(JinjaGenerator):
         JinjaGenerator.__init__(self, *args, **kwargs)
 
         self.environment.filters.update(
+			are_bits=lambda members: len(list(filter(lambda x: x.bitpos, members)))>0,
             zero=jinja2.contextfilter(lambda ctx, t: type_zero(t, ctx['feature_set'])),
             val_sort=lambda x: sorted(x, key=lambda y: int(y.value, 0)),
             feature=lambda x: 'feature = "{}"'.format(x),

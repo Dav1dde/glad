@@ -20,6 +20,7 @@ _API_NAMES = {
     'glsc2': 'OpenGL SC',
     'glx': 'GLX',
     'wgl': 'WGL',
+    'vulkan': 'Vulkan',
 }
 
 
@@ -181,4 +182,3 @@ def itertext(element, ignore=()):
                 yield s
             if e.tail:
                 yield e.tail
-

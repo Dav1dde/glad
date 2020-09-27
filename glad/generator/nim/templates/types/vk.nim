@@ -40,6 +40,8 @@ type
 # types required for: fuchsia
   zx_handle_t* = pointer
 
+  VkReserved* = enum
+    VK_RESERVED_FLAG
 
 template VK_MAKE_VERSION*(major, minor, patch: int): int = (major shl 22) or (minor shl 12) or patch
 template VK_VERSION_MAJOR*(version: int): int = ((version shr 22))
@@ -48,40 +50,57 @@ template VK_VERSION_PATCH*(version: int): int = (version and 0xfff)
 
 type
 {% for type in feature_set.types %}
-{% if type.alias %}
-  {{ type.name }}* = {{ type.alias }}
-
-{% elif type.category == 'basetype' %}
+{% if type.category == 'basetype' %}
   {{ type.name }}* = distinct {{ type.type|type }}
-
 {% elif type.category == 'handle' %}
   {{ type.name }}* = distinct pointer
-
 {% elif type.category == 'enum' %}
-{% set members = type.enums_for(feature_set) %}
-{% if members %}
-  {{ type.name }}* {.size: int32.sizeof} = enum
-{% for member in members|rejectattr("alias")|val_sort %}
+ {% set members = type.enums_for(feature_set) %}
+ {% if members %}
+  {% if "FlagBits" in type.name %}
+  {{ type.name }}* {.size: 4.} = enum
+   {% for member in members|rejectattr("alias")|val_sort %}
+    {% if member.bitpos != None %}
     {{ member.name }} = {{ member.value }}
-{% endfor %}
-
-{% endif %}
+    {% endif %}
+   {% endfor %}
+   {% if members|are_bits %}
+  {{ type.name.replace("FlagBits", "Flag") }}* {.size: 4.} = enum
+   {% for member in members|rejectattr("alias")|val_sort %}
+    {% if member.bitpos != None %}
+    {{ member.name.replace("_BIT","") }} = {{ member.bitpos }}
+    {% endif %}
+   {% endfor %}
+   {% endif %}
+  {% else %}
+  {{ type.name }}* {.size: 4.} = enum # XXX
+   {% for member in members|rejectattr("alias")|val_sort %}
+    {{ member.name }} = {{ member.value }}
+   {% endfor %}
+  {% endif %}
+ {% else %}
+  {{ type.name }}* = enum
+    {{ type.name }}Reserved
+ {% endif %}
+{% elif type.alias %}
+  {{ type.name }}* = {{ type.alias }}
 {% elif type.category in ('struct', 'union') %}
   {{ type.name }}* {{ '{.union.}' if type.category == 'union' }} = object
 {% for member in type.members %}
     {{ member.name|identifier }}*: {{ member.type|type }}
 {% endfor %}
-
 {% elif type.category == 'bitmask' %}
-  {{ type.name }}* = distinct {{ type.type }}
-
+ {% if feature_set.valid_enum(type.name.replace("Flags", "FlagBits")) %}
+  {{ type.name }}* {.size:4} = set[{{ type.name.replace("Flags", "Flag") }}]
+ {% else %}
+  {{ type.name }}* {.size:4} = set[VkReserved]
+ {% endif %}
 {% elif type.category == 'funcpointer' %}
   {{ type.name }}* = proc(
-{% for parameter in type.parameters %}
+  {% for parameter in type.parameters %}
     {{ parameter.name|identifier }}: {{ parameter.type|type }},
-{% endfor %}
+  {% endfor %}
    ): {{ type.ret|type }} {.cdecl.}
-
 {% endif %}
 {% endfor %}
 
@@ -98,6 +117,11 @@ proc mk{{ type.name }}*(
 
 {% endif %}
 {% endfor %}
+
+# Helpers
+converter toVkDeviceSize*(x: int): VkDeviceSize = x.VkDeviceSize
+func ulen*[N,T](x: array[N,T]): uint32 = x.len.uint32
+func ulen*[T](x: seq[T]): uint32 = x.len.uint32
 
 # Loader
 var loadProc*: proc(inst: VkInstance, procName: cstring): pointer

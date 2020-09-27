@@ -145,6 +145,14 @@ class FeatureSet(object):
             return default
         return self._all_enums.get(name, default)
 
+    def valid_enum(self, name):
+        ts = self.types
+        if name in ts:
+            idx = ts.index(name)
+            t = ts[idx]
+            return len(t.enums_for(self)) > 0
+        return False
+
     @classmethod
     def merge(cls, feature_sets, sink=LoggingSink()):
         def to_ordered_dict(items):
@@ -597,7 +605,6 @@ class Specification(object):
             if type_.category == 'enum':
                 for enum in type_.enums:
                     result[enum.name] = enum
-
         return result
 
     def find_enum(self, name, default=None):
