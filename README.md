@@ -167,7 +167,7 @@ Note, there are two kinds of extension/version symbols, e.g. `GL_VERSION_3_0` an
 `GLAD_VERSION_3_0`. Latter is a runtime boolean (represented as integer), whereas
 the first (not prefixed with `GLAD_`) is a compiletime-constant, indicating that this
 header supports this version (the official headers define these symbols as well).
-The runtime booleans are only valid *after* a succesful call to `gladLoadGL` or `gladLoadGLLoader`.
+The runtime booleans are only valid *after* a successful call to `gladLoadGL` or `gladLoadGLLoader`.
 
 
 ### C/C++ Debug ###
