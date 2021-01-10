@@ -109,7 +109,8 @@ add_library(glad ${GLAD_SOURCES})
 add_dependencies(glad glad-generate-files)
 target_include_directories(glad
     PUBLIC
-        $<BUILD_INTERFACE:${GLAD_INCLUDE_DIRS}>)
+        $<BUILD_INTERFACE:${GLAD_INCLUDE_DIRS}>
+	$<INSTALL_INTERFACE:include>)
 
 # Are we building a shared library?
 get_target_property(library_type glad TYPE)
