@@ -13,7 +13,7 @@ from glad.sink import LoggingSink
 
 
 _ZIG_TYPE_MAPPING = {
-    'void': 'void',
+    'void': 'c_void',
     'int8_t': 'i8',
     'uint8_t': 'u8',
     'int16_t': 'i16',
@@ -111,7 +111,7 @@ def enum_value(enum, feature_set):
 
 def to_zig_type(type_):
     if type_ is None:
-        return 'std::os::raw::c_void'
+        return 'c_void'
 
     parsed_type = type_ if isinstance(type_, ParsedType) else ParsedType.from_string(type_)
 
@@ -148,7 +148,7 @@ def to_zig_params(command, mode='full'):
 
 
 def identifier(name):
-    if name in ('type', 'ref', 'box', 'in'):
+    if name in ('type', 'packed'):
         return name + '_'
     return name
 
