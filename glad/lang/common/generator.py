@@ -97,8 +97,8 @@ class Generator(object):
 
             if version not in self.spec.features[api]:
                 raise ValueError(
-                    'Unknown version "{0}" for specification "{1}"'
-                    .format(version, self.spec.NAME)
+                    'Unknown version "{0}" for specification "{1}" and API "{2}"'
+                    .format(version, self.spec.NAME, api)
                 )
 
         if self.extension_names is None:

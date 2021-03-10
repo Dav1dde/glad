@@ -16,6 +16,14 @@ from glad.util import Version
 logger = logging.getLogger('glad')
 
 
+def pop_apis_for_spec(apis, spec):
+    result = dict()
+    for feature in spec.features:
+        if feature in apis:
+            result[feature] = apis.pop(feature)
+    return result
+
+
 def main():
     import os.path
     import argparse
@@ -136,16 +144,24 @@ def main():
         logger.warn('--omit-khrplatform enabled, with recent changes to the specification '
                     'this is not very well supported by Khronos anymore and may break your build.')
 
-    specs = ns.spec.split(',')
+    cli_apis = dict(ns.api) if ns.api else dict()
+    spec_names = set(ns.spec.split(','))
+    specs = list()
+    for spec_name in spec_names:
+        spec = get_spec(spec_name, reproducible=ns.reproducible)
+        specs.append((spec, pop_apis_for_spec(cli_apis, spec)))
 
-    for s in specs:
-        spec = get_spec(s, reproducible=ns.reproducible)
+    if not len(cli_apis) == 0:
+        raise ValueError(
+            'Unknown APIs "{0}" for specifications "{1}".'.format(', '.join(cli_apis.keys()), ', '.join(spec_names))
+        )
+
+    for (spec, apis) in specs:
         if spec.NAME == 'gl':
             spec.profile = ns.profile
 
-        api = ns.api
-        if api is None or len(api.keys()) == 0:
-            api = {spec.NAME: None}
+        if apis is None or len(apis.keys()) == 0:
+            apis = {spec.NAME: None}
 
         generator_cls, loader_cls = glad.lang.get_generator(
             ns.generator, spec.NAME.lower()
@@ -154,13 +170,13 @@ def main():
         if loader_cls is None:
             return parser.error('API/Spec not yet supported')
 
-        loader = loader_cls(api, disabled=ns.no_loader, local_files=ns.local_files)
+        loader = loader_cls(apis, disabled=ns.no_loader, local_files=ns.local_files)
 
-        logger.info('generating \'%s\' bindings', spec.NAME)
+        logger.info('generating \'%s\' bindings: %r', spec.NAME, apis)
         with generator_cls(
                 ns.out,
                 spec,
-                api,
+                apis,
                 ns.extensions,
                 loader=loader,
                 opener=opener,
