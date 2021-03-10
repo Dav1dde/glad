@@ -106,7 +106,6 @@ def main():
                              'list of extensions, if missing '
                              'all extensions are included')
     parser.add_argument('--spec', dest='spec', default='gl',
-                        choices=['gl', 'egl', 'glx', 'wgl'],
                         help='Name of the spec')
     parser.add_argument('--reproducible', default=False, action='store_true',
                         help='Makes the build reproducible by not fetching '
@@ -137,38 +136,41 @@ def main():
         logger.warn('--omit-khrplatform enabled, with recent changes to the specification '
                     'this is not very well supported by Khronos anymore and may break your build.')
 
-    spec = get_spec(ns.spec, reproducible=ns.reproducible)
-    if spec.NAME == 'gl':
-        spec.profile = ns.profile
+    specs = ns.spec.split(',')
 
-    api = ns.api
-    if api is None or len(api.keys()) == 0:
-        api = {spec.NAME: None}
+    for s in specs:
+        spec = get_spec(s, reproducible=ns.reproducible)
+        if spec.NAME == 'gl':
+            spec.profile = ns.profile
 
-    generator_cls, loader_cls = glad.lang.get_generator(
-        ns.generator, spec.NAME.lower()
-    )
+        api = ns.api
+        if api is None or len(api.keys()) == 0:
+            api = {spec.NAME: None}
 
-    if loader_cls is None:
-        return parser.error('API/Spec not yet supported')
+        generator_cls, loader_cls = glad.lang.get_generator(
+            ns.generator, spec.NAME.lower()
+        )
 
-    loader = loader_cls(api, disabled=ns.no_loader, local_files=ns.local_files)
+        if loader_cls is None:
+            return parser.error('API/Spec not yet supported')
 
-    logger.info('generating \'%s\' bindings', spec.NAME)
-    with generator_cls(
-            ns.out,
-            spec,
-            api,
-            ns.extensions,
-            loader=loader,
-            opener=opener,
-            local_files=ns.local_files,
-            omit_khrplatform=ns.omit_khrplatform,
-            reproducible=ns.reproducible
-    ) as generator:
-        generator.generate()
+        loader = loader_cls(api, disabled=ns.no_loader, local_files=ns.local_files)
 
-    logger.info('generating \'%s\' bindings - done', spec.NAME)
+        logger.info('generating \'%s\' bindings', spec.NAME)
+        with generator_cls(
+                ns.out,
+                spec,
+                api,
+                ns.extensions,
+                loader=loader,
+                opener=opener,
+                local_files=ns.local_files,
+                omit_khrplatform=ns.omit_khrplatform,
+                reproducible=ns.reproducible
+        ) as generator:
+            generator.generate()
+
+        logger.info('generating \'%s\' bindings - done', spec.NAME)
 
 if __name__ == '__main__':
     main()
