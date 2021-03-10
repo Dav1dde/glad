@@ -2,17 +2,20 @@ from glad.lang.common.loader import BaseLoader
 from glad.lang.c.loader import LOAD_OPENGL_DLL, LOAD_OPENGL_DLL_H, LOAD_OPENGL_GLAPI_H
 
 _WGL_LOADER = \
-    LOAD_OPENGL_DLL % {'pre':'static', 'init':'open_gl',
-                       'proc':'get_proc', 'terminate':'close_gl'} + '''
+    LOAD_OPENGL_DLL % {'pre':'static', 'init':'open_wgl',
+                       'proc':'get_proc', 'terminate':'close_wgl'} + '''
 int gladLoadWGL(HDC hdc) {
     int status = 0;
 
-    if(open_gl()) {
+    if(open_wgl()) {
         status = gladLoadWGLLoader((GLADloadproc)get_proc, hdc);
-        close_gl();
     }
 
     return status;
+}
+
+void gladUnloadGLX(void) {
+    close_wgl();
 }
 '''
 
@@ -57,6 +60,7 @@ typedef void* (* GLADloadproc)(const char *name);
 
 _WGL_HEADER_LOADER = '''
 GLAPI int gladLoadWGL(HDC hdc);
+GLAPI void gladUnloadWGL(void);
 ''' + LOAD_OPENGL_DLL_H
 
 _WGL_HEADER_END = '''

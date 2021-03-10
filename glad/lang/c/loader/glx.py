@@ -2,17 +2,20 @@ from glad.lang.common.loader import BaseLoader
 from glad.lang.c.loader import LOAD_OPENGL_DLL, LOAD_OPENGL_DLL_H, LOAD_OPENGL_GLAPI_H
 
 _GLX_LOADER = \
-    LOAD_OPENGL_DLL % {'pre':'static', 'init':'open_gl',
-                       'proc':'get_proc', 'terminate':'close_gl'} + '''
+    LOAD_OPENGL_DLL % {'pre':'static', 'init':'open_glx',
+                       'proc':'get_proc', 'terminate':'close_glx'} + '''
 int gladLoadGLX(Display *dpy, int screen) {
     int status = 0;
 
-    if(open_gl()) {
+    if(open_glx()) {
         status = gladLoadGLXLoader((GLADloadproc)get_proc, dpy, screen);
-        close_gl();
     }
 
     return status;
+}
+
+void gladUnloadGLX(void) {
+    close_glx();
 }
 '''
 
@@ -50,6 +53,7 @@ typedef void* (* GLADloadproc)(const char *name);
 
 _GLX_HEADER_LOADER = '''
 GLAPI int gladLoadGLX(Display *dpy, int screen);
+GLAPI void gladUnloadGLX(void);
 ''' + LOAD_OPENGL_DLL_H
 
 _GLX_HEADER_END = '''

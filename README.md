@@ -3,31 +3,30 @@ glad
 
 GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.
 
-Use the [webservice](https://glad.dav1d.de) to generate the files you need!
+**Use the [webservice](https://glad.dav1d.de) to generate the files you need!**
 
 
 ```c
 #include <glad/glad.h>
 
-int main(int argc, char **argv)
+int main()
 {
-    // .. setup the context
+    // -- snip --
 
-    if(!gladLoadGL()) {
-        printf("Something went wrong!\n");
-        exit(-1);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", NULL, NULL);
+    glfwMakeContextCurrent(window);
+
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+        std::cout << "Failed to initialize OpenGL context" << std::endl;
+        return -1;
     }
-    printf("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
 
-    // .. render here ..
-}
+    glViewport(0, 0, WIDTH, HEIGHT);
+
+    // -- snip --
 ```
 
-Examples: 
- * [simple.c](https://github.com/Dav1dde/glad/blob/master/example/c/simple.c)
- * [hellowindow2.cpp](https://github.com/Dav1dde/glad/blob/master/example/c%2B%2B/hellowindow2.cpp)
- using [GLFW](https://glfw.org):
-
+The full code: [hellowindow2.cpp](https://github.com/Dav1dde/glad/blob/master/example/c%2B%2B/hellowindow2.cpp).
 
 ## Usage ##
 
@@ -45,8 +44,6 @@ Otherwise either install glad via pip:
     # Linux global (root)
     pip install glad
 
-    glad --help
-
 To install the most recent version from Github:
 
     pip install --upgrade git+https://github.com/dav1dde/glad.git#egg=glad
@@ -59,62 +56,15 @@ Installing and building glad via vcpkg
 
 You can download and install glad using the [vcpkg](https://github.com/Microsoft/vcpkg) dependency manager:
 
-    ```
     git clone https://github.com/Microsoft/vcpkg.git
     cd vcpkg
     ./bootstrap-vcpkg.sh
     ./vcpkg integrate install
     vcpkg install glad
-    ```
 
 The glad port in vcpkg is kept up to date by Microsoft team members and community contributors. If the version is out of date, please [create an issue or pull request](https://github.com/Microsoft/vcpkg) on the vcpkg repository.
-
-
-Possible commandline options:
-
-    usage: glad [-h] [--profile {core,compatibility}] --out-path OUT
-                     [--api API] --generator {c,d,volt}
-                     [--extensions EXTENSIONS] [--spec {gl,egl,glx,wgl}]
-                     [--no-loader]
-    
-    Uses the official Khronos-XML specs to generate a GL/GLES/EGL/GLX/WGL Loader
-    made for your needs. Glad currently supports the languages C, D and Volt.
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      --profile {core,compatibility}
-                            OpenGL profile (defaults to compatibility)
-      --out-path OUT        Output path for loader
-      --api API             API type/version pairs, like "gl=3.2,gles=", no
-                            version means latest
-      --generator {c,c-debug,d,volt}
-                            Language to generate the binding for
-      --extensions EXTENSIONS
-                            Path to extensions file or comma separated list of
-                            extensions, if missing all extensions are included
-      --spec {gl,egl,glx,wgl}
-                            Name of the spec
-      --reproducible        Makes the build reproducible by not fetching 
-                            the latest specification from Khronos
-      --no-loader
-      --omit-khrplatform    Omits inclusion of the khrplatform.h file which is
-                            often unnecessary. Only has an effect if used
-                            together with c generators.
-      --local-files         Forces every file directly into the output directory.
-                            No src or include subdirectories are generated. Only
-                            has an effect if used together with c generators.
-
-
-To generate a loader for C with two extensions, it could look like this:
-
-    python main.py --generator=c --extensions=GL_EXT_framebuffer_multisample,GL_EXT_texture_filter_anisotropic --out-path=GL
-
-`--out-path` and `--generator` are required!
-If the `--extensions` option is missing, glad adds support for all extensions found in the specification.
-
-When integrating glad into your build system the `--reproducible` option is highly recommended,
-it prevents the build from failing in case Khronos made incompatible changes to the specification.
-
+  
+When integrating glad into your build system the `--reproducible` option is highly recommended.
 
 ## Generators ##
 
@@ -144,6 +94,13 @@ int gladLoadGL(void);
  *
  */
 int gladLoadGLLoader(GLADloadproc);
+
+/**
+ * WGL and GLX have an unload function to free the module handle.
+ * Call the unload function after your last GLX or WGL API call.
+ */
+void gladUnloadGLX(void);
+void gladUnloadWGL(void);
 ```
 
 `glad.h` completely replaces any `gl.h` or `gl3.h` only include `glad.h`.
@@ -161,7 +118,7 @@ int gladLoadGLLoader(GLADloadproc);
     }
 ```
 
-On non-Windows platforms glad requires `libdl`, make sure to link with it (`-ldl` for gcc)!
+On non-Windows platforms glad requires `libdl`, make sure to link with it (`-ldl`).
 
 Note, there are two kinds of extension/version symbols, e.g. `GL_VERSION_3_0` and
 `GLAD_VERSION_3_0`. Latter is a runtime boolean (represented as integer), whereas
@@ -217,27 +174,6 @@ E.g. you could disable the callbacks for glClear with `glad_debug_glClear = glad
 The `glClear` macro is defined as `#define glClear glad_debug_glClear`,
 `glad_debug_glClear` is initialized with a default implementation, which calls 
 the two callbacks and the real function, in this case `glad_glClear`. 
-
-
-### D ###
-
-Import `glad.gl` for OpenGL functions/extensions, import `glad.loader` to import
-the functions needed to initialize glad and load the OpenGL functions.
-
-```d
-    enforce(gladLoadGL()); // optionally you can pass a loader to this function
-    writefln("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
-    
-    if(GL_EXT_framebuffer_multisample) { 
-        /* GL_EXT_framebuffer_multisample is supported */ 
-    }
-    
-    if(GL_VERSION_3_0) {
-        /* We support at least OpenGL version 3 */
-    }
-```
-
-On non-Windows platforms glad requires `libdl`, make sure to link with it (`L-ldl` for dmd)!
 
 
 ## FAQ ##
