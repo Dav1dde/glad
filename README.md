@@ -28,6 +28,29 @@ int main()
 
 The full code: [hellowindow2.cpp](https://github.com/Dav1dde/glad/blob/master/example/c%2B%2B/hellowindow2.cpp).
 
+### Glad 2
+
+Glad 2 is becoming mature and is pretty stable now, consider using the
+[glad2 branch](https://github.com/Dav1dde/glad/tree/glad2) or its [webservice](https://glad.sh).
+
+**There is no need to switch, if you don't want to. I will support both versions.**
+
+Glad2 brings several improvements and new features:
+
+* Better EGL, GLX, WGL support
+* **Vulkan** Support
+* Rust Support
+* More Generator Features (e.g. header only)
+* Better XML-Specification parsing
+* Better Web-Generator
+* Better Cmake support
+* Better Examples
+* Better CLI
+* Better Loader
+* Better API
+
+If you're using glad for more than GL, I highly recommend checking out glad2.
+
 ## Usage ##
 
 
