@@ -107,15 +107,6 @@ class Generator(object):
 
         # sort and eliminate duplicates
         self.extension_names = list(sorted(set(self.extension_names)))
-
-        e = list(chain.from_iterable(self.spec.extensions[a] for a in self.api))
-        for ext in self.extension_names:
-            if ext not in e:
-                raise ValueError(
-                    'Invalid extension "{0}" for specification "{1}"'
-                    .format(ext, self.spec.NAME)
-                )
-
         self.generate_header()
 
         types = [t for t in self.spec.types if t.api is None or t.api in self.api]

@@ -6,6 +6,9 @@ cmake_policy(SET CMP0048 NEW)
 # Enable MACOSX_RPATH by default
 cmake_policy(SET CMP0042 NEW)
 
+# Allow "IN_LIST" in "IF()"
+cmake_policy(SET CMP0057 NEW)
+
 if(NOT CMAKE_VERSION VERSION_LESS 3.1)
   # Silence warning about if()
   cmake_policy(SET CMP0054 NEW)
@@ -36,7 +39,9 @@ set(GLAD_PROFILE "compatibility" CACHE STRING "OpenGL profile")
 set(GLAD_API "" CACHE STRING "API type/version pairs, like \"gl=3.2,gles=\", no version means latest")
 set(GLAD_GENERATOR "c" CACHE STRING "Language to generate the binding for")
 set(GLAD_EXTENSIONS "" CACHE STRING "Path to extensions file or comma separated list of extensions, if missing all extensions are included")
-set(GLAD_SPEC "gl" CACHE STRING "Name of the spec")
+set(GLAD_SPEC "gl" CACHE STRING "Name of the spec or list of multiple specs (separated by semicolons).")
+set(ARG_GLAD_SPEC "gl")
+set(HAS_EGL OFF)
 option(GLAD_ALL_EXTENSIONS "Include all extensions instead of those specified by GLAD_EXTENSIONS" OFF)
 option(GLAD_NO_LOADER "No loader" OFF)
 option(GLAD_REPRODUCIBLE "Reproducible build" OFF)
@@ -73,10 +78,45 @@ elseif(GLAD_GENERATOR STREQUAL "volt")
   )
 else()
   set(GLAD_INCLUDE_DIRS "${GLAD_OUT_DIR}/include")
-  list(APPEND GLAD_SOURCES
-    "${GLAD_OUT_DIR}/src/glad.c"
-    "${GLAD_INCLUDE_DIRS}/glad/glad.h"
-  )
+  string(REPLACE "," ";" spec_list ${GLAD_SPEC})
+
+  if(NOT "gl" IN_LIST spec_list)
+    list(APPEND spec_list "gl")
+  endif()
+
+  set(extensions ${GLAD_EXTENSIONS})
+  separate_arguments(extensions)
+
+  foreach(spec ${spec_list})
+    if(${spec} STREQUAL "gl")
+      list(APPEND GLAD_HEADERS "${GLAD_INCLUDE_DIRS}/glad/glad.h")
+      list(APPEND GLAD_SOURCES 
+        "${GLAD_INCLUDE_DIRS}/glad/glad.h"
+        "${GLAD_OUT_DIR}/src/glad.c"
+      )
+    else()
+      list(APPEND GLAD_HEADERS "${GLAD_INCLUDE_DIRS}/glad/glad_${spec}.h")
+      list(APPEND GLAD_SOURCES 
+        "${GLAD_INCLUDE_DIRS}/glad/glad_${spec}.h"
+        "${GLAD_OUT_DIR}/src/glad_${spec}.c"
+      )
+    
+      # Append mandatory extensions.
+      if(${spec} STREQUAL "wgl")
+        if(NOT "WGL_ARB_extensions_string" IN_LIST extensions)
+          set (GLAD_EXTENSIONS "${GLAD_EXTENSIONS},WGL_ARB_extensions_string")
+        endif()
+        if(NOT "WGL_EXT_extensions_string" IN_LIST extensions)
+          set (GLAD_EXTENSIONS "${GLAD_EXTENSIONS},WGL_EXT_extensions_string")
+        endif()
+      elseif(${spec} STREQUAL "egl")
+        set(HAS_EGL ON)
+      endif()
+
+      # Add spec to command line argument.
+      set(ARG_GLAD_SPEC "${ARG_GLAD_SPEC},${spec}")
+    endif()
+  endforeach()
 endif()
 
 if(NOT GLAD_ALL_EXTENSIONS)
@@ -97,7 +137,7 @@ add_custom_command(
     --api=${GLAD_API}
     --generator=${GLAD_GENERATOR}
     ${GLAD_EXTENSIONS_ARG}
-    --spec=${GLAD_SPEC}
+    --spec=${ARG_GLAD_SPEC}
     ${GLAD_NO_LOADER_ARG}
     ${GLAD_REPRODUCIBLE_ARG}
   WORKING_DIRECTORY ${GLAD_DIR}
@@ -179,11 +219,16 @@ if(GLAD_INSTALL)
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin)
 
-  install(FILES ${GLAD_INCLUDE_DIRS}/glad/glad.h
+  install(FILES ${GLAD_HEADERS}
     DESTINATION include/glad)
 
   install(FILES ${GLAD_INCLUDE_DIRS}/KHR/khrplatform.h
     DESTINATION include/KHR)
+
+  if(HAS_EGL)
+    install(FILES ${GLAD_INCLUDE_DIRS}/EGL/eglplatform.h
+      DESTINATION include/EGL)
+  endif()
 
   # Install gladConfig.cmake, gladConfigVersion.cmake
   install(

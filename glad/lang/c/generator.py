@@ -8,6 +8,7 @@ import glad.files
 
 
 KHRPLATFORM = 'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h'
+EGLPLATFORM = 'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/EGL/eglplatform.h'
 
 
 _KHR_TYPE_REPLACEMENTS = {
@@ -43,6 +44,7 @@ class CGenerator(Generator):
             self._f_h = open(make_path(self.path,
                                         'glad{}.h'.format(suffix)), 'w')
             khr = self.path
+            egl = self.path
         else:
             self.h_include = '<glad/glad{}.h>'.format(suffix)
             self._f_c = open(make_path(self.path, 'src',
@@ -50,6 +52,7 @@ class CGenerator(Generator):
             self._f_h = open(make_path(self.path, 'include', 'glad',
                                         'glad{}.h'.format(suffix)), 'w')
             khr = os.path.join(self.path, 'include', 'KHR')
+            egl = os.path.join(self.path, 'include', 'EGL')
 
         if not self.omit_khrplatform:
             khr_url = KHRPLATFORM
@@ -67,6 +70,24 @@ class CGenerator(Generator):
                             dst.write(src.read())
                 else:
                     self.opener.urlretrieve(khr_url, khrplatform)
+
+            if self.spec.NAME == 'egl':
+                egl_url = EGLPLATFORM
+                if os.path.exists('eglplatform.h'):
+                    egl_url = 'file:' + os.path.abspath('eglplatform.h')
+                    
+                eglplatform = os.path.join(egl, 'eglplatform.h')
+                if not os.path.exists(eglplatform):
+                    if not os.path.exists(egl):
+                        os.makedirs(egl)
+
+                    if self.options.get('reproducible', False):
+                        with glad.files.open_local('eglplatform.h', 'rb') as src:
+                            with open(eglplatform, 'wb') as dst:
+                                dst.write(src.read())
+                    else:
+                        self.opener.urlretrieve(egl_url, eglplatform)
+
 
         return self
 
