@@ -96,6 +96,10 @@ const GLVULKANPROCNV = fn () callconv(.C) void;
 const {{ command.name }} = fn ({{ command|params }}) callconv(.C) {{ command.proto.ret|type }};
 {% endfor %}
 
+{% for enum in feature_set.enums %}
+pub const {{ enum.name }}: {{ enum|enum_type }} = {{ enum|enum_value }};
+{% endfor %}
+
 pub const {{ spec.name }} = struct {
 {% for command in feature_set.commands %}
     {{ command.name|no_prefix }}: {{ command.name }} = undefined,
@@ -111,7 +115,7 @@ pub const {{ spec.name }} = struct {
 
     pub fn load(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
 {% for command in feature_set.commands %}
-        {{ command.name|no_prefix }} = @ptrCast({{ command.name }}, try loader("{{ command.name }}"));
+        self.{{ command.name|no_prefix }} = @ptrCast({{ command.name }}, try loader("{{ command.name }}"));
 {% endfor %}
     }
 

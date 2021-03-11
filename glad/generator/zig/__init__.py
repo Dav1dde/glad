@@ -48,23 +48,23 @@ def enum_type(enum, feature_set):
     if enum.type:
         return {
             'ull': 'u64',
-        }.get(enum.type, 'std::os::raw::c_uint')
+        }.get(enum.type, 'u32')
 
     if enum.value.startswith('0x'):
-        return 'u64' if len(enum.value[2:]) > 8 else 'std::os::raw::c_uint'
+        return 'u64' if len(enum.value[2:]) > 8 else 'u32'
 
     if enum.name in ('GL_TRUE', 'GL_FALSE'):
-        return 'std::os::raw::c_uchar'
+        return 'bool'
 
     if enum.value.startswith('-'):
-        return 'std::os::raw::c_int'
+        return 'i32'
 
     if enum.value.endswith('f'):
-        return 'std::os::raw::c_float'
+        return 'f32'
 
     if enum.value.startswith('"'):
         # TODO figure out correct type
-        return '&str'
+        return '[*:0]const u8'
 
     if enum.value.startswith('(('):
         # Casts: '((Type)value)' -> 'Type'
@@ -74,7 +74,7 @@ def enum_type(enum, feature_set):
         # EGL_CAST(type,value) -> type
         return enum.value.split('(', 1)[1].split(',')[0]
 
-    return 'std::os::raw::c_uint'
+    return 'u32'
 
 
 def enum_value(enum, feature_set):
