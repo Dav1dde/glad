@@ -121,9 +121,9 @@ def to_zig_type(type_):
     prefix = ''
     if parsed_type.is_pointer > 0:
         if parsed_type.is_const:
-            prefix = '*const ' * parsed_type.is_pointer
+            prefix = '[*c]const ' * parsed_type.is_pointer
         else:
-            prefix = '*' * parsed_type.is_pointer
+            prefix = '[*c]' * parsed_type.is_pointer
 
     type_ = _ZIG_TYPE_MAPPING.get(parsed_type.type, parsed_type.type)
 
