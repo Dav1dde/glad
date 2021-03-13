@@ -100,9 +100,21 @@ const {{ command.name }} = fn ({{ command|params }}) callconv(.C) {{ command.pro
 pub const {{ enum.name }}: {{ enum|enum_type }} = {{ enum|enum_value }};
 {% endfor %}
 
-pub const {{ spec.name }} = struct {
-{% for command in feature_set.commands %}
+{% for api in feature_set.info.apis %}
+{% for feature, commands in loadable() %}
+const {{ spec.name }}_{{ feature.name }} = struct {
+{% for command in commands %}
     {{ command.name|no_prefix }}: {{ command.name }} = undefined,
+{% endfor %}
+};
+{% endfor %}
+{% endfor %}
+
+pub const {{ spec.name }} = struct {
+{% for api in feature_set.info.apis %}
+{% for feature, commands in loadable() %}
+    {{ feature.name }}: ?{{ spec.name }}_{{ feature.name }} = null,
+{% endfor %}
 {% endfor %}
 
     const Self = @This();
@@ -113,10 +125,33 @@ pub const {{ spec.name }} = struct {
         return self;
     }
 
-    pub fn load(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
-{% for command in feature_set.commands %}
-        self.{{ command.name|no_prefix }} = @ptrCast({{ command.name }}, try loader("{{ command.name }}"));
+    pub fn load(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!?GLproc) errors!void {
+{% for api in feature_set.info.apis %}
+{% for feature, commands in loadable() %}
+        self.{{ feature.name }} = try self.load_{{ feature.name }}(errors, loader);
+{% endfor %}
 {% endfor %}
     }
 
+{% for api in feature_set.info.apis %}
+{% for feature, commands in loadable() %}
+    fn load_{{ feature.name }}(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!?GLproc) errors!void {
+        self.{{ feature.name }} = .{};
+{% for command in commands %}
+        const {{ command.name|no_prefix }} = try loader("{{ command.name }}");
+        if({{ command.name|no_prefix }}) |{{ command.name|no_prefix }}_unc| {
+            self.{{ feature.name }}.{{ command.name|no_prefix }} = @ptrCast({{ command.name }}, {{ command.name|no_prefix }}_unc);
+        } else {
+            self.{{ feature.name }} = null;
+            return;
+        }
+{% endfor %}
+    }
+{% endfor %}
+{% endfor %}
+
 };
+
+{% if not options.mx_global %}
+pub var {{ spec.name }}_context: {{ spec.name }} = .{};
+{% endif %}
