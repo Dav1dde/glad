@@ -1,3 +1,5 @@
+import itertools
+
 import jinja2
 
 import glad
@@ -118,14 +120,20 @@ def to_zig_type(type_):
     if not parsed_type.is_pointer and parsed_type.type == 'void':
         return 'void'
 
+    type_ = _ZIG_TYPE_MAPPING.get(parsed_type.type, parsed_type.type)
+
     prefix = ''
     if parsed_type.is_pointer > 0:
         if parsed_type.is_const:
-            prefix = '[*c]const ' * parsed_type.is_pointer
+            if type_ == 'c_void':
+                prefix = '*const ' * parsed_type.is_pointer
+            else:
+                prefix = '[*c]const ' * parsed_type.is_pointer
         else:
-            prefix = '[*c]' * parsed_type.is_pointer
-
-    type_ = _ZIG_TYPE_MAPPING.get(parsed_type.type, parsed_type.type)
+            if type_ == 'c_void':
+                prefix = '*' * parsed_type.is_pointer
+            else:
+                prefix = '[*c]' * parsed_type.is_pointer
 
     if parsed_type.is_array > 0:
         type_ = '[{}]{}'.format(parsed_type.is_array, type_)
@@ -153,6 +161,27 @@ def identifier(name):
     return name
 
 
+@jinja2.contextfunction
+def loadable(context, extensions=None, api=None):
+    spec = context['spec']
+    feature_set = context['feature_set']
+
+    if extensions is None:
+        extensions = (feature_set.features, feature_set.extensions)
+    elif len(extensions) > 0:
+        # allow loadable(feature_set.features), nicer syntax in templates
+        try:
+            iter(extensions[0])
+        except TypeError:
+            extensions = [extensions]
+
+    for extension in itertools.chain.from_iterable(extensions):
+        if api is None or extension.supports(api):
+            commands = extension.get_requirements(spec, feature_set=feature_set).commands
+            if commands:
+                yield extension, commands
+
+
 class ZigConfig(Config):
     ALIAS = ConfigOption(
         converter=bool,
@@ -175,6 +204,10 @@ class ZigGenerator(JinjaGenerator):
 
     def __init__(self, *args, **kwargs):
         JinjaGenerator.__init__(self, *args, **kwargs)
+
+        self.environment.globals.update(
+            loadable=loadable
+        )
 
         self.environment.filters.update(
             feature=lambda x: 'feature = "{}"'.format(x),
