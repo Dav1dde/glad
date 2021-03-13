@@ -128,7 +128,7 @@ pub const {{ spec.name }} = struct {
     pub fn load(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!?GLproc) errors!void {
 {% for api in feature_set.info.apis %}
 {% for feature, commands in loadable() %}
-        self.{{ feature.name }} = try self.load_{{ feature.name }}(errors, loader);
+        try self.load_{{ feature.name }}(errors, loader);
 {% endfor %}
 {% endfor %}
     }
@@ -140,7 +140,7 @@ pub const {{ spec.name }} = struct {
 {% for command in commands %}
         const {{ command.name|no_prefix }} = try loader("{{ command.name }}");
         if({{ command.name|no_prefix }}) |{{ command.name|no_prefix }}_unc| {
-            self.{{ feature.name }}.{{ command.name|no_prefix }} = @ptrCast({{ command.name }}, {{ command.name|no_prefix }}_unc);
+            self.{{ feature.name }}.?.{{ command.name|no_prefix }} = @ptrCast({{ command.name }}, {{ command.name|no_prefix }}_unc);
         } else {
             self.{{ feature.name }} = null;
             return;
