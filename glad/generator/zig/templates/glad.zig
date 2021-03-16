@@ -1,61 +1,61 @@
 const std = @import("std");
 
-const GLproc = fn () callconv(.C) void;
+pub const GLproc = fn () callconv(.C) void;
 
-const GLvoid = c_void;
+pub const GLvoid = c_void;
 
-const GLbyte = i8;
-const GLubyte = u8;
-const GLchar = u8;
-const GLboolean = u8;
+pub const GLbyte = i8;
+pub const GLubyte = u8;
+pub const GLchar = u8;
+pub const GLboolean = u8;
 
-const GLshort = i16;
-const GLushort = u16;
+pub const GLshort = i16;
+pub const GLushort = u16;
 
-const GLint = i32;
-const GLuint = u32;
-const GLint64 = i64;
-const GLuint64 = u64;
+pub const GLint = i32;
+pub const GLuint = u32;
+pub const GLint64 = i64;
+pub const GLuint64 = u64;
 
-const GLintptr = isize;
-const GLsizeiptr = usize;
-const GLintptrARB = isize;
-const GLsizeiptrARB = usize;
-const GLint64EXT = i64;
-const GLuint64EXT = u64;
+pub const GLintptr = isize;
+pub const GLsizeiptr = usize;
+pub const GLintptrARB = isize;
+pub const GLsizeiptrARB = usize;
+pub const GLint64EXT = i64;
+pub const GLuint64EXT = u64;
 
-const GLsizei = u32;
-const GLclampx = i32;
-const GLfixed = i32;
-const GLhalf = f16;
-const GLhalfNV = f16;
-const GLhalfARB = f16;
+pub const GLsizei = u32;
+pub const GLclampx = i32;
+pub const GLfixed = i32;
+pub const GLhalf = f16;
+pub const GLhalfNV = f16;
+pub const GLhalfARB = f16;
 
-const GLenum = u32;
-const GLbitfield = u32;
+pub const GLenum = u32;
+pub const GLbitfield = u32;
 
-const GLfloat = f32;
-const GLdouble = f64;
-const GLclampf = f32;
-const GLclampd = f64;
+pub const GLfloat = f32;
+pub const GLdouble = f64;
+pub const GLclampf = f32;
+pub const GLclampd = f64;
 
-const GLcharARB = u8;
+pub const GLcharARB = u8;
 
-const GLhandleARB = if (std.builtin.os.tag == .macos) *c_void else GLuint;
+pub const GLhandleARB = if (std.builtin.os.tag == .macos) *c_void else GLuint;
 
-const __GLsync = enum(GLenum) { _ };
+pub const __GLsync = enum(GLenum) { _ };
 
-const GLsync = *const __GLsync;
+pub const GLsync = *const __GLsync;
 
-const _cl_context = enum(GLenum) { _ };
+pub const _cl_context = enum(GLenum) { _ };
 
-const _cl_event = enum(GLenum) { _ };
+pub const _cl_event = enum(GLenum) { _ };
 
-const GLvdpauSurfaceNV = GLintptr;
-const GLeglClientBufferEXT = *const c_void;
-const GLeglImageOES = *const c_void;
+pub const GLvdpauSurfaceNV = GLintptr;
+pub const GLeglClientBufferEXT = *const c_void;
+pub const GLeglImageOES = *const c_void;
 
-const GLDEBUGPROC = fn (
+pub const GLDEBUGPROC = fn (
     source: GLenum,
     type_: GLenum,
     id: GLuint,
@@ -64,7 +64,7 @@ const GLDEBUGPROC = fn (
     message: *const GLchar,
     userParam: *c_void,
 ) callconv(.C) void;
-const GLDEBUGPROCARB = fn (
+pub const GLDEBUGPROCARB = fn (
     source: GLenum,
     type_: GLenum,
     id: GLuint,
@@ -73,7 +73,7 @@ const GLDEBUGPROCARB = fn (
     message: *const GLchar,
     userParam: *c_void,
 ) callconv(.C) void;
-const GLDEBUGPROCKHR = fn (
+pub const GLDEBUGPROCKHR = fn (
     source: GLenum,
     type_: GLenum,
     id: GLuint,
@@ -82,7 +82,7 @@ const GLDEBUGPROCKHR = fn (
     message: *const GLchar,
     userParam: *GLvoid,
 ) callconv(.C) void;
-const GLDEBUGPROCAMD = fn (
+pub const GLDEBUGPROCAMD = fn (
     id: GLuint,
     category: GLenum,
     severity: GLenum,
@@ -90,7 +90,7 @@ const GLDEBUGPROCAMD = fn (
     message: *const GLchar,
     userParam: *GLvoid,
 ) callconv(.C) void;
-const GLVULKANPROCNV = fn () callconv(.C) void;
+pub const GLVULKANPROCNV = fn () callconv(.C) void;
 
 {% for command in feature_set.commands %}
 const {{ command.name }} = fn ({{ command|params }}) callconv(.C) {{ command.proto.ret|type }};
