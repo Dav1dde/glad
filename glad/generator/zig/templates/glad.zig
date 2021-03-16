@@ -41,7 +41,7 @@ const GLclampd = f64;
 
 const GLcharARB = u8;
 
-const GLhandleARB = if(std.builtin.os.tag == .macos) *c_void else GLuint;
+const GLhandleARB = if (std.builtin.os.tag == .macos) *c_void else GLuint;
 
 const __GLsync = enum(GLenum) { _ };
 
@@ -100,21 +100,19 @@ const {{ command.name }} = fn ({{ command|params }}) callconv(.C) {{ command.pro
 pub const {{ enum.name }}: {{ enum|enum_type }} = {{ enum|enum_value }};
 {% endfor %}
 
-{% for api in feature_set.info.apis %}
-{% for feature, commands in loadable() %}
-const {{ spec.name }}_{{ feature.name }} = struct {
-{% for command in commands %}
-    {{ command.name|no_prefix }}: {{ command.name }} = undefined,
-{% endfor %}
-};
-{% endfor %}
-{% endfor %}
-
 pub const {{ spec.name }} = struct {
+    const Features = struct {
 {% for api in feature_set.info.apis %}
-{% for feature, commands in loadable() %}
-    {{ feature.name }}: ?{{ spec.name }}_{{ feature.name }} = null,
+{% for feature, _ in loadable() %}
+        {{ feature.name }}: bool = true,
 {% endfor %}
+{% endfor %}
+    };
+
+    features: Features = .{},
+
+{% for command in feature_set.commands %}
+    {{ command.name|no_prefix }}: {{ command.name }} = @ptrCast({{ command.name }}, {{ spec.name }}.missingFunctionPanic),
 {% endfor %}
 
     const Self = @This();
@@ -125,31 +123,23 @@ pub const {{ spec.name }} = struct {
         return self;
     }
 
-    pub fn load(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!?GLproc) errors!void {
-{% for api in feature_set.info.apis %}
-{% for feature, commands in loadable() %}
-        try self.load_{{ feature.name }}(errors, loader);
-{% endfor %}
-{% endfor %}
+    pub fn missingFunctionPanic() callconv(.C) noreturn {
+        @panic("This function isn't supported by the GL drivers!");
     }
 
+    pub fn load(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
 {% for api in feature_set.info.apis %}
 {% for feature, commands in loadable() %}
-    fn load_{{ feature.name }}(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!?GLproc) errors!void {
-        self.{{ feature.name }} = .{};
 {% for command in commands %}
-        const {{ command.name|no_prefix }} = try loader("{{ command.name }}");
-        if({{ command.name|no_prefix }}) |{{ command.name|no_prefix }}_unc| {
-            self.{{ feature.name }}.?.{{ command.name|no_prefix }} = @ptrCast({{ command.name }}, {{ command.name|no_prefix }}_unc);
+        if (@ptrCast(?{{ command.name }}, try loader("{{ command.name }}"))) |ptr| {
+            self.{{ command.name|no_prefix }} = ptr;
         } else {
-            self.{{ feature.name }} = null;
-            return;
+            self.features.{{ feature.name }} = false;
         }
 {% endfor %}
+{% endfor %}
+{% endfor %}
     }
-{% endfor %}
-{% endfor %}
-
 };
 
 {% if not options.mx_global %}
