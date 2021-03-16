@@ -101,7 +101,7 @@ pub const {{ enum.name }}: {{ enum|enum_type }} = {{ enum|enum_value }};
 {% endfor %}
 
 pub const {{ spec.name }} = struct {
-    const Features = struct {
+    pub const Features = struct {
 {% for api in feature_set.info.apis %}
 {% for feature, _ in loadable() %}
         {{ feature.name }}: bool = true,
