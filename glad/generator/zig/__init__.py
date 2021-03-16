@@ -135,7 +135,7 @@ def to_zig_type(type_):
     if parsed_type.is_array > 0:
         type_ = '[{}]{}'.format(parsed_type.is_array, type_)
 
-    return prefix + type_
+    return prefix + type_.strip()
 
 
 def to_zig_params(command, mode='full'):
