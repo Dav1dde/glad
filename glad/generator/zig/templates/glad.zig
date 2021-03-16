@@ -104,7 +104,7 @@ pub const {{ spec.name }} = struct {
     pub const Features = packed struct {
 {% for api in feature_set.info.apis %}
 {% for feature, _ in loadable() %}
-        {{ feature.name }}: bool = true,
+        {{ feature.name }}: bool = false,
 {% endfor %}
 {% endfor %}
     };
@@ -124,22 +124,28 @@ pub const {{ spec.name }} = struct {
     }
 
     pub fn missingFunctionPanic() callconv(.C) noreturn {
-        @panic("This function isn't supported by the GL drivers!");
+        @panic("The {{ spec.name }} drivers or implementation on this system don't support this function!");
     }
 
     pub fn load(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
-{% for api in feature_set.info.apis %}
+{% for feature, _ in loadable() %}
+        try self.load_{{ feature.name }}(errors, loader);
+{% endfor %}
+    }
+
 {% for feature, commands in loadable() %}
+    fn load_{{ feature.name }}(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
 {% for command in commands %}
         if (@ptrCast(?{{ command.name }}, try loader("{{ command.name }}"))) |ptr| {
             self.{{ command.name|no_prefix }} = ptr;
         } else {
-            self.features.{{ feature.name }} = false;
+            loaded = false;
         }
 {% endfor %}
-{% endfor %}
-{% endfor %}
+        self.features.{{ feature.name }} = loaded;
     }
+{% endfor %}
 };
 
 {% if not options.mx_global %}
