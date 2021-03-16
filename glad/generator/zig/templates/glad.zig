@@ -7,7 +7,7 @@ const GLvoid = c_void;
 const GLbyte = i8;
 const GLubyte = u8;
 const GLchar = u8;
-const GLboolean = bool;
+const GLboolean = u8;
 
 const GLshort = i16;
 const GLushort = u16;

@@ -55,9 +55,6 @@ def enum_type(enum, feature_set):
     if enum.value.startswith('0x'):
         return 'u64' if len(enum.value[2:]) > 8 else 'u32'
 
-    if enum.name in ('GL_TRUE', 'GL_FALSE'):
-        return 'bool'
-
     if enum.value.startswith('-'):
         return 'i32'
 
@@ -126,12 +123,12 @@ def to_zig_type(type_):
     if parsed_type.is_pointer > 0:
         if parsed_type.is_const:
             if type_ == 'c_void':
-                prefix = '*const ' * parsed_type.is_pointer
+                prefix = '?*const ' * parsed_type.is_pointer
             else:
                 prefix = '[*c]const ' * parsed_type.is_pointer
         else:
             if type_ == 'c_void':
-                prefix = '*' * parsed_type.is_pointer
+                prefix = '?*' * parsed_type.is_pointer
             else:
                 prefix = '[*c]' * parsed_type.is_pointer
 
