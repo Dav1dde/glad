@@ -274,4 +274,12 @@ function(glad_add_library TARGET)
         PUBLIC
             ${CMAKE_DL_LIBS}
         )
+        
+    if(GG_SHARED)
+        target_compile_definitions("${TARGET}" PUBLIC GLAD_API_CALL_EXPORT)
+        set_target_properties("${TARGET}"
+            PROPERTIES
+            DEFINE_SYMBOL "GLAD_API_CALL_EXPORT_BUILD"
+            )
+    endif()
 endfunction()
