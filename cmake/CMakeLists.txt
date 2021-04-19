@@ -6,7 +6,7 @@
 #    GLAD_SOURCES_DIR: path to the sources of glad (=python module)
 #
 #
-#  glad_add_library(<TARGET> [SHARED|STATIC|MODULE] [EXCLUDE_FROM_ALL] [MERGE] [QUIET] [KEEP_SOURCES] [LOCATION <PATH>]
+#  glad_add_library(<TARGET> [SHARED|STATIC|MODULE] [EXCLUDE_FROM_ALL] [MERGE] [QUIET] [LOCATION <PATH>]
 #                       [LANGUAGE <LANG>] [API <API1> [<API2> ...]] [EXTENSIONS [<EXT1> [<EXT2> ...]]])
 #  - <TARGET>
 #       Name of the TARGET
@@ -18,12 +18,8 @@
 #       Merge multiple APIs of the same specitifation into one file.
 #   - QUIET
 #       Disable logging
-#   - KEEP_SOURCES
-#       After generating the sources, do not let a clean step remove the sources.
-#       This is useful for adding the glad sources to your scm.
 #   - LOCATION <PATH>
 #       Set the location where the generated glad should be saved.
-#       If KEEP_SOURCES is also defined, this path can be inside the source path.
 #   - LANGUAGE <LANG>
 #       Language of the generated glad sources.
 #   - API <API1> [<API2> ...]]
@@ -42,13 +38,13 @@
 #   ```
 # - create  a static glad library with the vulkan=1.1
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.2)
 project(glad C)
 
 find_package(PythonInterp REQUIRED)
 
 set(GLAD_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE STRING "Directory containing glad generator CMakeLists.txt")
-set(GLAD_SOURCES_DIR "${GLAD_CMAKE_DIR}/../" CACHE STRING "Directory containing glad sources (python modules), used as working directory")
+set(GLAD_SOURCES_DIR "${GLAD_CMAKE_DIR}/../"   CACHE STRING "Directory containing glad sources (python modules), used as working directory")
 mark_as_advanced(GLAD_CMAKE_DIR)
 
 # Extract specification, profile and version from a string
@@ -178,8 +174,10 @@ endfunction()
 
 # Create a glad library named "${TARGET}"
 function(glad_add_library TARGET)
-    cmake_parse_arguments(GG "MERGE;QUIET;REPRODUCIBLE;KEEP_SOURCES;STATIC;SHARED;MODULE;EXCLUDE_FROM_ALL" "LOCATION;LANGUAGE" "API;EXTENSIONS" ${ARGN})
-
+    message(STATUS "Glad Library \'${TARGET}\'")
+    
+    cmake_parse_arguments(GG "MERGE;QUIET;REPRODUCIBLE;STATIC;SHARED;MODULE;EXCLUDE_FROM_ALL" "LOCATION;LANGUAGE" "API;EXTENSIONS" ${ARGN})
+    
     if(NOT GG_LOCATION)
         set(GG_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/gladsources/${TARGET}")
     endif()
@@ -230,48 +228,22 @@ function(glad_add_library TARGET)
     endif()
     list(APPEND GLAD_ARGS ${GLAD_LANGUAGE} ${LANG_ARGS})
 
-    # allows:
-    # - bootstrap: generate sources when non-existent
-    # - do not remove the sources when cleaning
-    # BUG: running clean directly after an initial make without sources present, removes the sources
-
-    if(GG_KEEP_SOURCES)
-        string(REPLACE "${GLAD_DIR}" GLAD_DIRECTORY GLAD_ARGS_UNIVERSAL "${GLAD_ARGS}")
-        set(GLAD_ADD_CUSTOM_COMMAND OFF)
-        set(GLAD_ARGS_PATH "${GLAD_DIR}/args.txt")
-        if(NOT EXISTS "${GLAD_ARGS_PATH}")
-            set(GLAD_ADD_CUSTOM_COMMAND ON)
-        else()
-            file(READ "${GLAD_ARGS_PATH}" GLAD_ARGS_FILE)
-            if(NOT GLAD_ARGS_UNIVERSAL STREQUAL GLAD_ARGS_FILE)
-                set(GLAD_ADD_CUSTOM_COMMAND ON)
-            endif()
-        endif()
-        list(APPEND GLAD_EXTRA_COMMANDS
-            COMMAND "${CMAKE_COMMAND}" "-DPATH=${GLAD_ARGS_PATH}" "-DTEXT=\"${GLAD_ARGS_UNIVERSAL}\"" -P "${GLAD_CMAKE_DIR}/WriteFile.cmake"
-            COMMAND "${CMAKE_COMMAND}" -E sleep 1
-            COMMAND "${CMAKE_COMMAND}" -E touch "${GLAD_CMAKE_DIR}/CMakeLists.txt"
-            )
-    else()
-        set(GLAD_ADD_CUSTOM_COMMAND ON)
-    endif()
-
-    if(GLAD_ADD_CUSTOM_COMMAND)
-        add_custom_command(OUTPUT ${GLAD_FILES} ${GLAD_ARGS_PATH}
-            COMMAND "${CMAKE_COMMAND}" -E remove_directory "${GLAD_DIR}"
-            COMMAND "${PYTHON_EXECUTABLE}" -m glad ${GLAD_ARGS}
-            ${GLAD_EXTRA_COMMANDS}
-            WORKING_DIRECTORY "${GLAD_SOURCES_DIR}"
-            )
-    endif()
+    string(REPLACE "${GLAD_DIR}" GLAD_DIRECTORY GLAD_ARGS_UNIVERSAL "${GLAD_ARGS}")
+    set(GLAD_ARGS_PATH "${GLAD_DIR}/args.txt")
 
     # add make custom target
-    add_custom_target("regenerate_${TARGET}"
-        COMMAND "${CMAKE_COMMAND}" -E remove_directory "${GLAD_DIR}"
-        COMMAND "${PYTHON_EXECUTABLE}" -m glad ${GLAD_ARGS}
-        ${GLAD_EXTRA_COMMANDS}
-        WORKING_DIRECTORY "${GLAD_SOURCES_DIR}"
-        COMMENT "Regenerating glad source files for ${TARGET}..."
+    add_custom_command(
+        OUTPUT ${GLAD_FILES} ${GLAD_ARGS_PATH}
+        COMMAND echo Cleaning ${GLAD_DIR}
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${GLAD_DIR}
+        COMMAND ${CMAKE_COMMAND} -E make_directory   ${GLAD_DIR}
+        COMMAND echo Generating with args ${GLAD_ARGS}
+        COMMAND ${PYTHON_EXECUTABLE} -m glad ${GLAD_ARGS}
+        COMMAND echo Writing ${GLAD_ARGS_PATH}
+        COMMAND echo ${GLAD_ARGS} > ${GLAD_ARGS_PATH}
+        WORKING_DIRECTORY ${GLAD_SOURCES_DIR}
+        COMMENT "${TARGET}-generate"
+        USES_TERMINAL
         )
 
     set(GLAD_ADD_LIBRARY_ARGS "")
