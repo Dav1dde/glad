@@ -6,12 +6,12 @@
 #    GLAD_SOURCES_DIR: path to the sources of glad (=python module)
 #
 #
-#  glad_add_library(<TARGET> [SHARED|STATIC|MODULE] [EXCLUDE_FROM_ALL] [MERGE] [QUIET] [LOCATION <PATH>]
+#  glad_add_library(<TARGET> [SHARED|STATIC|MODULE|INTERFACE] [EXCLUDE_FROM_ALL] [MERGE] [QUIET] [LOCATION <PATH>]
 #                       [LANGUAGE <LANG>] [API <API1> [<API2> ...]] [EXTENSIONS [<EXT1> [<EXT2> ...]]])
 #  - <TARGET>
 #       Name of the TARGET
-#  - SHARED|STATIC|MODULE
-#       Type of the library
+#  - SHARED|STATIC|MODULE|INTERFACE
+#       Type of the library, if none is specified, default BUILD_SHARED_LIBS behavior is honored
 #   - EXCLUDE_FROM_ALL
 #       Exclude building the library from the all target
 #   - MERGE
@@ -176,7 +176,7 @@ endfunction()
 function(glad_add_library TARGET)
     message(STATUS "Glad Library \'${TARGET}\'")
     
-    cmake_parse_arguments(GG "MERGE;QUIET;REPRODUCIBLE;STATIC;SHARED;MODULE;EXCLUDE_FROM_ALL" "LOCATION;LANGUAGE" "API;EXTENSIONS" ${ARGN})
+    cmake_parse_arguments(GG "MERGE;QUIET;REPRODUCIBLE;STATIC;SHARED;MODULE;INTERFACE;EXCLUDE_FROM_ALL" "LOCATION;LANGUAGE" "API;EXTENSIONS" ${ARGN})
     
     if(NOT GG_LOCATION)
         set(GG_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/gladsources/${TARGET}")
@@ -247,20 +247,21 @@ function(glad_add_library TARGET)
         )
 
     set(GLAD_ADD_LIBRARY_ARGS "")
-
     if(GG_SHARED)
         list(APPEND GLAD_ADD_LIBRARY_ARGS SHARED)
     elseif(GG_STATIC)
         list(APPEND GLAD_ADD_LIBRARY_ARGS STATIC)
     elseif(GG_MODULE)
         list(APPEND GLAD_ADD_LIBRARY_ARGS MODULE)
+    elseif(GG_INTERFACE)
+        list(APPEND GLAD_ADD_LIBRARY_ARGS INTERFACE)
     endif()
 
     if(GG_EXCLUDE_FROM_ALL)
         list(APPEND GLAD_ADD_LIBRARY_ARGS EXCLUDE_FROM_ALL)
     endif()
 
-    add_library("${TARGET}" ${LIBTYPE} ${GLAD_ADD_LIBRARY_ARGS}
+    add_library("${TARGET}" ${GLAD_ADD_LIBRARY_ARGS}
         ${GLAD_FILES}
         )
 
