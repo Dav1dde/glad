@@ -52,7 +52,6 @@ foreach(API ${APIS})
             glad_add_library("${TARGET}" EXCLUDE_FROM_ALL
                 LOCATION "${PROJECT_BINARY_DIR}/external/glad_${API}_${NAME_SUFFIX}"
                 API ${APISTR}=${VERSION}
-                KEEP_SOURCES
                 )
             if(CMAKE_SYSTEM_NAME IN_LIST "${API}_SYSTEMS")
                 add_test(
