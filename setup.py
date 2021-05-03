@@ -31,7 +31,7 @@ if __name__ == '__main__':
         long_description=__doc__,
         packages=find_packages(),
         include_package_data=True,
-        install_requires=[],
+        install_requires=["setuptools"],
         entry_points={
             'console_scripts': [
                 'glad = glad.__main__:main'
