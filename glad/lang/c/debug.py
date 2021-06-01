@@ -2,30 +2,27 @@ from glad.lang.c.generator import CGenerator
 
 DEFAULT_DEBUG_IMPL = '''
     {return_def}
-    _pre_call_callback{api}("{name}", {args_callback});
+    _pre_call_callback_{spec}("{name}", {args_callback});
     {return_assign} glad_{name}({args});
-    _post_call_callback{api}("{name}", {args_callback});
+    _post_call_callback_{spec}("{name}", {args_callback});
     {return_return}
 '''
 
 DEBUG_HEADER = '''
 #define GLAD_DEBUG
-#ifndef GLAD_CALLBACK
-#define GLAD_CALLBACK
 typedef void (* GLADcallback)(const char *name, void *funcptr, int len_args, ...);
-#endif // GLAD_CALLBACK
 
-GLAPI void glad_set_pre_callback{api}(GLADcallback cb);
-GLAPI void glad_set_post_callback{api}(GLADcallback cb);
+GLAPI void glad_set_pre_callback_{spec}(GLADcallback cb);
+GLAPI void glad_set_post_callback_{spec}(GLADcallback cb);
 '''
 
 DEBUG_CODE_GL = '''
-void _pre_call_callback_default(const char *name, void *funcptr, int len_args, ...) {{
+void _pre_call_callback_default_{spec}(const char *name, void *funcptr, int len_args, ...) {{
     (void) name;
     (void) funcptr;
     (void) len_args;
 }}
-void _post_call_callback_default(const char *name, void *funcptr, int len_args, ...) {{
+void _post_call_callback_default_{spec}(const char *name, void *funcptr, int len_args, ...) {{
     GLenum error_code;
 
     (void) funcptr;
@@ -40,26 +37,41 @@ void _post_call_callback_default(const char *name, void *funcptr, int len_args, 
 '''
 
 DEBUG_CODE = '''
-void _pre_call_callback_default{api}(const char *name, void *funcptr, int len_args, ...) {{
+void _pre_call_callback_default_{spec}(const char *name, void *funcptr, int len_args, ...) {{
     (void) name;
     (void) funcptr;
     (void) len_args;
 }}
-void _post_call_callback_default{api}(const char *name, void *funcptr, int len_args, ...) {{
+void _post_call_callback_default_{spec}(const char *name, void *funcptr, int len_args, ...) {{
+    (void) name;
     (void) funcptr;
     (void) len_args;
 }}
 '''
 
 DEBUG_CODE_COMMON = '''
-static GLADcallback _pre_call_callback{api} = _pre_call_callback_default{api};
-void glad_set_pre_callback{api}(GLADcallback cb) {{
-    _pre_call_callback{api} = cb;
+static GLADcallback _pre_call_callback_{spec} = _pre_call_callback_default_{spec};
+void glad_set_pre_callback_{spec}(GLADcallback cb) {{
+    _pre_call_callback_{spec} = cb;
 }}
 
-static GLADcallback _post_call_callback{api} = _post_call_callback_default{api};
-void glad_set_post_callback{api}(GLADcallback cb) {{
-    _post_call_callback{api} = cb;
+static GLADcallback _post_call_callback_{spec} = _post_call_callback_default_{spec};
+void glad_set_post_callback_{spec}(GLADcallback cb) {{
+    _post_call_callback_{spec} = cb;
+}}
+'''
+
+# For backwards compatibility
+DEBUG_HEADER_GL_EXT = '''
+GLAPI void glad_set_pre_callback(GLADcallback cb);
+GLAPI void glad_set_post_callback(GLADcallback cb);
+'''
+DEBUG_CODE_GL_EXT = '''
+void glad_set_pre_callback(GLADcallback cb) {{
+    glad_set_pre_callback_{spec}(cb);
+}}
+void glad_set_post_callback(GLADcallback cb) {{
+    glad_set_post_callback_{spec}(cb);
 }}
 '''
 
@@ -69,24 +81,22 @@ class CDebugGenerator(CGenerator):
 
     def write_code_head(self, f):
         CGenerator.write_code_head(self, f)
-        
-        api_name = "_{api}".format(api=self.spec.NAME)
-        if (self.spec.NAME == 'gl'):
-            api_name = '';
-            f.write(DEBUG_CODE_GL)
-        else:
-            f.write(DEBUG_CODE.format(api=api_name))
 
-        f.write(DEBUG_CODE_COMMON.format(api=api_name))
+        if self.spec.NAME == 'gl':
+            f.write(DEBUG_CODE_GL.format(spec=self.spec.NAME))
+        else:
+            f.write(DEBUG_CODE.format(spec=self.spec.NAME))
+
+        f.write(DEBUG_CODE_COMMON.format(spec=self.spec.NAME))
+
+        if self.spec.NAME == 'gl':
+            f.write(DEBUG_CODE_GL_EXT.format(spec=self.spec.NAME))
 
     def write_api_header(self, f):
         CGenerator.write_api_header(self, f)
-
-        api_name = "_{api}".format(api=self.spec.NAME)
-        if (self.spec.NAME == 'gl'):
-            api_name = '';
-
-        f.write(DEBUG_HEADER.format(api=api_name))
+        f.write(DEBUG_HEADER.format(spec=self.spec.NAME))
+        if self.spec.NAME == 'gl':
+            f.write(DEBUG_HEADER_GL_EXT.format(spec=self.spec.NAME))
 
     def write_function_prototype(self, fobj, func):
         fobj.write('typedef {} (APIENTRYP PFN{}PROC)({});\n'.format(
@@ -127,14 +137,10 @@ class CDebugGenerator(CGenerator):
             return_assign = 'ret = '
             return_return = 'return ret;'
 
-        api_name = "_{api}".format(api=self.spec.NAME)
-        if (self.spec.NAME == 'gl'):
-            api_name = '';
-
         fobj.write('\n'.join(filter(None, DEFAULT_DEBUG_IMPL.format(
             name=func.proto.name, args=args, args_callback=args_callback,
             return_def=return_def, return_assign=return_assign,
-            return_return=return_return, api=api_name
+            return_return=return_return, spec=self.spec.NAME
         ).splitlines())))
         fobj.write('\n}\n')
 
