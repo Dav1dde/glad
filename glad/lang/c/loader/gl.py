@@ -219,8 +219,8 @@ class OpenGLCLoader(BaseLoader):
 
     def write_begin_load(self, fobj):
         fobj.write('\tGLVersion.major = 0; GLVersion.minor = 0;\n')
-        fobj.write('\tglGetString = (PFNGLGETSTRINGPROC)load("glGetString");\n')
-        fobj.write('\tif(glGetString == NULL) return 0;\n')
+        fobj.write('\tglad_glGetString = (PFNGLGETSTRINGPROC)load("glGetString");\n')
+        fobj.write('\tif(glad_glGetString == NULL) return 0;\n')
         fobj.write('\tif(glGetString(GL_VERSION) == NULL) return 0;\n')
 
     def write_end_load(self, fobj):
