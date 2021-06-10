@@ -189,7 +189,7 @@ _FIND_VERSION = '''
         NULL
     };
 
-    version = (const char*) glGetString(GL_VERSION);
+    version = (const char*) glad_glGetString(GL_VERSION);
     if (!version) return;
 
     for (i = 0;  prefixes[i];  i++) {
@@ -221,7 +221,7 @@ class OpenGLCLoader(BaseLoader):
         fobj.write('\tGLVersion.major = 0; GLVersion.minor = 0;\n')
         fobj.write('\tglad_glGetString = (PFNGLGETSTRINGPROC)load("glGetString");\n')
         fobj.write('\tif(glad_glGetString == NULL) return 0;\n')
-        fobj.write('\tif(glGetString(GL_VERSION) == NULL) return 0;\n')
+        fobj.write('\tif(glad_glGetString(GL_VERSION) == NULL) return 0;\n')
 
     def write_end_load(self, fobj):
         fobj.write('\treturn GLVersion.major != 0 || GLVersion.minor != 0;\n')
