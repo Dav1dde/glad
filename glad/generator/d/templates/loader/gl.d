@@ -73,6 +73,7 @@ void find_core{{ feature_set.api|api }}() {
         "OpenGL ES-CM ".ptr,
         "OpenGL ES-CL ".ptr,
         "OpenGL ES ".ptr,
+        "OpenGL SC ".ptr,
     ];
 
     glversion = cast(const(char)*)glGetString(GL_VERSION);
