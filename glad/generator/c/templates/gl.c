@@ -159,6 +159,7 @@ static int glad_gl_find_core_{{ api|lower }}({{ template_utils.context_arg(def='
         "OpenGL ES-CM ",
         "OpenGL ES-CL ",
         "OpenGL ES ",
+        "OpenGL SC ",
         NULL
     };
     version = (const char*) {{ 'glGetString'|ctx }}(GL_VERSION);
