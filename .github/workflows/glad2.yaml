@@ -1,0 +1,36 @@
+on: [push, pull_request]
+
+name: glad2
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+      - name: Install dependencies
+        run: sudo apt-get install gcc g++ gcc-mingw-w64 g++-mingw-w64 rustc libglfw3-dev wine winetricks xvfb libxxf86vm-dev libxi-dev libxcursor-dev libxinerama-dev
+      - name: Setup environment
+        run: |
+          mkdir .wine
+          export WINEPREFIX="$(pwd)/.wine"
+          export WINEDLLOVERRIDES="mscoree,mshtml="
+
+          winetricks nocrashdialog
+      - name: Run Tests
+        run: PRINT_MESSAGE=1 xvfb-run --auto-servernum ./utility/test.sh
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: test-report.xml
+          comment_mode: off
