@@ -153,7 +153,7 @@ static int glad_gl_find_extensions_{{ api|lower }}({{ template_utils.context_arg
 }
 
 static int glad_gl_find_core_{{ api|lower }}({{ template_utils.context_arg(def='void') }}) {
-    int i, major, minor;
+    int i;
     const char* version;
     const char* prefixes[] = {
         "OpenGL ES-CM ",
@@ -161,6 +161,8 @@ static int glad_gl_find_core_{{ api|lower }}({{ template_utils.context_arg(def='
         "OpenGL ES ",
         NULL
     };
+    int major = 0;
+    int minor = 0;
     version = (const char*) {{ 'glGetString'|ctx }}(GL_VERSION);
     if (!version) return 0;
     for (i = 0;  prefixes[i];  i++) {
