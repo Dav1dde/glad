@@ -96,14 +96,14 @@ def find_extensions_with_aliases(spec, api, version, profile, extensions):
     """
     feature_set = spec.select(api, version, profile, extensions)
 
-    command_names = [command.name for command in feature_set.commands]
+    command_names = set(command.name for command in feature_set.commands)
 
     new_extensions = set()
     for extension in spec.extensions[api].values():
         if extension in feature_set.extensions:
             continue
 
-        for command in extension.get_requirements(spec, api, profile, feature_set=feature_set).commands:
+        for command in extension.get_requirements(spec, api, profile).commands:
             # find all extensions which have an alias to a selected function
             if command.alias and command.alias in command_names:
                 new_extensions.add(extension.name)
