@@ -18,8 +18,4 @@ There are a few requirements for actually running the test suite:
  * mingw
  * wine
 
-Depending on future generators being added there may be more. To run the complete
-suite with minimal effort you can use the [`glad-test`](https://hub.docker.com/r/dav1d/glad-test/) 
-Docker image:
-
-    docker run --rm -t -v /path/to/glad:/mnt --user $(id -u):$(id -g) dav1d/glad-test
+Depending on future generators being added there may be more.
