@@ -163,13 +163,17 @@ static void glad_{{ spec.name }}_resolve_aliases({{ template_utils.context_arg(d
 {% if options.debug %}
 void gladInstall{{ feature_set.name|api }}Debug() {
 {% for command in feature_set.commands|c_commands %}
+{% call template_utils.protect(command) %}
     glad_debug_{{ command.name }} = glad_debug_impl_{{ command.name }};
+{% endcall %}
 {% endfor %}
 }
 
 void gladUninstall{{ feature_set.name|api }}Debug() {
 {% for command in feature_set.commands|c_commands %}
+{% call template_utils.protect(command) %}
     glad_debug_{{ command.name }} = glad_{{ command.name }};
+{% endcall %}
 {% endfor %}
 }
 {% endif %}

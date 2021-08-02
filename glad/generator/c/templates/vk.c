@@ -134,9 +134,10 @@ static int glad_vk_find_extensions_{{ api|lower }}({{ template_utils.context_arg
 {% call template_utils.protect(extension) %}
     {{ ('GLAD_' + extension.name)|ctx(name_only=True) }} = glad_vk_has_extension("{{ extension.name }}", extension_count, extensions);
 {% endcall %}
-{% else %}
-    (void) glad_vk_has_extension;
 {% endfor %}
+
+    {# Special case: only one extension which is protected -> unused at compile time only on some platforms #}
+    (void) glad_vk_has_extension;
 
     glad_vk_free_extensions(extension_count, extensions);
 
