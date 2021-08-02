@@ -86,7 +86,7 @@ You can download and install glad using the [vcpkg](https://github.com/Microsoft
     vcpkg install glad
 
 The glad port in vcpkg is kept up to date by Microsoft team members and community contributors. If the version is out of date, please [create an issue or pull request](https://github.com/Microsoft/vcpkg) on the vcpkg repository.
-  
+
 When integrating glad into your build system the `--reproducible` option is highly recommended.
 
 ## Generators ##
@@ -131,11 +131,11 @@ void gladUnloadWGL(void);
 ```c
     if(!gladLoadGL()) { exit(-1); }
     printf("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
-    
+
     if(GLAD_GL_EXT_framebuffer_multisample) {
-        /* GL_EXT_framebuffer_multisample is supported */ 
+        /* GL_EXT_framebuffer_multisample is supported */
     }
-    
+
     if(GLAD_GL_VERSION_3_0) {
         /* We support at least OpenGL version 3 */
     }
@@ -195,8 +195,8 @@ E.g. you could disable the callbacks for glClear with `glad_debug_glClear = glad
 `glad_glClear` is the function pointer loaded by glad.
 
 The `glClear` macro is defined as `#define glClear glad_debug_glClear`,
-`glad_debug_glClear` is initialized with a default implementation, which calls 
-the two callbacks and the real function, in this case `glad_glClear`. 
+`glad_debug_glClear` is initialized with a default implementation, which calls
+the two callbacks and the real function, in this case `glad_glClear`.
 
 
 ## FAQ ##
@@ -207,9 +207,9 @@ Easiest way of using glad is through the [webservice](https://glad.dav1d.de).
 
 Alternatively glad integrates with:
 
-* `CMake` 
-* [Conan](https://bintray.com/bincrafters/public-conan/glad%3Abincrafters)   
-[![Download](https://api.bintray.com/packages/bincrafters/public-conan/glad%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/glad%3Abincrafters/_latestVersion)
+* `CMake`
+* [Conan](https://conan.io/center/glad)
+* [VCPKG](https://github.com/Microsoft/vcpkg)
 
 Thanks for all the help and support maintaining those!
 
@@ -230,7 +230,7 @@ Defining `APIENTRY` before including `glad.h` solves this problem:
 
 But make sure you have the correct definition of `APIENTRY` for platforms which define `_WIN32` but don't use `__stdcall`
 
-### What's the license of glad generated code? 
+### What's the license of glad generated code?
 [#101](https://github.com/Dav1dde/glad/issues/101)
 [#253](https://github.com/Dav1dde/glad/issues/253)
 
