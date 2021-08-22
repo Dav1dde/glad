@@ -13,13 +13,13 @@ from glad.sink import LoggingSink
 
 
 _RUST_TYPE_MAPPING = {
-    'void': 'std::os::raw::c_void',
-    'char': 'std::os::raw::c_char',
-    'uchar': 'std::os::raw::c_uchar',
-    'float': 'std::os::raw::c_float',
-    'double': 'std::os::raw::c_double',
-    'int': 'std::os::raw::c_int',
-    'long': 'std::os::raw::c_long',
+    'void': 'c_void',
+    'char': 'c_char',
+    'uchar': 'c_uchar',
+    'float': 'c_float',
+    'double': 'c_double',
+    'int': 'c_int',
+    'long': 'c_long',
     'int8_t': 'i8',
     'uint8_t': 'u8',
     'int16_t': 'i16',
@@ -54,19 +54,19 @@ def enum_type(enum, feature_set):
     if enum.type:
         return {
             'ull': 'u64',
-        }.get(enum.type, 'std::os::raw::c_uint')
+        }.get(enum.type, 'c_uint')
 
     if enum.value.startswith('0x'):
-        return 'u64' if len(enum.value[2:]) > 8 else 'std::os::raw::c_uint'
+        return 'u64' if len(enum.value[2:]) > 8 else 'c_uint'
 
     if enum.name in ('GL_TRUE', 'GL_FALSE'):
-        return 'std::os::raw::c_uchar'
+        return 'c_uchar'
 
     if enum.value.startswith('-'):
-        return 'std::os::raw::c_int'
+        return 'c_int'
 
     if enum.value.endswith('f'):
-        return 'std::os::raw::c_float'
+        return 'c_float'
 
     if enum.value.startswith('"'):
         # TODO figure out correct type
@@ -80,7 +80,7 @@ def enum_type(enum, feature_set):
         # EGL_CAST(type,value) -> type
         return enum.value.split('(', 1)[1].split(',')[0]
 
-    return 'std::os::raw::c_uint'
+    return 'c_uint'
 
 
 def enum_value(enum, feature_set):

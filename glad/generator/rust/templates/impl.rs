@@ -3,31 +3,31 @@ pub use self::types::*;
 pub use self::enumerations::*;
 pub use self::functions::*;
 
-use std::os::raw;
+use std::os::raw::c_void;
 
 struct FnPtr {
-    ptr: *const raw::c_void,
+    ptr: *const c_void,
     is_loaded: bool
 }
 
 impl FnPtr {
     {% if options.mx %}
-    pub fn new(loaded: *const raw::c_void) -> FnPtr {
+    pub fn new(loaded: *const c_void) -> FnPtr {
         if !loaded.is_null() {
             FnPtr { ptr: loaded, is_loaded: true }
         } else {
-            FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void, is_loaded: false }
+            FnPtr { ptr: FnPtr::not_initialized as *const c_void, is_loaded: false }
         }
     }
     {% else %}
 
-    pub fn load<F>(&mut self, loadfn: &mut F, name: &'static str) where F: FnMut(&'static str) -> *const raw::c_void {
+    pub fn load<F>(&mut self, loadfn: &mut F, name: &'static str) where F: FnMut(&'static str) -> *const c_void {
         let loaded = loadfn(name);
         if !loaded.is_null() {
             self.ptr = loaded;
             self.is_loaded = true;
         } else {
-            self.ptr = FnPtr::not_initialized as *const raw::c_void;
+            self.ptr = FnPtr::not_initialized as *const c_void;
             self.is_loaded = false;
         };
     }
@@ -55,7 +55,7 @@ pub mod types {
 pub mod enumerations {
     #![allow(dead_code, non_upper_case_globals, unused_imports)]
 
-    use std;
+    use std::os::raw::*;
     use super::types::*;
 
     {% for enum in feature_set.enums %}
@@ -66,8 +66,8 @@ pub mod enumerations {
 pub mod functions {
     #![allow(non_snake_case, unused_variables, dead_code)]
 
-    use std;
-    use std::mem;
+    use std::mem::transmute;
+    use std::os::raw::*;
     {{ 'use super::FnPtr;' if options.mx else 'use super::storage;' }}
     use super::types::*;
 
@@ -81,7 +81,7 @@ pub mod functions {
     {% endif %}
 
     {% for command in feature_set.commands %}
-    {{ template_utils.protect(command) }} #[inline] pub unsafe fn {{ command.name|no_prefix }}({{ '&self, ' if options.mx }}{{ command|params }}) -> {{ command.proto.ret|type }} { mem::transmute::<_, extern "system" fn({{ command|params('types') }}) -> {{ command.proto.ret|type }}>({{ 'self._' if options.mx else 'storage::' }}{{ command.name|no_prefix }}.ptr)({{ command|params('names') }}) }
+    {{ template_utils.protect(command) }} #[inline] pub unsafe fn {{ command.name|no_prefix }}({{ '&self, ' if options.mx }}{{ command|params }}) -> {{ command.proto.ret|type }} { transmute::<_, extern "system" fn({{ command|params('types') }}) -> {{ command.proto.ret|type }}>({{ 'self._' if options.mx else 'storage::' }}{{ command.name|no_prefix }}.ptr)({{ command|params('names') }}) }
     {% endfor %}
 
     {{ '}' if options.mx }}
@@ -92,16 +92,16 @@ mod storage {
     #![allow(non_snake_case, non_upper_case_globals)]
 
     use super::FnPtr;
-    use std::os::raw;
+    use std::os::raw::*;
 
     {% for command in feature_set.commands %}
-    {{ template_utils.protect(command) }} pub(super) static mut {{ command.name|no_prefix }}: FnPtr = FnPtr { ptr: FnPtr::not_initialized as *const raw::c_void, is_loaded: false };
+    {{ template_utils.protect(command) }} pub(super) static mut {{ command.name|no_prefix }}: FnPtr = FnPtr { ptr: FnPtr::not_initialized as *const c_void, is_loaded: false };
     {% endfor %}
 }
 {% endif %}
 
 {% if options.mx %}
-pub fn load<F>(mut loadfn: F) -> functions::Gl where F: FnMut(&'static str) -> *const raw::c_void {
+pub fn load<F>(mut loadfn: F) -> functions::Gl where F: FnMut(&'static str) -> *const c_void {
     #[allow(unused_mut)]
     let mut gl = Gl {
         {% for command in feature_set.commands %}
@@ -118,7 +118,7 @@ pub fn load<F>(mut loadfn: F) -> functions::Gl where F: FnMut(&'static str) -> *
      gl
 }
 {% else %}
-pub fn load<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const raw::c_void {
+pub fn load<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void {
     unsafe {
         {% for command in feature_set.commands %}
         {{ template_utils.protect(command) }} storage::{{ command.name | no_prefix }}.load(&mut loadfn, "{{ command.name }}");

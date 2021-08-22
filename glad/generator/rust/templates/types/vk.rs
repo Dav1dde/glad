@@ -3,6 +3,7 @@
 {% import 'template_utils.rs' as template_utils with context %}
 
 use std;
+use std::os::raw::*;
 
 // types required for: xcb
 pub type xcb_connection_t = std::os::raw::c_void;
