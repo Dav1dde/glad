@@ -18,7 +18,9 @@ jobs:
           pip install -r requirements.txt
           pip install -r requirements-test.txt
       - name: Install dependencies
-        run: sudo apt-get install gcc g++ gcc-mingw-w64 g++-mingw-w64 rustc libglfw3-dev wine winetricks xvfb libxxf86vm-dev libxi-dev libxcursor-dev libxinerama-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install gcc g++ gcc-mingw-w64 g++-mingw-w64 rustc libglfw3-dev wine winetricks xvfb libxxf86vm-dev libxi-dev libxcursor-dev libxinerama-dev
       - name: Setup environment
         run: |
           mkdir .wine
