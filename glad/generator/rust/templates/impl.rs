@@ -5,39 +5,30 @@ pub use self::functions::*;
 
 use std::os::raw::c_void;
 
+#[derive(Copy, Clone)]
 struct FnPtr {
     ptr: *const c_void,
     is_loaded: bool
 }
 
+#[allow(dead_code)]
 impl FnPtr {
-    {% if options.mx %}
-    pub fn new(loaded: *const c_void) -> FnPtr {
+    fn new(loaded: *const c_void) -> FnPtr {
         if !loaded.is_null() {
             FnPtr { ptr: loaded, is_loaded: true }
         } else {
             FnPtr { ptr: FnPtr::not_initialized as *const c_void, is_loaded: false }
         }
     }
-    {% else %}
 
-    pub fn load<F>(&mut self, loadfn: &mut F, name: &'static str) where F: FnMut(&'static str) -> *const c_void {
+    fn load<F>(&mut self, loadfn: &mut F, name: &'static str) where F: FnMut(&'static str) -> *const c_void {
         let loaded = loadfn(name);
-        if !loaded.is_null() {
-            self.ptr = loaded;
-            self.is_loaded = true;
-        } else {
-            self.ptr = FnPtr::not_initialized as *const c_void;
-            self.is_loaded = false;
-        };
+        *self = Self::new(loaded);
     }
     
-    {% endif %}
-    #[allow(dead_code)]
-    pub fn aliased(&mut self, other: &FnPtr) {
+    fn aliased(&mut self, other: &FnPtr) {
         if !self.is_loaded && other.is_loaded {
-            self.ptr = other.ptr;
-            self.is_loaded = other.is_loaded;
+            *self = *other;
         }
     }
 
@@ -64,24 +55,32 @@ pub mod enumerations {
 }
 
 pub mod functions {
-    #![allow(non_snake_case, unused_variables, dead_code)]
+    #![allow(non_snake_case, unused_variables, dead_code, unused_imports)]
 
     use std::mem::transmute;
     use std::os::raw::*;
-    {{ 'use super::FnPtr;' if options.mx else 'use super::storage;' }}
+    use super::*;
     use super::types::*;
+
+    macro_rules! func {
+        ($fun:ident, $ret:ty, $($name:ident: $typ:ty),*) => {
+            #[inline] pub unsafe fn $fun({{ '&self, ' if options.mx }}$($name: $typ),*) -> $ret {
+                transmute::<_, extern "system" fn($($typ),*) -> $ret>({{ 'self.' if options.mx else 'storage::' }}$fun.ptr)($($name),*)
+            }
+        }
+    }
 
     {% if options.mx %}
     pub struct Gl {
         {% for command in feature_set.commands %}
-        {{ template_utils.protect(command) }} pub(super) _{{ command.name|no_prefix }}: FnPtr,
+        {{ template_utils.protect(command) }} pub(super) {{ command.name|no_prefix }}: FnPtr,
         {% endfor %}
     }
     impl Gl {
     {% endif %}
 
     {% for command in feature_set.commands %}
-    {{ template_utils.protect(command) }} #[inline] pub unsafe fn {{ command.name|no_prefix }}({{ '&self, ' if options.mx }}{{ command|params }}) -> {{ command.proto.ret|type }} { transmute::<_, extern "system" fn({{ command|params('types') }}) -> {{ command.proto.ret|type }}>({{ 'self._' if options.mx else 'storage::' }}{{ command.name|no_prefix }}.ptr)({{ command|params('names') }}) }
+    {{ template_utils.protect(command) }} func!({{ command.name|no_prefix }}, {{ command.proto.ret|type }}, {{ command|params }});
     {% endfor %}
 
     {{ '}' if options.mx }}
@@ -94,8 +93,14 @@ mod storage {
     use super::FnPtr;
     use std::os::raw::*;
 
+    macro_rules! store {
+        ($name:ident) => {
+            pub(super) static mut $name: FnPtr = FnPtr { ptr: FnPtr::not_initialized as *const c_void, is_loaded: false };
+        }
+    }
+
     {% for command in feature_set.commands %}
-    {{ template_utils.protect(command) }} pub(super) static mut {{ command.name|no_prefix }}: FnPtr = FnPtr { ptr: FnPtr::not_initialized as *const c_void, is_loaded: false };
+    {{ template_utils.protect(command) }} store!({{ command.name|no_prefix }});
     {% endfor %}
 }
 {% endif %}
@@ -105,13 +110,13 @@ pub fn load<F>(mut loadfn: F) -> functions::Gl where F: FnMut(&'static str) -> *
     #[allow(unused_mut)]
     let mut gl = Gl {
         {% for command in feature_set.commands %}
-        {{ template_utils.protect(command.name) }} _{{ command.name|no_prefix }}: FnPtr::new(loadfn("{{ command.name }}")),
+        {{ template_utils.protect(command.name) }} {{ command.name|no_prefix }}: FnPtr::new(loadfn("{{ command.name }}")),
         {% endfor %}
     };
 
     {% for command, caliases in aliases|dictsort %}
     {% for alias in caliases|reject('equalto', command) %}
-    {{ template_utils.protect(command) }} gl._{{ command|no_prefix }}.aliased(&gl._{{ alias|no_prefix }});
+    {{ template_utils.protect(command) }} gl.{{ command|no_prefix }}.aliased(&gl.{{ alias|no_prefix }});
     {% endfor %}
     {% endfor %}
 
