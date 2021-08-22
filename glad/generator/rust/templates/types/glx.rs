@@ -99,14 +99,14 @@ pub struct GLXBufferClobberEventSGIX {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct GLXHyperpipeNetworkSGIX {
-    pub pipeName: [std::os::raw::c_char; super::enumerations::GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX as usize],
+    pub pipeName: [std::os::raw::c_char; super::enumerations::HYPERPIPE_PIPE_NAME_LENGTH_SGIX as usize],
     pub networkId: std::os::raw::c_int,
 }
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct GLXHyperpipeConfigSGIX {
-    pub pipeName: [std::os::raw::c_char; super::enumerations::GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX as usize],
+    pub pipeName: [std::os::raw::c_char; super::enumerations::HYPERPIPE_PIPE_NAME_LENGTH_SGIX as usize],
     pub channel: std::os::raw::c_int,
     pub participationType: std::os::raw::c_uint,
     pub timeSlice: std::os::raw::c_int,
@@ -115,7 +115,7 @@ pub struct GLXHyperpipeConfigSGIX {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct GLXPipeRect {
-    pub pipeName: [std::os::raw::c_char; super::enumerations::GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX as usize],
+    pub pipeName: [std::os::raw::c_char; super::enumerations::HYPERPIPE_PIPE_NAME_LENGTH_SGIX as usize],
     pub srcXOrigin: std::os::raw::c_int,
     pub srcYOrigin: std::os::raw::c_int,
     pub srcWidth: std::os::raw::c_int,
@@ -129,7 +129,7 @@ pub struct GLXPipeRect {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct GLXPipeRectLimits {
-    pub pipeName: [std::os::raw::c_char; super::enumerations::GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX as usize],
+    pub pipeName: [std::os::raw::c_char; super::enumerations::HYPERPIPE_PIPE_NAME_LENGTH_SGIX as usize],
     pub XOrigin: std::os::raw::c_int,
     pub YOrigin: std::os::raw::c_int,
     pub maxHeight: std::os::raw::c_int,

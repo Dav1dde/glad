@@ -48,7 +48,7 @@ fn draw(window: &mut Window) {
     window.source.make_current();
     unsafe {
         window.gl.ClearColor(0.7, 0.9, 0.1, 1.0);
-        window.gl.Clear(gl::GL_COLOR_BUFFER_BIT);
+        window.gl.Clear(gl::COLOR_BUFFER_BIT);
     }
     window.source.swap_buffers();
 }

@@ -59,7 +59,7 @@ pub mod enumerations {
     use super::types::*;
 
     {% for enum in feature_set.enums %}
-    pub const {{ enum.name }}: {{ enum|enum_type }} = {{ enum|enum_value }};
+    pub const {{ enum.name|no_prefix }}: {{ enum|enum_type }} = {{ enum|enum_value }};
     {% endfor %}
 }
 

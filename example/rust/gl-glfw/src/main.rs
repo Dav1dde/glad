@@ -23,7 +23,7 @@ fn main() {
 
         unsafe {
             gl::ClearColor(0.7, 0.9, 0.1, 1.0);
-            gl::Clear(gl::GL_COLOR_BUFFER_BIT);
+            gl::Clear(gl::COLOR_BUFFER_BIT);
         }
 
         window.swap_buffers();
