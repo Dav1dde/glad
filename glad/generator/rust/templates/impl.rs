@@ -5,6 +5,8 @@ pub use self::functions::*;
 
 use std::os::raw::c_void;
 
+{% set ctx_name = feature_set.name | capitalize %}
+
 #[derive(Copy, Clone)]
 struct FnPtr {
     ptr: *const c_void,
@@ -13,17 +15,16 @@ struct FnPtr {
 
 #[allow(dead_code)]
 impl FnPtr {
-    fn new(loaded: *const c_void) -> FnPtr {
-        if !loaded.is_null() {
-            FnPtr { ptr: loaded, is_loaded: true }
+    fn new(ptr: *const c_void) -> FnPtr {
+        if !ptr.is_null() {
+            FnPtr { ptr, is_loaded: true }
         } else {
             FnPtr { ptr: FnPtr::not_initialized as *const c_void, is_loaded: false }
         }
     }
 
-    fn load<F>(&mut self, loadfn: &mut F, name: &'static str) where F: FnMut(&'static str) -> *const c_void {
-        let loaded = loadfn(name);
-        *self = Self::new(loaded);
+    fn set_ptr(&mut self, ptr: *const c_void) {
+        *self = Self::new(ptr);
     }
     
     fn aliased(&mut self, other: &FnPtr) {
@@ -71,12 +72,17 @@ pub mod functions {
     }
 
     {% if options.mx %}
-    pub struct Gl {
+    pub struct {{ ctx_name }} {
         {% for command in feature_set.commands %}
         {{ template_utils.protect(command) }} pub(super) {{ command.name|no_prefix }}: FnPtr,
         {% endfor %}
     }
-    impl Gl {
+
+    {% if not spec.name | capitalize == ctx_name %}
+    pub type {{ spec.name | capitalize }} = {{ ctx_name }};
+    {% endif %}
+
+    impl {{ ctx_name }} {
     {% endif %}
 
     {% for command in feature_set.commands %}
@@ -106,9 +112,9 @@ mod storage {
 {% endif %}
 
 {% if options.mx %}
-pub fn load<F>(mut loadfn: F) -> functions::Gl where F: FnMut(&'static str) -> *const c_void {
+pub fn load<F>(mut loadfn: F) -> functions::{{ ctx_name }} where F: FnMut(&'static str) -> *const c_void {
     #[allow(unused_mut)]
-    let mut gl = Gl {
+    let mut ctx = {{ ctx_name }} {
         {% for command in feature_set.commands %}
         {{ template_utils.protect(command.name) }} {{ command.name|no_prefix }}: FnPtr::new(loadfn("{{ command.name }}")),
         {% endfor %}
@@ -116,17 +122,17 @@ pub fn load<F>(mut loadfn: F) -> functions::Gl where F: FnMut(&'static str) -> *
 
     {% for command, caliases in aliases|dictsort %}
     {% for alias in caliases|reject('equalto', command) %}
-    {{ template_utils.protect(command) }} gl.{{ command|no_prefix }}.aliased(&gl.{{ alias|no_prefix }});
+    {{ template_utils.protect(command) }} ctx.{{ command|no_prefix }}.aliased(&ctx.{{ alias|no_prefix }});
     {% endfor %}
     {% endfor %}
 
-     gl
+     ctx
 }
 {% else %}
 pub fn load<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void {
     unsafe {
         {% for command in feature_set.commands %}
-        {{ template_utils.protect(command) }} storage::{{ command.name | no_prefix }}.load(&mut loadfn, "{{ command.name }}");
+        {{ template_utils.protect(command) }} storage::{{ command.name | no_prefix }}.set_ptr(loadfn("{{ command.name }}"));
         {% endfor %}
 
         {% for command, caliases in aliases|dictsort %}

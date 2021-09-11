@@ -219,6 +219,6 @@ class RustGenerator(JinjaGenerator):
         return [
             ('Cargo.toml', 'glad-{}/Cargo.toml'.format(feature_set.name)),
             ('lib.rs', 'glad-{}/src/lib.rs'.format(feature_set.name)),
-            ('impl.rs'.format(spec.name), 'glad-{}/src/{}.rs'.format(feature_set.name, spec.name))
+            ('impl.rs', 'glad-{}/src/{}.rs'.format(feature_set.name, spec.name))
         ]
 
