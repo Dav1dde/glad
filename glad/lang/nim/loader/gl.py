@@ -106,7 +106,7 @@ _FIND_VERSION = '''  # Thank you @elmindreda
 
 '''
 
-_BEGIN_LOAD = '''  glGetString = cast[proc (name: GLenum): ptr GLubyte {.cdecl, gcsafe.}](load("glGetString"))
+_BEGIN_LOAD = '''  glGetString = cast[proc (name: GLenum): ptr GLubyte {.stdcall.}](load("glGetString"))
   if glGetString == nil: return false
 
   var glVersion = cast[cstring](glGetString(GL_VERSION))
