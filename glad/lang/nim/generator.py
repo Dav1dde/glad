@@ -62,44 +62,44 @@ NIMTYPES = {
     },
 
     'gl': {
-        'GLbitfield': 'uint32',
         'GLboolean': 'bool',
         'GLbyte': 'int8',
         'GLchar': 'char',
-        'GLcharARB': 'byte',
-        'GLclampd': 'float64',
-        'GLclampf': 'float32',
-        'GLclampx': 'int32',
-        'GLdouble': 'float64',
-        'GLeglImageOES': 'distinct pointer',
-        'GLenum': 'uint32',
+        'GLcharARB': 'char',
+        'GLubyte': 'uint8',
+        'GLshort': 'int16',
+        'GLushort': 'uint16',
+        'GLint': 'int32',
+        'GLuint': 'uint32',
         'GLfixed': 'int32',
-        'GLfloat': 'float32',
+        'GLint64': 'int64',
+        'GLint64EXT': 'int64',
+        'GLuint64': 'uint64',
+        'GLuint64EXT': 'uint64',
+        'GLsizei': 'int32',
+        'GLenum': 'distinct uint32',
+        'GLbitfield': 'distinct uint32',
         'GLhalf': 'uint16',
         'GLhalfARB': 'uint16',
         'GLhalfNV': 'uint16',
+        'GLfloat': 'float32',
+        'GLclampf': 'float32',
+        'GLdouble': 'float64',
+        'GLclampd': 'float64',
+        'GLclampx': 'int32',
+        'GLintptr': 'cint',
+        'GLintptrARB': 'cint',
+        'GLsizeiptr': 'cint',
+        'GLsizeiptrARB': 'cint',
+        'GLsync': 'distinct pointer',
+        'GLeglClientBufferEXT': 'pointer', # GL_EXT_external_buffer
+        'GLVULKANPROCNV': 'pointer', # GL_NV_draw_vulkan_image
+        'GLeglImageOES': 'distinct pointer',
         'GLhandleARB': 'uint32',
-        'GLint': 'int32',
-        'GLint64': 'int64',
-        'GLint64EXT': 'int64',
-        'GLintptr': 'int',
-        'GLintptrARB': 'int',
-        'GLshort': 'int16',
-        'GLsizei': 'int32',
-        'GLsizeiptr': 'int',
-        'GLsizeiptrARB': 'int',
-        'GLubyte': 'uint8',
-        'GLuint': 'uint32',
-        'GLuint64': 'uint64',
-        'GLuint64EXT': 'uint64',
-        'GLushort': 'uint16',
         'GLvdpauSurfaceNV': 'int32',
         'GLvoid': 'pointer',
-        'GLsync': 'distinct pointer',
-        'GLeglClientBufferEXT': 'pointer',  # GL_EXT_external_buffer
-        'GLVULKANPROCNV': 'pointer',  # GL_NV_draw_vulkan_image
         'ClContext': 'distinct pointer',
-        'ClEvent': 'distinct pointer'
+        'ClEvent': 'distinct pointer',
     },
     'egl': {
         'EGLAttrib': 'int32',
@@ -123,7 +123,7 @@ NIMTYPES = {
         'EGLTimeKHR': 'uint64',
         'EGLTime': 'uint64',
         'EGLTimeNV': 'uint64',
-        'EGLenum': 'uint32',
+        'EGLenum': 'distinct uint32',
         'EGLint': 'int32',
         'EGLsizeiANDROID': 'distinct pointer',
         'EGLuint64KHR': 'uint64',
@@ -132,9 +132,9 @@ NIMTYPES = {
 #        '__eglMustCastToProperFunctionPointerType': 'void function()'
     },
     'glx': {
-        'GLbitfield': 'uint32',
+        'GLbitfield': 'distinct uint32',
         'GLboolean': 'uint8',
-        'GLenum': 'uint32',
+        'GLenum': 'distinct uint32',
         'GLfloat': 'float32',
         'GLint': 'int32',
         'GLintptr': 'int32',
@@ -144,9 +144,9 @@ NIMTYPES = {
         'GLuint': 'uint32'
     },
     'wgl': {
-        'GLbitfield': 'uint32',
+        'GLbitfield': 'distinct uint32',
         'GLboolean': 'uint8',
-        'GLenum': 'uint32',
+        'GLenum': 'distinct uint32',
         'GLfloat': 'float32',
         'GLint': 'int32',
         'GLsizei': 'int32',
@@ -159,13 +159,13 @@ NIMTYPES = {
     'SpecialNumbers': {
         'gl': [
             ('GL_FALSE', '0', None),
-            ('GL_INVALID_INDEX', '0xFFFFFFFF', 'uint32'),
+            ('GL_INVALID_INDEX', "0xFFFFFFFF'u32", None),
             ('GL_NONE', '0', None),
             ('GL_NONE_OES', '0', None),
             ('GL_NO_ERROR', '0', None),
             ('GL_ONE', '1', None),
-            ('GL_TIMEOUT_IGNORED', '0xFFFFFFFFFFFFFFFF', 'uint64'),
-            ('GL_TIMEOUT_IGNORED_APPLE', '0xFFFFFFFFFFFFFFFF', 'uint64'),
+            ('GL_TIMEOUT_IGNORED', "0xFFFFFFFFFFFFFFFF'u64", None),
+            ('GL_TIMEOUT_IGNORED_APPLE', "0xFFFFFFFFFFFFFFFF'u64", None),
             ('GL_TRUE', '1', None),
             ('GL_VERSION_ES_CL_1_0', '1', None),
             ('GL_VERSION_ES_CL_1_1', '1', None),
@@ -357,12 +357,24 @@ class NimGenerator(Generator):
         self.write_enums(features)
         self.write_funcs(features)
 
+    def get_type_from_enum_name(self, name):
+        return 'GLbitfield' if '_BIT' in name else 'GLenum'
+
     def write_enums(self, features):
         f = self._f_gl
 
         written = set()
 
-        f.write('\n# Enums\nconst\n')
+        f.write('''
+# Enums
+
+proc `==`*(a, b: GLenum): bool {.borrow.}
+proc `==`*(a, b: GLbitfield): bool {.borrow.}
+proc `or`*(a, b: GLbitfield): GLbitfield {.borrow.}
+proc hash*(x: GLenum): int = x.int
+
+const
+''')
         for v in sorted(self.TYPE_DICT['SpecialNumbers'][self.spec.NAME]):
             written.add(v[0])
             self.write_enum(f, *v)
@@ -374,7 +386,8 @@ class NimGenerator(Generator):
                     written.add(enum.name)
                     continue
                 if enum.name not in written:
-                    self.write_enum(f, enum.name, enum.value)
+                    type = self.get_type_from_enum_name(enum.name)
+                    self.write_enum(f, enum.name, enum.value, type)
                 written.add(enum.name)
         f.write('\n')
 
@@ -421,7 +434,7 @@ class NimGenerator(Generator):
             for enum in ext.enums:
                 if not enum.name in written and not enum.group == 'SpecialNumbers':
                     type = (None if enum.group == 'TransformFeedbackTokenNV'
-                                 else 'GLenum')
+                                 else self.get_type_from_enum_name(enum.name))
                     self.write_enum(f, enum.name, enum.value, type)
                 written.add(enum.name)
             written.add(ext.name)
@@ -457,7 +470,7 @@ class NimGenerator(Generator):
         if (ret != 'void'):
           fobj.write(': {}'.format(ret))
 
-        fobj.write(' {.cdecl, gcsafe.}')
+        fobj.write(' {.stdcall.}')
 
 # TODO
 #    def write_function_var(self, fobj, func):
@@ -512,10 +525,7 @@ class NimGenerator(Generator):
     def write_enum(self, fobj, name, value, type='GLenum'):
         fobj.write('  {}*'.format(self.map_enum_name(name)))
         if type:
-          if type == 'uint64':  # bit hacky...
-            fobj.write(": {0} = {1}'u64".format(type, value))
-          else:
-            fobj.write(': {0} = {0}({1})'.format(type, value))
+          fobj.write(' = {1}.{0}'.format(type, value))
         else:
           fobj.write(' = {}'.format(value))
         fobj.write('\n')
