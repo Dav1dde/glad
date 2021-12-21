@@ -4,7 +4,7 @@ from glad.parse import Specification, Require
 class EGL(Specification):
     DISPLAY_NAME = 'EGL'
 
-    API = 'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/'
+    API = 'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/main/api/'
     NAME = 'egl'
 
     def protections(self, symbol, api=None, profile=None, feature_set=None):
@@ -14,7 +14,7 @@ class EGL(Specification):
 class GL(Specification):
     DISPLAY_NAME = 'OpenGL'
 
-    API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/master/xml/'
+    API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/main/xml/'
     NAME = 'gl'
 
     def _magic_require(self, api, profile):
@@ -33,7 +33,7 @@ class GL(Specification):
 class GLX(Specification):
     DISPLAY_NAME = 'GLX'
 
-    API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/master/xml/'
+    API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/main/xml/'
     NAME = 'glx'
 
     def protections(self, symbol, api=None, profile=None, feature_set=None):
@@ -43,7 +43,7 @@ class GLX(Specification):
 class WGL(Specification):
     DISPLAY_NAME = 'WGL'
 
-    API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/master/xml/'
+    API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/main/xml/'
     NAME = 'wgl'
 
     def protections(self, symbol, api=None, profile=None, feature_set=None):
@@ -53,7 +53,7 @@ class WGL(Specification):
 class VK(Specification):
     DISPLAY_NAME = 'Vulkan'
 
-    API = 'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/master/xml/'
+    API = 'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/main/xml/'
     NAME = 'vk'
 
     def _magic_require(self, api, profile):
