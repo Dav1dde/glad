@@ -2,12 +2,12 @@ from glad.parse import Spec
 
 
 class EGLSpec(Spec):
-    API = 'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/'
+    API = 'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/main/api/'
     NAME = 'egl'
 
 
 class GLSpec(Spec):
-    API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/master/xml/'
+    API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/main/xml/'
     NAME = 'gl'
 
     def __init__(self, root):
@@ -34,12 +34,12 @@ class GLSpec(Spec):
 
 
 class GLXSpec(Spec):
-    API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/master/xml/'
+    API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/main/xml/'
     NAME = 'glx'
 
 
 class WGLSpec(Spec):
-    API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/master/xml/'
+    API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/main/xml/'
     NAME = 'wgl'
 
 
