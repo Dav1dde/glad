@@ -572,9 +572,10 @@
         <enum value="0x31D7" name="EGL_PLATFORM_GBM_MESA" alias="EGL_PLATFORM_GBM_KHR"/>
         <enum value="0x31D8" name="EGL_PLATFORM_WAYLAND_KHR"/>
         <enum value="0x31D8" name="EGL_PLATFORM_WAYLAND_EXT" alias="EGL_PLATFORM_WAYLAND_KHR"/>
-            <unused start="0x31DC" end="0x31DC"/>
+        <enum value="0x31DC" name="EGL_PLATFORM_XCB_EXT"/>
         <enum value="0x31DD" name="EGL_PLATFORM_SURFACELESS_MESA"/>
-            <unused start="0x31DE" end="0x31DF"/>
+        <enum value="0x31DE" name="EGL_PLATFORM_XCB_SCREEN_EXT"/>
+        <enum value="0x31DF" name="EGL_PRESENT_OPAQUE_EXT"/>
     </enums>
 
     <!-- Due to an oversight in development, these enums alias the above MESA
@@ -730,7 +731,9 @@
         <enum value="0x3288" name="EGL_COLOR_COMPONENT_TYPE_INTEGER_ARM"/>
             <unused start="0x3289" end="0x3289"/>
         <enum value="0x328A" name="EGL_SYNC_PRIOR_COMMANDS_IMPLICIT_EXTERNAL_ARM"/>
-            <unused start="0x328B" end="0x328F"/>
+            <unused start="0x328B" end="0x328D"/>
+        <enum value="0x328E" name="EGL_SURFACE_COMPRESSION_PLANE1_EXT"/>
+        <enum value="0x328F" name="EGL_SURFACE_COMPRESSION_PLANE2_EXT"/>
     </enums>
 
     <enums namespace="EGL" start="0x3290" end="0x329F" vendor="MESA" comment="Reserved for John K&#229;re Alsaker (Public bug 757)">
@@ -828,7 +831,8 @@
         <enum value="0x333A" name="EGL_COLOR_COMPONENT_TYPE_FIXED_EXT"/>
         <enum value="0x333B" name="EGL_COLOR_COMPONENT_TYPE_FLOAT_EXT"/>
         <enum value="0x333C" name="EGL_DRM_MASTER_FD_EXT"/>
-            <unused start="0x333D" end="0x333E"/>
+        <enum value="0x333D" name="EGL_OPENWF_DEVICE_EXT"/>
+            <unused start="0x333E"/>
         <enum value="0x333F" name="EGL_GL_COLORSPACE_BT2020_LINEAR_EXT"/>
         <enum value="0x3340" name="EGL_GL_COLORSPACE_BT2020_PQ_EXT"/>
         <enum value="0x3341" name="EGL_SMPTE2086_DISPLAY_PRIMARY_RX_EXT"/>
@@ -852,7 +856,10 @@
         <enum value="0x3352" name="EGL_TRACK_REFERENCES_KHR"/>
             <unused start="0x3353" end="0x3356"/>
         <enum value="0x3357" name="EGL_CONTEXT_PRIORITY_REALTIME_NV"/>
-            <unused start="0x3358" end="0x335E"/>
+            <unused start="0x3358" end="0x335B"/>
+        <enum value="0x335C" name="EGL_DEVICE_UUID_EXT"/>
+        <enum value="0x335D" name="EGL_DRIVER_UUID_EXT"/>
+        <enum value="0x335E" name="EGL_DRIVER_NAME_EXT"/>
         <enum value="0x335F" name="EGL_RENDERER_EXT"/>
         <enum value="0x3360" name="EGL_CTA861_3_MAX_CONTENT_LIGHT_LEVEL_EXT"/>
         <enum value="0x3361" name="EGL_CTA861_3_MAX_FRAME_AVERAGE_LEVEL_EXT"/>
@@ -877,7 +884,8 @@
         <enum value="0x3374" name="EGL_STREAM_IMAGE_ADD_NV"/>
         <enum value="0x3375" name="EGL_STREAM_IMAGE_REMOVE_NV"/>
         <enum value="0x3376" name="EGL_STREAM_IMAGE_AVAILABLE_NV"/>
-            <unused start="0x3377" end="0x339F"/>
+        <enum value="0x3377" name="EGL_DRM_RENDER_NODE_FILE_EXT"/>
+            <unused start="0x3378" end="0x339F"/>
     </enums>
 
     <enums namespace="EGL" start="0x33A0" end="0x33AF" vendor="ANGLE" comment="Reserved for Shannon Woods (Bug 13175)">
@@ -1021,9 +1029,32 @@
     </enums>
 
     <enums namespace="EGL" start="0x34B0" end="0x34BF" vendor="ARM" comment="Reserved for Jan-Harald Fredriksen (via github pull request)">
-        <unused start="0x34B0" end="0x34BF"/>
+        <enum value="0x34B0" name="EGL_SURFACE_COMPRESSION_EXT"/>
+        <enum value="0x34B1" name="EGL_SURFACE_COMPRESSION_FIXED_RATE_NONE_EXT"/>
+        <enum value="0x34B2" name="EGL_SURFACE_COMPRESSION_FIXED_RATE_DEFAULT_EXT"/>
+            <unused start="0x34B3" end="0x34B3"/>
+        <enum value="0x34B4" name="EGL_SURFACE_COMPRESSION_FIXED_RATE_1BPC_EXT"/>
+        <enum value="0x34B5" name="EGL_SURFACE_COMPRESSION_FIXED_RATE_2BPC_EXT"/>
+        <enum value="0x34B6" name="EGL_SURFACE_COMPRESSION_FIXED_RATE_3BPC_EXT"/>
+        <enum value="0x34B7" name="EGL_SURFACE_COMPRESSION_FIXED_RATE_4BPC_EXT"/>
+        <enum value="0x34B8" name="EGL_SURFACE_COMPRESSION_FIXED_RATE_5BPC_EXT"/>
+        <enum value="0x34B9" name="EGL_SURFACE_COMPRESSION_FIXED_RATE_6BPC_EXT"/>
+        <enum value="0x34BA" name="EGL_SURFACE_COMPRESSION_FIXED_RATE_7BPC_EXT"/>
+        <enum value="0x34BB" name="EGL_SURFACE_COMPRESSION_FIXED_RATE_8BPC_EXT"/>
+        <enum value="0x34BC" name="EGL_SURFACE_COMPRESSION_FIXED_RATE_9BPC_EXT"/>
+        <enum value="0x34BD" name="EGL_SURFACE_COMPRESSION_FIXED_RATE_10BPC_EXT"/>
+        <enum value="0x34BE" name="EGL_SURFACE_COMPRESSION_FIXED_RATE_11BPC_EXT"/>
+        <enum value="0x34BF" name="EGL_SURFACE_COMPRESSION_FIXED_RATE_12BPC_EXT"/>
     </enums>
 
+    <enums namespace="EGL" start="0x34C0" end="0x34CF" vendor="EXT" comment="Reserved for Robert Mader (PR 124)">
+        <enum value="0x34C0" name="EGL_CONFIG_SELECT_GROUP_EXT"/>
+            <unused start="0x34C1" end="0x34CF"/>
+    </enums>
+
+    <enums namespace="EGL" start="0x34D0" end="0x34DF" vendor="ANGLE" comment="Reserved for Peng Huang - ANGLE (via github pull request)">
+            <unused start="0x34D0" end="0x34DF"/>
+    </enums>
 <!-- Please remember that new enumerant allocations must be obtained by
      request to the Khronos API registrar (see comments at the top of this
      file) File requests in the Khronos Bugzilla, EGL project, Registry
@@ -1033,8 +1064,8 @@
 
 <!-- Reservable for future use. To generate a new range, allocate multiples
      of 16 starting at the lowest available point in this block. -->
-    <enums namespace="EGL" start="0x34C0" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
-            <unused start="0x34C0" end="0x3FFF"/>
+    <enums namespace="EGL" start="0x34E0" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
+            <unused start="0x34E0" end="0x3FFF"/>
     </enums>
 
     <enums namespace="EGL" start="0x8F70" end="0x8F7F" vendor="HI" comment="For Mark Callow, Khronos bug 4055. Shared with GL.">
@@ -1365,6 +1396,13 @@
             <proto><ptype>EGLint</ptype> <name>eglGetError</name></proto>
         </command>
         <command>
+            <proto><ptype>EGLBoolean</ptype> <name>eglGetMscRateANGLE</name></proto>
+            <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+            <param><ptype>EGLSurface</ptype> <name>surface</name></param>
+            <param><ptype>EGLint</ptype> *<name>numerator</name></param>
+            <param><ptype>EGLint</ptype> *<name>denominator</name></param>
+        </command>
+        <command>
             <proto><ptype>EGLClientBuffer</ptype> <name>eglGetNativeClientBufferANDROID</name></proto>
             <param>const struct <ptype>AHardwareBuffer</ptype> *<name>buffer</name></param>
         </command>
@@ -1676,6 +1714,15 @@
             <param><ptype>EGLint</ptype> <name>name</name></param>
         </command>
         <command>
+            <proto><ptype>EGLBoolean</ptype> <name>eglQuerySupportedCompressionRatesEXT</name></proto>
+            <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+            <param><ptype>EGLConfig</ptype> *<name>configs</name></param>
+            <param>const <ptype>EGLAttrib</ptype> *<name>attrib_list</name></param>
+            <param><ptype>EGLint</ptype> *<name>rates</name></param>
+            <param><ptype>EGLint</ptype> <name>rate_size</name></param>
+            <param><ptype>EGLint</ptype> *<name>num_rates</name></param>
+        </command>
+        <command>
             <proto><ptype>EGLBoolean</ptype> <name>eglQuerySurface</name></proto>
             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
             <param><ptype>EGLSurface</ptype> <name>surface</name></param>
@@ -1972,6 +2019,14 @@
              <param><ptype>EGLStreamKHR</ptype> <name>stream</name></param>
              <param><ptype>EGLImage</ptype> <name>image</name></param>
              <param><ptype>EGLSync</ptype> <name>sync</name></param>
+        </command>
+        <command>
+             <proto><ptype>EGLBoolean</ptype> <name>eglQueryDeviceBinaryEXT</name></proto>
+             <param><ptype>EGLDeviceEXT</ptype> <name>device</name></param>
+             <param><ptype>EGLint</ptype> <name>name</name></param>
+             <param><ptype>EGLint</ptype> <name>max_size</name></param>
+             <param>void *<name>value</name></param>
+             <param>EGLint *<name>size</name></param>
         </command>
     </commands>
 
@@ -2339,6 +2394,11 @@
                 <enum name="EGL_D3D_TEXTURE_2D_SHARE_HANDLE_ANGLE"/>
             </require>
         </extension>
+        <extension name="EGL_ANGLE_sync_control_rate" supported="egl">
+            <require>
+                <command name="eglGetMscRateANGLE"/>
+            </require>
+        </extension>
         <extension name="EGL_ANGLE_window_fixed_size" supported="egl">
             <require>
                 <enum name="EGL_FIXED_SIZE_ANGLE"/>
@@ -2366,6 +2426,11 @@
                 <enum name="EGL_SYNC_CLIENT_SIGNAL_EXT"/>
                 <command name="eglClientSignalSyncEXT"/>
             </require>
+        </extension>
+        <extension name="EGL_EXT_config_select_group" supported="egl">
+          <require>
+                <enum name="EGL_CONFIG_SELECT_GROUP_EXT"/>
+          </require>
         </extension>
         <extension name="EGL_EXT_create_context_robustness" supported="egl">
             <require>
@@ -2400,6 +2465,7 @@
         <extension name="EGL_EXT_device_openwf" supported="egl">
             <require>
                 <enum name="EGL_OPENWF_DEVICE_ID_EXT"/>
+                <enum name="EGL_OPENWF_DEVICE_EXT"/>
             </require>
         </extension>
         <extension name="EGL_EXT_device_query" supported="egl">
@@ -2561,6 +2627,17 @@
             <require>
                 <enum name="EGL_PLATFORM_X11_EXT"/>
                 <enum name="EGL_PLATFORM_X11_SCREEN_EXT"/>
+            </require>
+        </extension>
+        <extension name="EGL_EXT_platform_xcb" supported="egl">
+            <require>
+                <enum name="EGL_PLATFORM_XCB_EXT"/>
+                <enum name="EGL_PLATFORM_XCB_SCREEN_EXT"/>
+            </require>
+        </extension>
+        <extension name="EGL_EXT_present_opaque" supported="egl">
+            <require>
+                <enum name="EGL_PRESENT_OPAQUE_EXT"/>
             </require>
         </extension>
         <extension name="EGL_EXT_protected_content" supported="egl">
@@ -3336,6 +3413,28 @@
                 <enum name="EGL_CTA861_3_MAX_FRAME_AVERAGE_LEVEL_EXT"/>
             </require>
         </extension>
+        <extension name="EGL_EXT_surface_compression" supported="egl">
+            <require>
+                <enum name="EGL_SURFACE_COMPRESSION_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_PLANE1_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_PLANE2_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_FIXED_RATE_NONE_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_FIXED_RATE_DEFAULT_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_FIXED_RATE_1BPC_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_FIXED_RATE_2BPC_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_FIXED_RATE_3BPC_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_FIXED_RATE_4BPC_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_FIXED_RATE_5BPC_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_FIXED_RATE_6BPC_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_FIXED_RATE_7BPC_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_FIXED_RATE_8BPC_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_FIXED_RATE_9BPC_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_FIXED_RATE_10BPC_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_FIXED_RATE_11BPC_EXT"/>
+                <enum name="EGL_SURFACE_COMPRESSION_FIXED_RATE_12BPC_EXT"/>
+                <command name="eglQuerySupportedCompressionRatesEXT"/>
+            </require>
+        </extension>
         <extension name="EGL_EXT_image_implicit_sync_control" supported="egl">
             <require>
                 <enum name="EGL_IMPORT_SYNC_TYPE_EXT"/>
@@ -3396,6 +3495,19 @@
         <extension name="EGL_EXT_device_query_name" supported="egl">
             <require>
                 <enum name="EGL_RENDERER_EXT"/>
+            </require>
+        </extension>
+        <extension name="EGL_EXT_device_persistent_id" supported="egl">
+            <require>
+                <enum name="EGL_DEVICE_UUID_EXT"/>
+                <enum name="EGL_DRIVER_UUID_EXT"/>
+                <enum name="EGL_DRIVER_NAME_EXT"/>
+                <command name="eglQueryDeviceBinaryEXT"/>
+            </require>
+        </extension>
+        <extension name="EGL_EXT_device_drm_render_node" supported="egl">
+            <require>
+                <enum name="EGL_DRM_RENDER_NODE_FILE_EXT"/>
             </require>
         </extension>
     </extensions>

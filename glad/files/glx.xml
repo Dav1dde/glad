@@ -1761,6 +1761,11 @@ typedef unsigned __int64 uint64_t;
                 <enum name="GLX_FRAMEBUFFER_SRGB_CAPABLE_EXT"/>
             </require>
         </extension>
+        <extension name="GLX_EXT_get_drawable_type" supported="glx">
+            <require>
+                <enum name="GLX_DRAWABLE_TYPE"/>
+            </require>
+        </extension>
         <extension name="GLX_EXT_import_context" supported="glx">
             <require>
                 <enum name="GLX_SHARE_CONTEXT_EXT"/>
