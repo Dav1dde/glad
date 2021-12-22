@@ -71,6 +71,8 @@ typedef {{ type.category }} {% if type.alias %}{{ type.alias }}{% else %}{{ type
 #define {{ type.name }} {{ type.alias }}
 {%- elif type._raw|trim -%}
 {{ type._raw|trim|replace('APIENTRY', 'GLAD_API_PTR') }}
+{%- elif type.category == 'include' %}
+#include <{{ type.name }}>
 {%- endif -%}
 {% endcall %}
 {% endmacro %}
