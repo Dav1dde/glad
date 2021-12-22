@@ -58,8 +58,8 @@ function download_if_required {
 echo -e "====================== Generating and compiling C/C++: ======================"
 
 rm -rf build
-download_if_required build/include/EGL/eglplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/EGL/eglplatform.h"
-download_if_required build/include/KHR/khrplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h"
+download_if_required build/include/EGL/eglplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/main/api/EGL/eglplatform.h"
+download_if_required build/include/KHR/khrplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/main/api/KHR/khrplatform.h"
 ${PYTHON} -m glad --api="egl" --out-path=build c
 c_compile -Ibuild/include build/src/egl.c ${GCC_FLAGS}
 cpp_compile -Ibuild/include build/src/egl.c ${GPP_FLAGS}
@@ -102,8 +102,8 @@ mingwcpp_compile -Ibuild/include build/src/wgl.c ${GPP_FLAGS}
 echo -e "====================== Generating and compiling C/C++ Debug: ======================"
 
 rm -rf build
-download_if_required build/include/EGL/eglplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/EGL/eglplatform.h"
-download_if_required build/include/KHR/khrplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h"
+download_if_required build/include/EGL/eglplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/main/api/EGL/eglplatform.h"
+download_if_required build/include/KHR/khrplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/main/api/KHR/khrplatform.h"
 ${PYTHON} -m glad --api="egl" --out-path=build c --debug
 c_compile -Ibuild/include build/src/egl.c ${GCC_FLAGS}
 cpp_compile -Ibuild/include build/src/egl.c ${GPP_FLAGS}

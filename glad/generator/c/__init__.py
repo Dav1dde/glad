@@ -255,17 +255,17 @@ class CGenerator(JinjaGenerator):
         Header(
             'khrplatform',
             'KHR/khrplatform.h',
-            'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h'
+            'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/main/api/KHR/khrplatform.h'
         ),
         Header(
             'eglplatform',
             'EGL/eglplatform.h',
-            'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/EGL/eglplatform.h'
+            'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/main/api/EGL/eglplatform.h'
         ),
         Header(
             'vk_platform',
             'vk_platform.h',
-            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/master/include/vulkan/vk_platform.h'
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/main/include/vulkan/vk_platform.h'
         ),
     ]
 
