@@ -319,6 +319,8 @@ class Specification(object):
                 else:
                     enums_element = enums_element[0]
 
+                    t.bitwidth = enums_element.get('bitwidth')
+
                     kwargs = dict(namespace=enums_element.get('namespace'),
                                   parent_group=enums_element.get('group'),
                                   vendor=enums_element.get('vendor'),
@@ -359,6 +361,7 @@ class Specification(object):
             # all requirements of all types (types can exist more than once, e.g. specialized for an API)
             # but only requirements that are types as well
             requirements = set(r for r in chain.from_iterable(t.requires for t in item[1]) if r in types)
+            # requirements.add(r.parent_type)
             aliases = set(t.alias for t in item[1] if t.alias and t.alias in types)
             dependencies = requirements.union(aliases)
             dependencies.discard(item[0])
@@ -398,6 +401,7 @@ class Specification(object):
             group = element.get('group')
             vendor = element.get('vendor')
             comment = element.get('comment', '')
+            bitwidth = element.get('bitwidth')
 
             for enum in element:
                 if enum.tag in ('unused', 'comment'):
@@ -405,9 +409,9 @@ class Specification(object):
                 assert enum.tag == 'enum'
 
                 name = enum.attrib['name']
-                enums.setdefault(name, []).append(
-                    Enum.from_element(enum, namespace=namespace, parent_group=group, vendor=vendor, comment=comment)
-                )
+                enums.setdefault(name, []).append(Enum.from_element(
+                    enum, namespace=namespace, parent_group=group, vendor=vendor, comment=comment, bitwidth=bitwidth
+                ))
 
         # add enums added through a <require>
         for element in self.root.findall('.//require/enum'):
@@ -901,10 +905,11 @@ class StructType(MemberType):
 
 
 class EnumType(Type):
-    def __init__(self, name, enums=None, **kwargs):
+    def __init__(self, name, enums=None, bitwidth=None, **kwargs):
         Type.__init__(self, name, **kwargs)
 
         self.enums = enums or []
+        self.bitwidth = bitwidth
 
     def enums_for(self, feature_set):
         relevant = set(feature_set.features) | set(feature_set.extensions)
@@ -981,7 +986,7 @@ class Enum(IdentifiedByName):
     EXTENSION_NUMBER_OFFSET = -1
 
     def __init__(self, name, value, bitpos, api, type_,
-                 alias=None, namespace=None, group=None, parent_group=None,
+                 alias=None, bitwidth=None, namespace=None, group=None, parent_group=None,
                  vendor=None, comment='', parent_type=None, extended_by=None):
         """
         :param name: name of the enum

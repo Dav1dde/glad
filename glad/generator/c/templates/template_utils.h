@@ -18,6 +18,7 @@
 {% endif %}
 {{ caller() }}
 {%- if protections %}
+
 #endif
 {% endif %}
 {% endmacro %}
@@ -44,6 +45,12 @@ GLAD_API_CALL int GLAD_{{ extension.name }};
 {% macro write_type(type) %}
 {% call protect(type) %}
 {% if type.category == 'enum' -%}
+{% if type.bitwidth == '64' %}
+typedef uint64_t {{ type.name }};
+{% for member in type.enums_for(feature_set) %}
+static const {{ member.parent_type }} {{ member.name }} = {{ enum_member(type, member) }};
+{% endfor %}
+{% else %}
 {%- if type.enums_for(feature_set) -%}
 typedef enum {{ type.name }} {
 {% for member in type.enums_for(feature_set) %}
@@ -52,6 +59,7 @@ typedef enum {{ type.name }} {
 } {{ type.name }};
 {% elif type.alias -%}
 typedef enum {{ type.alias }} {{ type.name }};
+{%- endif -%}
 {% endif -%}
 {% elif type.category in ('struct', 'union') -%}
 typedef {{ type.category }} {% if type.alias %}{{ type.alias }}{% else %}{{ type.name }}{% endif %} {% if type.members %}{
@@ -61,9 +69,9 @@ typedef {{ type.category }} {% if type.alias %}{{ type.alias }}{% else %}{{ type
 }{% endif %} {{ type.name }};
 {% elif type.alias %}
 #define {{ type.name }} {{ type.alias }}
-{% elif type._raw|trim -%}
+{%- elif type._raw|trim -%}
 {{ type._raw|trim|replace('APIENTRY', 'GLAD_API_PTR') }}
-{% endif %}
+{%- endif -%}
 {% endcall %}
 {% endmacro %}
 
