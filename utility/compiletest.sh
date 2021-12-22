@@ -58,8 +58,8 @@ echo -e "====================== Generating and compiling C/C++: ================
 function c_egl {
     rm -rf build
     glad --spec=egl --out-path=build $@
-    download_if_required build/include/EGL/eglplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/EGL/eglplatform.h"
-    download_if_required build/include/KHR/khrplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h"
+    download_if_required build/include/EGL/eglplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/main/api/EGL/eglplatform.h"
+    download_if_required build/include/KHR/khrplatform.h "https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/main/api/KHR/khrplatform.h"
     c_compile -Ibuild/include build/src/glad_egl.c ${GCC_FLAGS}
     cpp_compile -Ibuild/include build/src/glad_egl.c ${GPP_FLAGS}
 }

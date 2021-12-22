@@ -7,8 +7,8 @@ from glad.lang.common.util import makefiledir
 import glad.files
 
 
-KHRPLATFORM = 'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/KHR/khrplatform.h'
-EGLPLATFORM = 'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/master/api/EGL/eglplatform.h'
+KHRPLATFORM = 'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/main/api/KHR/khrplatform.h'
+EGLPLATFORM = 'https://raw.githubusercontent.com/KhronosGroup/EGL-Registry/main/api/EGL/eglplatform.h'
 
 
 _KHR_TYPE_REPLACEMENTS = {

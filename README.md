@@ -238,11 +238,11 @@ The glad generated code itself is any of Public Domain, WTFPL or CC0,
 the source files for the generated code are under various licenses
 from Khronos.
 
-* EGL: See [egl.xml](https://github.com/KhronosGroup/EGL-Registry/blob/master/api/egl.xml#L4)
+* EGL: See [egl.xml](https://github.com/KhronosGroup/EGL-Registry/blob/main/api/egl.xml#L4)
 * GL: Apache Version 2.0
 * GLX: Apache Version 2.0
 * WGL: Apache Version 2.0
-* Vulkan: Apache Version 2.0 [with exceptions for generated code](https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/master/xml/vk.xml)
+* Vulkan: Apache Version 2.0 [with exceptions for generated code](https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/main/xml/vk.xml)
 
 Now the Apache License may apply to the generated code (not a lawyer),
 but see [this clarifying comment](https://github.com/KhronosGroup/OpenGL-Registry/issues/376#issuecomment-596187053).
