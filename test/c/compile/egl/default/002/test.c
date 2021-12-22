@@ -7,6 +7,7 @@
  */
 
 #include <glad/egl.h>
+#include <stddef.h>
 
 int main(void) {
     EGLDisplay display = NULL;
