@@ -80,7 +80,7 @@ pub type {{ type.name }} = {{ type.type|type }};
 {% set members = type.enums_for(feature_set) %}
 {% if members %}
 {{ template_utils.protect(type) }}
-#[repr(i32)]
+#[repr(i{{ type.bitwidth or '32' }})]
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
 pub enum {{ type.name }} {
 {% for member in  members %}

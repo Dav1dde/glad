@@ -28,7 +28,8 @@ _RUST_TYPE_MAPPING = {
     'int64_t': 'i32',
     'uint32_t': 'u32',
     'uint64_t': 'u64',
-    'size_t': 'usize'
+    'size_t': 'usize',
+    'ull': 'u64',
 }
 
 
@@ -52,9 +53,7 @@ def enum_type(enum, feature_set):
     # this makes handling types for different specifications
     # easier, since we don't have to swap types. GLenum -> XXenum.
     if enum.type:
-        return {
-            'ull': 'u64',
-        }.get(enum.type, 'c_uint')
+        _RUST_TYPE_MAPPING.get(enum.type, 'c_uint')
 
     if enum.value.startswith('0x'):
         return 'u64' if len(enum.value[2:]) > 8 else 'c_uint'
@@ -65,7 +64,7 @@ def enum_type(enum, feature_set):
     if enum.value.startswith('-'):
         return 'c_int'
 
-    if enum.value.endswith('f'):
+    if enum.value.endswith('f') or enum.value.endswith('F'):
         return 'c_float'
 
     if enum.value.startswith('"'):
@@ -107,6 +106,9 @@ def enum_value(enum, feature_set):
         # EGL_CAST(type,value) -> value as type
         type_, value = enum.value.split('(', 1)[1].rsplit(')', 1)[0].split(',')
         return '{} as {}'.format(value, type_)
+
+    if enum.type == 'float' and value.endswith('F'):
+        value = value[:-1]
 
     for old, new in (('(', ''), (')', ''), ('f', ''),
                      ('U', ''), ('L', ''), ('~', '!')):
