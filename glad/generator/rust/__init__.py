@@ -8,7 +8,7 @@ from glad.generator.util import (
     collect_alias_information,
     find_extensions_with_aliases
 )
-from glad.parse import ParsedType
+from glad.parse import ParsedType, EnumType
 from glad.sink import LoggingSink
 
 
@@ -224,3 +224,21 @@ class RustGenerator(JinjaGenerator):
             ('impl.rs', 'glad-{}/src/{}.rs'.format(feature_set.name, spec.name))
         ]
 
+    def modify_feature_set(self, spec, feature_set, config):
+        self._remove_empty_enums(feature_set)
+
+        return feature_set
+
+    def _remove_empty_enums(self, feature_set):
+        """
+        There are some enums which are simply empty:
+        https://github.com/KhronosGroup/Vulkan-Docs/issues/1754
+        they need to be removed, we need to also remove any type which is an alias to that empty enum.
+        """
+        to_remove = set()
+
+        for typ in (t for t in feature_set.types if isinstance(t, EnumType)):
+            if typ.alias is None and not typ.enums_for(feature_set):
+                to_remove.add(typ.name)
+
+        feature_set.types = [t for t in feature_set.types if t.name not in to_remove and t.alias not in to_remove]
