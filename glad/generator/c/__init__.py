@@ -16,7 +16,7 @@ from glad.generator.util import (
     collect_alias_information,
     find_extensions_with_aliases
 )
-from glad.parse import Type
+from glad.parse import Type, EnumType
 from glad.specification import VK, GL, WGL
 import glad.util
 
@@ -360,6 +360,7 @@ class CGenerator(JinjaGenerator):
 
         self._fix_issue_70(feature_set)
         self._fix_cpp_style_comments(feature_set)
+        self._fixup_enums(feature_set)
         self._replace_included_headers(feature_set, config)
 
         return feature_set
@@ -393,6 +394,36 @@ class CGenerator(JinjaGenerator):
                 new_type = copy.deepcopy(type_)
                 new_type._raw = replace_cpp_style_comments(new_type._raw)
                 feature_set.types[i] = new_type
+
+    def _fixup_enums(self, feature_set):
+        """
+        There are some enums which are simply empty:
+        https://github.com/KhronosGroup/Vulkan-Docs/issues/1754
+        they need to be removed, we need to also remove any type which is an alias to that empty enum.
+
+        Additionally we need to extend type information for enum alias types,
+        if the alias points to an enum with bitwidth 64 copy over the
+        bitwidth information so we can later produce the correct typedef.
+        """
+        bitwidth_64 = set()
+        to_remove = set()
+
+        for typ in (t for t in feature_set.types if isinstance(t, EnumType)):
+            if typ.bitwidth == '64':
+                bitwidth_64.add(typ.name)
+            if typ.alias is None and not typ.enums_for(feature_set):
+                to_remove.add(typ.name)
+
+        new_types = []
+        for typ in feature_set.types:
+            if typ.alias:
+                if typ.alias in bitwidth_64:
+                    typ.bitwidth = '64'
+
+            if typ.name not in to_remove and typ.alias not in to_remove:
+                new_types.append(typ)
+
+        feature_set.types = new_types
 
     def _replace_included_headers(self, feature_set, config):
         if not config['HEADER_ONLY']:

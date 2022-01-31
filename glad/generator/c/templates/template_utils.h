@@ -45,7 +45,13 @@ GLAD_API_CALL int GLAD_{{ extension.name }};
 {% macro write_type(type) %}
 {% call protect(type) %}
 {% if type.category == 'enum' -%}
-{% if type.bitwidth == '64' %}
+{% if type.alias -%}
+{% if type.bitwidth == '64' -%}
+typedef {{ type.alias }} {{ type.name }};
+{% else -%}
+typedef enum {{ type.alias }} {{ type.name }};
+{% endif %}
+{% elif type.bitwidth == '64' %}
 typedef uint64_t {{ type.name }};
 {% for member in type.enums_for(feature_set) %}
 static const {{ member.parent_type }} {{ member.name }} = {{ enum_member(type, member) }};
@@ -57,8 +63,6 @@ typedef enum {{ type.name }} {
     {{ member.name }} = {{ enum_member(type, member) }}{{ ',' if not loop.last }}
 {% endfor %}
 } {{ type.name }};
-{% elif type.alias -%}
-typedef enum {{ type.alias }} {{ type.name }};
 {%- endif -%}
 {% endif -%}
 {% elif type.category in ('struct', 'union') -%}

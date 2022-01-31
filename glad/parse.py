@@ -911,6 +911,7 @@ class EnumType(Type):
         self.enums = enums or []
         self.bitwidth = bitwidth
 
+    @memoize(method=True)
     def enums_for(self, feature_set):
         relevant = set(feature_set.features) | set(feature_set.extensions)
 
