@@ -161,7 +161,7 @@ def c_commands(context, commands):
 
 
 @jinja2.contextfunction
-def enum_member(context, type_, member):
+def enum_member(context, type_, member, require_value=False):
     if member.alias is None:
         return member.value
 
@@ -175,8 +175,9 @@ def enum_member(context, type_, member):
             if enum.name == before:
                 return False
 
-    if is_enum_before(member.alias, member.name):
-        return member.alias
+    if not require_value:
+        if is_enum_before(member.alias, member.name):
+            return member.alias
 
     # This is the part where the spec is annoying again
     # an enum that has been moved into core in a later version

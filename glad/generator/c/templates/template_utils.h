@@ -54,7 +54,7 @@ typedef enum {{ type.alias }} {{ type.name }};
 {% elif type.bitwidth == '64' %}
 typedef uint64_t {{ type.name }};
 {% for member in type.enums_for(feature_set) %}
-static const {{ member.parent_type }} {{ member.name }} = {{ enum_member(type, member) }};
+static const {{ member.parent_type }} {{ member.name }} = {{ enum_member(type, member, require_value=True) }};
 {% endfor %}
 {% else %}
 {%- if type.enums_for(feature_set) -%}
