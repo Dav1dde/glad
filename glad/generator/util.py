@@ -1,4 +1,12 @@
 from collections import OrderedDict
+import jinja2
+
+if hasattr(jinja2, 'pass_context'):
+    jinja2_contextfunction = jinja2.pass_context
+    jinja2_contextfilter = jinja2.pass_context
+else:
+    jinja2_contextfunction = jinja2.contextfunction
+    jinja2_contextfilter = jinja2.contextfilter
 
 
 def is_device_command(self):

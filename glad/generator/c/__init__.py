@@ -14,7 +14,9 @@ from glad.generator.util import (
     is_device_command,
     strip_specification_prefix,
     collect_alias_information,
-    find_extensions_with_aliases
+    find_extensions_with_aliases,
+    jinja2_contextfunction,
+    jinja2_contextfilter
 )
 from glad.parse import Type, EnumType
 from glad.specification import VK, GL, WGL
@@ -51,7 +53,7 @@ def param_names(params):
     return ', '.join(param.name for param in params)
 
 
-@jinja2.contextfunction
+@jinja2_contextfunction
 def loadable(context, extensions=None, api=None):
     spec = context['spec']
     feature_set = context['feature_set']
@@ -105,7 +107,7 @@ def get_debug_impl(command, command_code_name=None):
     return DebugArguments(impl, func, pre_callback, post_callback, ret)
 
 
-@jinja2.contextfilter
+@jinja2_contextfilter
 def ctx(jinja_context, name, context='context', raw=False, name_only=False, member=False):
     options = jinja_context['options']
 
@@ -129,7 +131,7 @@ def ctx(jinja_context, name, context='context', raw=False, name_only=False, memb
     return prefix + name
 
 
-@jinja2.contextfilter
+@jinja2_contextfilter
 def pfn(context, value):
     spec = context['spec']
     if spec.name in (VK.NAME,):
@@ -137,7 +139,7 @@ def pfn(context, value):
     return 'PFN' + value.upper() + 'PROC'
 
 
-@jinja2.contextfilter
+@jinja2_contextfilter
 def c_commands(context, commands):
     """
     The c in c_commands refers to the c file.
@@ -160,7 +162,7 @@ def c_commands(context, commands):
     return [command for command in commands if not command in core]
 
 
-@jinja2.contextfunction
+@jinja2_contextfunction
 def enum_member(context, type_, member, require_value=False):
     if member.alias is None:
         return member.value
