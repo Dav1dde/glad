@@ -291,7 +291,7 @@ class CGenerator(JinjaGenerator):
             param_names=param_names,
             pfn=pfn,
             ctx=ctx,
-            no_prefix=jinja2.contextfilter(lambda ctx, value: strip_specification_prefix(value, ctx['spec'])),
+            no_prefix=jinja2_contextfilter(lambda ctx, value: strip_specification_prefix(value, ctx['spec'])),
             c_commands=c_commands
         )
 

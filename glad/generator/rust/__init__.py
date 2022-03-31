@@ -6,7 +6,8 @@ from glad.generator import JinjaGenerator
 from glad.generator.util import (
     strip_specification_prefix,
     collect_alias_information,
-    find_extensions_with_aliases
+    find_extensions_with_aliases,
+    jinja2_contextfilter
 )
 from glad.parse import ParsedType, EnumType
 from glad.sink import LoggingSink
@@ -186,12 +187,12 @@ class RustGenerator(JinjaGenerator):
 
         self.environment.filters.update(
             feature=lambda x: 'feature = "{}"'.format(x),
-            enum_type=jinja2.contextfilter(lambda ctx, enum: enum_type(enum, ctx['feature_set'])),
-            enum_value=jinja2.contextfilter(lambda ctx, enum: enum_value(enum, ctx['feature_set'])),
+            enum_type=jinja2_contextfilter(lambda ctx, enum: enum_type(enum, ctx['feature_set'])),
+            enum_value=jinja2_contextfilter(lambda ctx, enum: enum_value(enum, ctx['feature_set'])),
             type=to_rust_type,
             params=to_rust_params,
             identifier=identifier,
-            no_prefix=jinja2.contextfilter(lambda ctx, value: strip_specification_prefix(value, ctx['spec']))
+            no_prefix=jinja2_contextfilter(lambda ctx, value: strip_specification_prefix(value, ctx['spec']))
         )
 
     @property
