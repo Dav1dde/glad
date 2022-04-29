@@ -102,6 +102,10 @@ int gladLoad{{ api|api }}UserPtr(EGLDisplay display, GLADuserptrloadfunc load, v
     glad_egl_load_{{ extension.name }}(load, userptr);
 {% endfor %}
 
+{% if options.alias %}
+    glad_egl_resolve_aliases();
+{% endif %}
+
     return version;
 }
 

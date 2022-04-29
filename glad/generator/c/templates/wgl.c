@@ -84,6 +84,10 @@ int gladLoad{{ api|api }}UserPtr(HDC hdc, GLADuserptrloadfunc load, void *userpt
     glad_wgl_load_{{ extension.name }}(load, userptr);
 {% endfor %}
 
+{% if options.alias %}
+    glad_wgl_resolve_aliases();
+{% endif %}
+
     return version;
 }
 

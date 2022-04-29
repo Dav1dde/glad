@@ -1,7 +1,7 @@
 /*
  * Full WGL, see examples/c/wgl.c for more information
  *
- * GLAD: $GLAD --out-path=$tmp --api="wgl,gl:core" c --loader
+ * GLAD: $GLAD --out-path=$tmp --api="wgl,gl:core" c --loader --alias
  * COMPILE: $MINGW_GCC -Wno-pedantic $test -o $tmp/test.exe -I$tmp/include $tmp/src/wgl.c $tmp/src/gl.c -lgdi32 -lopengl32
  * RUN: $WINE $tmp/test.exe
  */

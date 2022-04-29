@@ -88,6 +88,10 @@ int gladLoad{{ api|api }}UserPtr(Display *display, int screen, GLADuserptrloadfu
     glad_glx_load_{{ extension.name }}(load, userptr);
 {% endfor %}
 
+{% if options.alias %}
+    glad_glx_resolve_aliases();
+{% endif %}
+
     return version;
 }
 
