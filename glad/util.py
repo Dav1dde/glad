@@ -10,6 +10,7 @@ if sys.version_info >= (3, 0, 0):
 
 
 Version = namedtuple('Version', ['major', 'minor'])
+ExpandedName = namedtuple('ExpandedName', ['prefix', 'suffix'])
 
 
 _API_NAMES = {
@@ -182,3 +183,21 @@ def itertext(element, ignore=()):
             if e.tail:
                 yield e.tail
 
+
+def expand_type_name(name):
+    """
+    Transforms a type name into its expanded version, e.g.
+    expands the type `VkShaderInfoTypeAMD` to the tuple `('VK_SHADER_INFO_TYPE', '_AMD')`.
+
+    See: https://github.com/KhronosGroup/Vulkan-Docs/blob/main/scripts/generator.py#L60 buildEnumCDecl_Enum
+    """
+    upper_name = re.sub(r'([0-9]+|[a-z_])([A-Z0-9])', r'\1_\2', name).upper()
+    (prefix, suffix) = (upper_name, '')
+
+    suffix_match = re.search(r'[A-Z][A-Z]+$', name)
+    if suffix_match:
+        suffix = '_' + suffix_match.group()
+        # Strip off the suffix from the prefix
+        prefix = upper_name.rsplit(suffix, 1)[0]
+
+    return ExpandedName(prefix, suffix)

@@ -60,8 +60,9 @@ static const {{ member.parent_type }} {{ member.name }} = {{ enum_member(type, m
 {%- if type.enums_for(feature_set) -%}
 typedef enum {{ type.name }} {
 {% for member in type.enums_for(feature_set) %}
-    {{ member.name }} = {{ enum_member(type, member) }}{{ ',' if not loop.last }}
+    {{ member.name }} = {{ enum_member(type, member) }},
 {% endfor %}
+    {{ '{}_MAX_ENUM{}'.format(*type.expanded_name) }} = 0x7FFFFFFF
 } {{ type.name }};
 {%- endif -%}
 {% endif -%}

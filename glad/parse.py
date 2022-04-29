@@ -401,7 +401,6 @@ class Specification(object):
             group = element.get('group')
             vendor = element.get('vendor')
             comment = element.get('comment', '')
-            bitwidth = element.get('bitwidth')
 
             for enum in element:
                 if enum.tag in ('unused', 'comment'):
@@ -410,7 +409,7 @@ class Specification(object):
 
                 name = enum.attrib['name']
                 enums.setdefault(name, []).append(Enum.from_element(
-                    enum, namespace=namespace, parent_group=group, vendor=vendor, comment=comment, bitwidth=bitwidth
+                    enum, namespace=namespace, parent_group=group, vendor=vendor, comment=comment
                 ))
 
         # add enums added through a <require>
@@ -911,6 +910,10 @@ class EnumType(Type):
         self.enums = enums or []
         self.bitwidth = bitwidth
 
+    @property
+    def expanded_name(self):
+        return glad.util.expand_type_name(self.name)
+
     @memoize(method=True)
     def enums_for(self, feature_set):
         relevant = set(feature_set.features) | set(feature_set.extensions)
@@ -987,7 +990,7 @@ class Enum(IdentifiedByName):
     EXTENSION_NUMBER_OFFSET = -1
 
     def __init__(self, name, value, bitpos, api, type_,
-                 alias=None, bitwidth=None, namespace=None, group=None, parent_group=None,
+                 alias=None, namespace=None, group=None, parent_group=None,
                  vendor=None, comment='', parent_type=None, extended_by=None):
         """
         :param name: name of the enum
@@ -1024,6 +1027,10 @@ class Enum(IdentifiedByName):
         self.parent_type = parent_type
 
         self.extended_by = set(extended_by) if extended_by else set()
+
+    @property
+    def expanded_name(self):
+        return glad.util.expand_type_name(self.name)
 
     def also_extended_by(self, name):
         self.extended_by.add(name)

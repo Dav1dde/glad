@@ -1,5 +1,6 @@
 from collections import OrderedDict
 import jinja2
+import re
 
 if hasattr(jinja2, 'pass_context'):
     jinja2_contextfunction = jinja2.pass_context
