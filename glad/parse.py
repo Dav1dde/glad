@@ -791,13 +791,14 @@ class Type(IdentifiedByName):
     def register(category, type_factory):
         Type._FACTORIES[category] = type_factory
 
-    def __init__(self, name, api=None, category=None, alias=None, requires=None, apientry=False, raw=None):
+    def __init__(self, name, api=None, category=None, alias=None, requires=None, parent=None, apientry=False, raw=None):
         self.name = name
         self.api = api
         self.category = category
 
         self.alias = alias
         self.requires = requires or []
+        self.parent = parent
         self.apientry = apientry
 
         self._raw = raw
@@ -819,6 +820,7 @@ class Type(IdentifiedByName):
         name = element.get('name') or element.find('name').text
 
         alias = element.get('alias')
+        parent = element.get('parent')
 
         # a type referenced by a struct/funcptr is required by this type
         requires = set(t.text for t in element.iter('type') if t is not element)
@@ -831,6 +833,7 @@ class Type(IdentifiedByName):
             category=category,
             alias=alias,
             requires=requires,
+            parent=parent,
             apientry=apientry is not None,
             raw=raw
         )
@@ -969,15 +972,20 @@ Type.register('bitmask', BitmaskType.factory)
 
 
 class Member(IdentifiedByName):
-    def __init__(self, name, type):
+    def __init__(self, name, type, enum=None):
         self.name = name
         self.type = type
+        if enum is not None:
+            self.enum = enum.text
+        else:
+            self.enum = None
 
     @classmethod
     def from_element(cls, element):
         type_ = ParsedType.from_element(element)
+        enum = element.find('enum')
 
-        return Member(type_.name, type_)
+        return Member(type_.name, type_, enum=enum)
 
     def __str__(self):
         return 'Member(name={self.name}, type={self.type})'.format(self=self)
