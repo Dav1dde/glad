@@ -844,6 +844,17 @@ class Type(IdentifiedByName):
     def is_equivalent(self, other):
         return self._raw == other._raw
 
+    def is_descendant(self, basetype, typeslist):
+        if self.name == basetype:
+            return True
+
+        cur = self
+        while cur.parent is not None:
+            if cur.parent == basetype:
+                return True
+            cur = typeslist[cur.parent][0]
+        return False;
+
     def __str__(self):
         return self.name
 
