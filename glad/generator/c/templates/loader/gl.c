@@ -23,8 +23,6 @@ static GLADapiproc glad_gl_get_proc(void *vuserptr, const char *name) {
     return result;
 }
 
-static void* _gl_handle = NULL;
-
 static void* glad_gl_dlopen_handle(void) {
 #if GLAD_PLATFORM_APPLE
     static const char *NAMES[] = {
@@ -45,11 +43,7 @@ static void* glad_gl_dlopen_handle(void) {
     };
 #endif
 
-    if (_gl_handle == NULL) {
-        _gl_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
-    }
-
-    return _gl_handle;
+    return glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
 }
 
 static struct _glad_gl_userptr glad_gl_build_userptr(void *handle) {
@@ -72,20 +66,16 @@ static struct _glad_gl_userptr glad_gl_build_userptr(void *handle) {
 {% if not options.on_demand %}
 int gladLoaderLoadGL{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
     int version = 0;
-    void *handle;
-    int did_load = 0;
+    void *handle = NULL;
     struct _glad_gl_userptr userptr;
 
-    did_load = _gl_handle == NULL;
     handle = glad_gl_dlopen_handle();
     if (handle) {
         userptr = glad_gl_build_userptr(handle);
 
         version = gladLoadGL{{ 'Context' if options.mx }}UserPtr({{ 'context,' if options.mx }}glad_gl_get_proc, &userptr);
 
-        if (did_load) {
-            gladLoaderUnloadGL();
-        }
+        glad_close_dlopen_handle(handle);
     }
 
     return version;
@@ -110,13 +100,12 @@ int gladLoaderLoadGL(void) {
 {% endif %}
 
 void gladLoaderUnloadGL(void) {
-    if (_gl_handle != NULL) {
-        glad_close_dlopen_handle(_gl_handle);
-        _gl_handle = NULL;
 {% if options.on_demand %}
+    if (glad_gl_internal_loader_global_userptr.handle != NULL) {
+        glad_close_dlopen_handle(glad_gl_internal_loader_global_userptr.handle);
         glad_gl_internal_loader_global_userptr.handle = NULL;
-{% endif %}
     }
+{% endif %}
 }
 
 #endif /* GLAD_GL */
