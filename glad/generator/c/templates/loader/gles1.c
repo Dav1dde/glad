@@ -24,8 +24,6 @@ static GLADapiproc glad_gles1_get_proc(void *vuserptr, const char* name) {
     return result;
 }
 
-static void* _gles1_handle = NULL;
-
 static void* glad_gles1_dlopen_handle(void) {
 #if GLAD_PLATFORM_APPLE
     static const char *NAMES[] = {"libGLESv1_CM.dylib"};
@@ -35,11 +33,7 @@ static void* glad_gles1_dlopen_handle(void) {
     static const char *NAMES[] = {"libGLESv1_CM.so.1", "libGLESv1_CM.so", "libGLES_CM.so.1"};
 #endif
 
-    if (_gles1_handle == NULL) {
-        _gles1_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
-    }
-
-    return _gles1_handle;
+    return glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
 }
 
 static struct _glad_gles1_userptr glad_gles1_build_userptr(void *handle) {
@@ -53,23 +47,19 @@ static struct _glad_gles1_userptr glad_gles1_build_userptr(void *handle) {
 int gladLoaderLoadGLES1{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
     int version = 0;
     void *handle = NULL;
-    int did_load = 0;
     struct _glad_gles1_userptr userptr;
 
     if (eglGetProcAddress == NULL) {
         return 0;
     }
 
-    did_load = _gles1_handle == NULL;
     handle = glad_gles1_dlopen_handle();
     if (handle != NULL) {
         userptr = glad_gles1_build_userptr(handle);
 
         version = gladLoadGLES1{{ 'Context' if options.mx }}UserPtr({{ 'context, ' if options.mx }}glad_gles1_get_proc, &userptr);
 
-        if (!version && did_load) {
-            gladLoaderUnloadGLES1();
-        }
+        glad_close_dlopen_handle(handle);
     }
 
     return version;
@@ -94,13 +84,12 @@ int gladLoaderLoadGLES1(void) {
 {% endif %}
 
 void gladLoaderUnloadGLES1(void) {
-    if (_gles1_handle != NULL) {
-        glad_close_dlopen_handle(_gles1_handle);
-        _gles1_handle = NULL;
 {% if options.on_demand %}
+    if (glad_gles1_internal_loader_global_userptr.handle != NULL) {
+        glad_close_dlopen_handle(glad_gles1_internal_loader_global_userptr.handle);
         glad_gles1_internal_loader_global_userptr.handle = NULL;
-{% endif %}
     }
+{% endif %}
 }
 
 #endif /* GLAD_GLES1 */
