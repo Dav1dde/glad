@@ -32,8 +32,6 @@ static GLADapiproc glad_gles2_get_proc(void *vuserptr, const char* name) {
     return result;
 }
 
-static void* _gles2_handle = NULL;
-
 static void* glad_gles2_dlopen_handle(void) {
 #if GLAD_PLATFORM_EMSCRIPTEN
 #elif GLAD_PLATFORM_APPLE
@@ -47,11 +45,7 @@ static void* glad_gles2_dlopen_handle(void) {
 #if GLAD_PLATFORM_EMSCRIPTEN
     return NULL;
 #else
-    if (_gles2_handle == NULL) {
-        _gles2_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
-    }
-
-    return _gles2_handle;
+    return glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
 #endif
 }
 
@@ -70,7 +64,6 @@ static struct _glad_gles2_userptr glad_gles2_build_userptr(void *handle) {
 int gladLoaderLoadGLES2{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
     int version = 0;
     void *handle = NULL;
-    int did_load = 0;
     struct _glad_gles2_userptr userptr;
 
 #if GLAD_PLATFORM_EMSCRIPTEN
@@ -81,16 +74,13 @@ int gladLoaderLoadGLES2{{ 'Context' if options.mx }}({{ template_utils.context_a
         return 0;
     }
 
-    did_load = _gles2_handle == NULL;
     handle = glad_gles2_dlopen_handle();
     if (handle != NULL) {
         userptr = glad_gles2_build_userptr(handle);
 
         version = gladLoadGLES2{{ 'Context' if options.mx }}UserPtr({{ 'context, ' if options.mx }}glad_gles2_get_proc, &userptr);
 
-        if (!version && did_load) {
-            gladLoaderUnloadGLES2();
-        }
+        gladLoaderUnloadGLES2();
     }
 #endif
 
@@ -116,13 +106,13 @@ int gladLoaderLoadGLES2(void) {
 {% endif %}
 
 void gladLoaderUnloadGLES2(void) {
-    if (_gles2_handle != NULL) {
-        glad_close_dlopen_handle(_gles2_handle);
-        _gles2_handle = NULL;
 {% if options.on_demand %}
-        glad_gles2_internal_loader_global_userptr.get_proc_address_ptr = NULL;
-{% endif %}
+    glad_gles2_internal_loader_global_userptr.get_proc_address_ptr = NULL;
+    if (glad_gles2_internal_loader_global_userptr.handle != NULL) {
+        glad_close_dlopen_handle(glad_gles2_internal_loader_global_userptr.handle);
+        glad_gles2_internal_loader_global_userptr.handle = NULL;
     }
+{% endif %}
 }
 
 #endif /* GLAD_GLES2 */
