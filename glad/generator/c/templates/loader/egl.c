@@ -20,8 +20,6 @@ static GLADapiproc glad_egl_get_proc(void *vuserptr, const char* name) {
     return result;
 }
 
-static void* _egl_handle = NULL;
-
 static void* glad_egl_dlopen_handle(void) {
 #if GLAD_PLATFORM_APPLE
     static const char *NAMES[] = {"libEGL.dylib"};
@@ -31,11 +29,7 @@ static void* glad_egl_dlopen_handle(void) {
     static const char *NAMES[] = {"libEGL.so.1", "libEGL.so"};
 #endif
 
-    if (_egl_handle == NULL) {
-        _egl_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
-    }
-
-    return _egl_handle;
+    return glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
 }
 
 static struct _glad_egl_userptr glad_egl_build_userptr(void *handle) {
@@ -49,10 +43,8 @@ static struct _glad_egl_userptr glad_egl_build_userptr(void *handle) {
 int gladLoaderLoadEGL(EGLDisplay display) {
     int version = 0;
     void *handle = NULL;
-    int did_load = 0;
     struct _glad_egl_userptr userptr;
 
-    did_load = _egl_handle == NULL;
     handle = glad_egl_dlopen_handle();
     if (handle != NULL) {
         userptr = glad_egl_build_userptr(handle);
@@ -61,9 +53,7 @@ int gladLoaderLoadEGL(EGLDisplay display) {
             version = gladLoadEGLUserPtr(display, glad_egl_get_proc, &userptr);
         }
 
-        if (!version && did_load) {
-            gladLoaderUnloadEGL();
-        }
+        glad_close_dlopen_handle(handle);
     }
 
     return version;
@@ -82,13 +72,12 @@ static GLADapiproc glad_egl_internal_loader_get_proc(const char *name) {
 {% endif %}
 
 void gladLoaderUnloadEGL() {
-    if (_egl_handle != NULL) {
-        glad_close_dlopen_handle(_egl_handle);
-        _egl_handle = NULL;
 {% if options.on_demand %}
+    if (glad_egl_internal_loader_global_userptr.handle != NULL) {
+        glad_close_dlopen_handle(glad_egl_internal_loader_global_userptr.handle);
         glad_egl_internal_loader_global_userptr.handle = NULL;
-{% endif %}
     }
+{% endif %}
 }
 
 #endif /* GLAD_EGL */
