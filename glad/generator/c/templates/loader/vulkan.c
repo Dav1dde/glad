@@ -56,8 +56,6 @@ static GLADapiproc glad_vulkan_get_proc(void *vuserptr, const char *name) {
 }
 
 
-static void* _vulkan_handle;
-
 static void* glad_vulkan_dlopen_handle(void) {
     static const char *NAMES[] = {
 #if GLAD_PLATFORM_APPLE
@@ -71,11 +69,7 @@ static void* glad_vulkan_dlopen_handle(void) {
 #endif
     };
 
-    if (_vulkan_handle == NULL) {
-        _vulkan_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
-    }
-
-    return _vulkan_handle;
+    return glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
 }
 
 static struct _glad_vulkan_userptr glad_vulkan_build_userptr(void *handle, VkInstance instance, VkDevice device) {
@@ -92,10 +86,8 @@ static struct _glad_vulkan_userptr glad_vulkan_build_userptr(void *handle, VkIns
 int gladLoaderLoadVulkan{{ 'Context' if options.mx }}({{ template_utils.context_arg(',') }} VkInstance instance, VkPhysicalDevice physical_device, VkDevice device) {
     int version = 0;
     void *handle = NULL;
-    int did_load = 0;
     struct _glad_vulkan_userptr userptr;
 
-    did_load = _vulkan_handle == NULL;
     handle = glad_vulkan_dlopen_handle();
     if (handle != NULL) {
         userptr = glad_vulkan_build_userptr(handle, instance, device);
@@ -104,9 +96,7 @@ int gladLoaderLoadVulkan{{ 'Context' if options.mx }}({{ template_utils.context_
             version = gladLoadVulkan{{ 'Context' if options.mx }}UserPtr({{ 'context,' if options.mx }} physical_device, glad_vulkan_get_proc, &userptr);
         }
 
-        if (!version && did_load) {
-            gladLoaderUnloadVulkan();
-        }
+        glad_close_dlopen_handle(handle);
     }
 
     return version;
@@ -140,13 +130,12 @@ int gladLoaderLoadVulkan(VkInstance instance, VkPhysicalDevice physical_device, 
 {% endif %}
 
 void gladLoaderUnloadVulkan(void) {
-    if (_vulkan_handle != NULL) {
-        glad_close_dlopen_handle(_vulkan_handle);
-        _vulkan_handle = NULL;
 {% if options.on_demand %}
+    if (glad_vulkan_internal_loader_global_userptr.vk_handle != NULL) {
+        glad_close_dlopen_handle(glad_vulkan_internal_loader_global_userptr.vk_handle);
         glad_vulkan_internal_loader_global_userptr.vk_handle = NULL;
-{% endif %}
     }
+{% endif %}
 }
 
 #endif /* GLAD_VULKAN */
