@@ -12,6 +12,6 @@ GLAD_API_CALL int gladLoaderLoadGLES1{{ 'Context' if options.mx }}({{ template_u
 {% if options.mx_global %}
 GLAD_API_CALL int gladLoaderLoadGLES1(void);
 {% endif %}
-GLAD_API_CALL void gladLoaderUnloadGLES1(void);
+GLAD_API_CALL void gladLoaderUnloadGLES1{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }});
 
 #endif /* GLAD_GLES1 */
