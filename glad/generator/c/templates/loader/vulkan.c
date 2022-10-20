@@ -56,9 +56,11 @@ static GLADapiproc glad_vulkan_get_proc(void *vuserptr, const char *name) {
 }
 
 
-static void* _vulkan_handle;
+{% if not options.mx %}
+static void* {{ template_utils.handle() }} = NULL;
+{% endif %}
 
-static void* glad_vulkan_dlopen_handle(void) {
+static void* glad_vulkan_dlopen_handle({{ template_utils.context_arg(def='void') }}) {
     static const char *NAMES[] = {
 #if GLAD_PLATFORM_APPLE
         "libvulkan.1.dylib",
@@ -71,11 +73,11 @@ static void* glad_vulkan_dlopen_handle(void) {
 #endif
     };
 
-    if (_vulkan_handle == NULL) {
-        _vulkan_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
+    if ({{ template_utils.handle() }} == NULL) {
+        {{ template_utils.handle() }} = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
     }
 
-    return _vulkan_handle;
+    return {{ template_utils.handle() }};
 }
 
 static struct _glad_vulkan_userptr glad_vulkan_build_userptr(void *handle, VkInstance instance, VkDevice device) {
@@ -95,8 +97,8 @@ int gladLoaderLoadVulkan{{ 'Context' if options.mx }}({{ template_utils.context_
     int did_load = 0;
     struct _glad_vulkan_userptr userptr;
 
-    did_load = _vulkan_handle == NULL;
-    handle = glad_vulkan_dlopen_handle();
+    did_load = {{ template_utils.handle() }} == NULL;
+    handle = glad_vulkan_dlopen_handle({{ 'context' if options.mx }});
     if (handle != NULL) {
         userptr = glad_vulkan_build_userptr(handle, instance, device);
 
@@ -105,7 +107,7 @@ int gladLoaderLoadVulkan{{ 'Context' if options.mx }}({{ template_utils.context_
         }
 
         if (!version && did_load) {
-            gladLoaderUnloadVulkan();
+            gladLoaderUnloadVulkan{{ 'Context' if options.mx }}({{ 'context' if options.mx }});
         }
     }
 
@@ -139,10 +141,10 @@ int gladLoaderLoadVulkan(VkInstance instance, VkPhysicalDevice physical_device, 
 }
 {% endif %}
 
-void gladLoaderUnloadVulkan(void) {
-    if (_vulkan_handle != NULL) {
-        glad_close_dlopen_handle(_vulkan_handle);
-        _vulkan_handle = NULL;
+void gladLoaderUnloadVulkan{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
+    if ({{ template_utils.handle() }} != NULL) {
+        glad_close_dlopen_handle({{ template_utils.handle() }});
+        {{ template_utils.handle() }} = NULL;
 {% if options.on_demand %}
         glad_vulkan_internal_loader_global_userptr.vk_handle = NULL;
 {% endif %}
