@@ -23,9 +23,11 @@ static GLADapiproc glad_gl_get_proc(void *vuserptr, const char *name) {
     return result;
 }
 
-static void* _gl_handle = NULL;
+{% if not options.mx %}
+static void* {{ template_utils.handle() }} = NULL;
+{% endif %}
 
-static void* glad_gl_dlopen_handle(void) {
+static void* glad_gl_dlopen_handle({{ template_utils.context_arg(def='void') }}) {
 #if GLAD_PLATFORM_APPLE
     static const char *NAMES[] = {
         "../Frameworks/OpenGL.framework/OpenGL",
@@ -45,11 +47,11 @@ static void* glad_gl_dlopen_handle(void) {
     };
 #endif
 
-    if (_gl_handle == NULL) {
-        _gl_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
+    if ({{ template_utils.handle() }} == NULL) {
+        {{ template_utils.handle() }} = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
     }
 
-    return _gl_handle;
+    return {{ template_utils.handle() }};
 }
 
 static struct _glad_gl_userptr glad_gl_build_userptr(void *handle) {
@@ -76,15 +78,15 @@ int gladLoaderLoadGL{{ 'Context' if options.mx }}({{ template_utils.context_arg(
     int did_load = 0;
     struct _glad_gl_userptr userptr;
 
-    did_load = _gl_handle == NULL;
-    handle = glad_gl_dlopen_handle();
+    did_load = {{ template_utils.handle() }} == NULL;
+    handle = glad_gl_dlopen_handle({{ 'context' if options.mx }});
     if (handle) {
         userptr = glad_gl_build_userptr(handle);
 
         version = gladLoadGL{{ 'Context' if options.mx }}UserPtr({{ 'context,' if options.mx }}glad_gl_get_proc, &userptr);
 
         if (did_load) {
-            gladLoaderUnloadGL();
+            gladLoaderUnloadGL{{ 'Context' if options.mx }}({{ 'context' if options.mx }});
         }
     }
 
@@ -109,10 +111,10 @@ int gladLoaderLoadGL(void) {
 }
 {% endif %}
 
-void gladLoaderUnloadGL(void) {
-    if (_gl_handle != NULL) {
-        glad_close_dlopen_handle(_gl_handle);
-        _gl_handle = NULL;
+void gladLoaderUnloadGL{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
+    if ({{ template_utils.handle() }} != NULL) {
+        glad_close_dlopen_handle({{ template_utils.handle() }});
+        {{ template_utils.handle() }} = NULL;
 {% if options.on_demand %}
         glad_gl_internal_loader_global_userptr.handle = NULL;
 {% endif %}
