@@ -78,7 +78,7 @@ GLFWwindow* create_window(const char *name, int major, int minor) {
 GladGLContext* create_context(GLFWwindow *window) {
     glfwMakeContextCurrent(window);
 
-    GladGLContext* context = (GladGLContext*) malloc(sizeof(GladGLContext));
+    GladGLContext* context = (GladGLContext*) calloc(1, sizeof(GladGLContext));
     if (!context) return NULL;
 
     int version = gladLoadGLContext(context, glfwGetProcAddress);

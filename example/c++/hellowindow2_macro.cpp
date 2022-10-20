@@ -64,7 +64,7 @@ int main()
 #endif
 
 #ifdef GLAD_OPTION_GL_MX
-    GladGLContext context;
+    GladGLContext context = {};
   #ifdef GLAD_OPTION_GL_LOADER
     int version = gladLoaderLoadGLContext(&context);
   #else
