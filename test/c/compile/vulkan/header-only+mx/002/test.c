@@ -14,7 +14,7 @@ VOID_FUNCPTR loader_userptr(void *userptr, const char *name) { (void) name; (voi
 VOID_FUNCPTR loader(const char *name) { (void) name; return NULL; }
 
 int main(void) {
-    GladVulkanContext context;
+    GladVulkanContext context = {0};
     (void) gladLoadVulkanUserPtr(NULL, loader_userptr, NULL);
     (void) gladLoadVulkanContextUserPtr(&context, NULL, loader_userptr, NULL);
     (void) gladLoadVulkan(NULL, loader);

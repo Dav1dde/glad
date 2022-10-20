@@ -23,7 +23,7 @@ VOID_FUNCPTR loader(const char *name) {
 }
 
 int main(void) {
-    GladGLContext gl;
+    GladGLContext gl = {0};
 
     gladLoadGLContextUserPtr(&gl, loader_userptr, NULL);
     gladLoadGLContext(&gl, loader);

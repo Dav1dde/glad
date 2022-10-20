@@ -26,7 +26,7 @@ GLFWwindow* create_window(void) {
 }
 
 void run(GLFWwindow *window) {
-    GladGLContext context;
+    GladGLContext context = {0};
 
     glfwMakeContextCurrent(window);
 
