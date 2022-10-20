@@ -10,6 +10,10 @@
 {{ 'Glad' + feature_set.name|api + 'Context *context' + suffix if options.mx else def }}
 {%- endmacro %}
 
+{% macro handle() -%}
+{{ 'context->glad' if options.mx else '_glad_' + feature_set.name|api }}_loader_handle
+{%- endmacro %}
+
 
 {% macro protect(symbol) %}
 {% set protections = spec.protections(symbol, feature_set=feature_set) %}

@@ -76,6 +76,10 @@ typedef struct Glad{{ feature_set.name|api }}Context {
     {{ command.name|pfn }} {{ command.name|ctx(member=True) }};
 {% endcall %}
 {% endfor %}
+
+{% if options.loader %}
+    void* glad_loader_handle;
+{% endif %}
 } Glad{{ feature_set.name|api }}Context;
 
 {% if options.mx_global %}
