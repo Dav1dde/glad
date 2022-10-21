@@ -230,9 +230,6 @@ int gladLoad{{ api|api }}(GLADloadfunc load) {
 
 {% if options.mx_global %}
 Glad{{ feature_set.name|api }}Context* gladGet{{ feature_set.name|api }}Context() {
-    static Glad{{ feature_set.name|api }}Context default_context;
-    if (!{{ global_context }})
-        {{ global_context }} = &default_context;
     return {{ global_context }};
 }
 
