@@ -1,7 +1,7 @@
 /*
  * MX header only, global generation, should compile basic API
  *
- * GLAD: $GLAD --out-path=$tmp --api="gl:compatibility" c --loader --mx --mx-global --header-only
+ * GLAD: $GLAD --out-path=$tmp --api="gl:compatibility" c --loader --mx --header-only
  * COMPILE: $GCC $test -o $tmp/test -I$tmp/include -ldl
  * RUN: $tmp/test
  */
@@ -26,14 +26,7 @@ int main(void) {
     GladGLContext gl = {0};
 
     gladLoadGLContextUserPtr(&gl, loader_userptr, NULL);
-    gladLoadGLContext(&gl, loader);
     gladLoaderLoadGLContext(&gl);
 
-    gladLoadGLUserPtr(loader_userptr, NULL);
-    gladLoadGL(loader);
-    gladLoaderLoadGL();
-
-    gladSetGLContext(&gl);
-    (void) gladGetGLContext();
     return 0;
 }
