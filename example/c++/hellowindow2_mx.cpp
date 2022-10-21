@@ -48,7 +48,7 @@ int main()
     // Set the required callback functions
     glfwSetKeyCallback(window, key_callback);
 
-    GladGLContext context;
+    GladGLContext context = {};
     int version = gladLoadGLContext(&context, glfwGetProcAddress);
     if (version == 0)
     {

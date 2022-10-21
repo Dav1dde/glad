@@ -24,9 +24,11 @@ static GLADapiproc glad_gles1_get_proc(void *vuserptr, const char* name) {
     return result;
 }
 
-static void* _gles1_handle = NULL;
+{% if not options.mx %}
+static void* {{ template_utils.handle() }} = NULL;
+{% endif %}
 
-static void* glad_gles1_dlopen_handle(void) {
+static void* glad_gles1_dlopen_handle({{ template_utils.context_arg(def='void') }}) {
 #if GLAD_PLATFORM_APPLE
     static const char *NAMES[] = {"libGLESv1_CM.dylib"};
 #elif GLAD_PLATFORM_WIN32
@@ -35,11 +37,11 @@ static void* glad_gles1_dlopen_handle(void) {
     static const char *NAMES[] = {"libGLESv1_CM.so.1", "libGLESv1_CM.so", "libGLES_CM.so.1"};
 #endif
 
-    if (_gles1_handle == NULL) {
-        _gles1_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
+    if ({{ template_utils.handle() }} == NULL) {
+        {{ template_utils.handle() }} = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
     }
 
-    return _gles1_handle;
+    return {{ template_utils.handle() }};
 }
 
 static struct _glad_gles1_userptr glad_gles1_build_userptr(void *handle) {
@@ -60,15 +62,15 @@ int gladLoaderLoadGLES1{{ 'Context' if options.mx }}({{ template_utils.context_a
         return 0;
     }
 
-    did_load = _gles1_handle == NULL;
-    handle = glad_gles1_dlopen_handle();
+    did_load = {{ template_utils.handle() }} == NULL;
+    handle = glad_gles1_dlopen_handle({{ 'context' if options.mx }});
     if (handle != NULL) {
         userptr = glad_gles1_build_userptr(handle);
 
         version = gladLoadGLES1{{ 'Context' if options.mx }}UserPtr({{ 'context, ' if options.mx }}glad_gles1_get_proc, &userptr);
 
         if (!version && did_load) {
-            gladLoaderUnloadGLES1();
+            gladLoaderUnloadGLES1{{ 'Context' if options.mx }}({{ 'context' if options.mx }});
         }
     }
 
@@ -93,10 +95,10 @@ int gladLoaderLoadGLES1(void) {
 }
 {% endif %}
 
-void gladLoaderUnloadGLES1(void) {
-    if (_gles1_handle != NULL) {
-        glad_close_dlopen_handle(_gles1_handle);
-        _gles1_handle = NULL;
+void gladLoaderUnloadGLES1{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
+    if ({{ template_utils.handle() }} != NULL) {
+        glad_close_dlopen_handle({{ template_utils.handle() }});
+        {{ template_utils.handle() }} = NULL;
 {% if options.on_demand %}
         glad_gles1_internal_loader_global_userptr.handle = NULL;
 {% endif %}

@@ -9,7 +9,7 @@
 #include <glad/gl.h>
 
 int main(void) {
-    GladGLContext gl;
+    GladGLContext gl = {0};
     (void) gladLoaderLoadGL();
     (void) gladLoaderLoadGLContext(&gl);
     return 0;
