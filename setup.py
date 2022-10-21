@@ -25,7 +25,7 @@ with open('glad/__init__.py', 'rb') as f:
 
 if __name__ == '__main__':
     setup(
-        name='glad',
+        name='glad2',
         version=version,
         description='Multi-Language GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specifications.',
         long_description=__doc__,
