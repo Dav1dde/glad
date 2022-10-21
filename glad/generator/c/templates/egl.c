@@ -39,7 +39,7 @@ static int glad_egl_find_extensions_{{ api|lower }}(EGLDisplay display) {
 {% for extension in feature_set.extensions %}
     GLAD_{{ extension.name }} = glad_egl_has_extension(extensions, "{{ extension.name }}");
 {% else %}
-    (void) glad_egl_has_extension;
+    GLAD_UNUSED(glad_egl_has_extension);
 {% endfor %}
 
     return 1;

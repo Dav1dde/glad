@@ -3,9 +3,9 @@
 {% block loader %}
 static int glad_glx_has_extension(Display *display, int screen, const char *ext) {
 #ifndef GLX_VERSION_1_1
-    (void) display;
-    (void) screen;
-    (void) ext;
+    GLAD_UNUSED(display);
+    GLAD_UNUSED(screen);
+    GLAD_UNUSED(ext);
 #else
     const char *terminator;
     const char *loc;
@@ -47,7 +47,7 @@ static int glad_glx_find_extensions(Display *display, int screen) {
 {% for extension in feature_set.extensions %}
     GLAD_{{ extension.name }} = glad_glx_has_extension(display, screen, "{{ extension.name }}");
 {% else %}
-    (void) glad_glx_has_extension;
+    GLAD_UNUSED(glad_glx_has_extension);
 {% endfor %}
     return 1;
 }
@@ -56,7 +56,7 @@ static int glad_glx_find_core_{{ api|lower }}(Display **display, int *screen) {
     int major = 0, minor = 0;
     if(*display == NULL) {
 #ifdef GLAD_GLX_NO_X11
-        (void) screen;
+        GLAD_UNUSED(screen);
         return 0;
 #else
         *display = XOpenDisplay(0);

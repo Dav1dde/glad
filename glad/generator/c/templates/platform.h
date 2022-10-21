@@ -54,6 +54,8 @@
   #define GLAD_GNUC_EXTENSION
 #endif
 
+#define GLAD_UNUSED(x) (void)(x)
+
 #ifndef GLAD_API_CALL
   #if defined(GLAD_API_CALL_EXPORT)
     #if GLAD_PLATFORM_WIN32 || defined(__CYGWIN__)

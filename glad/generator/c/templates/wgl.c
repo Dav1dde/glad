@@ -54,7 +54,7 @@ static int glad_wgl_find_extensions_{{ api|lower }}(HDC hdc) {
 {% for extension in feature_set.extensions %}
     GLAD_{{ extension.name }} = glad_wgl_has_extension(hdc, "{{ extension.name }}");
 {% else %}
-    (void) glad_wgl_has_extension;
+    GLAD_UNUSED(glad_wgl_has_extension);
 {% endfor %}
     return 1;
 }

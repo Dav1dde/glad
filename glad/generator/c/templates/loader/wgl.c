@@ -2,7 +2,7 @@
 
 {% if not options.on_demand %}
 static GLADapiproc glad_wgl_get_proc(void *vuserptr, const char* name) {
-    (void) vuserptr;
+    GLAD_UNUSED(vuserptr);
     return GLAD_GNUC_EXTENSION (GLADapiproc) wglGetProcAddress(name);
 }
 

@@ -71,17 +71,17 @@ static GLADapiproc glad_{{ spec.name }}_on_demand_loader(const char *name) {
 {% if options.debug %}
 {% block debug_default_pre %}
 static void _pre_call_{{ feature_set.name }}_callback_default(const char *name, GLADapiproc apiproc, int len_args, ...) {
-    (void) name;
-    (void) apiproc;
-    (void) len_args;
+    GLAD_UNUSED(name);
+    GLAD_UNUSED(apiproc);
+    GLAD_UNUSED(len_args);
 }
 {% endblock %}
 {% block debug_default_post %}
 static void _post_call_{{ feature_set.name }}_callback_default(void *ret, const char *name, GLADapiproc apiproc, int len_args, ...) {
-    (void) ret;
-    (void) name;
-    (void) apiproc;
-    (void) len_args;
+    GLAD_UNUSED(ret);
+    GLAD_UNUSED(name);
+    GLAD_UNUSED(apiproc);
+    GLAD_UNUSED(len_args);
 }
 {% endblock %}
 
