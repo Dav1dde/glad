@@ -986,17 +986,14 @@ class Member(IdentifiedByName):
     def __init__(self, name, type, enum=None):
         self.name = name
         self.type = type
-        if enum is not None:
-            self.enum = enum.text
-        else:
-            self.enum = None
+        self.enum = enum
 
     @classmethod
     def from_element(cls, element):
         type_ = ParsedType.from_element(element)
         enum = element.find('enum')
 
-        return Member(type_.name, type_, enum=enum)
+        return Member(type_.name, type_, enum=enum.text if enum is not None else None)
 
     def __str__(self):
         return 'Member(name={self.name}, type={self.type})'.format(self=self)
