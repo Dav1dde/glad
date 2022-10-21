@@ -472,7 +472,7 @@ Registry at https://github.com/KhronosGroup/OpenGL-Registry
             <param><ptype>HDC</ptype> <name>hdc</name></param>
             <param>int <name>ipfd</name></param>
             <param><ptype>UINT</ptype> <name>cjpfd</name></param>
-            <param>const <ptype>PIXELFORMATDESCRIPTOR</ptype> *<name>ppfd</name></param>
+            <param><ptype>PIXELFORMATDESCRIPTOR</ptype> *<name>ppfd</name></param>
         </command>
         <command>
             <proto>int <name>GetPixelFormat</name></proto>
@@ -684,7 +684,7 @@ Registry at https://github.com/KhronosGroup/OpenGL-Registry
             <param>int <name>pixelFormat</name></param>
             <param>int <name>layerPlane</name></param>
             <param><ptype>UINT</ptype> <name>nBytes</name></param>
-            <param>const <ptype>LAYERPLANEDESCRIPTOR</ptype> *<name>plpd</name></param>
+            <param><ptype>LAYERPLANEDESCRIPTOR</ptype> *<name>plpd</name></param>
         </command>
         <command>
             <proto><ptype>VOID</ptype> <name>wglDestroyDisplayColorTableEXT</name></proto>
@@ -846,7 +846,8 @@ Registry at https://github.com/KhronosGroup/OpenGL-Registry
         <command>
             <proto><ptype>UINT</ptype> <name>GetEnhMetaFilePixelFormat</name></proto>
             <param><ptype>HENHMETAFILE</ptype> <name>hemf</name></param>
-            <param>const <ptype>PIXELFORMATDESCRIPTOR</ptype> *<name>ppfd</name></param>
+            <param><ptype>UINT</ptype> <name>cbBuffer</name></param>
+            <param><ptype>PIXELFORMATDESCRIPTOR</ptype> *<name>ppfd</name></param>
         </command>
         <command>
             <proto>const char *<name>wglGetExtensionsStringARB</name></proto>
@@ -912,7 +913,7 @@ Registry at https://github.com/KhronosGroup/OpenGL-Registry
             <param>int <name>iLayerPlane</name></param>
             <param>int <name>iStart</name></param>
             <param>int <name>cEntries</name></param>
-            <param>const <ptype>COLORREF</ptype> *<name>pcr</name></param>
+            <param><ptype>COLORREF</ptype> *<name>pcr</name></param>
         </command>
         <command>
             <proto><ptype>BOOL</ptype> <name>wglGetMscRateOML</name></proto>

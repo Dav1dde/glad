@@ -1063,6 +1063,16 @@
     <enums namespace="EGL" start="0x34F0" end="0x34FF" vendor="ANGLE" comment="Reserved for Ken Russell - ANGLE (via github pull request)">
             <unused start="0x34F0" end="0x34FF"/>
     </enums>
+
+    <enums namespace="EGL" start="0x3500" end="0x352F" vendor="COREAVI" comment="Reserved for Daniel Herring (via github pull request)">
+        <unused start="0x3500" end="0x352F"/>
+    </enums>
+
+    <enums namespace="EGL" start="0x3530" end="0x353F" vendor="MESA" comment="Reserved for Simon Zeni (PR 165)">
+            <enum value="0x3530" name="EGL_GL_TEXTURE_CUBE_MAP_MESA"/>
+                <unused start="0x3531" end="0x353F"/>
+    </enums>
+
 <!-- Please remember that new enumerant allocations must be obtained by
      request to the Khronos API registrar (see comments at the top of this
      file) File requests in the Khronos Bugzilla, EGL project, Registry
@@ -1072,8 +1082,8 @@
 
 <!-- Reservable for future use. To generate a new range, allocate multiples
      of 16 starting at the lowest available point in this block. -->
-    <enums namespace="EGL" start="0x3500" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
-            <unused start="0x3500" end="0x3FFF"/>
+    <enums namespace="EGL" start="0x3540" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
+            <unused start="0x3540" end="0x3FFF"/>
     </enums>
 
     <enums namespace="EGL" start="0x8F70" end="0x8F7F" vendor="HI" comment="For Mark Callow, Khronos bug 4055. Shared with GL.">
@@ -1724,7 +1734,7 @@
         <command>
             <proto><ptype>EGLBoolean</ptype> <name>eglQuerySupportedCompressionRatesEXT</name></proto>
             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
-            <param><ptype>EGLConfig</ptype> *<name>configs</name></param>
+            <param><ptype>EGLConfig</ptype> <name>config</name></param>
             <param>const <ptype>EGLAttrib</ptype> *<name>attrib_list</name></param>
             <param><ptype>EGLint</ptype> *<name>rates</name></param>
             <param><ptype>EGLint</ptype> <name>rate_size</name></param>
@@ -3516,6 +3526,11 @@
         <extension name="EGL_EXT_device_drm_render_node" supported="egl">
             <require>
                 <enum name="EGL_DRM_RENDER_NODE_FILE_EXT"/>
+            </require>
+        </extension>
+        <extension name="EGL_EXT_explicit_device" supported="egl">
+            <require>
+                <enum name="EGL_DEVICE_EXT"/>
             </require>
         </extension>
     </extensions>
