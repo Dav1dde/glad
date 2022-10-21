@@ -39,7 +39,6 @@ if __name__ == '__main__':
             'glad.generator': [
                 'c = glad.generator.c.__init__:CGenerator',
                 'rust = glad.generator.rust.__init__:RustGenerator'
-                # TODO re-enable other languages
             ],
             'glad.specification': [
                 'egl = glad.specification:EGL',
@@ -61,7 +60,10 @@ if __name__ == '__main__':
             'Programming Language :: Python :: 2',
             'Programming Language :: Python :: 2.7',
             'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3.4',
+            'Programming Language :: Python :: 3.7',
+            'Programming Language :: Python :: 3.8',
+            'Programming Language :: Python :: 3.9',
+            'Programming Language :: Python :: 3.10',
             'Topic :: Games/Entertainment',
             'Topic :: Multimedia :: Graphics',
             'Topic :: Multimedia :: Graphics :: 3D Rendering',
@@ -71,7 +73,7 @@ if __name__ == '__main__':
         ],
         keywords='opengl glad generator gl wgl egl gles glx',
         author='David Herberth',
-        author_email='admin@dav1d.de',
+        author_email='github@dav1d.de',
         url='https://github.com/Dav1dde/glad',
         license='MIT',
         platforms='any'
