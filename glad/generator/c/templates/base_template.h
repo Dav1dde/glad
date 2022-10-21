@@ -79,14 +79,14 @@ typedef struct Glad{{ feature_set.name|api }}Context {
 } Glad{{ feature_set.name|api }}Context;
 
 {% if options.mx_global %}
-GLAD_API_CALL Glad{{ feature_set.name|api }}Context glad_{{ feature_set.name }}_context;
+GLAD_API_CALL Glad{{ feature_set.name|api }}Context* glad_{{ feature_set.name }}_context;
 
 {% for extension in chain(feature_set.features, feature_set.extensions) %}
-#define GLAD_{{ extension.name }} (glad_{{ feature_set.name }}_context.{{ extension.name|no_prefix }})
+#define GLAD_{{ extension.name }} (glad_{{ feature_set.name }}_context->{{ extension.name|no_prefix }})
 {% endfor %}
 
 {% for command in feature_set.commands %}
-#define {{ command.name }} (glad_{{ feature_set.name }}_context.{{ command.name|no_prefix }})
+#define {{ command.name }} (glad_{{ feature_set.name }}_context->{{ command.name|no_prefix }})
 {% endfor %}
 {% endif %}
 
