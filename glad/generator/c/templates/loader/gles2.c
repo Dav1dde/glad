@@ -5,6 +5,7 @@
 
 #if GLAD_PLATFORM_EMSCRIPTEN
 #ifndef GLAD_EGL_H_
+  typedef void (*__eglMustCastToProperFunctionPointerType)(void);
   typedef __eglMustCastToProperFunctionPointerType (GLAD_API_PTR *PFNEGLGETPROCADDRESSPROC)(const char *name);
 #endif
   extern __eglMustCastToProperFunctionPointerType emscripten_GetProcAddress(const char *name);
