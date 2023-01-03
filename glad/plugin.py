@@ -8,7 +8,7 @@ try:
         _entry_points = entry_points
 
         def entry_points(group=None):
-            return _entry_points()[group]
+            return _entry_points().get(group, [])
 except ImportError:
     from pkg_resources import iter_entry_points as entry_points
 
