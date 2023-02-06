@@ -138,6 +138,7 @@ function(__glad_c_library CARGS CFILES)
             message(FATAL_ERROR "Unknown SPEC: '${SPEC}'")
         endif()
     endforeach()
+    list(REMOVE_DUPLICATES GGC_FILES)
 
     set(GGC_ARGS "")
     if(GGC_ALIAS)
