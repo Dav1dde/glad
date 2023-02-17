@@ -811,7 +811,7 @@ typedef unsigned int GLhandleARB;
         <enum value="0x0D19" name="GL_GREEN_BIAS" group="PixelTransferParameter,GetPName"/>
         <enum value="0x0D1A" name="GL_BLUE_SCALE" group="PixelTransferParameter,GetPName"/>
         <enum value="0x0D1B" name="GL_BLUE_BIAS" group="PixelTransferParameter,GetPName"/>
-        <enum value="0x0D1C" name="GL_ALPHA_SCALE" group="PixelTransferParameter,GetPName"/>
+        <enum value="0x0D1C" name="GL_ALPHA_SCALE" group="PixelTransferParameter,GetPName,TextureEnvParameter"/>
         <enum value="0x0D1D" name="GL_ALPHA_BIAS" group="PixelTransferParameter,GetPName"/>
         <enum value="0x0D1E" name="GL_DEPTH_SCALE" group="PixelTransferParameter,GetPName"/>
         <enum value="0x0D1F" name="GL_DEPTH_BIAS" group="PixelTransferParameter,GetPName"/>
@@ -1014,7 +1014,7 @@ typedef unsigned int GLhandleARB;
         <enum value="0x1D01" name="GL_SMOOTH" group="ShadingModel"/>
             <unused start="0x1D02" end="0x1DFF" comment="Unused for ShadingModel"/>
         <enum value="0x1E00" name="GL_KEEP" group="StencilOp"/>
-        <enum value="0x1E01" name="GL_REPLACE" group="StencilOp,LightEnvModeSGIX"/>
+        <enum value="0x1E01" name="GL_REPLACE" group="StencilOp,LightEnvModeSGIX,TextureEnvMode"/>
         <enum value="0x1E02" name="GL_INCR" group="StencilOp"/>
         <enum value="0x1E03" name="GL_DECR" group="StencilOp"/>
             <unused start="0x1E04" end="0x1EFF" comment="Unused for StencilOp"/>
@@ -1697,9 +1697,9 @@ typedef unsigned int GLhandleARB;
         <enum value="0x8149" name="GL_SPRITE_MODE_SGIX" group="GetPName,SpriteParameterNameSGIX"/>
         <enum value="0x814A" name="GL_SPRITE_AXIS_SGIX" group="GetPName"/>
         <enum value="0x814B" name="GL_SPRITE_TRANSLATION_SGIX" group="GetPName"/>
-        <enum value="0x814C" name="GL_SPRITE_AXIAL_SGIX"/>
-        <enum value="0x814D" name="GL_SPRITE_OBJECT_ALIGNED_SGIX"/>
-        <enum value="0x814E" name="GL_SPRITE_EYE_ALIGNED_SGIX"/>
+        <enum value="0x814C" name="GL_SPRITE_AXIAL_SGIX" group="SpriteModeSGIX"/>
+        <enum value="0x814D" name="GL_SPRITE_OBJECT_ALIGNED_SGIX" group="SpriteModeSGIX"/>
+        <enum value="0x814E" name="GL_SPRITE_EYE_ALIGNED_SGIX" group="SpriteModeSGIX"/>
         <enum value="0x814F" name="GL_TEXTURE_4D_BINDING_SGIS" group="GetPName"/>
     </enums>
 
@@ -2760,9 +2760,9 @@ typedef unsigned int GLhandleARB;
         <enum value="0x84FE" name="GL_TEXTURE_MAX_ANISOTROPY_EXT" alias="GL_TEXTURE_MAX_ANISOTROPY"/>
         <enum value="0x84FF" name="GL_MAX_TEXTURE_MAX_ANISOTROPY"/>
         <enum value="0x84FF" name="GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT" alias="GL_MAX_TEXTURE_MAX_ANISOTROPY"/>
-        <enum value="0x8500" name="GL_TEXTURE_FILTER_CONTROL"/>
+        <enum value="0x8500" name="GL_TEXTURE_FILTER_CONTROL" group="TextureEnvTarget"/>
         <enum value="0x8500" name="GL_TEXTURE_FILTER_CONTROL_EXT"/>
-        <enum value="0x8501" name="GL_TEXTURE_LOD_BIAS" group="TextureParameterName,SamplerParameterF"/>
+        <enum value="0x8501" name="GL_TEXTURE_LOD_BIAS" group="TextureParameterName,SamplerParameterF,TextureEnvParameter"/>
         <enum value="0x8501" name="GL_TEXTURE_LOD_BIAS_EXT"/>
         <enum value="0x8502" name="GL_MODELVIEW1_STACK_DEPTH_EXT"/>
         <enum value="0x8503" name="GL_COMBINE4_NV"/>
@@ -2920,7 +2920,7 @@ typedef unsigned int GLhandleARB;
     </enums>
 
     <enums namespace="GL" start="0x8570" end="0x859F" group="TextureEnvParameter" vendor="AMD/NV">
-        <enum value="0x8570" name="GL_COMBINE" group="TextureEnvParameter"/>
+        <enum value="0x8570" name="GL_COMBINE" group="TextureEnvParameter,TextureEnvMode"/>
         <enum value="0x8570" name="GL_COMBINE_ARB" group="TextureEnvParameter"/>
         <enum value="0x8570" name="GL_COMBINE_EXT" group="TextureEnvParameter"/>
         <enum value="0x8571" name="GL_COMBINE_RGB" group="TextureEnvParameter"/>
@@ -3857,11 +3857,11 @@ typedef unsigned int GLhandleARB;
         <enum value="0x885E" name="GL_HILO8_NV"/>
         <enum value="0x885F" name="GL_SIGNED_HILO8_NV"/>
         <enum value="0x8860" name="GL_FORCE_BLUE_TO_ONE_NV"/>
-        <enum value="0x8861" name="GL_POINT_SPRITE"/>
+        <enum value="0x8861" name="GL_POINT_SPRITE" group="TextureEnvTarget"/>
         <enum value="0x8861" name="GL_POINT_SPRITE_ARB"/>
         <enum value="0x8861" name="GL_POINT_SPRITE_NV"/>
         <enum value="0x8861" name="GL_POINT_SPRITE_OES"/>
-        <enum value="0x8862" name="GL_COORD_REPLACE"/>
+        <enum value="0x8862" name="GL_COORD_REPLACE" group="TextureEnvParameter" />
         <enum value="0x8862" name="GL_COORD_REPLACE_ARB"/>
         <enum value="0x8862" name="GL_COORD_REPLACE_NV"/>
         <enum value="0x8862" name="GL_COORD_REPLACE_OES"/>
@@ -8367,7 +8367,7 @@ typedef unsigned int GLhandleARB;
             <param group="SizedInternalFormat"><ptype>GLenum</ptype> <name>internalformat</name></param>
             <param group="PixelFormat"><ptype>GLenum</ptype> <name>format</name></param>
             <param group="PixelType"><ptype>GLenum</ptype> <name>type</name></param>
-            <param>const void *<name>data</name></param>
+            <param len="COMPSIZE(format,type)">const void *<name>data</name></param>
         </command>
         <command>
             <proto>void <name>glClearNamedBufferDataEXT</name></proto>
@@ -8385,7 +8385,7 @@ typedef unsigned int GLhandleARB;
             <param group="BufferSize"><ptype>GLsizeiptr</ptype> <name>size</name></param>
             <param group="PixelFormat"><ptype>GLenum</ptype> <name>format</name></param>
             <param group="PixelType"><ptype>GLenum</ptype> <name>type</name></param>
-            <param>const void *<name>data</name></param>
+            <param len="COMPSIZE(format,type)">const void *<name>data</name></param>
         </command>
         <command>
             <proto>void <name>glClearNamedBufferSubDataEXT</name></proto>
@@ -9495,7 +9495,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLsizei</ptype> <name>width</name></param>
             <param group="InternalFormat"><ptype>GLenum</ptype> <name>format</name></param>
             <param><ptype>GLsizei</ptype> <name>imageSize</name></param>
-            <param>const void *<name>data</name></param>
+            <param len="imageSize">const void *<name>data</name></param>
         </command>
         <command>
             <proto>void <name>glCompressedTextureSubImage1DEXT</name></proto>
@@ -9518,7 +9518,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLsizei</ptype> <name>height</name></param>
             <param group="InternalFormat"><ptype>GLenum</ptype> <name>format</name></param>
             <param><ptype>GLsizei</ptype> <name>imageSize</name></param>
-            <param>const void *<name>data</name></param>
+            <param len="imageSize">const void *<name>data</name></param>
         </command>
         <command>
             <proto>void <name>glCompressedTextureSubImage2DEXT</name></proto>
@@ -9545,7 +9545,7 @@ typedef unsigned int GLhandleARB;
             <param><ptype>GLsizei</ptype> <name>depth</name></param>
             <param group="InternalFormat"><ptype>GLenum</ptype> <name>format</name></param>
             <param><ptype>GLsizei</ptype> <name>imageSize</name></param>
-            <param>const void *<name>data</name></param>
+            <param len="imageSize">const void *<name>data</name></param>
         </command>
         <command>
             <proto>void <name>glCompressedTextureSubImage3DEXT</name></proto>
@@ -10302,7 +10302,7 @@ typedef unsigned int GLhandleARB;
             <proto class="program"><ptype>GLuint</ptype> <name>glCreateShaderProgramvEXT</name></proto>
             <param group="ShaderType"><ptype>GLenum</ptype> <name>type</name></param>
             <param><ptype>GLsizei</ptype> <name>count</name></param>
-            <param len="count">const <ptype>GLchar</ptype> **<name>strings</name></param>
+            <param len="count">const <ptype>GLchar</ptype> *const*<name>strings</name></param>
         </command>
         <command>
             <proto>void <name>glCreateStatesNV</name></proto>
@@ -11177,7 +11177,7 @@ typedef unsigned int GLhandleARB;
             <proto>void <name>glDrawElementsInstancedANGLE</name></proto>
             <param group="PrimitiveType"><ptype>GLenum</ptype> <name>mode</name></param>
             <param><ptype>GLsizei</ptype> <name>count</name></param>
-            <param group="PrimitiveType"><ptype>GLenum</ptype> <name>type</name></param>
+            <param group="DrawElementsType"><ptype>GLenum</ptype> <name>type</name></param>
             <param len="COMPSIZE(count,type)">const void *<name>indices</name></param>
             <param><ptype>GLsizei</ptype> <name>primcount</name></param>
             <alias name="glDrawElementsInstanced"/>
@@ -11195,7 +11195,7 @@ typedef unsigned int GLhandleARB;
             <proto>void <name>glDrawElementsInstancedBaseInstance</name></proto>
             <param group="PrimitiveType"><ptype>GLenum</ptype> <name>mode</name></param>
             <param><ptype>GLsizei</ptype> <name>count</name></param>
-            <param group="PrimitiveType"><ptype>GLenum</ptype> <name>type</name></param>
+            <param group="DrawElementsType"><ptype>GLenum</ptype> <name>type</name></param>
             <param len="count">const void *<name>indices</name></param>
             <param><ptype>GLsizei</ptype> <name>instancecount</name></param>
             <param><ptype>GLuint</ptype> <name>baseinstance</name></param>
@@ -11204,7 +11204,7 @@ typedef unsigned int GLhandleARB;
             <proto>void <name>glDrawElementsInstancedBaseInstanceEXT</name></proto>
             <param group="PrimitiveType"><ptype>GLenum</ptype> <name>mode</name></param>
             <param><ptype>GLsizei</ptype> <name>count</name></param>
-            <param group="PrimitiveType"><ptype>GLenum</ptype> <name>type</name></param>
+            <param group="DrawElementsType"><ptype>GLenum</ptype> <name>type</name></param>
             <param len="count">const void *<name>indices</name></param>
             <param><ptype>GLsizei</ptype> <name>instancecount</name></param>
             <param><ptype>GLuint</ptype> <name>baseinstance</name></param>
@@ -11273,7 +11273,7 @@ typedef unsigned int GLhandleARB;
             <proto>void <name>glDrawElementsInstancedNV</name></proto>
             <param group="PrimitiveType"><ptype>GLenum</ptype> <name>mode</name></param>
             <param><ptype>GLsizei</ptype> <name>count</name></param>
-            <param group="PrimitiveType"><ptype>GLenum</ptype> <name>type</name></param>
+            <param group="DrawElementsType"><ptype>GLenum</ptype> <name>type</name></param>
             <param len="COMPSIZE(count,type)">const void *<name>indices</name></param>
             <param><ptype>GLsizei</ptype> <name>primcount</name></param>
             <alias name="glDrawElementsInstanced"/>
@@ -14146,7 +14146,7 @@ typedef unsigned int GLhandleARB;
             <param class="buffer"><ptype>GLuint</ptype> <name>buffer</name></param>
             <param><ptype>GLintptr</ptype> <name>offset</name></param>
             <param group="BufferSize"><ptype>GLsizeiptr</ptype> <name>size</name></param>
-            <param>void *<name>data</name></param>
+            <param len="size">void *<name>data</name></param>
         </command>
         <command>
             <proto>void <name>glGetNamedBufferSubDataEXT</name></proto>
@@ -23307,25 +23307,25 @@ typedef unsigned int GLhandleARB;
         <command>
             <proto>void <name>glSpriteParameterfSGIX</name></proto>
             <param group="SpriteParameterNameSGIX"><ptype>GLenum</ptype> <name>pname</name></param>
-            <param group="CheckedFloat32"><ptype>GLfloat</ptype> <name>param</name></param>
+            <param><ptype>GLfloat</ptype> <name>param</name></param>
             <glx type="render" opcode="2060"/>
         </command>
         <command>
             <proto>void <name>glSpriteParameterfvSGIX</name></proto>
             <param group="SpriteParameterNameSGIX"><ptype>GLenum</ptype> <name>pname</name></param>
-            <param group="CheckedFloat32" len="COMPSIZE(pname)">const <ptype>GLfloat</ptype> *<name>params</name></param>
+            <param len="COMPSIZE(pname)">const <ptype>GLfloat</ptype> *<name>params</name></param>
             <glx type="render" opcode="2061"/>
         </command>
         <command>
             <proto>void <name>glSpriteParameteriSGIX</name></proto>
             <param group="SpriteParameterNameSGIX"><ptype>GLenum</ptype> <name>pname</name></param>
-            <param group="CheckedInt32"><ptype>GLint</ptype> <name>param</name></param>
+            <param group="SpriteModeSGIX"><ptype>GLint</ptype> <name>param</name></param>
             <glx type="render" opcode="2062"/>
         </command>
         <command>
             <proto>void <name>glSpriteParameterivSGIX</name></proto>
             <param group="SpriteParameterNameSGIX"><ptype>GLenum</ptype> <name>pname</name></param>
-            <param group="CheckedInt32" len="COMPSIZE(pname)">const <ptype>GLint</ptype> *<name>params</name></param>
+            <param group="SpriteModeSGIX" len="COMPSIZE(pname)">const <ptype>GLint</ptype> *<name>params</name></param>
             <glx type="render" opcode="2063"/>
         </command>
         <command>
