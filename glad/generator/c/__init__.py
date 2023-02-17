@@ -268,7 +268,37 @@ class CGenerator(JinjaGenerator):
         Header(
             'vk_platform',
             'vk_platform.h',
-            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/main/include/vulkan/vk_platform.h'
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vulkan/vk_platform.h'
+        ),
+        Header(
+            'vk_video/vulkan_video_codec_h264std.h',
+            'vk_video/vulkan_video_codec_h264std.h',
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h264std.h'
+        ),
+        Header(
+            'vk_video/vulkan_video_codec_h264std_decode.h',
+            'vk_video/vulkan_video_codec_h264std_decode.h',
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h264std_decode.h'
+        ),
+        Header(
+            'vk_video/vulkan_video_codec_h264std_encode.h',
+            'vk_video/vulkan_video_codec_h264std_encode.h',
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h264std_encode.h'
+        ),
+        Header(
+            'vk_video/vulkan_video_codec_h265std.h',
+            'vk_video/vulkan_video_codec_h265std.h',
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h265std.h'
+        ),
+        Header(
+            'vk_video/vulkan_video_codec_h265std_decode.h',
+            'vk_video/vulkan_video_codec_h265std_decode.h',
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h265std_decode.h'
+        ),
+        Header(
+            'vk_video/vulkan_video_codec_h265std_encode.h',
+            'vk_video/vulkan_video_codec_h265std_encode.h',
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h265std_encode.h'
         ),
     ]
 

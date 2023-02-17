@@ -315,15 +315,9 @@ class Specification(object):
         for element in filter(lambda e: e.tag == 'type', iter(self.root.find('types'))):
             name = element.get('name') or element.find('name').text
 
-            if name == 'VkAccelerationStructureTypeNV':
-                print('asd', element.get('category'))
-
             if element.get('category') != 'enum':
                 types.setdefault(name, list()).extend(Type.from_element(element))
                 continue
-
-            if name == 'VkAccelerationStructureTypeNV':
-                print('yo', element.get('category'))
 
             # Enum special handling
             enums_element = self.root.findall('.//enums[@type][@name="{}"]'.format(name))
