@@ -124,9 +124,18 @@ class FeatureSet(object):
         for enum in self.enums:
             result[enum.name] = enum
 
+        apis = [info.api for info in self.info]
         for type_ in self.types:
             if type_.category == 'enum':
                 for enum in type_.enums:
+                    # Safety check, this should never happen.
+                    # Even though this could happen if you go by the spec,
+                    # glad generates duplicate types (and commands) with different APIs
+                    # attributes. So the only way this could happen by merging multiple
+                    # APIs, but the merging code already makes sure it selects
+                    # one of the candidates and not both
+                    if enum.name in result:
+                        raise ValueError('duplicate enum {} in feature set'.format(enum.name))
                     result[enum.name] = enum
 
         return result
@@ -304,58 +313,87 @@ class Specification(object):
     def types(self):
         types = OrderedDict()
         for element in filter(lambda e: e.tag == 'type', iter(self.root.find('types'))):
-            t = Type.from_element(element)
+            name = element.get('name') or element.find('name').text
 
-            if t.category == 'enum':
-                enums_element = self.root.findall('.//enums[@type][@name="{}"]'.format(t.name))
-                if len(enums_element) == 0:
-                    if t.alias is None:
-                        # yep the type exists but there is actually no enum for it...
-                        logger.debug('type {} with category enum but without <enums>'.format(t.name))
-                        continue
-                elif len(enums_element) > 1:
-                    # this should never happen, if it does ... well shit
-                    raise ValueError('multiple enums with type attribute and name {}'.format(t.name))
-                else:
-                    enums_element = enums_element[0]
+            if name == 'VkAccelerationStructureTypeNV':
+                print('asd', element.get('category'))
 
-                    t.bitwidth = enums_element.get('bitwidth')
+            if element.get('category') != 'enum':
+                types.setdefault(name, list()).extend(Type.from_element(element))
+                continue
 
-                    kwargs = dict(namespace=enums_element.get('namespace'),
-                                  parent_group=enums_element.get('group'),
-                                  vendor=enums_element.get('vendor'),
-                                  comment=enums_element.get('comment', ''))
+            if name == 'VkAccelerationStructureTypeNV':
+                print('yo', element.get('category'))
 
-                    enums = OrderedDict()
-                    for e in (Enum.from_element(e, parent_type=t.name, **kwargs) for e in enums_element.findall('enum')):
-                        enums[e.name] = e
+            # Enum special handling
+            enums_element = self.root.findall('.//enums[@type][@name="{}"]'.format(name))
+            if len(enums_element) == 0:
+                if element.get('alias') is None:
+                    # yep the type exists but there is actually no enum for it...
+                    logger.debug('type {} with category enum but without <enums>'.format(name))
+                    continue
+                # It's just a simple alias, add it
+                types.setdefault(name, list()).extend(Type.from_element(element))
+                continue
+            elif len(enums_element) > 1:
+                # this should never happen, if it does ... well shit
+                raise ValueError('multiple enums with type attribute and name {}'.format(name))
+            enums_element = enums_element[0]
 
-                    for extension in self.root.findall('.//require/enum[@extends="{}"]/../..'.format(t.name)):
-                        try:
-                            extnumber = int(extension.attrib['number'])
-                        except ValueError:
-                            # Most likely a feature, if that happens every extending enum needs
-                            # to specify its own extnumber
-                            extnumber = None
+            # Copy the type for each API it is used in
+            apis = set(e.get('api') for e in self.root.findall('.//require/enum[@extends="{}"]'.format(name)))
 
-                        for extending_enum in extension.findall('.//require/enum[@extends="{}"]'.format(t.name)):
-                            enum = Enum.from_element(extending_enum, extnumber=extnumber, parent_type=t.name)
+            if name == 'VkAccelerationStructureTypeNV':
+                print(Type.from_element(element), apis or [None], enums_element)
 
-                            if enum.name not in enums:
-                                enums[enum.name] = enum
-                            else:
-                                # technically not required, but better throw more
-                                # than generate broken code because of a broken specification
-                                if not enum.value == enums[enum.name].value:
-                                    raise ValueError('extension enum {} required multiple times '
-                                                     'with different values'.format(e.name))
+            for api in apis or [None]:
+                # Hack: Enum Type always returns only one element,
+                # because we do the special handling here
+                t = EnumType.from_element(element)[0]
 
-                            enums[enum.name].also_extended_by(extension.attrib['name'])
-                    t.enums = list(enums.values())
+                # Assumption for now that enum types do not have an API
+                # if there ever is one, the `apis` list needs to be adjusted to only contain t.api
+                assert t.api is None
+                t.api = api
+                t.bitwidth = enums_element.get('bitwidth')
 
-            if t.name not in types:
-                types[t.name] = list()
-            types[t.name].append(t)
+                kwargs = dict(namespace=enums_element.get('namespace'),
+                              parent_group=enums_element.get('group'),
+                              vendor=enums_element.get('vendor'),
+                              comment=enums_element.get('comment', ''))
+
+                enums = OrderedDict()
+                for e in (Enum.from_element(e, parent_type=t.name, **kwargs) for e in enums_element.findall('enum')):
+                    enums[e.name] = e
+
+                for extension in self.root.findall('.//require/enum[@extends="{}"]/../..'.format(t.name)):
+                    try:
+                        extnumber = int(extension.attrib['number'])
+                    except ValueError:
+                        # Most likely a feature, if that happens every extending enum needs
+                        # to specify its own extnumber
+                        extnumber = None
+
+                    for extending_enum in extension.findall('.//require/enum[@extends="{}"]'.format(t.name)):
+                        enum = Enum.from_element(extending_enum, extnumber=extnumber, parent_type=t.name)
+                        # Make sure this enum is relevant for the current API
+                        if not enum.api == api and enum.api is not None:
+                            continue
+
+                        if enum.name not in enums:
+                            enums[enum.name] = enum
+                        else:
+                            # technically not required, but better throw more
+                            # than generate broken code because of a broken specification
+                            if not enum.value == enums[enum.name].value:
+                                raise ValueError('extension enum {} required multiple times '
+                                                 'with different values'.format(e.name))
+
+                        enums[enum.name].also_extended_by(extension.attrib['name'])
+
+                t.enums = list(enums.values())
+
+                types.setdefault(t.name, list()).append(t)
 
         def _type_dependencies(item):
             # all requirements of all types (types can exist more than once, e.g. specialized for an API)
@@ -373,8 +411,9 @@ class Specification(object):
     def commands(self):
         commands = dict()
         for element in self.root.find('commands'):
-            command = Command(element)
-            commands.setdefault(command.name, []).append(command)
+            parsed = Command.from_element(element)
+            if len(parsed) > 0:
+                commands.setdefault(parsed[0].name, []).extend(parsed)
 
         # fixup aliases
         for command in chain.from_iterable(commands.values()):
@@ -429,7 +468,8 @@ class Specification(object):
         features = defaultdict(dict)
         for element in self.root.iter('feature'):
             num = Version(*map(int, element.attrib['number'].split('.')))
-            features[element.attrib['api']][num] = Feature.from_element(element)
+            for api in element.attrib['api'].split(','):
+                features[api][num] = Feature.from_element(element)
 
         for api, api_features in features.items():
             features[api] = OrderedDict(sorted(api_features.items(), key=lambda x: x[0]))
@@ -805,7 +845,7 @@ class Type(IdentifiedByName):
 
     @classmethod
     def factory(cls, element, name, data):
-        return cls(name, **data)
+        return [cls(name, **data)]
 
     @staticmethod
     def from_element(element):
@@ -853,7 +893,7 @@ class Type(IdentifiedByName):
             if cur.parent == basetype:
                 return True
             cur = typeslist[cur.parent][0]
-        return False;
+        return False
 
     def __str__(self):
         return self.name
@@ -894,7 +934,7 @@ class FuncPointerType(Type):
                 type_.replace(' ', ''), pname.strip()
             )
 
-        return cls(name, ret=ret, parameters=parameters, **data)
+        return [cls(name, ret=ret, parameters=parameters, **data)]
 
 
 class MemberType(Type):
@@ -906,7 +946,18 @@ class MemberType(Type):
     @classmethod
     def factory(cls, element, name, data):
         members = [Member.from_element(e) for e in element.findall('member')]
-        return cls(name, members=members, **data)
+
+        # May not have members at all (struct with only an alias)
+        if len(members) == 0:
+            return [cls(name, **data)]
+
+        result = list()
+        for api in set(member.api for member in members):
+            api_members = [member for member in members if member.api is None or member.api == api]
+            t = cls(name, members=api_members, **data)
+            t.api = api
+            result.append(t)
+        return result
 
 
 class UnionType(MemberType):
@@ -958,7 +1009,7 @@ class TypedType(Type):
         # may be none if the handle is just aliased
         type_element = element.find('type')
         type_ = type_element.text if type_element is not None else None
-        return cls(name, type=type_, **data)
+        return [cls(name, type=type_, **data)]
 
 
 class HandleType(TypedType):
@@ -983,17 +1034,19 @@ Type.register('bitmask', BitmaskType.factory)
 
 
 class Member(IdentifiedByName):
-    def __init__(self, name, type, enum=None):
+    def __init__(self, name, type_, api=None, enum=None):
         self.name = name
-        self.type = type
+        self.type = type_
+        self.api = api
         self.enum = enum
 
     @classmethod
     def from_element(cls, element):
         type_ = ParsedType.from_element(element)
         enum = element.find('enum')
+        api = element.get('api')
 
-        return Member(type_.name, type_, enum=enum.text if enum is not None else None)
+        return Member(type_.name, type_, api=api, enum=enum.text if enum is not None else None)
 
     def __str__(self):
         return 'Member(name={self.name}, type={self.type})'.format(self=self)
@@ -1101,26 +1154,45 @@ class Enum(IdentifiedByName):
 
 
 class Command(IdentifiedByName):
-    def __init__(self, element):
-        self.proto = None
-        self.params = None
-
-        proto = element.find('proto')
-        if proto is not None:
-            self.proto = Proto.from_element(proto)
-            self.params = [Param(ele) for ele in filter(lambda e: e.tag == 'param', iter(element))]
-
-        self.alias = element.get('alias')
-        self._name = element.get('name')
-
-        alias = element.find('alias')
-        if alias is not None:
-            self.alias = alias.attrib['name']
-
-        self.api = element.get('api')
+    def __init__(self, name, api=None, proto=None, params=None, alias=None):
+        self.name = name
+        self.api = api
+        self.proto = proto
+        self.params = params
+        self.alias = alias
 
         if self.alias is None and self.proto is None:
             raise ValueError("command is neither a full command nor an alias")
+
+    @classmethod
+    def from_element(cls, element):
+        params = None
+        proto = element.find('proto')
+        if proto is not None:
+            proto = Proto.from_element(proto)
+            params = [Param(ele) for ele in filter(lambda e: e.tag == 'param', iter(element))]
+
+        alias = element.get('alias')
+        if alias is None:
+            alias_element = element.find('alias')
+            if alias_element is not None:
+                alias = alias_element.attrib['name']
+
+        api = element.get('api')
+
+        name = element.get('name') or proto.name
+
+        # Only alias or no members
+        if params is None or len(params) == 0:
+            return [cls(name, api=api, proto=proto, params=params, alias=alias)]
+
+        result = list()
+        apis = set(param.api for param in params)
+        for api in apis:
+            api_params = [param for param in params if param.api is None or param.api == api]
+            result.append(cls(name, api=api, proto=proto, params=api_params, alias=alias))
+
+        return result
 
     @property
     def requires(self):
@@ -1131,10 +1203,6 @@ class Command(IdentifiedByName):
         if self.proto.ret.original_type:
             requires.append(self.proto.ret.original_type)
         return requires
-
-    @property
-    def name(self):
-        return self._name or self.proto.name
 
     def is_equivalent(self, other):
         return self.proto == other.proto and self.params == other.params
@@ -1168,6 +1236,7 @@ class Param(object):
         self.group = element.get('group')
         self.type = ParsedType.from_element(element)
         self.name = element.find('name').text.strip('*')
+        self.api = element.get('api')
 
     def is_equivalent(self, other):
         return self.type == other.type
@@ -1300,7 +1369,8 @@ class Extension(IdentifiedByName):
     @classmethod
     def from_element(cls, element):
         name = element.attrib['name']
-        supported = element.attrib['supported'].split('|')
+        # Vulkan uses `,` and GL uses `|`
+        supported = element.attrib['supported'].replace('|', ',').split(',')
 
         requires = [Require.from_element(require) for require in element.findall('require')]
 
@@ -1377,9 +1447,9 @@ class Feature(Extension):
         return Extension.is_equivalent(self, other) and self.removes == other.removes
 
     @classmethod
-    def from_element(cls, element):
+    def from_element(cls, element, api=None):
         name = element.attrib['name']
-        api = element.attrib['api']
+        api = set(element.attrib['api'].split(','))
         version = Version(*tuple(map(int, element.attrib['number'].split('.'))))
 
         requires = [Require.from_element(require) for require in element.findall('require')]
@@ -1389,7 +1459,7 @@ class Feature(Extension):
         protect = [p.strip() for p in element.get('protect', '').split(',') if p.strip()]
         platform = element.get('platform')
 
-        return cls(name, api, version, supported=[api], requires=requires,
+        return cls(name, api, version, supported=api, requires=requires,
                    removes=removes, type_=type_, protect=protect, platform=platform)
 
     def __str__(self):
