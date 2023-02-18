@@ -336,10 +336,6 @@ class Specification(object):
 
             # Copy the type for each API it is used in
             apis = set(e.get('api') for e in self.root.findall('.//require/enum[@extends="{}"]'.format(name)))
-
-            if name == 'VkAccelerationStructureTypeNV':
-                print(Type.from_element(element), apis or [None], enums_element)
-
             for api in apis or [None]:
                 # Hack: Enum Type always returns only one element,
                 # because we do the special handling here
