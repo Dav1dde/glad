@@ -14,7 +14,7 @@ int gladLoadWGL(HDC hdc) {
     return status;
 }
 
-void gladUnloadGLX(void) {
+void gladUnloadWGL(void) {
     close_wgl();
 }
 '''
