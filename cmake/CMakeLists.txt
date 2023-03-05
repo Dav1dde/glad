@@ -256,6 +256,8 @@ function(glad_add_library TARGET)
         list(APPEND GLAD_ADD_LIBRARY_ARGS MODULE)
     elseif(GG_INTERFACE)
         list(APPEND GLAD_ADD_LIBRARY_ARGS INTERFACE)
+    elseif(BUILD_SHARED_LIBS)
+        set(GG_SHARED TRUE)
     endif()
 
     if(GG_EXCLUDE_FROM_ALL)
