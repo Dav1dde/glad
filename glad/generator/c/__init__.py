@@ -196,7 +196,7 @@ def enum_member(context, type_, member, require_value=False):
     return resolve(member.alias)
 
 
-_CPP_STYLE_COMMENT_RE = re.compile(r'(^|\s|\))//(?P<comment>.*)$', flags=re.MULTILINE)
+_CPP_STYLE_COMMENT_RE = re.compile(r'(^|\s|\))//(?P<comment>[^\r^\n]*)$', flags=re.MULTILINE)
 
 
 def replace_cpp_style_comments(inp):
