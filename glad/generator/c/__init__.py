@@ -196,7 +196,7 @@ def enum_member(context, type_, member, require_value=False):
     return resolve(member.alias)
 
 
-_CPP_STYLE_COMMENT_RE = re.compile(r'(^|\s|\))//(?P<comment>[^\r^\n]*)$', flags=re.MULTILINE)
+_CPP_STYLE_COMMENT_RE = re.compile(r'(^|\s|\))//(?P<comment>[^\r^\n]*)', flags=re.MULTILINE)
 
 
 def replace_cpp_style_comments(inp):
@@ -491,8 +491,8 @@ class CGenerator(JinjaGenerator):
 
             if not os.path.exists(path):
                 content = self._read_header(header.url)
-                with open(path, 'w') as dest:
-                    dest.write(content)
+                with open(path, 'wb') as dest:
+                    dest.write(content.encode('utf-8'))
 
     def _read_header(self, url):
         if url not in self._headers:
