@@ -10,8 +10,8 @@
 {{ 'Glad' + feature_set.name|api + 'Context *context' + suffix if options.mx else def }}
 {%- endmacro %}
 
-{% macro handle() -%}
-{{ 'context->glad' if options.mx else '_glad_' + feature_set.name|api }}_loader_handle
+{% macro handle(es='') -%}
+{{ 'context->glad' if options.mx else '_glad_' + feature_set.name|api + es}}_loader_handle
 {%- endmacro %}
 
 
