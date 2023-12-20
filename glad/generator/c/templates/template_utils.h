@@ -116,9 +116,9 @@ typedef {{ command.proto.ret|type_to_c }} (GLAD_API_PTR *{{ command.name|pfn }})
 GLAD_API_CALL {{ command.name|pfn }} glad_{{ command.name }};
 {% if debug %}
 GLAD_API_CALL {{ command.name|pfn }} glad_debug_{{ command.name }};
-#define {{ command.name }} glad_debug_{{ command.name }}
+#define {{ command.name }}({{ command.params|param_names }}) glad_debug_{{ command.name }}({{ command.params|param_names }})
 {% else %}
-#define {{ command.name }} glad_{{ command.name }}
+#define {{ command.name }}({{ command.params|param_names }}) glad_{{ command.name }}({{ command.params|param_names }})
 {% endif %}
 {% endcall %}
 {% endfor %}
