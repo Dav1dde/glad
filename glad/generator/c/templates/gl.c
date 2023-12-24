@@ -36,12 +36,6 @@ static void _post_call_{{ feature_set.name }}_callback_default(void *ret, const 
 
 
 {% block loader %}
-#if defined(GL_ES_VERSION_3_0) || defined(GL_VERSION_3_0)
-#define GLAD_GL_IS_SOME_NEW_VERSION 1
-#else
-#define GLAD_GL_IS_SOME_NEW_VERSION 0
-#endif
-
 static void glad_gl_free_extensions(char **exts_i) {
     if (exts_i != NULL) {
         unsigned int index;
@@ -52,25 +46,12 @@ static void glad_gl_free_extensions(char **exts_i) {
         exts_i = NULL;
     }
 }
-static int glad_gl_get_extensions({{ template_utils.context_arg(',') }} int version, const char **out_exts, char ***out_exts_i) {
-#if GLAD_GL_IS_SOME_NEW_VERSION
-    if(GLAD_VERSION_MAJOR(version) < 3) {
-#else
-    GLAD_UNUSED(version);
-    GLAD_UNUSED(out_exts_i);
-#endif
-        if ({{ 'glGetString'|ctx }} == NULL) {
-            return 0;
-        }
-        *out_exts = (const char *){{ 'glGetString'|ctx }}(GL_EXTENSIONS);
-#if GLAD_GL_IS_SOME_NEW_VERSION
-    } else {
+static int glad_gl_get_extensions({{ template_utils.context_arg(',') }} const char **out_exts, char ***out_exts_i) {
+#if defined(GL_ES_VERSION_3_0) || defined(GL_VERSION_3_0)
+    if ({{ 'glGetStringi'|ctx }} != NULL && {{ 'glGetIntegerv'|ctx }} != NULL) {
         unsigned int index = 0;
         unsigned int num_exts_i = 0;
         char **exts_i = NULL;
-        if ({{ 'glGetStringi'|ctx }} == NULL || {{ 'glGetIntegerv'|ctx }} == NULL) {
-            return 0;
-        }
         {{ 'glGetIntegerv'|ctx }}(GL_NUM_EXTENSIONS, (int*) &num_exts_i);
         exts_i = (char **) malloc((num_exts_i + 1) * (sizeof *exts_i));
         if (exts_i == NULL) {
@@ -93,12 +74,28 @@ static int glad_gl_get_extensions({{ template_utils.context_arg(',') }} int vers
         exts_i[index] = NULL;
 
         *out_exts_i = exts_i;
+
+        return 1;
     }
+#else
+    GLAD_UNUSED(out_exts_i);
 #endif
+    if ({{ 'glGetString'|ctx }} == NULL) {
+        return 0;
+    }
+    *out_exts = (const char *){{ 'glGetString'|ctx }}(GL_EXTENSIONS);
     return 1;
 }
-static int glad_gl_has_extension(int version, const char *exts, char **exts_i, const char *ext) {
-    if(GLAD_VERSION_MAJOR(version) < 3 || !GLAD_GL_IS_SOME_NEW_VERSION) {
+static int glad_gl_has_extension(const char *exts, char **exts_i, const char *ext) {
+    if(exts_i) {
+        unsigned int index;
+        for(index = 0; exts_i[index]; index++) {
+            const char *e = exts_i[index];
+            if(strcmp(e, ext) == 0) {
+                return 1;
+            }
+        }
+    } else {
         const char *extensions;
         const char *loc;
         const char *terminator;
@@ -118,14 +115,6 @@ static int glad_gl_has_extension(int version, const char *exts, char **exts_i, c
             }
             extensions = terminator;
         }
-    } else {
-        unsigned int index;
-        for(index = 0; exts_i[index]; index++) {
-            const char *e = exts_i[index];
-            if(strcmp(e, ext) == 0) {
-                return 1;
-            }
-        }
     }
     return 0;
 }
@@ -135,13 +124,13 @@ static GLADapiproc glad_gl_get_proc_from_userptr(void *userptr, const char* name
 }
 
 {% for api in feature_set.info.apis %}
-static int glad_gl_find_extensions_{{ api|lower }}({{ template_utils.context_arg(',') }} int version) {
+static int glad_gl_find_extensions_{{ api|lower }}({{ template_utils.context_arg(def='void') }}) {
     const char *exts = NULL;
     char **exts_i = NULL;
-    if (!glad_gl_get_extensions({{ 'context, ' if options.mx }}version, &exts, &exts_i)) return 0;
+    if (!glad_gl_get_extensions({{ 'context, ' if options.mx }}&exts, &exts_i)) return 0;
 
 {% for extension in feature_set.extensions|select('supports', api) %}
-    {{ ('GLAD_' + extension.name)|ctx(name_only=True) }} = glad_gl_has_extension(version, exts, exts_i, "{{ extension.name }}");
+    {{ ('GLAD_' + extension.name)|ctx(name_only=True) }} = glad_gl_has_extension(exts, exts_i, "{{ extension.name }}");
 {% else %}
     GLAD_UNUSED(glad_gl_has_extension);
 {% endfor %}
@@ -194,7 +183,7 @@ int gladLoad{{ api|api }}{{ 'Context' if options.mx }}UserPtr({{ template_utils.
     glad_gl_load_{{ feature.name }}({{'context, ' if options.mx }}load, userptr);
 {% endfor %}
 
-    if (!glad_gl_find_extensions_{{ api|lower }}({{ 'context, ' if options.mx }}version)) return 0;
+    if (!glad_gl_find_extensions_{{ api|lower }}({{ 'context' if options.mx }})) return 0;
 {% for extension, _ in loadable(feature_set.extensions, api=api) %}
     glad_gl_load_{{ extension.name }}({{'context, ' if options.mx }}load, userptr);
 {% endfor %}
