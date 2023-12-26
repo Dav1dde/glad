@@ -201,7 +201,7 @@ function(glad_add_library TARGET)
     endif()
     set(GLAD_DIR "${GG_LOCATION}")
     if(NOT IS_DIRECTORY "${GLAD_DIR}")
-        file(MAKE_DIRECTORY "${GLAD_DIRECTORY}")
+        file(MAKE_DIRECTORY "${GLAD_DIR}")
     endif()
     set(GLAD_ARGS --out-path "${GLAD_DIR}")
 
