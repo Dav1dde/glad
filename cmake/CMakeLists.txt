@@ -16,6 +16,8 @@
 #       Exclude building the library from the all target
 #   - MERGE
 #       Merge multiple APIs of the same specitifation into one file.
+#   - REPRODUCIBLE
+#       Makes the build reproducible by not fetching the latest specification from Khronos.
 #   - QUIET
 #       Disable logging
 #   - LOCATION <PATH>
