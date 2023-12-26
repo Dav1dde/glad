@@ -13,6 +13,7 @@ import logging
 import os
 
 import glad.files
+from glad import __version__
 from glad.config import Config, ConfigOption
 from glad.generator import GenerationInfo
 from glad.sink import LoggingSink
@@ -114,6 +115,8 @@ def main(args=None):
 
     description = __doc__
     parser = ArgumentParser(description=description)
+
+    parser.add_argument('--version', action='version', version=__version__)
 
     global_config = GlobalConfig()
     global_config.init_parser(parser)
