@@ -116,7 +116,7 @@ def main(args=None):
     description = __doc__
     parser = ArgumentParser(description=description)
 
-    parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
+    parser.add_argument('--version', action='version', version=__version__)
 
     global_config = GlobalConfig()
     global_config.init_parser(parser)
