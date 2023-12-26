@@ -92,48 +92,60 @@ function(__glad_c_library CARGS CFILES)
                 "${GLAD_DIR}/include/EGL/eglplatform.h"
                 "${GLAD_DIR}/include/KHR/khrplatform.h"
                 "${GLAD_DIR}/include/glad/egl.h"
-                "${GLAD_DIR}/src/egl.c"
                 )
+            if(NOT GGC_HEADERONLY)
+                list(APPEND GGC_FILES "${GLAD_DIR}/src/egl.c")
+            endif()
         elseif(SPEC STREQUAL "vulkan")
             list(APPEND GGC_FILES
                 "${GLAD_DIR}/include/vk_platform.h"
                 "${GLAD_DIR}/include/glad/vulkan.h"
-                "${GLAD_DIR}/src/vulkan.c"
                 )
+            if(NOT GGC_HEADERONLY)
+                list(APPEND GGC_FILES "${GLAD_DIR}/src/vulkan.c")
+            endif()
         elseif(SPEC STREQUAL "gl")
             list(APPEND GGC_FILES
                 "${GLAD_DIR}/include/KHR/khrplatform.h"
                 "${GLAD_DIR}/include/glad/gl.h"
-                "${GLAD_DIR}/src/gl.c"
                 )
+            if(NOT GGC_HEADERONLY)
+                list(APPEND GGC_FILES "${GLAD_DIR}/src/gl.c")
+            endif()
         elseif(SPEC STREQUAL "gles1")
             list(APPEND GGC_FILES
                 "${GLAD_DIR}/include/KHR/khrplatform.h"
                 "${GLAD_DIR}/include/glad/gles1.h"
-                "${GLAD_DIR}/src/gles1.c"
                 )
+            if(NOT GGC_HEADERONLY)
+                list(APPEND GGC_FILES "${GLAD_DIR}/src/gles1.c")
+            endif()
         elseif(SPEC STREQUAL "gles2")
             list(APPEND GGC_FILES
                 "${GLAD_DIR}/include/KHR/khrplatform.h"
                 "${GLAD_DIR}/include/glad/gles2.h"
-                "${GLAD_DIR}/src/gles2.c"
                 )
+            if(NOT GGC_HEADERONLY)
+                list(APPEND GGC_FILES "${GLAD_DIR}/src/gles2.c")
+            endif()
         elseif(SPEC STREQUAL "glsc2")
             list(APPEND GGC_FILES
                 "${GLAD_DIR}/include/KHR/khrplatform.h"
                 "${GLAD_DIR}/include/glad/glsc2.h"
-                "${GLAD_DIR}/src/glsc2.c"
                 )
+            if(NOT GGC_HEADERONLY)
+                list(APPEND GGC_FILES "${GLAD_DIR}/src/glsc2.c")
+            endif()
         elseif(SPEC STREQUAL "wgl")
-            list(APPEND GGC_FILES
-                "${GLAD_DIR}/include/glad/wgl.h"
-                "${GLAD_DIR}/src/wgl.c"
-                )
+            list(APPEND GGC_FILES "${GLAD_DIR}/include/glad/wgl.h")
+            if(NOT GGC_HEADERONLY)
+                list(APPEND GGC_FILES "${GLAD_DIR}/src/wgl.c")
+            endif()
         elseif(SPEC STREQUAL "glx")
-            list(APPEND GGC_FILES
-                "${GLAD_DIR}/include/glad/glx.h"
-                "${GLAD_DIR}/src/glx.c"
-                )
+            list(APPEND GGC_FILES "${GLAD_DIR}/include/glad/glx.h")
+            if(NOT GGC_HEADERONLY)
+                list(APPEND GGC_FILES "${GLAD_DIR}/src/glx.c")
+            endif()
         else()
             message(FATAL_ERROR "Unknown SPEC: '${SPEC}'")
         endif()
