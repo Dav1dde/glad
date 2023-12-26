@@ -1,6 +1,7 @@
 {% import "template_utils.h" as template_utils with context %}
 #ifdef GLAD_GL
 
+{% set loader_handle = template_utils.handle('gl') %}
 {% include 'loader/library.c' %}
 
 typedef void* (GLAD_API_PTR *GLADglprocaddrfunc)(const char*);
@@ -24,7 +25,7 @@ static GLADapiproc glad_gl_get_proc(void *vuserptr, const char *name) {
 }
 
 {% if not options.mx %}
-static void* {{ template_utils.handle() }} = NULL;
+static void* {{ loader_handle }} = NULL;
 {% endif %}
 
 static void* glad_gl_dlopen_handle({{ template_utils.context_arg(def='void') }}) {
@@ -47,11 +48,11 @@ static void* glad_gl_dlopen_handle({{ template_utils.context_arg(def='void') }})
     };
 #endif
 
-    if ({{ template_utils.handle() }} == NULL) {
-        {{ template_utils.handle() }} = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
+    if ({{ loader_handle }} == NULL) {
+        {{ loader_handle }} = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
     }
 
-    return {{ template_utils.handle() }};
+    return {{ loader_handle }};
 }
 
 static struct _glad_gl_userptr glad_gl_build_userptr(void *handle) {
@@ -78,7 +79,7 @@ int gladLoaderLoadGL{{ 'Context' if options.mx }}({{ template_utils.context_arg(
     int did_load = 0;
     struct _glad_gl_userptr userptr;
 
-    did_load = {{ template_utils.handle() }} == NULL;
+    did_load = {{ loader_handle }} == NULL;
     handle = glad_gl_dlopen_handle({{ 'context' if options.mx }});
     if (handle) {
         userptr = glad_gl_build_userptr(handle);
@@ -112,9 +113,9 @@ int gladLoaderLoadGL(void) {
 {% endif %}
 
 void gladLoaderUnloadGL{{ 'Context' if options.mx }}({{ template_utils.context_arg(def='void') }}) {
-    if ({{ template_utils.handle() }} != NULL) {
-        glad_close_dlopen_handle({{ template_utils.handle() }});
-        {{ template_utils.handle() }} = NULL;
+    if ({{ loader_handle }} != NULL) {
+        glad_close_dlopen_handle({{ loader_handle }});
+        {{ loader_handle }} = NULL;
 {% if options.on_demand %}
         glad_gl_internal_loader_global_userptr.handle = NULL;
 {% endif %}
