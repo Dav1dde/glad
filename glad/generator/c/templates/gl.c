@@ -188,7 +188,6 @@ int gladLoad{{ api|api }}{{ 'Context' if options.mx }}UserPtr({{ template_utils.
 
     {{ 'glGetString'|ctx }} = (PFNGLGETSTRINGPROC) load(userptr, "glGetString");
     if({{ 'glGetString'|ctx }} == NULL) return 0;
-    if({{ 'glGetString'|ctx }}(GL_VERSION) == NULL) return 0;
     version = glad_gl_find_core_{{ api|lower }}({{ 'context' if options.mx }});
 
 {% for feature, _ in loadable(feature_set.features, api=api) %}
