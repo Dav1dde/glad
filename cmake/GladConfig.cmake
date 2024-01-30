@@ -248,7 +248,7 @@ function(glad_add_library TARGET)
         COMMAND ${Python_EXECUTABLE} -m glad ${GLAD_ARGS}
         COMMAND echo Writing ${GLAD_ARGS_PATH}
         COMMAND echo ${GLAD_ARGS} > ${GLAD_ARGS_PATH}
-        $<$<BOOL:${GLAD_SOURCES_DIR}>:WORKING_DIRECTORY ${GLAD_SOURCES_DIR}>
+        WORKING_DIRECTORY $<$<BOOL:${GLAD_SOURCES_DIR}>:${GLAD_SOURCES_DIR}>
         COMMENT "${TARGET}-generate"
         USES_TERMINAL
         )
