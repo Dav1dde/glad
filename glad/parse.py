@@ -37,8 +37,6 @@ logger = logging.getLogger(__name__)
 
 _ARRAY_RE = re.compile(r'\[(\d+)\]')
 
-_FeatureExtensionCommands = namedtuple('_FeatureExtensionCommands', ['features', 'commands'])
-
 
 class FeatureSetInfo(object):
     class InfoItem(namedtuple('InfoItem', ['api', 'version', 'profile', 'identifier'])):

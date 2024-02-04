@@ -1,13 +1,12 @@
 import copy
 import itertools
 
-import jinja2
 import os.path
 import re
 from collections import namedtuple
 from contextlib import closing
 
-from glad.config import Config, ConfigOption, RequirementConstraint, UnsupportedConstraint
+from glad.config import Config, ConfigOption, UnsupportedConstraint
 from glad.sink import LoggingSink
 from glad.generator import JinjaGenerator
 from glad.generator.util import (
@@ -27,7 +26,13 @@ _ARRAY_RE = re.compile(r'\[[\d\w]*\]')
 DebugArguments = namedtuple('_DebugParams', ['impl', 'function', 'pre_callback', 'post_callback', 'ret'])
 DebugReturn = namedtuple('_DebugReturn', ['declaration', 'assignment', 'ret'])
 
-Header = namedtuple('_Header', ['name', 'include', 'url'])
+
+class Header(object):
+    def __init__(self, name, include, url, requires=None):
+        self.name = name
+        self.include = include
+        self.url = url
+        self.requires = requires
 
 
 def type_to_c(parsed_type):
@@ -271,34 +276,57 @@ class CGenerator(JinjaGenerator):
             'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vulkan/vk_platform.h'
         ),
         Header(
+            'vk_video/vulkan_video_codecs_common.h',
+            'vk_video/vulkan_video_codecs_common.h',
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codecs_common.h'
+        ),
+        Header(
             'vk_video/vulkan_video_codec_h264std.h',
             'vk_video/vulkan_video_codec_h264std.h',
-            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h264std.h'
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h264std.h',
+            requires=['vk_video/vulkan_video_codecs_common.h']
         ),
         Header(
             'vk_video/vulkan_video_codec_h264std_decode.h',
             'vk_video/vulkan_video_codec_h264std_decode.h',
-            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h264std_decode.h'
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h264std_decode.h',
+            requires=['vk_video/vulkan_video_codecs_common.h']
         ),
         Header(
             'vk_video/vulkan_video_codec_h264std_encode.h',
             'vk_video/vulkan_video_codec_h264std_encode.h',
-            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h264std_encode.h'
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h264std_encode.h',
+            requires=['vk_video/vulkan_video_codecs_common.h']
         ),
         Header(
             'vk_video/vulkan_video_codec_h265std.h',
             'vk_video/vulkan_video_codec_h265std.h',
-            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h265std.h'
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h265std.h',
+            requires=['vk_video/vulkan_video_codecs_common.h']
         ),
         Header(
             'vk_video/vulkan_video_codec_h265std_decode.h',
             'vk_video/vulkan_video_codec_h265std_decode.h',
-            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h265std_decode.h'
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h265std_decode.h',
+            requires=['vk_video/vulkan_video_codecs_common.h']
         ),
         Header(
             'vk_video/vulkan_video_codec_h265std_encode.h',
             'vk_video/vulkan_video_codec_h265std_encode.h',
-            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h265std_encode.h'
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_h265std_encode.h',
+            requires=['vk_video/vulkan_video_codecs_common.h']
+        ),
+        Header(
+            'vk_video/vulkan_video_codec_av1std.h',
+            'vk_video/vulkan_video_codec_av1std.h',
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_av1std.h',
+            requires=['vk_video/vulkan_video_codecs_common.h']
+        ),
+        Header(
+            'vk_video/vulkan_video_codec_av1std_decode.h',
+            'vk_video/vulkan_video_codec_av1std_decode.h',
+            'https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/include/vk_video/vulkan_video_codec_av1std_decode.h',
+            requires=['vk_video/vulkan_video_codecs_common.h']
         ),
     ]
 
@@ -388,12 +416,13 @@ class CGenerator(JinjaGenerator):
         self._add_additional_headers(feature_set, config)
 
     def modify_feature_set(self, spec, feature_set, config):
-        # TODO this takes rather lonng (~30%), maybe drop it?
+        # TODO this takes rather long (~30%), maybe drop it?
         feature_set = copy.deepcopy(feature_set)
 
         self._fix_issue_70(feature_set)
         self._fix_cpp_style_comments(feature_set)
         self._fixup_enums(feature_set)
+        self._add_header_requirements(feature_set)
         self._replace_included_headers(feature_set, config)
 
         return feature_set
@@ -471,9 +500,27 @@ class CGenerator(JinjaGenerator):
 
             content = self._read_header(header.url)
             for pheader in self.ADDITIONAL_HEADERS:
-                content = re.sub('^#include\\s*<' + pheader.include + '>', r'/* \0 */', content, flags=re.MULTILINE)
+                name = pheader.name.rsplit('/', 1)[-1]
+                content = re.sub(
+                    '^(#include\\s*["<]({}|{})[>"])'.format(name, pheader.name), r'/* \1 */', 
+                    content, 
+                    flags=re.MULTILINE
+                )
 
             types[type_index] = Type(header.name, raw=content)
+
+    def _add_header_requirements(self, feature_set):
+        added = set()
+
+        for header in self.ADDITIONAL_HEADERS:
+            if header.name not in feature_set.types:
+                continue
+
+            for require in (header.requires or []):
+                if require not in added:
+                    t = Type(require, raw="#include \"{}\"".format(require))
+                    feature_set.types.insert(0, t)
+                    added.add(require)
 
     def _add_additional_headers(self, feature_set, config):
         if config['HEADER_ONLY']:
