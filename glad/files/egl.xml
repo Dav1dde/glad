@@ -885,7 +885,8 @@
         <enum value="0x3375" name="EGL_STREAM_IMAGE_REMOVE_NV"/>
         <enum value="0x3376" name="EGL_STREAM_IMAGE_AVAILABLE_NV"/>
         <enum value="0x3377" name="EGL_DRM_RENDER_NODE_FILE_EXT"/>
-            <unused start="0x3378" end="0x339F"/>
+        <enum value="0x3378" name="EGL_STREAM_CONSUMER_IMAGE_USE_SCANOUT_NV" />
+            <unused start="0x3379" end="0x339F"/>
     </enums>
 
     <enums namespace="EGL" start="0x33A0" end="0x33AF" vendor="ANGLE" comment="Reserved for Shannon Woods (Bug 13175)">
@@ -1073,6 +1074,21 @@
                 <unused start="0x3531" end="0x353F"/>
     </enums>
 
+    <enums namespace="EGL" start="0x3540" end="0x354F" vendor="EXT" comment="Reserved for Chris Glover (EGL_EXT_gl_colorspace_bt2020)">
+            <enum value="0x3540" name="EGL_GL_COLORSPACE_BT2020_HLG_EXT"/>
+                <unused start="0x3541" end="0x354F"/>
+    </enums>
+
+    <enums namespace="EGL" start="0x3550" end="0x355F" vendor="QNX" comment="Reserved for Mike Gorchak of QNX (QNX platform and native buffer)">
+        <enum value="0x3550" name="EGL_PLATFORM_SCREEN_QNX"/>
+        <enum value="0x3551" name="EGL_NATIVE_BUFFER_QNX"/>
+            <unused start="0x3552" end="0x355F"/>
+    </enums>
+
+    <enums namespace="EGL" start="0x3560" end="0x356F" vendor="SAMSUNG" comment="Reserved for Jeff Vigil of Samsung (private extensions)">
+        <unused start="0x3560" end="0x356F"/>
+    </enums>
+
 <!-- Please remember that new enumerant allocations must be obtained by
      request to the Khronos API registrar (see comments at the top of this
      file) File requests in the Khronos Bugzilla, EGL project, Registry
@@ -1082,8 +1098,8 @@
 
 <!-- Reservable for future use. To generate a new range, allocate multiples
      of 16 starting at the lowest available point in this block. -->
-    <enums namespace="EGL" start="0x3540" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
-            <unused start="0x3540" end="0x3FFF"/>
+    <enums namespace="EGL" start="0x3570" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
+            <unused start="0x3570" end="0x3FFF"/>
     </enums>
 
     <enums namespace="EGL" start="0x8F70" end="0x8F7F" vendor="HI" comment="For Mark Callow, Khronos bug 4055. Shared with GL.">
@@ -2496,6 +2512,11 @@
                 <command name="eglQueryDisplayAttribEXT"/>
             </require>
         </extension>
+        <extension name="EGL_EXT_gl_colorspace_bt2020_hlg" supported="egl">
+            <require>
+                <enum name="EGL_GL_COLORSPACE_BT2020_HLG_EXT"/>
+            </require>
+        </extension>
         <extension name="EGL_EXT_gl_colorspace_bt2020_linear" supported="egl">
             <require>
                 <enum name="EGL_GL_COLORSPACE_BT2020_LINEAR_EXT"/>
@@ -2668,6 +2689,7 @@
                 <enum name="EGL_PROTECTED_CONTENT_EXT"/>
             </require>
         </extension>
+        <extension name="EGL_EXT_query_reset_notification_strategy" supported="egl"/>
         <extension name="EGL_EXT_stream_consumer_egloutput" supported="egl">
             <require>
                 <command name="eglStreamConsumerOutputEXT"/>
@@ -3531,6 +3553,21 @@
         <extension name="EGL_EXT_explicit_device" supported="egl">
             <require>
                 <enum name="EGL_DEVICE_EXT"/>
+            </require>
+        </extension>
+        <extension name="EGL_NV_stream_consumer_eglimage_use_scanout_attrib" supported="egl">
+            <require>
+                <enum name="EGL_STREAM_CONSUMER_IMAGE_USE_SCANOUT_NV"/>
+            </require>
+        </extension>
+        <extension name="EGL_QNX_platform_screen" supported="egl">
+            <require>
+                <enum name="EGL_PLATFORM_SCREEN_QNX"/>
+            </require>
+        </extension>
+        <extension name="EGL_QNX_image_native_buffer" supported="egl">
+            <require>
+                <enum name="EGL_NATIVE_BUFFER_QNX"/>
             </require>
         </extension>
     </extensions>

@@ -52,7 +52,7 @@ typedef unsigned __int64 uint64_t;
 #endif]]></type>
         <type name="int32_t" requires="inttypes"/>
         <type name="int64_t" requires="inttypes"/>
-            <!-- Dummy placeholders for X types -->
+            <!-- Dummy placeholders for X / OpenGL types -->
         <type name="Bool"/>
         <type name="Colormap"/>
         <type name="Display"/>
@@ -61,6 +61,7 @@ typedef unsigned __int64 uint64_t;
         <type name="Screen"/>
         <type name="Status"/>
         <type name="Window"/>
+        <type name="XID"/>
         <type name="XVisualInfo"/>
         <type name="GLbitfield"/>
         <type name="GLboolean"/>
