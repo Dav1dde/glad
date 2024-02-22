@@ -18,4 +18,4 @@ set(
     )
 mark_as_advanced(GLAD_CMAKE_DIR)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/GladConfig.cmake)
+include(${GLAD_CMAKE_DIR}/GladConfig.cmake)
