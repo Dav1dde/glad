@@ -18,5 +18,4 @@ set(
     )
 mark_as_advanced(GLAD_CMAKE_DIR)
 
-list(APPEND CMAKE_PREFIX_PATH ${GLAD_SOURCES_DIR})
-find_package(Glad REQUIRED)
+include(${CMAKE_CURRENT_SOURCE_DIR}/GladConfig.cmake)
