@@ -10,7 +10,7 @@
   typedef __eglMustCastToProperFunctionPointerType (GLAD_API_PTR *PFNEGLGETPROCADDRESSPROC)(const char *name);
 #endif
   extern __eglMustCastToProperFunctionPointerType emscripten_GetProcAddress(const char *name);
-#elif GLAD_GLES2_USE_SYSTEM_EGL
+#elif defined(GLAD_GLES2_USE_SYSTEM_EGL)
   #include <EGL/egl.h>
   typedef __eglMustCastToProperFunctionPointerType (GLAD_API_PTR *PFNEGLGETPROCADDRESSPROC)(const char *name);
 #else
@@ -94,7 +94,7 @@ int gladLoaderLoadGLES2{{ 'Context' if options.mx }}({{ template_utils.context_a
     userptr.get_proc_address_ptr = emscripten_GetProcAddress;
     version = gladLoadGLES2{{ 'Context' if options.mx }}UserPtr({{ 'context, ' if options.mx }}glad_gles2_get_proc, &userptr);
 #else
-#if !GLAD_GLES2_USE_SYSTEM_EGL
+#ifndef GLAD_GLES2_USE_SYSTEM_EGL
     if (eglGetProcAddress == NULL) {
         return 0;
     }
