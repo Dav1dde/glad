@@ -502,8 +502,8 @@ class CGenerator(JinjaGenerator):
             for pheader in self.ADDITIONAL_HEADERS:
                 name = pheader.name.rsplit('/', 1)[-1]
                 content = re.sub(
-                    '^(#include\\s*["<]({}|{})[>"])'.format(name, pheader.name), r'/* \1 */', 
-                    content, 
+                    '^(#include\\s*["<]({}|{})(\\.h)?[>"])'.format(name, pheader.include), r'/* \1 */',
+                    content,
                     flags=re.MULTILINE
                 )
 
