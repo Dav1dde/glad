@@ -7013,6 +7013,10 @@ typedef unsigned int GLhandleARB;
             <unused start="0x96F7" end="0x96FF" vendor="ARM"/>
     </enums>
 
+    <enums namespace="GL" start="0x9700" end="0x970F" vendor="Samsung" comment="Reserved for Jeff Vigil">
+            <unused start="0x9700" end="0x970F" vendor="Samsung"/>
+    </enums>
+
 <!-- Enums reservable for future use. To reserve a new range, allocate one
      or more multiples of 16 starting at the lowest available point in this
      block and note it in a new <enums> block immediately above.
@@ -7022,8 +7026,8 @@ typedef unsigned int GLhandleARB;
      file) File requests in the Khronos Bugzilla, OpenGL project, Registry
      component. -->
 
-    <enums namespace="GL" start="0x9700" end="99999" vendor="ARB" comment="RESERVED FOR FUTURE ALLOCATIONS BY KHRONOS">
-        <unused start="0x9700" end="99999" comment="RESERVED"/>
+    <enums namespace="GL" start="0x9710" end="99999" vendor="ARB" comment="RESERVED FOR FUTURE ALLOCATIONS BY KHRONOS">
+        <unused start="0x9710" end="99999" comment="RESERVED"/>
     </enums>
 
 <!-- Historical large block allocations, all unused except (in older days) by IBM -->
