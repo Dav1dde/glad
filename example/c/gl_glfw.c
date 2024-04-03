@@ -1,11 +1,11 @@
-#include <stdlib.h>
-#include <stdio.h>
-
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
+#include <stdlib.h>
+#include <stdio.h>
 
 const GLuint WIDTH = 800, HEIGHT = 600;
 
