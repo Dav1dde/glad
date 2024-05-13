@@ -244,6 +244,11 @@ class CConfig(Config):
         default=False,
         description='On-demand function pointer loading, initialize on use (experimental)'
     )
+    WITH_DOCS = ConfigOption(
+        converter=bool,
+        default=False,
+        description='Include inline documentation in the generated files.'
+    )
 
     __constraints__ = [
         # RequirementConstraint(['MX_GLOBAL'], 'MX'),
