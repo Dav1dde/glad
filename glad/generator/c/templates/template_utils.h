@@ -116,6 +116,25 @@ typedef {{ command.proto.ret|type_to_c }} (GLAD_API_PTR *{{ command.name|pfn }})
 GLAD_API_CALL {{ command.name|pfn }} glad_{{ command.name }};
 {% if debug %}
 GLAD_API_CALL {{ command.name|pfn }} glad_debug_{{ command.name }};
+{% endif %}
+{% if options.with_docs and command.doc_comment %}
+/**
+ * @brief {{ command.doc_comment.brief | wordwrap(80, wrapstring='\n * ') }}
+ *
+{% for param in command.doc_comment.params %}
+ * @param {{ param.name }} {{ param.desc | wordwrap(80, wrapstring='\n * ') }}
+{% endfor %}
+ *
+{% for paragraph in command.doc_comment.description %}
+ * {{ paragraph | replace('<BREAK>', '@details ') | wordwrap(80, wrapstring='\n * ') }}
+{% endfor %}
+ *
+{% for note in command.doc_comment.notes %}
+ * {{ note | replace('<BREAK>', '@note ') | wordwrap(80, wrapstring='\n * ') }}
+{% endfor %}
+*/
+{% endif %}
+{% if debug %}
 #define {{ command.name }} glad_debug_{{ command.name }}
 {% else %}
 #define {{ command.name }} glad_{{ command.name }}
