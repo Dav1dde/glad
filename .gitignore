@@ -19,3 +19,5 @@ dist/
 target/
 Cargo.lock
 .vscode/
+.cached/
+.venv/
