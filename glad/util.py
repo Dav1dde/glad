@@ -1,4 +1,5 @@
 import functools
+from itertools import chain
 import os
 import re
 import sys
@@ -201,3 +202,20 @@ def expand_type_name(name):
         prefix = upper_name.rsplit(suffix, 1)[0]
 
     return ExpandedName(prefix, suffix)
+
+def flatten(l):
+    return list(chain.from_iterable(l))
+
+def prefix(prefix, text):
+    if not text:
+        return text
+    if text.strip().startswith(prefix):
+        return text
+    return f'{prefix}{text}'
+
+def suffix(suffix, text):
+    if not text:
+        return text
+    if text.strip().endswith(suffix):
+        return text
+    return f'{text}{suffix}'
