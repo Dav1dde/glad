@@ -1,3 +1,4 @@
+from tkinter import N
 from glad.sink import LoggingSink
 
 try:
@@ -206,11 +207,12 @@ class TypeEnumCommand(namedtuple('_TypeEnumCommand', ['types', 'enums', 'command
 class Specification(object):
     API = 'https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/'
     NAME = None
+    DOCS = None
 
     def __init__(self, root):
         self.root = root
-
         self._combined = None
+        self._docs = None
 
     def _magic_require(self, api, profile):
         """
@@ -253,6 +255,17 @@ class Specification(object):
             raise NotImplementedError
 
         return self.NAME
+
+    @classmethod
+    def load(cls, name, opener=None):
+        xml_name = name + '.xml'
+
+        if os.path.isfile(xml_name):
+            logger.info('using local specification: %s', xml_name)
+            return cls.from_file(xml_name, opener=opener)
+        else:
+            logger.info('getting %r specification from remote location', name)
+            return cls.from_remote(opener=opener)
 
     @classmethod
     def from_url(cls, url, opener=None):
@@ -403,8 +416,9 @@ class Specification(object):
             if len(parsed) > 0:
                 commands.setdefault(parsed[0].name, []).extend(parsed)
 
-        # fixup aliases
+        # populate docs and fixup aliases
         for command in chain.from_iterable(commands.values()):
+            command.doc_comment = self._docs.docs_for_name(command.name)
             if command.alias is not None and command.proto is None:
                 aliased_command = command
                 while aliased_command.proto is None:
@@ -731,6 +745,12 @@ class Specification(object):
         # Collect a list of extensions grouped by API
         extensions = [self.extensions[api][name] for name in extension_names
                       if name in self.extensions[api]]
+
+        # Load documentation for the specific configuration
+        if self.DOCS:
+            self._docs = self.DOCS(api, version, profile, extensions)
+            sink.info('loading documentation for api {} version {}'.format(api, version))
+            self._docs.load()
 
         # Collect information
         result = set()
@@ -1142,12 +1162,13 @@ class Enum(IdentifiedByName):
 
 
 class Command(IdentifiedByName):
-    def __init__(self, name, api=None, proto=None, params=None, alias=None):
+    def __init__(self, name, api=None, proto=None, params=None, alias=None, doc_comment=None):
         self.name = name
         self.api = api
         self.proto = proto
         self.params = params
         self.alias = alias
+        self.doc_comment = doc_comment
 
         if self.alias is None and self.proto is None:
             raise ValueError("command is neither a full command nor an alias")
