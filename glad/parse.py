@@ -30,7 +30,7 @@ from contextlib import closing
 from itertools import chain
 
 from glad.opener import URLOpener
-from glad.util import Version, topological_sort, memoize
+from glad.util import Version, raw_text, topological_sort, memoize
 import glad.util
 
 logger = logging.getLogger(__name__)
@@ -418,7 +418,7 @@ class Specification(object):
 
         # populate docs and fixup aliases
         for command in chain.from_iterable(commands.values()):
-            command.doc_comment = self._docs.docs_for_name(command.name)
+            command.doc_comment = self._docs.docs_for_command_name(command.name)
             if command.alias is not None and command.proto is None:
                 aliased_command = command
                 while aliased_command.proto is None:
@@ -862,7 +862,7 @@ class Type(IdentifiedByName):
             # not so great workaround to get APIENTRY included in the raw output
             apientry.text = 'APIENTRY'
 
-        raw = ''.join(element.itertext())
+        raw = raw_text(element)
         api = element.get('api')
         category = element.get('category')
         name = element.get('name') or element.find('name').text
@@ -1473,4 +1473,45 @@ class Feature(Extension):
 
     def __str__(self):
         return '{self.name}@{self.version!r}'.format(self=self)
+    __repr__ = __str__
+
+
+class ApiDocumentation(object):
+    URL = None
+
+    def __init__(self, api, version, profile, extensions):
+        self.api = api
+        self.version = version
+        self.profile = profile
+        self.extensions = extensions
+
+    def load(self):
+        raise NotImplementedError
+
+    def docs_for_command_name(self, name):
+        """
+        Returns the CommandDocs for the given command name or None if not found.
+        """
+        raise NotImplementedError
+
+
+class CommandDocs(object):
+    class Param(namedtuple('Param', ['name', 'desc'])):
+        pass
+
+    def __init__(self, brief, params, description, notes, errors, see_also):
+        self.brief = brief
+        self.params = params
+        self.description = description
+        self.notes = notes
+        self.errors = errors
+        self.see_also = see_also
+
+    def __str__(self):
+        return 'DocComment(brief={!r}, ' \
+            'params={!r}, description={!r}, notes={!r}, errors={!r}, see_also={!r})' \
+            .format(
+                self.brief, self.params, self.description, self.notes, self.errors, self.see_also,
+            )
+
     __repr__ = __str__
