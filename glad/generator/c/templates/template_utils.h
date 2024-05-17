@@ -119,8 +119,10 @@ GLAD_API_CALL {{ command.name|pfn }} glad_debug_{{ command.name }};
 {% endif %}
 {% if options.with_docs and command.doc_comment %}
 /**
+{% if command.doc_comment.brief %}
  * @brief {{ command.doc_comment.brief | wordwrap(80, wrapstring='\n * ') }}
  *
+{% endif %}
 {% for param in command.doc_comment.params %}
  * @param {{ param.name }} {{ param.desc | wordwrap(80, wrapstring='\n * ') }}
 {% endfor %}
@@ -132,6 +134,9 @@ GLAD_API_CALL {{ command.name|pfn }} glad_debug_{{ command.name }};
 {% for note in command.doc_comment.notes %}
  * {{ note | replace('<BREAK>', '@note ') | wordwrap(80, wrapstring='\n * ') }}
 {% endfor %}
+{% if command.doc_comment.see_also %}
+ * @see {{ command.doc_comment.see_also }}
+{% endif %}
 */
 {% endif %}
 {% if debug %}
