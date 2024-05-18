@@ -120,19 +120,19 @@ GLAD_API_CALL {{ command.name|pfn }} glad_debug_{{ command.name }};
 {% if options.with_docs and command.doc_comment %}
 /**
 {% if command.doc_comment.brief %}
- * @brief {{ command.doc_comment.brief | wordwrap(80, wrapstring='\n * ') }}
+ * @brief {{ command.doc_comment.brief|wordwrap(80, wrapstring='\n * ') }}
  *
 {% endif %}
 {% for param in command.doc_comment.params %}
- * @param {{ param.name }} {{ param.desc | wordwrap(80, wrapstring='\n * ') }}
+ * @param {{ param.name }} {{ param.desc|wordwrap(80, wrapstring='\n * ') }}
 {% endfor %}
  *
 {% for paragraph in command.doc_comment.description %}
- * {{ paragraph | replace(command.doc_comment.BREAK, '@details ') | wordwrap(80, wrapstring='\n * ') }}
+ * {{ paragraph|replace(command.doc_comment.BREAK, '@details ')|wordwrap(80, wrapstring='\n * ') }}
 {% endfor %}
  *
 {% for note in command.doc_comment.notes %}
- * {{ note | replace(command.doc_comment.BREAK, '@note ') | wordwrap(80, wrapstring='\n * ') }}
+ * {{ note|replace(command.doc_comment.BREAK, '@note ')|wordwrap(80, wrapstring='\n * ') }}
 {% endfor %}
 {% if command.doc_comment.see_also %}
  * @see {{ command.doc_comment.see_also }}
