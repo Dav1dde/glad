@@ -125,7 +125,7 @@ class DocsGL(ApiDocumentation):
             if params_block is not None:
                 for names, desc in zip(
                     params_block.findall('.//dl//dt'),
-                    params_block.findall('.//dl//dd/p'),
+                    params_block.findall('.//dl//dd'),
                 ):
                     for name in names.findall('.//code'):
                         param_name = raw_text(name)
