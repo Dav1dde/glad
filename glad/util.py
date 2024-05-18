@@ -171,18 +171,30 @@ def memoize(key=None, method=False):
     return memoize_decorator
 
 
-def itertext(element, ignore=()):
+def raw_text(e):
+    if e is None:
+        return ''
+    return ''.join(e.itertext())
+
+
+def _format_none(e, is_tail=False):
+    return e.tail if is_tail else e.text
+
+
+def itertext(element, ignore=(), format=_format_none):
     tag = element.tag
+    if tag in ignore:
+        return
+
     if not isinstance(tag, basestring) and tag is not None:
         return
     if element.text:
-        yield element.text
+        yield format(element)
     for e in element:
-        if not e.tag in ignore:
-            for s in itertext(e, ignore=ignore):
-                yield s
-            if e.tail:
-                yield e.tail
+        for s in itertext(e, ignore=ignore, format=format):
+            yield s
+        if e.tail:
+            yield format(e, is_tail=True)
 
 
 def expand_type_name(name):
