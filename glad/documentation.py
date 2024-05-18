@@ -123,13 +123,14 @@ class DocsGL(ApiDocumentation):
 
             params = []
             if params_block is not None:
-                for name, desc in zip(
-                    params_block.findall('.//dl//dt//code'),
+                for names, desc in zip(
+                    params_block.findall('.//dl//dt'),
                     params_block.findall('.//dl//dd/p'),
                 ):
-                    param_name = raw_text(name)
-                    if param_name in func_params:
-                        params.append(CommandDocs.Param(param_name, cls.xml_text(desc)))
+                    for name in names.findall('.//code'):
+                        param_name = raw_text(name)
+                        if param_name in func_params:
+                            params.append(CommandDocs.Param(param_name, cls.xml_text(desc)))
             # We interpret params_block=None as a void parameter list.
 
             commands_parsed[func_name] = CommandDocs(
