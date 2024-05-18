@@ -418,7 +418,8 @@ class Specification(object):
 
         # populate docs and fixup aliases
         for command in chain.from_iterable(commands.values()):
-            command.doc_comment = self._docs.docs_for_command_name(command.name)
+            if self._docs:
+                command.doc_comment = self._docs.docs_for_command_name(command.name)
             if command.alias is not None and command.proto is None:
                 aliased_command = command
                 while aliased_command.proto is None:
