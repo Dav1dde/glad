@@ -1,4 +1,4 @@
-from glad.parse import ApiDocumentation, CommandDocs, xml_parse
+from glad.parse import SpecificationDocs, CommandDocs, xml_parse
 from glad.util import prefix, memoize, raw_text
 from shutil import rmtree
 import glad.util
@@ -6,7 +6,7 @@ import subprocess
 import re
 
 
-class DocsGL(ApiDocumentation):
+class DocsGL(SpecificationDocs):
     URL = 'https://github.com/BSVino/docs.gl.git'
     CACHED = True # Only clones the DocsGL repo once
     API = 'gl'

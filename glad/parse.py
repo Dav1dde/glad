@@ -1477,7 +1477,7 @@ class Feature(Extension):
     __repr__ = __str__
 
 
-class ApiDocumentation(object):
+class SpecificationDocs(object):
     URL = None
 
     def __init__(self, api, version, profile, extensions):
