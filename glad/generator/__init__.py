@@ -57,7 +57,7 @@ class BaseGenerator(object):
         :param sink: sink used to collect non fatal errors and information
         :return: FeatureSet with the required types, enums, commands/functions
         """
-        return spec.select(api, version, profile, extensions, sink=sink)
+        return spec.select(api, version, profile, extensions, config, sink=sink)
 
     def generate(self, spec, feature_set, config, sink=LoggingSink(__name__)):
         """

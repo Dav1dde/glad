@@ -669,7 +669,7 @@ class Specification(object):
 
         return result
 
-    def select(self, api, version, profile, extension_names, sink=LoggingSink(__name__)):
+    def select(self, api, version, profile, extension_names, config, sink=LoggingSink(__name__)):
         """
         Select a specific configuration from the specification.
 
@@ -748,10 +748,13 @@ class Specification(object):
                       if name in self.extensions[api]]
 
         # Load documentation for the specific configuration
-        if self.DOCS:
-            self._docs = self.DOCS(api, version, profile, extensions)
-            sink.info('loading documentation for api {} version {}'.format(api, version))
-            self._docs.load()
+        if config['WITH_DOCS']:
+            if self.DOCS:
+                self._docs = self.DOCS(api, version, profile, extensions)
+                sink.info('loading documentation for api {} version {}'.format(api, version))
+                self._docs.load()
+            else:
+                sink.warning("documentation not available for specification '{}'".format(self.name))
 
         # Collect information
         result = set()
