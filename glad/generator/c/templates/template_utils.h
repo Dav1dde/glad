@@ -128,11 +128,11 @@ GLAD_API_CALL {{ command.name|pfn }} glad_debug_{{ command.name }};
 {% endfor %}
  *
 {% for paragraph in command.doc_comment.description %}
- * {{ paragraph | replace('<BREAK>', '@details ') | wordwrap(80, wrapstring='\n * ') }}
+ * {{ paragraph | replace(command.doc_comment.BREAK, '@details ') | wordwrap(80, wrapstring='\n * ') }}
 {% endfor %}
  *
 {% for note in command.doc_comment.notes %}
- * {{ note | replace('<BREAK>', '@note ') | wordwrap(80, wrapstring='\n * ') }}
+ * {{ note | replace(command.doc_comment.BREAK, '@note ') | wordwrap(80, wrapstring='\n * ') }}
 {% endfor %}
 {% if command.doc_comment.see_also %}
  * @see {{ command.doc_comment.see_also }}

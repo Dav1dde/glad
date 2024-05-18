@@ -1496,6 +1496,14 @@ class ApiDocumentation(object):
 
 
 class CommandDocs(object):
+    """
+    Inline code documentation for a command/function.
+    """
+
+    # Template rendering will interpret this as a custom paragraph break.
+    # If no special break logic is needed, just use '\n'.
+    BREAK = '__BREAK__'
+
     class Param(namedtuple('Param', ['name', 'desc'])):
         pass
 
