@@ -156,7 +156,7 @@ class DocsGL(SpecificationDocs):
         if e.tag == 'mfenced':
             return f'{e.attrib["open"]}{e.text}'
         if e.tag == 'dt':
-            return f'\n{CommandDocs.BREAK}-'
+            return f'\n{CommandDocs.BREAK}- '
         if e.tag == 'li':
             return f'\n{CommandDocs.BREAK}-{e.text}'
         return e.text
@@ -168,4 +168,4 @@ class DocsGL(SpecificationDocs):
             ignore=('table', 'pre'), # tables and code blocks are not supported yet
             format=DocsGL.format,
         ))
-        return re.sub(r'\s+', ' ', text.strip())
+        return re.sub(r'\n? +', ' ', text.strip())
