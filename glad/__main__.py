@@ -40,7 +40,7 @@ def main():
         if reproducible:
             logger.info('reproducible build, using packaged specification: \'%s.xml\'', value)
             try:
-                return spec_cls.from_file(glad.files.open_local(value + '.xml'))
+                return spec_cls.from_file(glad.files.open_local(value + '.xml', 'rb'))
             except IOError:
                 raise ValueError('unable to open reproducible copy of {}.xml, '
                                  'try dropping --reproducible'.format(value))
