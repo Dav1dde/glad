@@ -181,9 +181,12 @@ def _format_none(e, is_tail=False):
     return e.tail if is_tail else e.text
 
 
-def itertext(element, ignore=(), format=_format_none):
+def itertext(element, ignore=(), convert=dict(), format=_format_none):
     tag = element.tag
     if tag in ignore:
+        return
+    if tag in convert:
+        yield convert[tag](element)
         return
 
     if not isinstance(tag, basestring) and tag is not None:
@@ -191,7 +194,7 @@ def itertext(element, ignore=(), format=_format_none):
     if element.text:
         yield format(element)
     for e in element:
-        for s in itertext(e, ignore=ignore, format=format):
+        for s in itertext(e, ignore=ignore, convert=convert, format=format):
             yield s
         if e.tail:
             yield format(e, is_tail=True)

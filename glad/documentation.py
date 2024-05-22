@@ -1,5 +1,5 @@
 from glad.parse import SpecificationDocs, CommandDocs, xml_parse
-from glad.util import prefix, memoize, raw_text
+from glad.util import prefix, suffix, memoize, raw_text
 from shutil import rmtree
 import glad.util
 import subprocess
@@ -65,7 +65,7 @@ class DocsGL(SpecificationDocs):
         # Command brief description appears in the first 'refnamediv' block
         brief_block = cls.xml_text(tree.find('.//div[@class="refnamediv"]/p'))
         brief = f'[{path.stem}](https://docs.gl/{path.parent.name}/{path.stem}) — ' \
-            f'{brief_block.split("—")[1]}'
+            f'{suffix(".", brief_block.split("—")[1])}'
 
         # Description parsing
         description = []
@@ -73,7 +73,7 @@ class DocsGL(SpecificationDocs):
             (s for s in sections if raw_text(s.find('h2')) == 'Description'),
             None,
         )
-        if description_blocks:
+        if description_blocks is not None:
             blocks = description_blocks.findall('./*')
             description = list(
                 filter(
@@ -85,7 +85,7 @@ class DocsGL(SpecificationDocs):
         # Notes parsing
         notes = []
         notes_blocks = next((s for s in sections if raw_text(s.find('h2')) == 'Notes'), None)
-        if notes_blocks:
+        if notes_blocks is not None:
             blocks = notes_blocks.findall('./*')
             notes = list(
                 filter(
@@ -102,7 +102,7 @@ class DocsGL(SpecificationDocs):
         # file. This means that we have to find the correct block of parameters for each definition.
         funcdefs = [
             d for d in tree.findall('.//*[@class="funcsynopsis"]/*')
-            if d.find('.//*[@class="funcdef"]')
+            if d.find('.//*[@class="funcdef"]') is not None
         ]
         for func_def in funcdefs:
             func_name = func_def.find('.//*[@class="fsfunc"]').text
@@ -114,7 +114,7 @@ class DocsGL(SpecificationDocs):
                 (s for s in sections if raw_text(s.find('h2')) == f'Parameters for {func_name}'),
                 None,
             )
-            if not params_block:
+            if not params_block is not None:
                 for p in list(s for s in sections if raw_text(s.find('h2')) == 'Parameters'):
                     block_params = [raw_text(n) for n in p.findall('.//dt//code')]
                     if all(p in block_params for p in func_params):
@@ -141,31 +141,52 @@ class DocsGL(SpecificationDocs):
     @staticmethod
     def format(e, is_tail=False):
         if is_tail:
-            if e.tag == 'mfenced':
-                # closing mathjax fences
-                return f'{e.attrib["close"]}'
             if e.tag == 'dt':
                 # closing a definition term
                 return '\n'
-            return e.tail
+            if e.tag == 'mtr':
+                # closing a mathjax row
+                return '\n'
+            r = re.sub(r'\n+', '', e.tail)
+            if e.tag in ('mn', 'msub'):
+                return ''
+            return re.sub(r'\n+', '', e.tail)
 
         if e.tag == 'a':
             return f'![{e.text}]({e.attrib["href"]})'
         if e.tag == 'code':
             return f'`{e.text}`'
-        if e.tag == 'mfenced':
-            return f'{e.attrib["open"]}{e.text}'
         if e.tag == 'dt':
             return f'\n{CommandDocs.BREAK}- '
         if e.tag == 'li':
             return f'\n{CommandDocs.BREAK}-{e.text}'
-        return e.text
+        return re.sub(r'\n+', '', e.text)
 
     @staticmethod
     def xml_text(e):
+        def paren(expr):
+            if re.match(r'^[a-zA-Z0-9_]+$', expr):
+                return expr
+            return f'({expr})'
+
+        def mfenced(e):
+            if e.attrib['close']:
+                return f'{e.attrib["open"]}{", ".join(DocsGL.xml_text(c) for c in e)}{e.attrib["close"]}'
+            return f'{e.attrib["open"]}{" ".join(DocsGL.xml_text(c) for c in e)}'
+
         text = ''.join(glad.util.itertext(
             e,
-            ignore=('table', 'pre'), # tables and code blocks are not supported yet
+            convert={
+                'table': lambda _: f'(table omitted)',
+                'pre': lambda _: f'(code omitted)',
+                'mfrac': lambda e, : f'{paren(DocsGL.xml_text(e[0]))}/{paren(DocsGL.xml_text(e[1]))}',
+                'msup': lambda e: f'{paren(DocsGL.xml_text(e[0]))}^{paren(DocsGL.xml_text(e[1]))}',
+                'msub': lambda e: f'{paren(DocsGL.xml_text(e[0]))}_{paren(DocsGL.xml_text(e[1]))}',
+                'mtd': lambda e: f'{DocsGL.xml_text(e[0])}; ',
+                'mfenced': mfenced,
+            },
             format=DocsGL.format,
         ))
-        return re.sub(r'\n? +', ' ', text.strip())
+        # \u00a0, \u2062, \u2062,
+        # are invisible characters used by docs.gl to separate words.
+        return re.sub(r'\n?[ \u00a0\u2062\u2061]+', ' ', text.strip())
