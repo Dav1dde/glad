@@ -81,7 +81,16 @@ def load_specifications(specification_names, opener, specification_classes=None)
 
     for name in set(specification_names):
         Specification = specification_classes[name]
-        specifications[name] = Specification.load(name, opener=opener)
+        xml_name = name + '.xml'
+
+        if os.path.isfile(xml_name):
+            logger.info('using local specification: %s', xml_name)
+            specification = Specification.from_file(xml_name, opener=opener)
+        else:
+            logger.info('getting %r specification from remote location', name)
+            specification = Specification.from_remote(opener=opener)
+
+        specifications[name] = specification
 
     return specifications
 

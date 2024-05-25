@@ -256,17 +256,6 @@ class Specification(object):
         return self.NAME
 
     @classmethod
-    def load(cls, name, opener=None):
-        xml_name = name + '.xml'
-
-        if os.path.isfile(xml_name):
-            logger.info('using local specification: %s', xml_name)
-            return cls.from_file(xml_name, opener=opener)
-        else:
-            logger.info('getting %r specification from remote location', name)
-            return cls.from_remote(opener=opener)
-
-    @classmethod
     def from_url(cls, url, opener=None):
         if opener is None:
             opener = URLOpener.default()
@@ -1487,6 +1476,7 @@ class SpecificationDocs(object):
         self.version = version
         self.profile = profile
         self.extensions = extensions
+        self.docs = dict()
 
     def load(self):
         raise NotImplementedError
@@ -1519,7 +1509,7 @@ class CommandDocs(object):
         self.see_also = see_also
 
     def __str__(self):
-        return 'DocComment(brief={!r}, ' \
+        return 'CommandDocs(brief={!r}, ' \
             'params={!r}, description={!r}, notes={!r}, errors={!r}, see_also={!r})' \
             .format(
                 self.brief, self.params, self.description, self.notes, self.errors, self.see_also,
