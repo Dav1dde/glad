@@ -206,7 +206,6 @@ class TypeEnumCommand(namedtuple('_TypeEnumCommand', ['types', 'enums', 'command
 class Specification(object):
     API = 'https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/'
     NAME = None
-    DOCS = None
 
     def __init__(self, root):
         self.root = root
@@ -657,7 +656,7 @@ class Specification(object):
 
         return result
 
-    def select(self, api, version, profile, extension_names, config, sink=LoggingSink(__name__)):
+    def select(self, api, version, profile, extension_names, sink=LoggingSink(__name__)):
         """
         Select a specific configuration from the specification.
 
@@ -734,15 +733,6 @@ class Specification(object):
         # Collect a list of extensions grouped by API
         extensions = [self.extensions[api][name] for name in extension_names
                       if name in self.extensions[api]]
-
-        # Load documentation for the specific configuration
-        if config['WITH_DOCS']:
-            if self.DOCS:
-                self._docs = self.DOCS(api, version, profile, extensions)
-                sink.info('loading documentation for api {} version {}'.format(api, version))
-                self._docs.load()
-            else:
-                sink.warning("documentation not available for specification '{}'".format(self.name))
 
         # Collect information
         result = set()
@@ -1469,6 +1459,7 @@ class Feature(Extension):
 
 
 class SpecificationDocs(object):
+    SPEC = None
     URL = None
 
     def __init__(self, api, version, profile, extensions):

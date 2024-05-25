@@ -1,5 +1,4 @@
 from glad.parse import Specification, Require
-from glad.documentation import DocsGL
 
 
 class EGL(Specification):
@@ -14,7 +13,6 @@ class EGL(Specification):
 
 class GL(Specification):
     DISPLAY_NAME = 'OpenGL'
-    DOCS = DocsGL
 
     API = 'https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/main/xml/'
     NAME = 'gl'
