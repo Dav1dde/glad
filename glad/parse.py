@@ -1,23 +1,12 @@
 from glad.sink import LoggingSink
 
-try:
-    from lxml import etree
-    from lxml.etree import ETCompatXMLParser as parser
+from lxml import etree
+from lxml.etree import ETCompatXMLParser as parser
 
-    def xml_fromstring(argument):
-        return etree.fromstring(argument, parser=parser())
-    def xml_parse(path):
-        return etree.parse(path, parser=parser()).getroot()
-except ImportError:
-    try:
-        import xml.etree.cElementTree as etree
-    except ImportError:
-        import xml.etree.ElementTree as etree
-
-    def xml_fromstring(argument):
-        return etree.fromstring(argument)
-    def xml_parse(path):
-        return etree.parse(path).getroot()
+def xml_fromstring(argument):
+    return etree.fromstring(argument, parser=parser())
+def xml_parse(path, recover=False):
+    return etree.parse(path, parser=parser(recover=recover)).getroot()
 
 import re
 import copy
