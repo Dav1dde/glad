@@ -19,7 +19,7 @@ from glad.generator import GenerationInfo
 from glad.sink import LoggingSink
 from glad.opener import URLOpener
 from glad.parse import FeatureSet
-from glad.plugin import find_specifications, find_generators
+from glad.plugin import find_specification_docs, find_specifications, find_generators
 from glad.util import parse_apis
 
 
@@ -95,6 +95,28 @@ def load_specifications(specification_names, opener, specification_classes=None)
     return specifications
 
 
+def load_documentations(specification_names, opener, spec_docs_classes=None):
+    specifications_docs = dict()
+
+    if spec_docs_classes is None:
+        spec_docs_classes = find_specification_docs()
+
+    for name in set(specification_names):
+        SpecificationDocs = spec_docs_classes[name]
+        spec_docs_dir = SpecificationDocs.default_out_dir()
+
+        if os.path.isdir(spec_docs_dir):
+            logger.info('using local documentation: %s', spec_docs_dir)
+            spec_docs = SpecificationDocs.from_dir(spec_docs_dir, opener=opener)
+        else:
+            logger.info('getting %r documentation from remote location', name)
+            spec_docs = SpecificationDocs.from_remote(opener=opener)
+
+        specifications_docs[name] = spec_docs
+
+    return specifications_docs
+
+
 def apis_by_specification(api_info, specifications):
     return groupby(api_info.items(),
                    key=lambda api_info: specifications[api_info[1].specification])
@@ -153,9 +175,13 @@ def main(args=None):
         opener = URLOpener()
         gen_info_factory = GenerationInfo.create
 
-    specifications = load_specifications(
-        [value[0] for value in global_config['API'].values()], opener=opener
-    )
+    spec_names = [value[0] for value in global_config['API'].values()]
+    specifications = load_specifications(spec_names, opener=opener)
+
+    if config.get('WITH_DOCS'):
+        documentations = load_documentations(spec_names, opener=opener)
+    else:
+        documentations = None
 
     generator = generators[ns.subparser_name](
         global_config['OUT_PATH'], opener=opener, gen_info_factory=gen_info_factory
@@ -189,8 +215,12 @@ def main(args=None):
             logging_sink.info('merged into {}'.format(feature_sets[0]))
 
         for feature_set in feature_sets:
+            api = feature_set.info.apis[0]
+            spec_docs = None
+            if documentations and api in documentations:
+                spec_docs = documentations[api].select(feature_set)
             logging_sink.info('generating feature set {}'.format(feature_set))
-            generator.generate(specification, feature_set, config, sink=logging_sink)
+            generator.generate(specification, feature_set, config, sink=logging_sink, spec_docs=spec_docs)
 
 
 if __name__ == '__main__':

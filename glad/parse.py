@@ -24,6 +24,9 @@ import copy
 import logging
 import os.path
 import warnings
+import zipfile
+from io import BytesIO
+from pathlib import Path
 from collections import defaultdict, OrderedDict, namedtuple, deque
 from contextlib import closing
 from itertools import chain
@@ -210,7 +213,6 @@ class Specification(object):
     def __init__(self, root):
         self.root = root
         self._combined = None
-        self._docs = None
 
     def _magic_require(self, api, profile):
         """
@@ -405,8 +407,6 @@ class Specification(object):
 
         # populate docs and fixup aliases
         for command in chain.from_iterable(commands.values()):
-            if self._docs:
-                command.doc_comment = self._docs.docs_for_command_name(command.name)
             if command.alias is not None and command.proto is None:
                 aliased_command = command
                 while aliased_command.proto is None:
@@ -1459,24 +1459,60 @@ class Feature(Extension):
 
 
 class SpecificationDocs(object):
+    DOCS_NAME = None
+
     SPEC = None
     URL = None
 
-    def __init__(self, api, version, profile, extensions):
-        self.api = api
-        self.version = version
-        self.profile = profile
-        self.extensions = extensions
-        self.docs = dict()
+    def __init__(self, docs_dir):
+        self.docs_dir = docs_dir
 
-    def load(self):
+    def select(self, feature_set):
         raise NotImplementedError
+
+    @classmethod
+    def default_out_dir(cls):
+        if cls.DOCS_NAME is None:
+            raise ValueError('DOCS_NAME not set')
+        return Path('.docs') / cls.DOCS_NAME
+
+    @classmethod
+    def from_url(cls, url, opener=None):
+        if opener is None:
+            opener = URLOpener.default()
+        docs_dir = cls.default_out_dir()
+        zip_out_dir = docs_dir.parent
+
+        with closing(opener.urlopen(url)) as f:
+            raw = f.read()
+            f = BytesIO(raw)
+
+            with zipfile.ZipFile(f) as zf:
+                zf.extractall(zip_out_dir)
+                zip_dir = zip_out_dir / zf.namelist()[0]
+                os.rename(zip_dir, docs_dir)
+
+        return cls(docs_dir)
+
+    @classmethod
+    def from_remote(cls, opener=None):
+        return cls.from_url(cls.URL, opener=opener)
+
+    @classmethod
+    def from_dir(cls, dir_path, opener=None):
+        return cls(dir_path)
+
+
+class DocumentationSet(object):
+    def __init__(self, commands):
+        self.commands = commands
+
+    def __str__(self):
+        return 'DocumentationSet(commands={})'.format(len(self.commands))
+    __repr__ = __str__
 
     def docs_for_command_name(self, name):
-        """
-        Returns the CommandDocs for the given command name or None if not found.
-        """
-        raise NotImplementedError
+        return self.commands.get(name, None)
 
 
 class CommandDocs(object):

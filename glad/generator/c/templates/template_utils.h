@@ -117,25 +117,26 @@ GLAD_API_CALL {{ command.name|pfn }} glad_{{ command.name }};
 {% if debug %}
 GLAD_API_CALL {{ command.name|pfn }} glad_debug_{{ command.name }};
 {% endif %}
-{% if options.with_docs and command.doc_comment %}
+{% if options.with_docs and spec_docs %}
+{% set command_docs = spec_docs.docs_for_command_name(command.name) %}
 /**
-{% if command.doc_comment.brief %}
- * @brief {{ command.doc_comment.brief|wordwrap(80, wrapstring='\n * ') }}
+{% if command_docs.brief %}
+ * @brief {{ command_docs.brief|wordwrap(80, wrapstring='\n * ') }}
  *
 {% endif %}
-{% for param in command.doc_comment.params %}
+{% for param in command_docs.params %}
  * @param {{ param.name }} {{ param.desc|wordwrap(80, wrapstring='\n * ') }}
 {% endfor %}
  *
-{% for paragraph in command.doc_comment.description %}
- * {{ paragraph|replace(command.doc_comment.BREAK, '@details ')|wordwrap(80, wrapstring='\n * ') }}
+{% for paragraph in command_docs.description %}
+ * {{ paragraph|replace(command_docs.BREAK, '@details ')|wordwrap(80, wrapstring='\n * ') }}
 {% endfor %}
  *
-{% for note in command.doc_comment.notes %}
- * {{ note|replace(command.doc_comment.BREAK, '@note ')|wordwrap(80, wrapstring='\n * ') }}
+{% for note in command_docs.notes %}
+ * {{ note|replace(command_docs.BREAK, '@note ')|wordwrap(80, wrapstring='\n * ') }}
 {% endfor %}
-{% if command.doc_comment.see_also %}
- * @see {{ command.doc_comment.see_also }}
+{% if command_docs.see_also %}
+ * @see {{ command_docs.see_also }}
 {% endif %}
 */
 {% endif %}

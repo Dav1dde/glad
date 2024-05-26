@@ -1,49 +1,33 @@
-from glad.parse import SpecificationDocs, CommandDocs, xml_parse
-from glad.util import prefix, suffix, memoize, raw_text
-from shutil import rmtree
-import glad.util
-import subprocess
 import re
+import glad.util
+from glad.parse import DocumentationSet, SpecificationDocs, CommandDocs, xml_parse
+from glad.util import prefix, suffix, raw_text
 
 
 class DocsGL(SpecificationDocs):
-    URL = 'https://github.com/BSVino/docs.gl.git'
-    CACHED = True # Only clones the DocsGL repo once
-    API = 'gl'
-    docs = dict()
+    DOCS_NAME = 'docs.gl'
 
-    @property
-    @memoize(method=True)
-    def out_dir(self):
-        from pathlib import Path
-        from tempfile import gettempdir
-        if self.CACHED:
-            return Path('.cached') / 'docs.gl'
-        return Path(gettempdir()) / 'docs.gl'
+    URL = 'https://github.com/BSVino/docs.gl/archive/refs/heads/mainline.zip'
+    SPEC = 'gl'
 
-    def load(self):
-        if self.out_dir.exists() and not self.CACHED:
-            rmtree(str(self.out_dir))
-        if not self.out_dir.exists():
-            subprocess.run(['git', 'clone', '--depth=1', self.URL, str(self.out_dir)])
-
-        current_version = self.version.major
+    def select(self, feature_set):
+        current_major = list(feature_set.info)[0].version.major
+        commands = dict()
 
         # As the time of writing DocsGL offers documentation from gl4 to gl2.
         # If say we are targeting gl3, we will try to get the command documentation from gl3,
         # otherwise we'll try from gl2 and so on. If more than one version is available only the
         # most recent one will be used.
-        for version in range(current_version, 1, -1):
-            docs_dir = self.out_dir / f'{self.API}{version}'
-            if not docs_dir.exists():
+        for version in range(current_major, 1, -1):
+            version_dir = self.docs_dir / f'{self.SPEC}{version}'
+            if not version_dir.exists():
                 break
 
-            for html_file in docs_dir.glob('*.xhtml'):
-                for func, docs in DocsGL.docs_from_html_file(html_file).items():
-                    self.docs.setdefault(func, docs)
+            for html_file in version_dir.glob('*.xhtml'):
+                for command, docs in DocsGL.docs_from_html_file(html_file).items():
+                    commands.setdefault(command, docs)
 
-    def docs_for_command_name(self, name):
-        return self.docs.get(name, None)
+        return DocumentationSet(commands=commands)
 
     @classmethod
     def docs_from_html_file(cls, path):

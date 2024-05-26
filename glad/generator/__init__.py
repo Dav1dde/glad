@@ -57,7 +57,7 @@ class BaseGenerator(object):
         :param sink: sink used to collect non fatal errors and information
         :return: FeatureSet with the required types, enums, commands/functions
         """
-        return spec.select(api, version, profile, extensions, config, sink=sink)
+        return spec.select(api, version, profile, extensions, sink=sink)
 
     def generate(self, spec, feature_set, config, sink=LoggingSink(__name__)):
         """
@@ -138,15 +138,16 @@ class JinjaGenerator(BaseGenerator):
         """
         return feature_set
 
-    def get_template_arguments(self, spec, feature_set, config):
+    def get_template_arguments(self, spec, feature_set, config, spec_docs=None):
         return dict(
             spec=spec,
             feature_set=feature_set,
+            spec_docs=spec_docs,
             options=config.to_dict(transform=lambda x: x.lower()),
             gen_info=self.gen_info_factory(self, spec, feature_set, config)
         )
 
-    def generate(self, spec, feature_set, config, sink=LoggingSink(__name__)):
+    def generate(self, spec, feature_set, config, spec_docs=None, sink=LoggingSink(__name__)):
         feature_set = self.modify_feature_set(spec, feature_set, config)
         for template, output_path in self.get_templates(spec, feature_set, config):
             #try:
@@ -156,7 +157,7 @@ class JinjaGenerator(BaseGenerator):
             #    raise ValueError('Unsupported specification/configuration')
 
             result = template.render(
-                **self.get_template_arguments(spec, feature_set, config)
+                **self.get_template_arguments(spec, feature_set, config, spec_docs=spec_docs)
             )
 
             output_path = os.path.join(self.path, output_path)
@@ -164,9 +165,9 @@ class JinjaGenerator(BaseGenerator):
             with open(output_path, 'w') as f:
                 f.write(result)
 
-        self.post_generate(spec, feature_set, config)
+        self.post_generate(spec, feature_set, config, spec_docs=None)
 
-    def post_generate(self, spec, feature_set, config):
+    def post_generate(self, spec, feature_set, config, spec_docs=None):
         pass
 
 
