@@ -107,6 +107,10 @@ def load_documentations(specification_names, opener, spec_docs_classes=None):
         spec_docs_classes = find_specification_docs()
 
     for name in set(specification_names):
+        if name not in spec_docs_classes:
+            logger.warning('no documentation available for %r', name)
+            continue
+
         SpecificationDocs = spec_docs_classes[name]
         spec_docs_dir = SpecificationDocs.default_out_dir()
 
