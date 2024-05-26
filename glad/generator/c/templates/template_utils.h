@@ -117,7 +117,7 @@ GLAD_API_CALL {{ command.name|pfn }} glad_{{ command.name }};
 {% if debug %}
 GLAD_API_CALL {{ command.name|pfn }} glad_debug_{{ command.name }};
 {% endif %}
-{% if options.with_docs and spec_docs %}
+{% if spec_docs %}
 {% set command_docs = spec_docs.docs_for_command_name(command.name) %}
 /**
 {% if command_docs.brief %}
