@@ -177,11 +177,11 @@ def raw_text(e):
     return ''.join(e.itertext())
 
 
-def _format_none(e, is_tail=False):
+def _format_none(e, parent=None, is_tail=False):
     return e.tail if is_tail else e.text
 
 
-def itertext(element, ignore=(), convert=dict(), format=_format_none):
+def itertext(element, parent=None, ignore=(), convert=dict(), format=_format_none):
     tag = element.tag
     if tag in ignore:
         return
@@ -193,13 +193,13 @@ def itertext(element, ignore=(), convert=dict(), format=_format_none):
         return
     if element.text is None:
         element.text = ''
-    yield format(element)
+    yield format(element, parent=parent)
 
     for e in element:
-        for s in itertext(e, ignore=ignore, convert=convert, format=format):
+        for s in itertext(e, ignore=ignore, parent=element, convert=convert, format=format):
             yield s
         if e.tail:
-            yield format(e, is_tail=True)
+            yield format(e, parent=element, is_tail=True)
 
 
 def expand_type_name(name):
@@ -236,3 +236,40 @@ def suffix(suffix, text):
     if text.strip().endswith(suffix):
         return text
     return f'{text}{suffix}'
+
+math_symbols_map = {
+    '&times;': '×',
+    '&minus;': '-',
+    '&it;': ' ',
+    '&af;': '',
+    '&nbsp;': ' ',
+    '&ne;': '≠',
+    '&le;': '≤',
+    '&ge;': '≥',
+    '&delta;': 'Δ',
+    '&Delta;': 'Δ',
+    '&PartialD;': '∂',
+    '&Prime;': '′',
+    '&infin;': '∞',
+    '&plus;': '+',
+    '&sdot;': '⋅',
+    '&lambda;': 'λ',
+    '&Hat;': '^',
+    '&Sigma;': 'Σ',
+    '&CenterDot': '·',
+    '&lceil;': '⌈',
+    '&rceil;': '⌉',
+    '&lfloor;': '⌊',
+    '&rfloor;': '⌋',
+    '&LeftFloor;': '⌊',
+    '&RightFloor;': '⌋',
+    '&LeftCeiling;': '⌈',
+    '&RightCeiling;': '⌉',
+    '&DoubleVerticalBar;': '∥',
+    '&VerticalBar;': '|',
+}
+
+def resolve_symbols(xml_text, symbols_map=math_symbols_map):
+    for symbol, rep in symbols_map.items():
+        xml_text = xml_text.replace(symbol, rep)
+    return xml_text

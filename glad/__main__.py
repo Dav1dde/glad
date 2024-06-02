@@ -112,11 +112,11 @@ def load_documentations(specification_names, opener, spec_docs_classes=None):
             continue
 
         SpecificationDocs = spec_docs_classes[name]
-        spec_docs_dir = SpecificationDocs.default_out_dir()
+        spec_docs_file = SpecificationDocs.default_out_dir()
 
-        if os.path.isdir(spec_docs_dir):
-            logger.info('using local documentation: %s', spec_docs_dir)
-            spec_docs = SpecificationDocs.from_dir(spec_docs_dir, opener=opener)
+        if os.path.isfile(spec_docs_file):
+            logger.info("using local documentation: '%s'", spec_docs_file)
+            spec_docs = SpecificationDocs.from_file(spec_docs_file, opener=opener)
         else:
             logger.info('getting %r documentation from remote location', name)
             spec_docs = SpecificationDocs.from_remote(opener=opener)

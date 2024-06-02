@@ -1,8 +1,9 @@
 import re
+import zipfile
 import glad.util
-from lxml import etree
-from glad.parse import DocumentationSet, SpecificationDocs, CommandDocs, xml_parse
-from glad.util import suffix, raw_text
+from pathlib import Path
+from glad.parse import DocumentationSet, SpecificationDocs, CommandDocs, xml_fromstring
+from glad.util import resolve_symbols, suffix, raw_text
 
 class OpenGLRefpages(SpecificationDocs):
     DOCS_NAME = 'opengl_refpages'
@@ -19,36 +20,48 @@ class OpenGLRefpages(SpecificationDocs):
         if current_major >= 4:
             available_versions.insert(0, 'gl4')
 
-        for version_dir in available_versions:
-            version_dir = self.docs_dir / f'{version_dir}'
-            if not version_dir.exists():
-                break
+        zf = zipfile.ZipFile(self.docs_file, 'r')
+        xml_files_in_version = {
+            version: [Path(name) for name in zf.namelist() if name.endswith('.xml') and version in name]
+            for version in available_versions
+        }
 
-            for html_file in version_dir.glob('*.xml'):
-                for command, docs in OpenGLRefpages.docs_from_html_file(html_file).items():
+        for version_dir in available_versions:
+            for xml_file in xml_files_in_version[version_dir]:
+                with zf.open(str(xml_file)) as f:
+                    xml_text = f.read().decode('utf-8')
+                parsed_docs = OpenGLRefpages.docs_from_xml(
+                    xml_text,
+                    version=version_dir,
+                    filename=xml_file.stem,
+                )
+                for command, docs in parsed_docs.items():
                     commands.setdefault(command, docs)
 
+        zf.close()
         return DocumentationSet(commands=commands)
 
     @classmethod
-    def docs_from_html_file(cls, path):
+    def docs_from_xml(cls, xml_text, version=None, filename=None):
         commands_parsed = dict()
-        version = path.parent.name
-        tree = xml_parse(path, recover=True, xinclude=True)
 
-        # gl4 files contain a namespace that polutes the tags, so we clean it up.
-        for elem in tree.getiterator():
+        xml_text = xml_text.replace('<mml:math>', '<mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML">')
+        xml_text = resolve_symbols(xml_text)
+
+        tree = xml_fromstring(xml_text.encode('utf-8'))
+
+        # gl4 files contain a namespace that polutes the tags, so we clean them up.
+        for elem in tree.iter():
             try:
                 if elem.tag.startswith('{'):
-                    elem.tag = etree.QName(elem).localname
+                    elem.tag = elem.tag.split('}')[-1]
                 if elem.tag.contains(':'):
                     elem.tag = elem.tag.split(':')[-1]
                 for key in elem.attrib:
                     if key.startswith('{'):
-                        elem.attrib[etree.QName(key).localname] = elem.attrib.pop(key)
+                        elem.attrib[key.split('}')[-1]] = elem.attrib.pop(key)
             except:
                 pass
-        etree.cleanup_namespaces(tree)
 
         sections = tree.findall('.//refsect1')
 
@@ -62,9 +75,9 @@ class OpenGLRefpages(SpecificationDocs):
         brief = suffix(".", cls.xml_text(brief_block))
 
         if version == 'gl2.1':
-            docs_url = f'https://registry.khronos.org/OpenGL-Refpages/{version}/xhtml/{path.stem}.xml'
+            docs_url = f'https://registry.khronos.org/OpenGL-Refpages/{version}/xhtml/{filename}.xml'
         else:
-            docs_url = f'https://registry.khronos.org/OpenGL-Refpages/{version}/html/{path.stem}.xhtml'
+            docs_url = f'https://registry.khronos.org/OpenGL-Refpages/{version}/html/{filename}.xhtml'
 
         # Description parsing
         description = []
@@ -77,7 +90,7 @@ class OpenGLRefpages(SpecificationDocs):
             description = list(
                 filter(
                     bool,
-                    (cls.xml_text(p) for p in blocks if p.tag != 'title'),
+                    (re.sub(f'^{CommandDocs.BREAK}', '', cls.xml_text(p)) for p in blocks if p.tag != 'title'),
                 ),
             )
 
@@ -154,31 +167,25 @@ class OpenGLRefpages(SpecificationDocs):
         return commands_parsed
 
     @classmethod
-    def format(cls, e, is_tail=False):
+    def format(cls, e, parent=None, is_tail=False):
         if is_tail:
-            # closing a definition term
-            if e.tag == 'term':
-                return ''
-            # closing a mathjax row
-            if e.tag == 'mtr':
-                return '\n'
-            if e.tag in ('mn', 'msub'):
+            if e.tag in ('term', 'mn', 'msub'):
                 return ''
             return re.sub(r'\n+', '', e.tail)
 
-        if e.tag == 'link':
-            if e.attrib.get('href'):
-                return f'[{e.text}]({e.attrib["href"]})'
-            return e.text
         if e.tag == 'constant':
             return f'`{e.text}`'
         if e.tag == 'function':
             return f'`{e.text}`'
+        if e.tag == 'emphasis':
+            return f'*{e.text}*'
         if e.tag == 'term':
             return f'\n{CommandDocs.BREAK}- {e.text.strip()}'
         if e.tag == 'listitem':
-            if e.getparent().tag == 'varlistentry':
-                return f'\n{CommandDocs.BREAK}{e.text}'
+            if parent is None:
+                return f'\n{CommandDocs.BREAK}{e.text.strip()}'
+            if parent is not None and parent.tag == 'varlistentry':
+                return f'\n{CommandDocs.BREAK}{e.text.strip()}'
             return f'\n{CommandDocs.BREAK}- {e.text.strip()}'
         return re.sub(r'\n+', '', e.text)
 
@@ -197,9 +204,10 @@ class OpenGLRefpages(SpecificationDocs):
         text = ''.join(glad.util.itertext(
             e,
             convert={
-                'table': lambda _: f'(table omitted)',
-                'informaltable': lambda _: f'(table omitted)',
-                'programlisting': lambda _: f'(code omitted)',
+                'table': lambda _: '(table omitted)',
+                'informaltable': lambda _: '(table omitted)',
+                'include': lambda _: '(table omitted)',
+                'programlisting': lambda _: '(code omitted)',
                 'mfrac': lambda e, : f'{paren(cls.xml_text(e[0]))}/{paren(cls.xml_text(e[1]))}',
                 'msup': lambda e: f'{paren(cls.xml_text(e[0]))}^{paren(cls.xml_text(e[1]))}',
                 'msub': lambda e: f'{paren(cls.xml_text(e[0]))}_{paren(cls.xml_text(e[1]))}',
@@ -210,4 +218,4 @@ class OpenGLRefpages(SpecificationDocs):
         ))
         # \u2062, \u2062,
         # Invisible characters used by docs.gl to separate words.
-        return re.sub(r'\n?[ \u2062\u2061]+', ' ', text.strip())
+        return re.sub(r'\n?[ \u2062\u2061\t]+', ' ', text.strip())

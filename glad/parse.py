@@ -1,23 +1,31 @@
 from glad.sink import LoggingSink
 
-from lxml import etree
-from lxml.etree import ETCompatXMLParser as parser
+try:
+    from lxml import etree
+    from lxml.etree import ETCompatXMLParser as parser
 
-def xml_fromstring(argument, recover=False):
-    return etree.fromstring(argument, parser=parser(recover=recover))
-def xml_parse(path, recover=False, xinclude=False):
-    tree = etree.parse(path, parser=parser(recover=recover))
-    if xinclude:
-        tree.xinclude()
-    return tree.getroot()
+    def xml_fromstring(argument):
+        return etree.fromstring(argument, parser=parser())
+    def xml_parse(path):
+        return etree.parse(path, parser=parser()).getroot()
+except ImportError:
+    try:
+        import xml.etree.cElementTree as etree
+        from xml.etree.cElementTree import XMLParser as parser
+    except ImportError:
+        import xml.etree.ElementTree as etree
+        from xml.etree.ElementTree import XMLParser as parser
+
+    def xml_fromstring(argument):
+        return etree.fromstring(argument)
+    def xml_parse(path):
+        return etree.parse(path, parser=parser()).getroot()
 
 import re
 import copy
 import logging
 import os.path
 import warnings
-import zipfile
-from io import BytesIO
 from pathlib import Path
 from collections import defaultdict, OrderedDict, namedtuple, deque
 from contextlib import closing
@@ -1456,8 +1464,8 @@ class SpecificationDocs(object):
     SPEC = None
     URL = None
 
-    def __init__(self, docs_dir):
-        self.docs_dir = docs_dir
+    def __init__(self, docs_file):
+        self.docs_file = docs_file
 
     def select(self, feature_set):
         raise NotImplementedError
@@ -1466,33 +1474,31 @@ class SpecificationDocs(object):
     def default_out_dir(cls):
         if cls.DOCS_NAME is None:
             raise ValueError('DOCS_NAME not set')
-        return Path('.docs') / cls.DOCS_NAME
+        return Path('.docs') / f'{cls.DOCS_NAME}.zip'
 
     @classmethod
     def from_url(cls, url, opener=None):
         if opener is None:
             opener = URLOpener.default()
-        docs_dir = cls.default_out_dir()
-        zip_out_dir = docs_dir.parent
+
+        docs_file = cls.default_out_dir()
+        docs_file.parent.mkdir(parents=True, exist_ok=True)
 
         with closing(opener.urlopen(url)) as f:
             raw = f.read()
-            f = BytesIO(raw)
 
-            with zipfile.ZipFile(f) as zf:
-                zf.extractall(zip_out_dir)
-                zip_dir = zip_out_dir / zf.namelist()[0]
-                os.rename(zip_dir, docs_dir)
+            with open(docs_file, 'wb') as f:
+                f.write(raw)
 
-        return cls(docs_dir)
+        return cls(docs_file)
 
     @classmethod
     def from_remote(cls, opener=None):
         return cls.from_url(cls.URL, opener=opener)
 
     @classmethod
-    def from_dir(cls, dir_path, opener=None):
-        return cls(dir_path)
+    def from_file(cls, docs_file, opener=None):
+        return cls(docs_file)
 
 
 class DocumentationSet(object):
