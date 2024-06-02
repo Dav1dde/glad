@@ -2,7 +2,7 @@ import re
 import glad.util
 from lxml import etree
 from glad.parse import DocumentationSet, SpecificationDocs, CommandDocs, xml_parse
-from glad.util import prefix, suffix, raw_text
+from glad.util import suffix, raw_text
 
 class OpenGLRefpages(SpecificationDocs):
     DOCS_NAME = 'opengl_refpages'
@@ -34,7 +34,7 @@ class OpenGLRefpages(SpecificationDocs):
     def docs_from_html_file(cls, path):
         commands_parsed = dict()
         version = path.parent.name
-        tree = xml_parse(path, recover=True)
+        tree = xml_parse(path, recover=True, xinclude=True)
 
         # gl4 files contain a namespace that polutes the tags, so we clean it up.
         for elem in tree.getiterator():

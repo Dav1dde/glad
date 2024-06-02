@@ -3,9 +3,9 @@ from glad.sink import LoggingSink
 from lxml import etree
 from lxml.etree import ETCompatXMLParser as parser
 
-def xml_fromstring(argument):
-    return etree.fromstring(argument, parser=parser())
-def xml_parse(path, recover=False, xinclude=True):
+def xml_fromstring(argument, recover=False):
+    return etree.fromstring(argument, parser=parser(recover=recover))
+def xml_parse(path, recover=False, xinclude=False):
     tree = etree.parse(path, parser=parser(recover=recover))
     if xinclude:
         tree.xinclude()
