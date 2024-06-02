@@ -5,8 +5,11 @@ from lxml.etree import ETCompatXMLParser as parser
 
 def xml_fromstring(argument):
     return etree.fromstring(argument, parser=parser())
-def xml_parse(path, recover=False):
-    return etree.parse(path, parser=parser(recover=recover)).getroot()
+def xml_parse(path, recover=False, xinclude=True):
+    tree = etree.parse(path, parser=parser(recover=recover))
+    if xinclude:
+        tree.xinclude()
+    return tree.getroot()
 
 import re
 import copy
@@ -1516,13 +1519,15 @@ class CommandDocs(object):
     class Param(namedtuple('Param', ['name', 'desc'])):
         pass
 
-    def __init__(self, brief, params, description, notes, errors, see_also):
+    def __init__(self, name, brief, params, description, notes, errors, see_also, docs_url):
+        self.name = name
         self.brief = brief
         self.params = params
         self.description = description
         self.notes = notes
         self.errors = errors
         self.see_also = see_also
+        self.docs_url = docs_url
 
     def __str__(self):
         return 'CommandDocs(brief={!r}, ' \

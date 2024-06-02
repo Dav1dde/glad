@@ -11,13 +11,13 @@ class OpenGLRefpages(SpecificationDocs):
     SPEC = 'gl'
 
     def select(self, feature_set):
-        current_major = list(feature_set.info)[0].version.major
+        current_major = max(info.version.major for info in feature_set.info)
         commands = dict()
 
         # At the time of writing Khronos hosts documentations for gl4 and gl2.1.
         available_versions = ['gl2.1']
         if current_major >= 4:
-            available_versions.append('gl4')
+            available_versions.insert(0, 'gl4')
 
         for version_dir in available_versions:
             version_dir = self.docs_dir / f'{version_dir}'
@@ -41,6 +41,11 @@ class OpenGLRefpages(SpecificationDocs):
             try:
                 if elem.tag.startswith('{'):
                     elem.tag = etree.QName(elem).localname
+                if elem.tag.contains(':'):
+                    elem.tag = elem.tag.split(':')[-1]
+                for key in elem.attrib:
+                    if key.startswith('{'):
+                        elem.attrib[etree.QName(key).localname] = elem.attrib.pop(key)
             except:
                 pass
         etree.cleanup_namespaces(tree)
@@ -52,13 +57,14 @@ class OpenGLRefpages(SpecificationDocs):
         brief_block = tree.find('.//refnamediv//refpurpose')
 
         if brief_block is None:
+            # No brief means file doesn't contain any command definitions.
             return dict()
+        brief = suffix(".", cls.xml_text(brief_block))
 
         if version == 'gl2.1':
-            url = f'https://registry.khronos.org/OpenGL-Refpages/{version}/xhtml/{path.stem}.xml'
+            docs_url = f'https://registry.khronos.org/OpenGL-Refpages/{version}/xhtml/{path.stem}.xml'
         else:
-            url = f'https://registry.khronos.org/OpenGL-Refpages/{version}/html/{path.stem}.xhtml'
-        brief = f'[{path.stem}]({url}) — {suffix(".", cls.xml_text(brief_block))}'
+            docs_url = f'https://registry.khronos.org/OpenGL-Refpages/{version}/html/{path.stem}.xhtml'
 
         # Description parsing
         description = []
@@ -71,19 +77,20 @@ class OpenGLRefpages(SpecificationDocs):
             description = list(
                 filter(
                     bool,
-                    (prefix(CommandDocs.BREAK, cls.xml_text(p)) for p in blocks if p.tag != 'h2'),
+                    (cls.xml_text(p) for p in blocks if p.tag != 'title'),
                 ),
             )
 
         # Notes parsing
         notes = []
         notes_blocks = next((s for s in sections if raw_text(s.find('title')) == 'Notes'), None)
+
         if notes_blocks is not None:
             blocks = notes_blocks.findall('./*')
             notes = list(
                 filter(
                     bool,
-                    (prefix(CommandDocs.BREAK, cls.xml_text(p)) for p in blocks if p.tag != 'h2'),
+                    (cls.xml_text(p) for p in blocks if p.tag != 'title'),
                 ),
             )
 
@@ -102,6 +109,7 @@ class OpenGLRefpages(SpecificationDocs):
             func_name = func_def.find('.//function').text
             func_params = [raw_text(s) for s in func_def.findall('.//parameter')]
 
+
             # Params are defined in a separate section, called 'Parameters for <func_name>'
             # or just 'Parameters'.
             params_block = next(
@@ -116,49 +124,62 @@ class OpenGLRefpages(SpecificationDocs):
                         break
 
             # At this point we interpret params_block=None as a void parameter list.
+            is_void = params_block is None
+            params_entries = params_block.findall('.//varlistentry/*') if not is_void else []
 
             params = []
             # A description can apply for more than one param (term), so we stack them until
             # we find a listitem, which is a description of a param.
             terms_stack = []
-            for param_or_desc in params_block.findall('.//varlistentry/*') if params_block is not None else []:
+            for param_or_desc in params_entries:
                 if param_or_desc.tag == 'term':
                     terms_stack.append(param_or_desc)
                     continue
                 if param_or_desc.tag == 'listitem':
-                    for term in terms_stack:
-                        param_name = raw_text(term.find('.//parameter'))
-                        if param_name in func_params:
-                            params.append(CommandDocs.Param(param_name, cls.xml_text(param_or_desc)))
+                    for terms in terms_stack:
+                        param_names = [
+                            p.text for p in terms.findall('.//parameter') if p.text in func_params
+                        ]
+
+                        for param_name in param_names:
+                            params.append(CommandDocs.Param(
+                                param_name,
+                                cls.xml_text(param_or_desc).replace(CommandDocs.BREAK, ''),
+                            ))
                     terms_stack.clear()
 
             commands_parsed[func_name] = CommandDocs(
-                brief, params, description, notes, None, None,
+                func_name, brief, params, description, notes, None, None, docs_url,
             )
         return commands_parsed
 
-    @staticmethod
-    def format(e, is_tail=False):
+    @classmethod
+    def format(cls, e, is_tail=False):
         if is_tail:
-            if e.tag == 'dt':
-                # closing a definition term
-                return '\n'
+            # closing a definition term
+            if e.tag == 'term':
+                return ''
+            # closing a mathjax row
             if e.tag == 'mtr':
-                # closing a mathjax row
                 return '\n'
-            r = re.sub(r'\n+', '', e.tail)
             if e.tag in ('mn', 'msub'):
                 return ''
             return re.sub(r'\n+', '', e.tail)
 
-        if e.tag == 'a':
-            return f'![{e.text}]({e.attrib["href"]})'
-        if e.tag == 'code':
+        if e.tag == 'link':
+            if e.attrib.get('href'):
+                return f'[{e.text}]({e.attrib["href"]})'
+            return e.text
+        if e.tag == 'constant':
             return f'`{e.text}`'
-        if e.tag == 'dt':
-            return f'\n{CommandDocs.BREAK}- '
-        if e.tag == 'li':
-            return f'\n{CommandDocs.BREAK}-{e.text}'
+        if e.tag == 'function':
+            return f'`{e.text}`'
+        if e.tag == 'term':
+            return f'\n{CommandDocs.BREAK}- {e.text.strip()}'
+        if e.tag == 'listitem':
+            if e.getparent().tag == 'varlistentry':
+                return f'\n{CommandDocs.BREAK}{e.text}'
+            return f'\n{CommandDocs.BREAK}- {e.text.strip()}'
         return re.sub(r'\n+', '', e.text)
 
     @classmethod
@@ -179,12 +200,14 @@ class OpenGLRefpages(SpecificationDocs):
                 'table': lambda _: f'(table omitted)',
                 'informaltable': lambda _: f'(table omitted)',
                 'programlisting': lambda _: f'(code omitted)',
-                'mml:mfrac': lambda e, : f'{paren(cls.xml_text(e[0]))}/{paren(cls.xml_text(e[1]))}', #
-                'mml:msup': lambda e: f'{paren(cls.xml_text(e[0]))}^{paren(cls.xml_text(e[1]))}', #
-                'mml:msub': lambda e: f'{paren(cls.xml_text(e[0]))}_{paren(cls.xml_text(e[1]))}', #
-                'mml:mtd': lambda e: f'{cls.xml_text(e[0])}; ', #
-                'mml:mfenced': mfenced, #
+                'mfrac': lambda e, : f'{paren(cls.xml_text(e[0]))}/{paren(cls.xml_text(e[1]))}',
+                'msup': lambda e: f'{paren(cls.xml_text(e[0]))}^{paren(cls.xml_text(e[1]))}',
+                'msub': lambda e: f'{paren(cls.xml_text(e[0]))}_{paren(cls.xml_text(e[1]))}',
+                'mtd': lambda e: f'{cls.xml_text(e[0])}; ',
+                'mfenced': mfenced,
             },
             format=cls.format,
         ))
-        return re.sub(r'\n? +', ' ', text.strip())
+        # \u2062, \u2062,
+        # Invisible characters used by docs.gl to separate words.
+        return re.sub(r'\n?[ \u2062\u2061]+', ' ', text.strip())

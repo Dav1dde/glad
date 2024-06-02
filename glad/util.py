@@ -191,8 +191,10 @@ def itertext(element, ignore=(), convert=dict(), format=_format_none):
 
     if not isinstance(tag, basestring) and tag is not None:
         return
-    if element.text:
-        yield format(element)
+    if element.text is None:
+        element.text = ''
+    yield format(element)
+
     for e in element:
         for s in itertext(e, ignore=ignore, convert=convert, format=format):
             yield s
