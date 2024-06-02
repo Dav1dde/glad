@@ -71,7 +71,7 @@ class GlobalConfig(Config):
         description='Makes the build reproducible by not fetching the latest '
                     'specification from Khronos.'
     )
-    WITH_DOCS = ConfigOption(
+    DOCS = ConfigOption(
         converter=bool,
         default=False,
         description='Include inline documentation in the generated files.'
@@ -187,7 +187,7 @@ def main(args=None):
     spec_names = [value[0] for value in global_config['API'].values()]
     specifications = load_specifications(spec_names, opener=opener)
 
-    if global_config['WITH_DOCS']:
+    if global_config['DOCS']:
         documentations = load_documentations(spec_names, opener=opener)
     else:
         documentations = None
