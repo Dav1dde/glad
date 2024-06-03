@@ -3,7 +3,7 @@ import zipfile
 import glad.util
 from pathlib import Path
 from glad.parse import DocumentationSet, SpecificationDocs, CommandDocs, xml_fromstring
-from glad.util import resolve_symbols, suffix, raw_text
+from glad.util import resolve_entities, suffix, raw_text
 
 class OpenGLRefpages(SpecificationDocs):
     DOCS_NAME = 'opengl_refpages'
@@ -45,12 +45,14 @@ class OpenGLRefpages(SpecificationDocs):
     def docs_from_xml(cls, xml_text, version=None, filename=None):
         commands_parsed = dict()
 
+        # Some files don't have the proper namespace declaration for MathML.
         xml_text = xml_text.replace('<mml:math>', '<mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML">')
-        xml_text = resolve_symbols(xml_text)
+        # Entities need to be resolved before parsing.
+        xml_text = resolve_entities(xml_text)
 
         tree = xml_fromstring(xml_text.encode('utf-8'))
 
-        # gl4 files contain a namespace that polutes the tags, so we clean them up.
+        # gl4 files contain large namespace declarations that pollute the tags. So we remove them.
         for elem in tree.iter():
             try:
                 if elem.tag.startswith('{'):
@@ -63,6 +65,8 @@ class OpenGLRefpages(SpecificationDocs):
             except:
                 pass
 
+        # Each refsect1 block contains a section of the documentation.
+        # Sections groups Description, Parameters, Notes, etc.
         sections = tree.findall('.//refsect1')
 
         # Brief parsing
@@ -130,8 +134,9 @@ class OpenGLRefpages(SpecificationDocs):
                 None,
             )
             if params_block is None:
-                for p in list(s for s in sections if raw_text(s.find('title')) == 'Parameters'):
+                for p in (s for s in sections if raw_text(s.find('title')) == 'Parameters'):
                     block_params = [raw_text(n) for n in p.findall('.//term//parameter')]
+                    # If all our func_params are contained in this block, we choose it.
                     if all(func_param in block_params for func_param in func_params):
                         params_block = p
                         break
@@ -149,16 +154,16 @@ class OpenGLRefpages(SpecificationDocs):
                     terms_stack.append(param_or_desc)
                     continue
                 if param_or_desc.tag == 'listitem':
+                    # Now that we have a listitem,  it is considered that all the terms
+                    # on the stack have the same parameter description.
+                    param_desc = cls.xml_text(param_or_desc).replace(CommandDocs.BREAK, '')
                     for terms in terms_stack:
                         param_names = [
                             p.text for p in terms.findall('.//parameter') if p.text in func_params
                         ]
 
                         for param_name in param_names:
-                            params.append(CommandDocs.Param(
-                                param_name,
-                                cls.xml_text(param_or_desc).replace(CommandDocs.BREAK, ''),
-                            ))
+                            params.append(CommandDocs.Param(param_name, param_desc))
                     terms_stack.clear()
 
             commands_parsed[func_name] = CommandDocs(

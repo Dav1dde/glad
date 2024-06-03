@@ -269,7 +269,7 @@ math_symbols_map = {
     '&VerticalBar;': '|',
 }
 
-def resolve_symbols(xml_text, symbols_map=math_symbols_map):
+def resolve_entities(xml_text, symbols_map=math_symbols_map):
     for symbol, rep in symbols_map.items():
         xml_text = xml_text.replace(symbol, rep)
     return xml_text
