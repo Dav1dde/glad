@@ -1,4 +1,5 @@
 import functools
+from itertools import chain
 import os
 import re
 import sys
@@ -170,18 +171,35 @@ def memoize(key=None, method=False):
     return memoize_decorator
 
 
-def itertext(element, ignore=()):
+def raw_text(e):
+    if e is None:
+        return ''
+    return ''.join(e.itertext())
+
+
+def _format_none(e, parent=None, is_tail=False):
+    return e.tail if is_tail else e.text
+
+
+def itertext(element, parent=None, ignore=(), convert=dict(), format=_format_none):
     tag = element.tag
+    if tag in ignore:
+        return
+    if tag in convert:
+        yield convert[tag](element)
+        return
+
     if not isinstance(tag, basestring) and tag is not None:
         return
-    if element.text:
-        yield element.text
+    if element.text is None:
+        element.text = ''
+    yield format(element, parent=parent)
+
     for e in element:
-        if not e.tag in ignore:
-            for s in itertext(e, ignore=ignore):
-                yield s
-            if e.tail:
-                yield e.tail
+        for s in itertext(e, ignore=ignore, parent=element, convert=convert, format=format):
+            yield s
+        if e.tail:
+            yield format(e, parent=element, is_tail=True)
 
 
 def expand_type_name(name):
@@ -201,3 +219,57 @@ def expand_type_name(name):
         prefix = upper_name.rsplit(suffix, 1)[0]
 
     return ExpandedName(prefix, suffix)
+
+def flatten(l):
+    return list(chain.from_iterable(l))
+
+def prefix(prefix, text):
+    if not text:
+        return text
+    if text.strip().startswith(prefix):
+        return text
+    return f'{prefix}{text}'
+
+def suffix(suffix, text):
+    if not text:
+        return text
+    if text.strip().endswith(suffix):
+        return text
+    return f'{text}{suffix}'
+
+math_symbols_map = {
+    '&times;': '×',
+    '&minus;': '-',
+    '&it;': ' ',
+    '&af;': '',
+    '&nbsp;': ' ',
+    '&ne;': '≠',
+    '&le;': '≤',
+    '&ge;': '≥',
+    '&delta;': 'Δ',
+    '&Delta;': 'Δ',
+    '&PartialD;': '∂',
+    '&Prime;': '′',
+    '&infin;': '∞',
+    '&plus;': '+',
+    '&sdot;': '⋅',
+    '&lambda;': 'λ',
+    '&Hat;': '^',
+    '&Sigma;': 'Σ',
+    '&CenterDot': '·',
+    '&lceil;': '⌈',
+    '&rceil;': '⌉',
+    '&lfloor;': '⌊',
+    '&rfloor;': '⌋',
+    '&LeftFloor;': '⌊',
+    '&RightFloor;': '⌋',
+    '&LeftCeiling;': '⌈',
+    '&RightCeiling;': '⌉',
+    '&DoubleVerticalBar;': '∥',
+    '&VerticalBar;': '|',
+}
+
+def resolve_entities(xml_text, symbols_map=math_symbols_map):
+    for symbol, rep in symbols_map.items():
+        xml_text = xml_text.replace(symbol, rep)
+    return xml_text

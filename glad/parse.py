@@ -11,25 +11,28 @@ try:
 except ImportError:
     try:
         import xml.etree.cElementTree as etree
+        from xml.etree.cElementTree import XMLParser as parser
     except ImportError:
         import xml.etree.ElementTree as etree
+        from xml.etree.ElementTree import XMLParser as parser
 
     def xml_fromstring(argument):
         return etree.fromstring(argument)
     def xml_parse(path):
-        return etree.parse(path).getroot()
+        return etree.parse(path, parser=parser()).getroot()
 
 import re
 import copy
 import logging
 import os.path
 import warnings
+from pathlib import Path
 from collections import defaultdict, OrderedDict, namedtuple, deque
 from contextlib import closing
 from itertools import chain
 
 from glad.opener import URLOpener
-from glad.util import Version, topological_sort, memoize
+from glad.util import Version, raw_text, topological_sort, memoize
 import glad.util
 
 logger = logging.getLogger(__name__)
@@ -209,7 +212,6 @@ class Specification(object):
 
     def __init__(self, root):
         self.root = root
-
         self._combined = None
 
     def _magic_require(self, api, profile):
@@ -403,7 +405,7 @@ class Specification(object):
             if len(parsed) > 0:
                 commands.setdefault(parsed[0].name, []).extend(parsed)
 
-        # fixup aliases
+        # populate docs and fixup aliases
         for command in chain.from_iterable(commands.values()):
             if command.alias is not None and command.proto is None:
                 aliased_command = command
@@ -842,7 +844,7 @@ class Type(IdentifiedByName):
             # not so great workaround to get APIENTRY included in the raw output
             apientry.text = 'APIENTRY'
 
-        raw = ''.join(element.itertext())
+        raw = raw_text(element)
         api = element.get('api')
         category = element.get('category')
         name = element.get('name') or element.find('name').text
@@ -1142,12 +1144,13 @@ class Enum(IdentifiedByName):
 
 
 class Command(IdentifiedByName):
-    def __init__(self, name, api=None, proto=None, params=None, alias=None):
+    def __init__(self, name, api=None, proto=None, params=None, alias=None, doc_comment=None):
         self.name = name
         self.api = api
         self.proto = proto
         self.params = params
         self.alias = alias
+        self.doc_comment = doc_comment
 
         if self.alias is None and self.proto is None:
             raise ValueError("command is neither a full command nor an alias")
@@ -1452,4 +1455,91 @@ class Feature(Extension):
 
     def __str__(self):
         return '{self.name}@{self.version!r}'.format(self=self)
+    __repr__ = __str__
+
+
+class SpecificationDocs(object):
+    DOCS_NAME = None
+
+    SPEC = None
+    URL = None
+
+    def __init__(self, docs_file):
+        self.docs_file = docs_file
+
+    def select(self, feature_set):
+        raise NotImplementedError
+
+    @classmethod
+    def default_out_dir(cls):
+        if cls.DOCS_NAME is None:
+            raise ValueError('DOCS_NAME not set')
+        return Path('.docs') / f'{cls.DOCS_NAME}.zip'
+
+    @classmethod
+    def from_url(cls, url, opener=None):
+        if opener is None:
+            opener = URLOpener.default()
+
+        docs_file = cls.default_out_dir()
+        docs_file.parent.mkdir(parents=True, exist_ok=True)
+
+        with closing(opener.urlopen(url)) as f:
+            raw = f.read()
+
+            with open(docs_file, 'wb') as f:
+                f.write(raw)
+
+        return cls(docs_file)
+
+    @classmethod
+    def from_remote(cls, opener=None):
+        return cls.from_url(cls.URL, opener=opener)
+
+    @classmethod
+    def from_file(cls, docs_file, opener=None):
+        return cls(docs_file)
+
+
+class DocumentationSet(object):
+    def __init__(self, commands):
+        self.commands = commands
+
+    def __str__(self):
+        return 'DocumentationSet(commands={})'.format(len(self.commands))
+    __repr__ = __str__
+
+    def docs_for_command_name(self, name):
+        return self.commands.get(name, None)
+
+
+class CommandDocs(object):
+    """
+    Inline code documentation for a command/function.
+    """
+
+    # Template rendering will interpret this as a custom paragraph break.
+    # If no special break logic is needed, just use '\n'.
+    BREAK = '__BREAK__'
+
+    class Param(namedtuple('Param', ['name', 'desc'])):
+        pass
+
+    def __init__(self, name, brief, params, description, notes, errors, see_also, docs_url):
+        self.name = name
+        self.brief = brief
+        self.params = params
+        self.description = description
+        self.notes = notes
+        self.errors = errors
+        self.see_also = see_also
+        self.docs_url = docs_url
+
+    def __str__(self):
+        return 'CommandDocs(brief={!r}, ' \
+            'params={!r}, description={!r}, notes={!r}, errors={!r}, see_also={!r})' \
+            .format(
+                self.brief, self.params, self.description, self.notes, self.errors, self.see_also,
+            )
+
     __repr__ = __str__
