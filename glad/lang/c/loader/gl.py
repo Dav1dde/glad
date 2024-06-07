@@ -38,7 +38,7 @@ static int get_exts(void) {
         exts = (const char *)glGetString(GL_EXTENSIONS);
 #ifdef _GLAD_IS_SOME_NEW_VERSION
     } else {
-        unsigned int index;
+        int index;
 
         num_exts_i = 0;
         glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts_i);
@@ -50,7 +50,7 @@ static int get_exts(void) {
             return 0;
         }
 
-        for(index = 0; index < (unsigned)num_exts_i; index++) {
+        for(index = 0; index < num_exts_i; index++) {
             const char *gl_str_tmp = (const char*)glGetStringi(GL_EXTENSIONS, index);
             size_t len = strlen(gl_str_tmp);
 
