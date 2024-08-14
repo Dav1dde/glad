@@ -101,7 +101,8 @@ struct gladGLversionStruct {
 
 extern struct gladGLversionStruct GLVersion;
 
-typedef void* (* GLADloadproc)(const char *name);
+typedef void (* GLADbasefp)(void);
+typedef GLADbasefp (* GLADloadproc)(const char *name);
 
 /*
  * Load OpenGL using the internal loader.

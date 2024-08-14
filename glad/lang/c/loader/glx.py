@@ -48,7 +48,8 @@ _WGL_HEADER_MID = '''
 extern "C" {
 #endif
 
-typedef void* (* GLADloadproc)(const char *name);
+typedef void (* GLADbasefp)(void);
+typedef GLADbasefp (* GLADloadproc)(const char *name);
 ''' + LOAD_OPENGL_GLAPI_H
 
 _GLX_HEADER_LOADER = '''

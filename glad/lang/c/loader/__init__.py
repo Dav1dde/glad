@@ -1,6 +1,6 @@
 
 LOAD_OPENGL_DLL = '''
-%(pre)s void* %(proc)s(const char *namez);
+%(pre)s GLADbasefp %(proc)s(const char *namez);
 
 #if defined(_WIN32) || defined(__CYGWIN__)
 #ifndef _WINDOWS_
@@ -101,7 +101,7 @@ void %(terminate)s(void) {
 #endif
 
 %(pre)s
-void* %(proc)s(const char *namez) {
+GLADbasefp %(proc)s(const char *namez) {
     void* result = NULL;
     if(libGL == NULL) return NULL;
 
