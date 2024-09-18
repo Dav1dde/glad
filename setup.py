@@ -38,7 +38,8 @@ if __name__ == '__main__':
             ],
             'glad.generator': [
                 'c = glad.generator.c.__init__:CGenerator',
-                'rust = glad.generator.rust.__init__:RustGenerator'
+                'rust = glad.generator.rust.__init__:RustGenerator',
+                'fortran = glad.generator.fortran.__init__:FortranGenerator'
             ],
             'glad.specification': [
                 'egl = glad.specification:EGL',
