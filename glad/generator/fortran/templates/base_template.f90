@@ -161,21 +161,27 @@ module gl
 
     abstract interface
         {% for command in feature_set.commands %}
-        {{ command|proc_type }} {{ command.name|proc_interface }}({{ command|params }}) bind(C)
+        {% if command is returning %}
+        {{ command|return_type_interface }} &
+        {% endif %}
+        {{ command|proc_type }} {{ command.name|proc_interface }}({{ command|args }}) bind(C)
+            {% if command is returning %}
+            import
+            {% else %}
+            {% if command.params|length != 0 %}
             import
             implicit none
+            {% endif %}
+            {% endif %}
             {% for param in command.params %}
             {{ param.type|type_interface }} :: {{ param.name|identifier }}
             {% endfor %}
-            {% if command is returning %}
-
-            {{ command|return_type_interface }} :: {{ command.name|proc_interface }}
-            {% endif %}
         end {{ command|proc_type }} {{ command.name|proc_interface }}
         {% endfor %}
     end interface
 
-    private :: c_strlen, c_f_string, f_c_string, c_f_strpointer
+    private :: f_c_strcpy, f_c_strarray, c_f_string, c_f_strpointer
+    private :: c_strlen, strlen, malloc, free
 
     interface c_strlen
         pure function c_ptr_strlen(cstr) result(length) bind(C, name="strlen")
@@ -192,6 +198,20 @@ module gl
         end function c_char_strlen
     end interface c_strlen
 
+    interface
+        function c_malloc(size) result(ptr) bind(C, name="malloc")
+            import
+            implicit none
+            integer(kind=c_size_t), value, intent(in) :: size
+            type(c_ptr) :: ptr
+        end function c_malloc
+        subroutine c_free(ptr) bind(C, name="free")
+            import
+            implicit none
+            type(c_ptr), value, intent(in) :: ptr
+        end subroutine c_free
+    end interface
+
     interface c_f_string
         module procedure c_str_f_string, c_ptr_f_string
     end interface c_f_string
@@ -199,29 +219,57 @@ module gl
     contains
 
         {% for command in feature_set.commands %}
-        {{ command|proc_type }} {{ command.name|proc_impl }}({{ command|params }}) {{ 'result(res)' if command is returning }}
+        {{ command|proc_type }} {{ command.name|proc_impl }}({{ command|args }}) {{ 'result(res)' if command is returning }}
             implicit none
             {% for param in command.params %}
             {{ param.type|type_impl }} :: {{ param.name|identifier }}
             {% endfor %}
+            {% for param in command.params %}
+            {% if param is requiring_int_var %}
+            {{ param.type|type_int }} :: {{ param.name|int_identifier }}
+            {% endif %}
+            {% endfor %}
             {% if command is returning %}
-
             {{ command|return_type_impl }} :: res
             {% if command is requiring_int_res %}
             {{ command|return_type_interface }} :: int_res
             {% endif %}
             {% endif %}
 
+            {% for param in command.params %}
+            {% if param is requiring_preprocess %}
+            {% if param is optional %}
+            if (present({{ param.name|identifier }})) then
+                {{ param|preprocess }}
+            end if
+            {% else %}
+            {{ param|preprocess }}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+
             {% if command is returning %}
             {% if command is requiring_int_res %}
-            int_res = {{ command.name|proc_pointer }}({{ command|params }})
+            int_res = {{ command.name|proc_pointer }}({{ command|int_args }})
             {{ command|intermediate_result }}
             {% else %}
-            res = {{ command.name|proc_pointer }}({{ command|params }})
+            res = {{ command.name|proc_pointer }}({{ command|int_args }})
             {% endif %}
             {% else %}
-            call {{ command.name|proc_pointer }}({{ command|params }})
+            call {{ command.name|proc_pointer }}({{ command|int_args }})
             {% endif %}
+
+            {% for param in command.params %}
+            {% if param is requiring_postprocess %}
+            {% if param is optional %}
+            if (present({{ param.name|identifier }})) then
+                {{ param|postprocess }}
+            end if
+            {% else %}
+            {{ param|postprocess }}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
         end {{ command|proc_type }} {{ command.name|proc_impl }}
         {% endfor %}
 
@@ -250,18 +298,46 @@ module gl
             fptr => temp
         end subroutine c_f_strpointer
 
-        pure function f_c_string(fstr) result(cstr)
+        subroutine f_c_strcpy(fstr, cstr)
             implicit none
             character(len=*,kind=c_char), intent(in) :: fstr
-            character(len=1,kind=c_char), dimension(:), allocatable :: cstr
+            type(c_ptr), intent(in) :: cstr
 
-            integer :: c_length
+            character(len=1,kind=c_char), dimension(:), pointer :: carray
+            integer :: size
             integer :: i
 
+            size = len_trim(fstr) + 1
+            call c_f_pointer(cstr, carray, [size])
+            do i = 1,size-1
+                carray(i) = fstr(i:i)
+            end do
+            carray(size) = c_null_char
+        end subroutine f_c_strcpy
 
-        end function f_c_string
+        subroutine f_c_strarray(farray, carray)
+            implicit none
+            character(:), dimension(:), pointer, intent(in) :: farray
+            type(c_ptr), dimension(:), intent(out) :: carray
+            integer :: i
 
-        pure function c_str_f_string(cstr) result(fstr)
+            do i = 1, size(carray)
+                carray(i) = c_malloc(int(len(farray) + 1, c_size_t))
+                call f_c_strcpy(farray(i), carray(i))
+            end do
+        end subroutine f_c_strarray
+
+        subroutine free_array(carray)
+            implicit none
+            type(c_ptr), dimension(:), intent(in) :: carray
+            integer :: i
+
+            do i = 1,size(carray)
+                call c_free(carray(i))
+            end do
+        end subroutine free_array
+
+        function c_str_f_string(cstr) result(fstr)
             implicit none
             character(len=1,kind=c_char), dimension(*), intent(in) :: cstr
             character(len=c_strlen(cstr),kind=c_char) :: fstr
