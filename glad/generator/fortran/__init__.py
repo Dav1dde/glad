@@ -143,7 +143,17 @@ def proc_type(command):
 
 def return_type_interface(command, is_apple):
     type_ = command.proto.ret
+
+    if type_ is None:
+        raise NotImplementedError
+
     parsed_type = type_ if isinstance(type_, ParsedType) else ParsedType.from_string(type_)
+
+    if not parsed_type.is_pointer and is_void(parsed_type):
+        raise NotImplementedError
+
+    if parsed_type.is_pointer > 2:
+        raise NotImplementedError
 
     if parsed_type.is_pointer > 0 or \
        is_typedef_ptr(parsed_type):
@@ -166,17 +176,12 @@ def return_type_impl(command, is_apple):
 
     if command.name in ('glGetString', 'glGetStringi'):
         return 'character(len=:, kind=c_char), pointer'
-    elif parsed_type.is_pointer == 1 and is_void(parsed_type):
-        #TODO these are for mapping functions so unlimited polymorphic or something?
-        return 'type(c_ptr)'
-    elif is_typedef_ptr(parsed_type):
-        # TODO custom opaque pointer type
+    elif (parsed_type.is_pointer == 1 and is_void(parsed_type)) or \
+         is_typedef_ptr(parsed_type):
         return 'type(c_ptr)'
     elif is_typedef_funptr(parsed_type):
         return 'procedure({}), pointer'.format(parsed_type.type)
-    elif is_bool(parsed_type):
-        return 'logical'
-    elif is_int(parsed_type):
+    elif is_int(parsed_type) or is_bool(parsed_type):
         return 'integer(kind={})'.format(parsed_type.type)
     elif is_real(parsed_type):
         return 'real(kind={})'.format(parsed_type.type)
@@ -200,10 +205,10 @@ def type_interface(type_, is_apple):
 
     type_decl = ''
 
-    if is_char(parsed_type):
-        if parsed_type.is_pointer == 2:
-            type_decl = 'type(c_ptr), dimension(*)'
-        elif parsed_type.is_pointer == 1:
+    if parsed_type.is_pointer == 2:
+        type_decl = 'type(c_ptr), dimension(*)'
+    elif is_char(parsed_type):
+        if parsed_type.is_pointer == 1:
             type_decl = 'character(len=1,kind={}), dimension(*)'.format(parsed_type.type)
         else:
             raise RuntimeError('Unsupported type: {} pointer {}'.format(parsed_type.type, parsed_type.is_pointer))
@@ -239,18 +244,14 @@ def type_interface(type_, is_apple):
     return type_decl
 
 
-def type_int(type_, is_apple):
+def int_var(param):
+    type_ = param.type
+    name = param.name
     parsed_type = type_ if isinstance(type_, ParsedType) else ParsedType.from_string(type_)
 
-    if is_char(parsed_type):
-        if parsed_type.is_pointer == 2:
-            return 'type(c_ptr), dimension(:), allocatable'
-        elif parsed_type.is_pointer == 1:
-            return 'character(len=1,kind={}), dimension(:), allocatable'.format(parsed_type.type)
-        else:
-            raise RuntimeError('Unsupported type: {} pointer {}'.format(parsed_type.type, parsed_type.is_pointer))
-    #elif is_typedef_ptr(parsed_type) or is_cl_ptr(parsed_type):
-    #    return 'type(c_ptr)'
+    if is_char(parsed_type) and parsed_type.is_pointer == 2:
+        return 'character(len=:,kind={}), dimension(:), allocatable :: {}str\n'.format(parsed_type.type, int_identifier(name)) + \
+               'type(c_ptr), dimension(:), allocatable :: {}'.format(int_identifier(name))
     else:
         raise RuntimeError('Unsupported type: {} pointer {}'.format(parsed_type.type, parsed_type.is_pointer))
 
@@ -262,18 +263,19 @@ def type_impl(type_, is_apple):
 
     if is_char(parsed_type):
         if parsed_type.is_pointer == 1:
-            type_decl = 'character(len=*)'
+            type_decl = 'character(len=*,kind={})'.format(parsed_type.type)
         elif parsed_type.is_pointer == 2:
-            type_decl = 'character(len=:), dimension(:)'
+            type_decl = 'character(len=:,kind={}), dimension(:)'.format(parsed_type.type)
         else:
             raise RuntimeError('Unsupported type: {} pointer {}'.format(parsed_type.type, parsed_type.is_pointer))
-    elif is_bool(parsed_type):
-        type_decl = 'logical'
-    elif is_int(parsed_type):
+    elif parsed_type.is_pointer == 2:
+        type_decl = 'type(c_ptr), dimension(:)'
+    elif is_int(parsed_type) or is_bool(parsed_type):
         type_decl = 'integer(kind={})'.format(parsed_type.type)
     elif is_real(parsed_type):
         type_decl = 'real(kind={})'.format(parsed_type.type)
-    elif is_typedef_ptr(parsed_type) or is_cl_ptr(parsed_type) or \
+    elif parsed_type.is_pointer == 2 or \
+         is_typedef_ptr(parsed_type) or is_cl_ptr(parsed_type) or \
          (parsed_type.is_pointer > 0 and is_void(parsed_type)):
         type_decl = 'type(c_ptr)'
     elif is_typedef_funptr(parsed_type):
@@ -283,11 +285,13 @@ def type_impl(type_, is_apple):
     else:
         raise RuntimeError('Unsupported type: {} pointer {}'.format(parsed_type.type, parsed_type.is_pointer))
 
-    if is_optional_type(parsed_type):
-        if is_char(parsed_type) and parsed_type.is_pointer == 2:
+    if is_char(parsed_type):
+        if parsed_type.is_pointer == 2:
             type_decl = type_decl + ', pointer'
-        else:
+        elif parsed_type.is_pointer == 1:
             type_decl = type_decl + ', target'
+
+    if is_optional_type(parsed_type):
         type_decl = type_decl + ', optional'
 
     if parsed_type.is_const:
@@ -301,8 +305,11 @@ def forward_arg(param):
     name = param.name
     parsed_type = type_ if isinstance(type_, ParsedType) else ParsedType.from_string(type_)
 
-    if is_bool(parsed_type):
-        return '{} = merge(GL_TRUE, GL_FALSE, {})'.format(arg_identifier(param.name), arg_identifier(param.name))
+    if is_char(parsed_type) and parsed_type.is_pointer == 1:
+        if parsed_type.is_const or name == 'glGetPerfQueryIdByNameINTEL':
+            return 'f_c_str({})'.format(arg_identifier(name))
+        else:
+            return arg_identifier(name)
     elif is_requiring_int_var(param):
         return int_identifier(name)
     else:
@@ -314,35 +321,11 @@ def preprocess_param(param):
     name = param.name
     parsed_type = type_ if isinstance(type_, ParsedType) else ParsedType.from_string(type_)
 
-    if is_char(parsed_type) and parsed_type.is_pointer == 1:
-        if parsed_type.is_const or name == 'glGetPerfQueryIdByNameINTEL':
-            return 'allocate({}())'.format(int_identifier(name), arg_identifier(name)) + '\n' + \
-                   ' call f_c_strcpy({}, {})'.format(arg_identifier(name), int_identifier(name))
-        else:
-            return '{} = c_loc({})'.format(int_identifier(param.name), arg_identifier(param.name))
-    elif is_char(parsed_type) and parsed_type.is_pointer == 2:
-        return 'allocate({}(size({})));'.format(int_identifier(name), arg_identifier(name)) + '\n' + \
-               'call f_c_strarray({}, {})'.format(arg_identifier(name), int_identifier(name))
-    elif is_optional_type(parsed_type):
-        return '{} = c_loc({})'.format(int_identifier(param.name), arg_identifier(param.name))
-    elif is_bool(parsed_type):
-        return '{} = merge(GL_TRUE, GL_FALSE, {})'.format(int_identifier(param.name), arg_identifier(param.name))
+    if is_char(parsed_type) and parsed_type.is_pointer == 2:
+        return 'call f_c_strarray({}, {}str, {})'.format(arg_identifier(name), int_identifier(name), int_identifier(name))
     else:
         raise RuntimeError('Unsupported type: {} pointer {}'.format(parsed_type.type, parsed_type.is_pointer))
 
-
-def postprocess_param(param):
-    type_ = param.type
-    name = param.name
-    parsed_type = type_ if isinstance(type_, ParsedType) else ParsedType.from_string(type_)
-
-    if is_char(parsed_type) and parsed_type.is_pointer == 1:
-        if parsed_type.is_const or name == 'glGetPerfQueryIdByNameINTEL':
-            return 'call c_free({})'.format(int_identifier(name))
-    elif is_char(parsed_type) and parsed_type.is_pointer == 2:
-        return 'call free_array({})'.format(int_identifier(name))
-
-    return ''
 
 def format_args(command):
     # Compilers will usually complain about lines longer than like 132 lines
@@ -364,18 +347,18 @@ def format_int_args(command):
         return ''
 
 
-def intermediate_result(command, is_apple):
+def format_result(command):
     ret_type = command.proto.ret
     parsed_type = ret_type if isinstance(ret_type, ParsedType) else ParsedType.from_string(ret_type)
 
-    if is_bool(parsed_type):
-        return 'res = merge(.false., .true., int_res == GL_FALSE)'
-    elif command.name in ('glGetString', 'glGetStringi'):
-        return 'call c_f_strpointer(int_res, res)'
+    if command.name in ('glGetString', 'glGetStringi'):
+        return 'call c_f_strpointer(' + proc_pointer(command.name) + \
+               '(' + format_int_args(command) + ')' + ', res)'
     elif is_typedef_funptr(parsed_type):
-        return 'call c_f_procpointer(int_res, res)'
+        return 'call c_f_procpointer(' + proc_pointer(command.name) + \
+               '(' + format_int_args(command) + ')' + ', res)'
     else:
-        raise NotImplementedError
+        return 'res = ' + proc_pointer(command.name) + '(' + format_int_args(command) + ')'
 
 
 def is_returning(command):
@@ -385,36 +368,18 @@ def is_returning(command):
     return not (not parsed_type.is_pointer and parsed_type.type == 'void')
 
 
-def is_requiring_int_res(command):
-    ret_type = command.proto.ret
-    parsed_type = ret_type if isinstance(ret_type, ParsedType) else ParsedType.from_string(ret_type)
-
-    return is_bool(parsed_type) or \
-           command.name in ('glGetString', 'glGetStringi') or \
-           is_typedef_funptr(parsed_type)
-
-
 def is_requiring_int_var(param):
     type_ = param.type
     parsed_type = type_ if isinstance(type_, ParsedType) else ParsedType.from_string(type_)
 
-    return (is_char(parsed_type) and parsed_type.is_pointer > 0)
+    return (is_char(parsed_type) and parsed_type.is_pointer == 2)
 
 
 def is_requiring_preprocess(param):
     type_ = param.type
     parsed_type = type_ if isinstance(type_, ParsedType) else ParsedType.from_string(type_)
 
-    return (is_char(parsed_type) and parsed_type.is_pointer > 0 and \
-           (parsed_type.is_const or param.name == 'glGetPerfQueryIdByNameINTEL'))
-
-
-def is_requiring_postprocess(param):
-    type_ = param.type
-    parsed_type = type_ if isinstance(type_, ParsedType) else ParsedType.from_string(type_)
-
-    return (is_char(parsed_type) and parsed_type.is_pointer > 0 and \
-           (parsed_type.is_const or param.name == 'glGetPerfQueryIdByNameINTEL'))
+    return (is_char(parsed_type) and parsed_type.is_pointer == 2)
 
 
 def is_optional(param):
@@ -528,26 +493,22 @@ class FortranGenerator(JinjaGenerator):
             return_type_impl=jinja2_contextfilter(lambda ctx, command: return_type_impl(command, ctx['options']['apple'])),
             type_interface=jinja2_contextfilter(lambda ctx, type_: type_interface(type_, ctx['options']['apple'])),
             type_impl=jinja2_contextfilter(lambda ctx, type_: type_impl(type_, ctx['options']['apple'])),
-            type_int=jinja2_contextfilter(lambda ctx, type_: type_int(type_, ctx['options']['apple'])),
-            intermediate_result=jinja2_contextfilter(lambda ctx, command: intermediate_result(command, ctx['options']['apple'])),
+            format_result=format_result,
+            int_var=int_var,
             args=format_args,
             int_args=format_int_args,
             identifier=arg_identifier,
             int_identifier=int_identifier,
             preprocess=preprocess_param,
-            postprocess=postprocess_param,
-            proc_interface=proc_interface,
-            proc_impl=proc_impl,
             proc_pointer=proc_pointer,
-            no_prefix=jinja2_contextfilter(lambda ctx, value: strip_specification_prefix(value, ctx['spec']))
+            proc_interface=proc_interface,
+            proc_impl=proc_impl
         )
 
         self.environment.tests.update(
             returning=is_returning,
-            requiring_int_res=is_requiring_int_res,
             requiring_int_var=is_requiring_int_var,
             requiring_preprocess=is_requiring_preprocess,
-            requiring_postprocess=is_requiring_postprocess,
             optional=is_optional
         )
 
