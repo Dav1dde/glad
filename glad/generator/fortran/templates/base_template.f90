@@ -235,17 +235,18 @@ module gl
         {% endfor %}
 
         {% for api in feature_set.info.apis %}
-        function gladLoad{{ api|api }}(loadfn) result(version)
+        function gladLoad{{ api|api }}(loadfn) result(success)
             implicit none
             procedure(GLADloadfunc) :: loadfn
-            integer :: version
-            
-            version = 0
+            logical :: success
+            success = .false.
 
             {% for command in feature_set.commands %}
             call c_f_procpointer(loadfn("{{ command.name }}"),&
                                  {{ command.name|proc_pointer }})
             {% endfor %}
+
+            if (associated(glad_glGetString)) success = .true.
         end function gladLoad{{ api|api }}
         {% endfor %}
 
