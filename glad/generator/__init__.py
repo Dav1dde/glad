@@ -192,7 +192,7 @@ class GenerationInfo(object):
         self.info = info
         self.options = options
         self.extensions = extensions
-        self.when = when or datetime.now().strftime('%c')
+        self.when = when or datetime.now().strftime('%c').replace('  ', ' ')
 
         self._commandline = commandline or Commandline()
         self._online = online or Online()
