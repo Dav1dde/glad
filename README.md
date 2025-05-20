@@ -22,6 +22,11 @@ Some languages are only available in the [glad1 generator](https://glad.dav1d.de
 int main() {
     // -- snip --
 
+    if (!glfwInit()) {
+        printf("Failed to initialize glfw\n");
+        return -1;
+    }
+
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", NULL, NULL);
     glfwMakeContextCurrent(window);
 
