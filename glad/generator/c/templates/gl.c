@@ -53,9 +53,17 @@ static int glad_gl_get_extensions({{ template_utils.context_arg(',') }} const ch
         unsigned int num_exts_i = 0;
         char **exts_i = NULL;
         {{ 'glGetIntegerv'|ctx }}(GL_NUM_EXTENSIONS, (int*) &num_exts_i);
-        exts_i = (char **) malloc((num_exts_i + 1) * (sizeof *exts_i));
-        if (exts_i == NULL) {
-            return 0;
+        if (num_exts_i > 0) {
+            exts_i = (char **) malloc((num_exts_i + 1) * (sizeof *exts_i));
+            if (exts_i == NULL) {
+                return 0;
+            }
+        } else {
+            /* Handle case where implementation has 0 extensions */
+            exts_i = (char **) malloc(1 * (sizeof *exts_i));
+            if (exts_i == NULL) {
+                return 0;
+            }
         }
         for(index = 0; index < num_exts_i; index++) {
             const char *gl_str_tmp = (const char*) {{ 'glGetStringi'|ctx }}(GL_EXTENSIONS, index);
