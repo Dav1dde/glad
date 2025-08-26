@@ -114,6 +114,15 @@ typedef {{ command.proto.ret|type_to_c }} (GLAD_API_PTR *{{ command.name|pfn }})
 {% for command in commands %}
 {% call protect(command) %}
 GLAD_API_CALL {{ command.name|pfn }} glad_{{ command.name }};
+{% if options.documented %}
+/**
+ * @brief `{{ command.proto.ret|type_to_c }} {{ command.name }}({{ command.params|params_to_c }})`
+{% for param in command.params %}
+ * @param {{param.name}} {{ param.type|type_to_c }}
+{% endfor %}
+ * @returns {{ command.proto.ret|type_to_c }}
+ */
+{% endif %}
 {% if debug %}
 GLAD_API_CALL {{ command.name|pfn }} glad_debug_{{ command.name }};
 #define {{ command.name }} glad_debug_{{ command.name }}
