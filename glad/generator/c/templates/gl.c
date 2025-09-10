@@ -69,7 +69,7 @@ static void glad_gl_activate_extension(unsigned int *flags, unsigned int *crc32,
     
     while (left < right) {
         int mid = left + (right - left) / 2;
-        // Upper-Bound Search
+        // Lower-Bound Search
         if (crc32[mid] < hash) {
             left = mid + 1;
         } else {
