@@ -4,14 +4,26 @@ import re
 import sys
 from collections import namedtuple, defaultdict
 
+def extension_crc32(message):
+    chars = message.encode('ascii')
+    crc = 0xFFFFFFFF
+    i, j = 0, 0
+    byte, mask = 0, 0
+    # Generate CRC32 Hashing
+    for c in chars:
+        crc = crc ^ c
+        for i in range(8):
+            crc = crc & 0xFFFFFFFF
+            mask = (-(crc & 1)) & 0xFFFFFFFF
+            crc = (crc >> 1) ^ (0xEDB88320 & mask)
+    # Return Generated Hash
+    return (~crc) & 0xFFFFFFFF
 
 if sys.version_info >= (3, 0, 0):
     basestring = str
 
-
 Version = namedtuple('Version', ['major', 'minor'])
 ExpandedName = namedtuple('ExpandedName', ['prefix', 'suffix'])
-
 
 _API_NAMES = {
     'egl': 'EGL',
@@ -22,7 +34,6 @@ _API_NAMES = {
     'glx': 'GLX',
     'wgl': 'WGL',
 }
-
 
 def api_name(api):
     api = api.lower()

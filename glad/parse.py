@@ -29,7 +29,7 @@ from contextlib import closing
 from itertools import chain
 
 from glad.opener import URLOpener
-from glad.util import Version, topological_sort, memoize
+from glad.util import Version, extension_crc32, topological_sort, memoize
 import glad.util
 
 logger = logging.getLogger(__name__)
@@ -79,6 +79,8 @@ class FeatureSet(object):
         self.info = info
         self.features = features
         self.extensions = extensions
+        self.extensions_crc32 = sorted(extensions, key=lambda x: x.hash)
+        # glad features
         self.types = types
         self.enums = enums
         self.commands = commands
@@ -1357,6 +1359,7 @@ class Extension(IdentifiedByName):
     def __init__(self, name, supported=None, requires=None,
                  type_=None, protect=None, platform=None):
         self.name = name
+        self.hash = extension_crc32(name)
         self.supported = supported
         self.requires = requires or []
         self.type = type_
