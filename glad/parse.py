@@ -746,6 +746,15 @@ class Specification(object):
                         (remove.api is None or remove.api == api)):
                     result = result.difference(remove.removes)
 
+        # Force Core Profile removal deprecated even in older versions
+        if api == 'gl' and version < Version(major=3, minor=2):
+            found_core = self.features['gl'][Version(major=3, minor=2)]
+            # Remove Deprecated Extensions that could be forgetten even in 2.x
+            for remove in getattr(found_core, 'removes', []):
+                if ((remove.profile is None or remove.profile == profile) and
+                        (remove.api is None or remove.api == api)):
+                    result = result.difference(remove.removes)
+
         # At this point one could hope that the XML files would be sane, but of course they are not!?
         # There is a builtin requirement system which is used for functions and enums,
         # but only partially for types WHY!??!?!?!??!?!
