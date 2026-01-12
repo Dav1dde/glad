@@ -47,7 +47,9 @@ int main(void) {
         printf("Unable to create window.\n");
         return 1;
     }
-
+    // We need to load EGL before `eglInitialize()` and after it.
+    // Otherwise glad loads EGL 1.0.
+    // https://github.com/Dav1dde/glad/issues/177
     int egl_version = gladLoaderLoadEGL(NULL);
     if (!egl_version) {
         printf("Unable to load EGL.\n");
@@ -61,12 +63,14 @@ int main(void) {
         printf("Got no EGL display.\n");
         return 1;
     }
-
+    
     if (!eglInitialize(egl_display, NULL, NULL)) {
         printf("Unable to initialize EGL\n");
         return 1;
     }
 
+    // Try to load EGL again after calling `eglInitialize`, this time we pass the
+    // `egl_display`.e
     egl_version = gladLoaderLoadEGL(egl_display);
     if (!egl_version) {
         printf("Unable to reload EGL.\n");
