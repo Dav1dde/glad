@@ -70,7 +70,7 @@ int main(void) {
     }
 
     // Try to load EGL again after calling `eglInitialize`, this time we pass the
-    // `egl_display`.e
+    // `egl_display`.
     egl_version = gladLoaderLoadEGL(egl_display);
     if (!egl_version) {
         printf("Unable to reload EGL.\n");
