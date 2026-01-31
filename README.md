@@ -60,6 +60,7 @@ Examples can be found [in the example directory](/example). Some examples:
     * [GL GLFW](example/c/gl_glfw.c)
     * [GL GLFW On-Demand loading](example/c/gl_glfw_on_demand.c)
     * [GL GLFW Multiple Windows/Contexts](example/c++/multiwin_mx/)
+    * [GL SDL3](example/c/gl_sdl3.c)
     * [GL SDL2](example/c/gl_sdl2.c)
     * [Vulkan GLFW](example/c/vulkan_tri_glfw/)
     * [GLX](example/c/glx.c)
