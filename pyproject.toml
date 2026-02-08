@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "glad2"
+dynamic = ["version"]
+description = "Multi-Language GL/GLES/EGL/GLX/VK/WGL Loader-Generator based on the official specifications."
+readme = "long_description.md"
+license = { file = "LICENSE" }
+authors = [{ name = "David Herberth", email = "github@dav1d.de" }]
+maintainers = [{ name = "David Herberth", email = "github@dav1d.de" }]
+dependencies = ["Jinja2>=2.7,<4.0"]
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Environment :: Console',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Education',
+    'Intended Audience :: Science/Research',
+    'License :: OSI Approved :: MIT License',
+    'Natural Language :: English',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Topic :: Games/Entertainment',
+    'Topic :: Multimedia :: Graphics',
+    'Topic :: Multimedia :: Graphics :: 3D Rendering',
+    'Topic :: Software Development',
+    'Topic :: Software Development :: Build Tools',
+    'Topic :: Utilities'
+]
+keywords = ["opengl", "glad", "generator", "gl", "wgl", "egl", "gles", "vulkan", "vk", "glx"]
+
+[project.urls]
+Source = "https://github.com/Dav1dde/glad"
+
+[project.scripts]
+glad = "glad.__main__:main"
+
+[project.entry-points."glad.generator"]
+c = "glad.generator.c.__init__:CGenerator"
+rust = "glad.generator.rust.__init__:RustGenerator"
+
+[project.entry-points."glad.specification"]
+egl = "glad.specification:EGL"
+gl = "glad.specification:GL"
+glx = "glad.specification:GLX"
+wgl = "glad.specification:WGL"
+vk = "glad.specification:VK"
+
+[project.optional-dependencies]
+fortran = ["glad2-fortran"]
+
+[tool.setuptools]
+platforms = ["any"]
+
+[tool.setuptools.dynamic]
+version = { attr = "glad.__version__" }
+
+[tool.setuptools.packages]
+find = {}
+

@@ -35,6 +35,9 @@
 #   glad_add_library(glad_gl_compat_10 MODULE API gl:compatibility=1.0 EXTENSIONS GL_EXT_COMPRESSION_s3tc)
 #   ```
 # - create  a static glad library with the vulkan=1.1
+#   ```
+#   glad_add_library(glad_vulkan_11 STATIC API vulkan=1.1)
+#   ```
 
 # Extract specification, profile and version from a string
 # examples:
@@ -179,9 +182,9 @@ function(glad_add_library TARGET)
     message(STATUS "Glad Library \'${TARGET}\'")
 
     find_package(Python COMPONENTS Interpreter REQUIRED)
-    
+
     cmake_parse_arguments(GG "MERGE;QUIET;REPRODUCIBLE;STATIC;SHARED;MODULE;INTERFACE;EXCLUDE_FROM_ALL" "LOCATION;LANGUAGE" "API;EXTENSIONS" ${ARGN})
-    
+
     if(NOT GG_LOCATION)
         set(GG_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/gladsources/${TARGET}")
     endif()
@@ -281,7 +284,7 @@ function(glad_add_library TARGET)
         PUBLIC
             ${CMAKE_DL_LIBS}
         )
-        
+
     if(GG_SHARED)
         target_compile_definitions("${TARGET}" PUBLIC GLAD_API_CALL_EXPORT)
         set_target_properties("${TARGET}"

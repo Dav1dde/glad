@@ -8,6 +8,7 @@ a.out
 *.kdev_include_paths
 main.c
 *.diff
+*.swp
 .idea
 dist/
 *.egg-info

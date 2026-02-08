@@ -456,7 +456,7 @@ class Specification(object):
     @memoize(method=True)
     def features(self):
         features = defaultdict(dict)
-        for element in self.root.iter('feature'):
+        for element in self.root.iterfind('feature'):
             num = Version(*map(int, element.attrib['number'].split('.')))
             for api in element.attrib['api'].split(','):
                 features[api][num] = Feature.from_element(element)

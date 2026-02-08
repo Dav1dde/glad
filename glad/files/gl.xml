@@ -6928,9 +6928,9 @@ typedef unsigned int GLhandleARB;
             <unused start="0x9690" end="0x969F" vendor="ANGLE"/>
     </enums>
 
-    <enums namespace="GL" start="0x96A0" end="0x96AF" vendor="Qualcomm" comment="contact Jeff Leger">
+    <enums namespace="GL" start="0x96A0" end="0x96AF" vendor="QCOM" comment="contact Jeff Leger">
         <enum value="0x96A0" name="GL_TEXTURE_FOVEATED_CUTOFF_DENSITY_QCOM" group="TextureParameterName"/>
-            <unused start="0x96A1" end="0x96A1" vendor="Qualcomm"/>
+            <unused start="0x96A1" end="0x96A1" vendor="QCOM"/>
         <enum value="0x96A2" name="GL_FRAMEBUFFER_FETCH_NONCOHERENT_QCOM" group="GetPName,EnableCap"/>
         <enum value="0x96A3" name="GL_VALIDATE_SHADER_BINARY_QCOM"/>
         <enum value="0x96A4" name="GL_SHADING_RATE_QCOM" group="GetPName"/>
@@ -6953,10 +6953,10 @@ typedef unsigned int GLhandleARB;
         <enum value="0x96AC" name="GL_SHADING_RATE_4X2_PIXELS_EXT" alias="GL_SHADING_RATE_4X2_PIXELS_QCOM" group="ShadingRate"/>
         <enum value="0x96AD" name="GL_SHADING_RATE_2X4_PIXELS_EXT" alias="GL_SHADING_RATE_2X4_PIXELS_QCOM" group="ShadingRate"/>
         <enum value="0x96AE" name="GL_SHADING_RATE_4X4_PIXELS_EXT" alias="GL_SHADING_RATE_4X4_PIXELS_QCOM" group="ShadingRate"/>
-            <unused start="0x96AF" end="0x96AF" vendor="Qualcomm"/>
+            <unused start="0x96AF" end="0x96AF" vendor="QCOM"/>
     </enums>
 
-    <enums namespace="GL" start="0x96B0" end="0x96BF" vendor="ANGLE" comment="github pull request">
+    <enums namespace="GL" start="0x96B0" end="0x96BF" vendor="ANGLE" comment="github pull request 311">
             <unused start="0x96B0" end="0x96BF" vendor="ANGLE"/>
     </enums>
 
@@ -6998,7 +6998,7 @@ typedef unsigned int GLhandleARB;
         <enum value="0x96DF" name="GL_FRAGMENT_SHADING_RATE_ATTACHMENT_WITH_DEFAULT_FRAMEBUFFER_SUPPORTED_EXT" group="GetPName"/>
     </enums>
 
-    <enums namespace="GL" start="0x96E0" end="0x96EF" vendor="ANGLE" comment="Reserved for Ken Russell - ANGLE (via github pull request)">
+    <enums namespace="GL" start="0x96E0" end="0x96EF" vendor="ANGLE" comment="Reserved for Ken Russell - ANGLE (github pull request 493)">
             <unused start="0x96E0" end="0x96EF" vendor="ANGLE"/>
     </enums>
 
@@ -7017,6 +7017,16 @@ typedef unsigned int GLhandleARB;
             <unused start="0x9700" end="0x970F" vendor="Samsung"/>
     </enums>
 
+    <enums namespace="GL" start="0x9710" end="0x971F" vendor="QCOM" comment="Reserved for Ashish Mathur">
+        <enum value="0x9710" name="GL_TEXTURE_Y_DEGAMMA_QCOM" group="TextureParameterName,GetTextureParameter"/>
+        <enum value="0x9711" name="GL_TEXTURE_CBCR_DEGAMMA_QCOM" group="TextureParameterName,GetTextureParameter"/>
+            <unused start="0x9712" end="0x971F" vendor="QCOM"/>
+    </enums>
+
+    <enums namespace="GL" start="0x9720" end="0x973F" vendor="ANGLE" comment="github pull request 626">
+            <unused start="0x9720" end="0x973F" vendor="ANGLE"/>
+    </enums>
+
 <!-- Enums reservable for future use. To reserve a new range, allocate one
      or more multiples of 16 starting at the lowest available point in this
      block and note it in a new <enums> block immediately above.
@@ -7026,8 +7036,8 @@ typedef unsigned int GLhandleARB;
      file) File requests in the Khronos Bugzilla, OpenGL project, Registry
      component. -->
 
-    <enums namespace="GL" start="0x9710" end="99999" vendor="ARB" comment="RESERVED FOR FUTURE ALLOCATIONS BY KHRONOS">
-        <unused start="0x9710" end="99999" comment="RESERVED"/>
+    <enums namespace="GL" start="0x9740" end="99999" vendor="ARB" comment="RESERVED FOR FUTURE ALLOCATIONS BY KHRONOS">
+        <unused start="0x9740" end="99999" comment="RESERVED"/>
     </enums>
 
 <!-- Historical large block allocations, all unused except (in older days) by IBM -->
@@ -19370,6 +19380,15 @@ typedef unsigned int GLhandleARB;
             <param class="texture"><ptype>GLuint</ptype> <name>texture</name></param>
             <param kind="CheckedInt32"><ptype>GLint</ptype> <name>level</name></param>
             <param kind="CheckedInt32"><ptype>GLint</ptype> <name>layer</name></param>
+        </command>
+        <command>
+            <proto>void <name>glNamedFramebufferTextureMultiviewOVR</name></proto>
+            <param class="framebuffer"><ptype>GLuint</ptype> <name>framebuffer</name></param>
+            <param group="FramebufferAttachment"><ptype>GLenum</ptype> <name>attachment</name></param>
+            <param class="texture"><ptype>GLuint</ptype> <name>texture</name></param>
+            <param kind="CheckedInt32"><ptype>GLint</ptype> <name>level</name></param>
+            <param><ptype>GLint</ptype> <name>baseViewIndex</name></param>
+            <param><ptype>GLsizei</ptype> <name>numViews</name></param>
         </command>
         <command>
             <proto>void <name>glNamedProgramLocalParameter4dEXT</name></proto>
@@ -46579,6 +46598,9 @@ typedef unsigned int GLhandleARB;
                 <enum name="GL_FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR"/>
                 <command name="glFramebufferTextureMultiviewOVR"/>
             </require>
+            <require comment="Supported only if ARB_direct_state_access or OpenGL 4.5 is supported">
+                <command name="glNamedFramebufferTextureMultiviewOVR"/>
+            </require>
         </extension>
         <extension name="GL_OVR_multiview2" supported="gl|glcore|gles2"/>
         <extension name="GL_OVR_multiview_multisampled_render_to_texture" supported="gles2">
@@ -46737,6 +46759,12 @@ typedef unsigned int GLhandleARB;
             <require>
                 <enum name="GL_FOVEATION_SUBSAMPLED_LAYOUT_METHOD_BIT_QCOM"/>
                 <enum name="GL_MAX_SHADER_SUBSAMPLED_IMAGE_UNITS_QCOM"/>
+            </require>
+        </extension>
+        <extension name="GL_QCOM_ycbcr_degamma" supported="gles2">
+            <require>
+                <enum name="GL_TEXTURE_Y_DEGAMMA_QCOM"/>
+                <enum name="GL_TEXTURE_CBCR_DEGAMMA_QCOM"/>
             </require>
         </extension>
         <extension name="GL_QCOM_texture_lod_bias" supported="gles2">

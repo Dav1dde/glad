@@ -137,7 +137,7 @@ static int glad_vk_find_extensions_{{ api|lower }}({{ template_utils.context_arg
 {% endfor %}
 
     {# Special case: only one extension which is protected -> unused at compile time only on some platforms #}
-    GLAD_UNUSED(glad_vk_has_extension);
+    GLAD_UNUSED(&glad_vk_has_extension);
 
     glad_vk_free_extensions(extension_count, extensions);
 

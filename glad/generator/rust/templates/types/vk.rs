@@ -97,7 +97,7 @@ pub enum {{ type.name }} {
 #[derive(Copy, Clone)]
 pub {{ type.category }} {{ type.name }} {
 {% for member in type.members %}
-    {{ member.name|identifier }}: {{ member.type|type }},
+    pub {{ member.name|identifier }}: {{ member.type|type }},
 {% endfor %}
 }
 {% elif type.category == 'bitmask' %}

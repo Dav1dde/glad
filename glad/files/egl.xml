@@ -886,7 +886,8 @@
         <enum value="0x3376" name="EGL_STREAM_IMAGE_AVAILABLE_NV"/>
         <enum value="0x3377" name="EGL_DRM_RENDER_NODE_FILE_EXT"/>
         <enum value="0x3378" name="EGL_STREAM_CONSUMER_IMAGE_USE_SCANOUT_NV" />
-            <unused start="0x3379" end="0x339F"/>
+        <enum value="0x3379" name="EGL_ALLOC_NEW_DISPLAY_EXT"/>
+            <unused start="0x337A" end="0x339F"/>
     </enums>
 
     <enums namespace="EGL" start="0x33A0" end="0x33AF" vendor="ANGLE" comment="Reserved for Shannon Woods (Bug 13175)">
@@ -1089,6 +1090,11 @@
         <unused start="0x3560" end="0x356F"/>
     </enums>
 
+    <enums namespace="EGL" start="0x3570" end="0x357F" vendor="Google" comment="Reserved for Tom Murphy (EGL-Registry pull #204)">
+        <enum value="0x3570" name="EGL_TELEMETRY_HINT_ANDROID"/>
+            <unused start="0x3571" end="0x357F"/>
+    </enums>
+
 <!-- Please remember that new enumerant allocations must be obtained by
      request to the Khronos API registrar (see comments at the top of this
      file) File requests in the Khronos Bugzilla, EGL project, Registry
@@ -1098,8 +1104,8 @@
 
 <!-- Reservable for future use. To generate a new range, allocate multiples
      of 16 starting at the lowest available point in this block. -->
-    <enums namespace="EGL" start="0x3570" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
-            <unused start="0x3570" end="0x3FFF"/>
+    <enums namespace="EGL" start="0x3580" end="0x3FFF" vendor="KHR" comment="Reserved for future use">
+            <unused start="0x3580" end="0x3FFF"/>
     </enums>
 
     <enums namespace="EGL" start="0x8F70" end="0x8F7F" vendor="HI" comment="For Mark Callow, Khronos bug 4055. Shared with GL.">
@@ -2062,6 +2068,10 @@
              <param>void *<name>value</name></param>
              <param>EGLint *<name>size</name></param>
         </command>
+        <command>
+             <proto><ptype>EGLBoolean</ptype> <name>eglDestroyDisplayEXT</name></proto>
+             <param><ptype>EGLDisplay</ptype> <name>dpy</name></param>
+        </command>
     </commands>
 
     <!-- SECTION: EGL API interface definitions. -->
@@ -2407,6 +2417,11 @@
             </require>
         </extension>
         <extension name="EGL_ANDROID_GLES_layers" supported="egl"/>
+        <extension name="EGL_ANDROID_telemetry_hint" supported="egl">
+            <require>
+                <enum name="EGL_TELEMETRY_HINT_ANDROID"/>
+            </require>
+        </extension>
         <extension name="EGL_ANGLE_d3d_share_handle_client_buffer" supported="egl">
             <require>
                 <enum name="EGL_D3D_TEXTURE_2D_SHARE_HANDLE_ANGLE"/>
@@ -3568,6 +3583,12 @@
         <extension name="EGL_QNX_image_native_buffer" supported="egl">
             <require>
                 <enum name="EGL_NATIVE_BUFFER_QNX"/>
+            </require>
+        </extension>
+        <extension name="EGL_EXT_display_alloc" supported="egl">
+            <require>
+                <enum name="EGL_ALLOC_NEW_DISPLAY_EXT"/>
+                <command name="eglDestroyDisplayEXT"/>
             </require>
         </extension>
     </extensions>

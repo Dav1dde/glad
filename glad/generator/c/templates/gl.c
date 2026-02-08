@@ -132,7 +132,7 @@ static int glad_gl_find_extensions_{{ api|lower }}({{ template_utils.context_arg
 {% for extension in feature_set.extensions|select('supports', api) %}
     {{ ('GLAD_' + extension.name)|ctx(name_only=True) }} = glad_gl_has_extension(exts, exts_i, "{{ extension.name }}");
 {% else %}
-    GLAD_UNUSED(glad_gl_has_extension);
+    GLAD_UNUSED(&glad_gl_has_extension);
 {% endfor %}
 
     glad_gl_free_extensions(exts_i);

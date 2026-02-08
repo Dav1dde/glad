@@ -81,7 +81,7 @@ static GLADapiproc glad_egl_internal_loader_get_proc(const char *name) {
 }
 {% endif %}
 
-void gladLoaderUnloadEGL() {
+void gladLoaderUnloadEGL(void) {
     if (_egl_handle != NULL) {
         glad_close_dlopen_handle(_egl_handle);
         _egl_handle = NULL;

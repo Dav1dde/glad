@@ -47,7 +47,7 @@ static int glad_glx_find_extensions(Display *display, int screen) {
 {% for extension in feature_set.extensions %}
     GLAD_{{ extension.name }} = glad_glx_has_extension(display, screen, "{{ extension.name }}");
 {% else %}
-    GLAD_UNUSED(glad_glx_has_extension);
+    GLAD_UNUSED(&glad_glx_has_extension);
 {% endfor %}
     return 1;
 }

@@ -27,9 +27,11 @@ impl FnPtr {
         *self = Self::new(ptr);
     }
     
-    fn aliased(&mut self, other: &FnPtr) {
-        if !self.is_loaded && other.is_loaded {
-            *self = *other;
+    fn aliased(&mut self, other: *const FnPtr) {
+        unsafe {
+            if !self.is_loaded && (*other).is_loaded {
+                *self = *other;
+            }
         }
     }
 
@@ -122,7 +124,7 @@ pub fn load<F>(mut loadfn: F) -> functions::{{ ctx_name }} where F: FnMut(&'stat
 
     {% for command, caliases in aliases|dictsort %}
     {% for alias in caliases|reject('equalto', command) %}
-    {{ template_utils.protect(command) }} ctx.{{ command|no_prefix }}.aliased(&ctx.{{ alias|no_prefix }});
+    {{ template_utils.protect(command) }} ctx.{{ command|no_prefix }}.aliased(std::ptr::addr_of!(ctx.{{ alias|no_prefix }}));
     {% endfor %}
     {% endfor %}
 
@@ -137,7 +139,7 @@ pub fn load<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void {
 
         {% for command, caliases in aliases|dictsort %}
         {% for alias in caliases|reject('equalto', command) %}
-        {{ template_utils.protect(command) }}{{ template_utils.protect(alias) }} storage::{{ command|no_prefix }}.aliased(&storage::{{ alias|no_prefix }});
+        {{ template_utils.protect(command) }}{{ template_utils.protect(alias) }} storage::{{ command|no_prefix }}.aliased(std::ptr::addr_of!(storage::{{ alias|no_prefix }}));
         {% endfor %}
         {% endfor %}
     }

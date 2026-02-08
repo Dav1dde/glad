@@ -29,7 +29,7 @@ static GLADapiproc glad_gles2_get_proc(void *vuserptr, const char* name) {
     GLADapiproc result = NULL;
 
 #if GLAD_PLATFORM_EMSCRIPTEN
-    GLAD_UNUSED(glad_dlsym_handle);
+    GLAD_UNUSED(&glad_dlsym_handle);
 #else
     {# /* dlsym first, since some implementations don't return function pointers for core functions */ #}
     result = glad_dlsym_handle(userptr.handle, name);
@@ -56,7 +56,7 @@ static void* glad_gles2_dlopen_handle({{ template_utils.context_arg(def='void') 
 #endif
 
 #if GLAD_PLATFORM_EMSCRIPTEN
-    GLAD_UNUSED(glad_get_dlopen_handle);
+    GLAD_UNUSED(&glad_get_dlopen_handle);
     return NULL;
 #else
     if ({{ loader_handle }} == NULL) {
@@ -89,8 +89,8 @@ int gladLoaderLoadGLES2{{ 'Context' if options.mx }}({{ template_utils.context_a
 #if GLAD_PLATFORM_EMSCRIPTEN
     GLAD_UNUSED(handle);
     GLAD_UNUSED(did_load);
-    GLAD_UNUSED(glad_gles2_dlopen_handle);
-    GLAD_UNUSED(glad_gles2_build_userptr);
+    GLAD_UNUSED(&glad_gles2_dlopen_handle);
+    GLAD_UNUSED(&glad_gles2_build_userptr);
     userptr.get_proc_address_ptr = emscripten_GetProcAddress;
     version = gladLoadGLES2{{ 'Context' if options.mx }}UserPtr({{ 'context, ' if options.mx }}glad_gles2_get_proc, &userptr);
 #else
