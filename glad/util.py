@@ -267,6 +267,8 @@ math_symbols_map = {
     '&RightCeiling;': '⌉',
     '&DoubleVerticalBar;': '∥',
     '&VerticalBar;': '|',
+    '&lcub;': '{',
+    '&rcub;': '}',
 }
 
 def resolve_entities(xml_text, symbols_map=math_symbols_map):
