@@ -44,7 +44,9 @@ static void* glad_gl_dlopen_handle({{ template_utils.context_arg(def='void') }})
         "libGL-1.so",
   #endif
         "libGL.so.1",
-        "libGL.so"
+        "libGL.so",
+        "libEGL.so.1",
+        "libEGL.so"
     };
 #endif
 
@@ -67,6 +69,9 @@ static struct _glad_gl_userptr glad_gl_build_userptr(void *handle) {
 #else
     userptr.gl_get_proc_address_ptr =
         (GLADglprocaddrfunc) glad_dlsym_handle(handle, "glXGetProcAddressARB");
+    if (!userptr.gl_get_proc_address_ptr)
+        userptr.gl_get_proc_address_ptr =
+            (GLADglprocaddrfunc) glad_dlsym_handle(handle, "eglGetProcAddress");
 #endif
 
     return userptr;
