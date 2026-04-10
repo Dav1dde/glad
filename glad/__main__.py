@@ -56,6 +56,11 @@ class GlobalConfig(Config):
                     'a comma separated list of extensions, if missing '
                     'all possible extensions are included.'
     )
+    EXTENSION_FILE = ConfigOption(
+        default=None,
+        description='Path to an optional additional XML extension file or a comma seperated list of paths to merge into the '
+                    'specification (e.g. VK_test_extension.xml).'
+    )
     MERGE = ConfigOption(
         converter=bool,
         default=False,
@@ -156,6 +161,11 @@ def main(args=None):
     specifications = load_specifications(
         [value[0] for value in global_config['API'].values()], opener=opener
     )
+
+    if global_config['EXTENSION_FILE']:
+        for specification in specifications.values():
+            logger.info('merging extension file: %s', global_config['EXTENSION_FILE'])
+            specification.merge_from_file(global_config['EXTENSION_FILE'])
 
     generator = generators[ns.subparser_name](
         global_config['OUT_PATH'], opener=opener, gen_info_factory=gen_info_factory
