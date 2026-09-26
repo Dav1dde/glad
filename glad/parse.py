@@ -1047,8 +1047,9 @@ class Enum(IdentifiedByName):
     EXTENSION_NUMBER_OFFSET = -1
 
     def __init__(self, name, value, bitpos, api, type_,
-                 alias=None, namespace=None, group=None, parent_group=None,
-                 vendor=None, comment='', parent_type=None, extended_by=None):
+                 alias=None, deprecated=None, namespace=None, group=None,
+                 parent_group=None, vendor=None, comment='', parent_type=None,
+                 extended_by=None):
         """
         :param name: name of the enum
         :param value: value of the enum
@@ -1056,6 +1057,7 @@ class Enum(IdentifiedByName):
         :param api: api as specified on the enum
         :param type_: type of the enum as specified on the element
         :param alias: alias of the enum
+        :param deprecated: reason for deprecation
         :param namespace: namespace of the group e.g. GL
         :param group: group specified in on the enum, comma separated for multiple
         :param parent_group: if the enum was defined in an <enums> group
@@ -1073,6 +1075,7 @@ class Enum(IdentifiedByName):
         self.type = type_
 
         self.alias = alias
+        self.deprecated = deprecated
 
         self.namespace = namespace
         self.group = group
@@ -1121,6 +1124,7 @@ class Enum(IdentifiedByName):
         group = element.get('group')
 
         alias = element.get('alias')
+        deprecated = element.get('deprecated')
 
         if element.get('extnumber'):
             extnumber = int(element.get('extnumber'))
@@ -1138,7 +1142,17 @@ class Enum(IdentifiedByName):
         if value is not None:
             value = str(value)
 
-        return cls(name, value, bitpos, api, type_, alias=alias, group=group, **kwargs)
+        return cls(
+            name,
+            value,
+            bitpos,
+            api,
+            type_,
+            alias=alias,
+            deprecated=deprecated,
+            group=group,
+            **kwargs
+        )
 
 
 class Command(IdentifiedByName):
