@@ -208,8 +208,8 @@ class RustGenerator(JinjaGenerator):
 
         return JinjaGenerator.select(self, spec, api, version, profile, extensions, config, sink=sink)
 
-    def get_template_arguments(self, spec, feature_set, config):
-        args = JinjaGenerator.get_template_arguments(self, spec, feature_set, config)
+    def get_template_arguments(self, spec, feature_set, config, spec_docs=None):
+        args = JinjaGenerator.get_template_arguments(self, spec, feature_set, config, spec_docs=spec_docs)
 
         args.update(
             version=glad.__version__,

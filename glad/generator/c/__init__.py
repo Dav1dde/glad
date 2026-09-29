@@ -378,8 +378,8 @@ class CGenerator(JinjaGenerator):
 
         return JinjaGenerator.select(self, spec, api, version, profile, extensions, config, sink=sink)
 
-    def get_template_arguments(self, spec, feature_set, config):
-        args = JinjaGenerator.get_template_arguments(self, spec, feature_set, config)
+    def get_template_arguments(self, spec, feature_set, config, spec_docs=None):
+        args = JinjaGenerator.get_template_arguments(self, spec, feature_set, config, spec_docs=spec_docs)
 
         # TODO allow MX for every specification/api
         if spec.name not in (VK.NAME, GL.NAME):
@@ -412,7 +412,7 @@ class CGenerator(JinjaGenerator):
 
         return templates
 
-    def post_generate(self, spec, feature_set, config):
+    def post_generate(self, spec, feature_set, config, spec_docs=None):
         self._add_additional_headers(feature_set, config)
 
     def modify_feature_set(self, spec, feature_set, config):
