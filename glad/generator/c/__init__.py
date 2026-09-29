@@ -116,7 +116,7 @@ def get_debug_impl(command, command_code_name=None):
 def ctx(jinja_context, name, context='context', raw=False, name_only=False, member=False):
     options = jinja_context['options']
 
-    prefix = 'glad_'
+    prefix = options['prefix'] + '_'
     if options['mx']:
         prefix = context + '->'
         if name.startswith('GLAD_'):
@@ -243,6 +243,11 @@ class CConfig(Config):
         converter=bool,
         default=False,
         description='On-demand function pointer loading, initialize on use (experimental)'
+    )
+    PREFIX = ConfigOption(
+        converter=str,
+        default="glad",
+        description='Prefix for generated function pointers (experimental)'
     )
 
     __constraints__ = [
