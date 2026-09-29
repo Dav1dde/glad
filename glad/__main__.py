@@ -35,6 +35,9 @@ def parse_extensions(value):
     value = value.replace(',', ' ')
     return list(filter(None, value.split()))
 
+def parse_extension_files(value):
+    value = value.replace(',', ' ')
+    return list(filter(None, value.split()))
 
 class GlobalConfig(Config):
     OUT_PATH = ConfigOption(
@@ -55,6 +58,12 @@ class GlobalConfig(Config):
         description='Path to a file containing a list of extensions or '
                     'a comma separated list of extensions, if missing '
                     'all possible extensions are included.'
+    )
+    EXTENSION_FILE = ConfigOption(
+        converter=parse_extension_files,
+        default=None,
+        description='Path to an optional additional XML extension file or a comma seperated list of paths to merge into the '
+                    'specification (e.g. VK_test_extension.xml).'
     )
     MERGE = ConfigOption(
         converter=bool,
@@ -156,6 +165,12 @@ def main(args=None):
     specifications = load_specifications(
         [value[0] for value in global_config['API'].values()], opener=opener
     )
+
+    if global_config['EXTENSION_FILE']:
+        for specification in specifications.values():
+            for file in global_config['EXTENSION_FILE']:
+                logger.info('merging extension file: %s', file)
+                specification.merge_from_file(file)
 
     generator = generators[ns.subparser_name](
         global_config['OUT_PATH'], opener=opener, gen_info_factory=gen_info_factory
