@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.12...4.3 FATAL_ERROR)
 
 # Silence warning about PROJECT_VERSION
 cmake_policy(SET CMP0048 NEW)
