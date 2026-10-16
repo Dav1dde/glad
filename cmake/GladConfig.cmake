@@ -30,9 +30,9 @@
 #   ```
 #   glad_add_library(glad_gl_core_33 SHARED API gl:core=3.3)
 #   ```
-# - create a module glad library of the compatibility profile of opengl 1.0, having only the GL_EXT_COMPRESSION_s3tc extensionsion
+# - create a module glad library of the compatibility profile of opengl 1.0, having only the GL_EXT_texture_compression_s3tc extension
 #   ```
-#   glad_add_library(glad_gl_compat_10 MODULE API gl:compatibility=1.0 EXTENSIONS GL_EXT_COMPRESSION_s3tc)
+#   glad_add_library(glad_gl_compat_10 MODULE API gl:compatibility=1.0 EXTENSIONS GL_EXT_texture_compression_s3tc)
 #   ```
 # - create  a static glad library with the vulkan=1.1
 #   ```
@@ -188,7 +188,7 @@ function(glad_add_library TARGET)
     if(NOT GG_LOCATION)
         set(GG_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/gladsources/${TARGET}")
     endif()
-    if(BUILD_SHARED_LIBS)
+    if(BUILD_SHARED_LIBS AND NOT (GG_SHARED OR GG_STATIC OR GG_MODULE OR GG_INTERFACE))
         set(GG_SHARED TRUE)
     endif()
     set(GLAD_DIR "${GG_LOCATION}")
