@@ -12,7 +12,6 @@
 static const GLuint WIDTH = 800, HEIGHT = 600;
 
 static SDL_Window *window;
-static SDL_Renderer *renderer;
 static SDL_GLContext GLContext;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
@@ -29,8 +28,9 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-    if (!SDL_CreateWindowAndRenderer("[glad] GL with SDL3 callback main", WIDTH, HEIGHT, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL, &window, &renderer)) {
-        SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
+    window = SDL_CreateWindow("[glad] GL with SDL3 callback main", WIDTH, HEIGHT, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+    if (!window) {
+        SDL_Log("Couldn't create window: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
 

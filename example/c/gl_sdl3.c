@@ -17,14 +17,10 @@ int main(void) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-    SDL_Window *window;
-    SDL_Renderer *renderer;
-
-    SDL_CreateWindowAndRenderer(
+    SDL_Window *window = SDL_CreateWindow(
         "[glad] GL with SDL3",
         WIDTH, HEIGHT,
-        SDL_WINDOW_OPENGL,
-        &window, &renderer
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
     );
 
     SDL_GLContext context = SDL_GL_CreateContext(window);
@@ -60,7 +56,6 @@ int main(void) {
     }
 
     SDL_GL_DestroyContext(context);
-    SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 
