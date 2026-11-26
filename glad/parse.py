@@ -279,6 +279,24 @@ class Specification(object):
         except TypeError:
             return cls(xml_parse(path_or_file_like))
 
+    def merge_from_file(self, path):
+        """
+        Merge additional XML elements from an extension file into this specification.
+        Appends children from <types>, <commands>, <extensions>, and <platforms>
+        sections of the extension file into the corresponding sections of this spec.
+        """
+        ext_root = xml_parse(path)
+        for section_tag in ('types', 'commands', 'extensions', 'platforms'):
+            ext_section = ext_root.find(section_tag)
+            if ext_section is None:
+                continue
+            main_section = self.root.find(section_tag)
+            if main_section is None:
+                self.root.append(ext_section)
+            else:
+                for child in ext_section:
+                    main_section.append(child)
+
     @property
     def comment(self):
         return self.root.find('comment').text
