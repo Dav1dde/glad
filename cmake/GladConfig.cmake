@@ -2,7 +2,7 @@
 # The created library will automatically generate the glad sources.
 # Consumers can link to the the library.
 #
-#  glad_add_library(<TARGET> [SHARED|STATIC|MODULE|INTERFACE] [EXCLUDE_FROM_ALL] [MERGE] [QUIET] [LOCATION <PATH>]
+#  glad_add_library(<TARGET> [SHARED|STATIC|MODULE|INTERFACE] [EXCLUDE_FROM_ALL] [MERGE] [REPRODUCIBLE] [QUIET] [LOCATION <PATH>]
 #                       [LANGUAGE <LANG>] [API <API1> [<API2> ...]] [EXTENSIONS [<EXT1> [<EXT2> ...]]])
 #  - <TARGET>
 #       Name of the TARGET
